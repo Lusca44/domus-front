@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { MapPin, BedDouble, DollarSign, Search } from 'lucide-react';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 
@@ -15,7 +16,7 @@ import LeadCaptureForm from '@/components/LeadCaptureForm';
  * de apartamentos na planta da região portuária do Rio de Janeiro.
  * 
  * Funcionalidades:
- * - Exibição de todos os lançamentos disponíveis
+ * - Exibição de todos os lançamentos disponíveis em carrossel
  * - Filtros de busca por quartos, preço e localização
  * - Formulário de captação de leads geral
  * - Links para landing pages específicas de cada projeto
@@ -70,6 +71,36 @@ const Index = () => {
       // IMAGEM: Substitua o caminho abaixo pela URL da sua imagem
       imagem: 'https://images.unsplash.com/photo-1496307653780-42ee777d4833?w=800&h=600&fit=crop',
       urlLanding: '/lancamento/residencial-pier'
+    },
+    {
+      id: 4,
+      nome: 'Marina Bay Residence',
+      descricao: 'Apartamentos de luxo com vista panorâmica da marina',
+      quartos: '3-4',
+      precoInicial: 'A partir de R$ 1.800.000',
+      localizacao: 'Gamboa',
+      imagem: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
+      urlLanding: '/lancamento/marina-bay'
+    },
+    {
+      id: 5,
+      nome: 'Boulevard Porto',
+      descricao: 'Estúdios e apartamentos de 1 quarto no centro da renovação urbana',
+      quartos: '0-1',
+      precoInicial: 'A partir de R$ 450.000',
+      localizacao: 'Centro',
+      imagem: 'https://images.unsplash.com/photo-1502005229762-cf1b2da60b8e?w=800&h=600&fit=crop',
+      urlLanding: '/lancamento/boulevard-porto'
+    },
+    {
+      id: 6,
+      nome: 'Sunset Towers',
+      descricao: 'Torres residenciais com amenidades completas e piscina infinita',
+      quartos: '2-4',
+      precoInicial: 'A partir de R$ 1.400.000',
+      localizacao: 'Santo Cristo',
+      imagem: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
+      urlLanding: '/lancamento/sunset-towers'
     }
   ];
 
@@ -178,49 +209,73 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Grid de Lançamentos */}
+      {/* Seção de Lançamentos com Carrossel */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtrarLancamentos().map((lancamento) => (
-              <Card key={lancamento.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                {/* IMAGEM DO CARD: As imagens abaixo podem ser substituídas */}
-                <div className="h-48 bg-cover bg-center" 
-                     style={{ backgroundImage: `url(${lancamento.imagem})` }}>
-                  {/* Overlay para melhor legibilidade */}
-                  <div className="h-full bg-black bg-opacity-20"></div>
-                </div>
-                
-                <CardHeader>
-                  <CardTitle className="text-xl">{lancamento.nome}</CardTitle>
-                  <CardDescription>{lancamento.descricao}</CardDescription>
-                </CardHeader>
-                
-                <CardContent>
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <BedDouble className="w-4 h-4 mr-1" />
-                      {lancamento.quartos} quartos
+          <h3 className="text-3xl font-bold text-center mb-8">
+            Nossos Lançamentos
+          </h3>
+          
+          {/* Carrossel de Lançamentos */}
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {filtrarLancamentos().map((lancamento) => (
+                <CarouselItem key={lancamento.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
+                    {/* IMAGEM DO CARD: As imagens abaixo podem ser substituídas */}
+                    <div className="h-48 bg-cover bg-center" 
+                         style={{ backgroundImage: `url(${lancamento.imagem})` }}>
+                      {/* Overlay para melhor legibilidade */}
+                      <div className="h-full bg-black bg-opacity-20"></div>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      {lancamento.localizacao}
-                    </div>
-                    <div className="flex items-center text-sm font-semibold text-green-600">
-                      <DollarSign className="w-4 h-4 mr-1" />
-                      {lancamento.precoInicial}
-                    </div>
-                  </div>
-                  
-                  {/* Link para a landing page específica do lançamento */}
-                  <Link to={lancamento.urlLanding}>
-                    <Button className="w-full">
-                      Ver Detalhes
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+                    
+                    <CardHeader>
+                      <CardTitle className="text-xl">{lancamento.nome}</CardTitle>
+                      <CardDescription>{lancamento.descricao}</CardDescription>
+                    </CardHeader>
+                    
+                    <CardContent className="flex-1">
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <BedDouble className="w-4 h-4 mr-1" />
+                          {lancamento.quartos} quartos
+                        </div>
+                        <div className="flex items-center text-sm text-gray-600">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          {lancamento.localizacao}
+                        </div>
+                        <div className="flex items-center text-sm font-semibold text-green-600">
+                          <DollarSign className="w-4 h-4 mr-1" />
+                          {lancamento.precoInicial}
+                        </div>
+                      </div>
+                      
+                      {/* Link para a landing page específica do lançamento */}
+                      <Link to={lancamento.urlLanding}>
+                        <Button className="w-full">
+                          Ver Detalhes
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex" />
+            <CarouselNext className="hidden md:flex" />
+          </Carousel>
+          
+          {/* Indicador de navegação para mobile */}
+          <div className="flex justify-center mt-6 md:hidden">
+            <p className="text-sm text-gray-500">
+              Deslize para ver mais lançamentos
+            </p>
           </div>
         </div>
       </section>
