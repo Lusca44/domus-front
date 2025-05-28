@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { BedDouble, Bath, ArrowSquareOut, CheckCircle, MapPin, ArrowLeft } from 'lucide-react';
+import { BedDouble, Bath, ExternalLink, CheckCircle, MapPin, ArrowLeft } from 'lucide-react';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
@@ -192,7 +191,7 @@ const LandingVistaBaia = () => {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="outline" className="w-full">
-                    <ArrowSquareOut className="w-4 h-4 mr-2" />
+                    <ExternalLink className="w-4 h-4 mr-2" />
                     Assistir ao Vídeo
                   </Button>
                 </DialogTrigger>
