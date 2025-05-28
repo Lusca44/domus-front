@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { BedDouble, Bath, ExternalLink, CheckCircle, MapPin, ArrowLeft } from 'lucide-react';
+import { BedDouble, Bath, ExternalLink, CheckCircle, MapPin, ArrowLeft, Play } from 'lucide-react';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
@@ -52,14 +52,67 @@ const LandingVistaBaia = () => {
       'Próximo aos principais pontos turísticos'
     ],
     endereco: 'Rua da Gamboa, 123 - Gamboa, Rio de Janeiro - RJ',
-    // IMAGENS: Substitua estas URLs pelas suas imagens reais 
+    // IMAGENS: Array expandido com mais imagens 
     imagens: [
-      'https://images.unsplash.com/photo-1459767129954-1b1c1f9b9ace?w=1200',
-      'https://images.unsplash.com/photo-1460574283810-2aab119d8511?w=1200',
-      'https://images.unsplash.com/photo-1486718448742-163732cd1544?w=1200'
+      {
+        url: 'https://images.unsplash.com/photo-1459767129954-1b1c1f9b9ace?w=1200',
+        titulo: 'Fachada do Empreendimento',
+        tipo: 'fachada'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1460574283810-2aab119d8511?w=1200',
+        titulo: 'Vista da Baía de Guanabara',
+        tipo: 'vista'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1486718448742-163732cd1544?w=1200',
+        titulo: 'Hall de Entrada',
+        tipo: 'areas-comuns'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=1200',
+        titulo: 'Apartamento Decorado - Sala',
+        tipo: 'apartamento'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200',
+        titulo: 'Piscina e Área de Lazer',
+        tipo: 'lazer'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=1200',
+        titulo: 'Academia',
+        tipo: 'lazer'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1496307653780-42ee777d4833?w=1200',
+        titulo: 'Salão de Festas',
+        tipo: 'areas-comuns'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200',
+        titulo: 'Apartamento 3 Quartos - Suite Master',
+        tipo: 'apartamento'
+      }
     ],
-    // VÍDEO: Substitua esta URL pelo seu vídeo real
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    // VÍDEOS: Array com múltiplos vídeos
+    videos: [
+      {
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        titulo: 'Tour Virtual do Empreendimento',
+        thumbnail: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&h=600&fit=crop'
+      },
+      {
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        titulo: 'Vista Aérea da Região',
+        thumbnail: 'https://images.unsplash.com/photo-1431576901776-e539bd916ba2?w=800&h=600&fit=crop'
+      },
+      {
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        titulo: 'Apartamento Decorado',
+        thumbnail: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=800&h=600&fit=crop'
+      }
+    ],
     // URL do mapa: Substitua pelo link no Google Maps
     mapa: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.371247893542!2d-43.1992!3d-22.8996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f07e1b6b49d%3A0x85bd8fe1a45fe9b2!2sPorto%20Maravilha%2C%20Rio%20de%20Janeiro%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1716053186148!5m2!1spt-BR!2sbr'
   };
@@ -149,67 +202,96 @@ const LandingVistaBaia = () => {
         ></div>
       </section>
 
-      {/* Seção de Galeria */}
+      {/* Seção de Galeria Expandida */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-10 text-center">
-            Conheça o Vista Baía Residencial
+            Galeria de Fotos e Vídeos
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Imagem Principal */}
-            <div className="md:col-span-2 rounded-lg overflow-hidden shadow-md">
+          {/* Imagem Principal */}
+          <div className="mb-8">
+            <div className="rounded-lg overflow-hidden shadow-lg">
               <AspectRatio ratio={16 / 9}>
                 <img 
-                  src={empreendimento.imagens[imagemAtual]} 
-                  alt={`Vista do empreendimento ${empreendimento.nome} - imagem ${imagemAtual + 1}`} 
+                  src={empreendimento.imagens[imagemAtual].url} 
+                  alt={empreendimento.imagens[imagemAtual].titulo} 
                   className="object-cover w-full h-full"
                 />
               </AspectRatio>
             </div>
-            
-            {/* Thumbnails */}
-            <div className="space-y-4">
-              {/* IMPORTANTE: Substitua estas imagens por suas imagens reais */}
+            <div className="text-center mt-3">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {empreendimento.imagens[imagemAtual].titulo}
+              </h3>
+            </div>
+          </div>
+          
+          {/* Grid de Thumbnails de Imagens */}
+          <div className="mb-8">
+            <h3 className="text-xl font-bold mb-4">Fotos do Empreendimento</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {empreendimento.imagens.map((img, index) => (
                 <div 
                   key={index} 
                   className={`rounded-lg overflow-hidden cursor-pointer transition-all hover:opacity-90 shadow-sm ${imagemAtual === index ? 'ring-2 ring-blue-500' : ''}`}
                   onClick={() => setImagemAtual(index)}
                 >
-                  <AspectRatio ratio={16 / 9}>
+                  <AspectRatio ratio={4 / 3}>
                     <img 
-                      src={img} 
-                      alt={`Thumbnail ${index + 1}`} 
+                      src={img.url} 
+                      alt={img.titulo} 
                       className="object-cover w-full h-full"
                     />
                   </AspectRatio>
                 </div>
               ))}
-              
-              {/* Botão para ver o vídeo */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="w-full">
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Assistir ao Vídeo
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-3xl">
-                  <div className="aspect-video">
-                    {/* VÍDEO: Substitua o src abaixo pelo link do seu vídeo */}
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      src={empreendimento.video}
-                      title={`Vídeo do empreendimento ${empreendimento.nome}`}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="rounded"
-                    ></iframe>
-                  </div>
-                </DialogContent>
-              </Dialog>
+            </div>
+          </div>
+
+          {/* Grid de Vídeos */}
+          <div>
+            <h3 className="text-xl font-bold mb-4">Vídeos</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {empreendimento.videos.map((video, index) => (
+                <Dialog key={index}>
+                  <DialogTrigger asChild>
+                    <div className="relative rounded-lg overflow-hidden cursor-pointer shadow-md hover:shadow-lg transition-shadow group">
+                      <AspectRatio ratio={16 / 9}>
+                        <img 
+                          src={video.thumbnail} 
+                          alt={video.titulo} 
+                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                          <div className="bg-white bg-opacity-90 rounded-full p-3 group-hover:bg-opacity-100 transition-all">
+                            <Play className="w-6 h-6 text-blue-600" />
+                          </div>
+                        </div>
+                      </AspectRatio>
+                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-2">
+                        <p className="text-sm font-medium">{video.titulo}</p>
+                      </div>
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl">
+                    <div className="aspect-video">
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        src={video.url}
+                        title={video.titulo}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="rounded"
+                      ></iframe>
+                    </div>
+                    <div className="mt-4">
+                      <h4 className="text-lg font-semibold">{video.titulo}</h4>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              ))}
             </div>
           </div>
         </div>
