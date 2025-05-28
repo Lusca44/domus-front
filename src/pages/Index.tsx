@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -285,26 +284,6 @@ const Index = () => {
             <p className="text-sm text-gray-500">
               Deslize para ver mais lançamentos
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Seção de Captação de Leads Geral */}
-      <section className="py-16 bg-blue-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-3xl font-bold mb-4">
-              Receba Novidades dos Lançamentos
-            </h3>
-            <p className="text-gray-600 mb-8">
-              Cadastre-se e seja o primeiro a saber sobre novos projetos na região portuária
-            </p>
-            
-            {/* Componente de formulário de captação de leads */}
-            <LeadCaptureForm 
-              source="portal-principal"
-              redirectTo="/obrigado"
-            />
           </div>
         </div>
       </section>
