@@ -3,10 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { MapPin, BedDouble, DollarSign, Search } from 'lucide-react';
+import { MapPin, BedDouble, DollarSign, TrendingUp, Building2, Star } from 'lucide-react';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 
 /**
@@ -17,16 +15,11 @@ import LeadCaptureForm from '@/components/LeadCaptureForm';
  * 
  * Funcionalidades:
  * - Exibição de todos os lançamentos disponíveis em carrossel
- * - Filtros de busca por quartos, preço e localização
+ * - Mensagem inspiradora sobre a valorização da região
  * - Formulário de captação de leads geral
  * - Links para landing pages específicas de cada projeto
  */
 const Index = () => {
-  // Estados para controle dos filtros de busca
-  const [filtroQuartos, setFiltroQuartos] = React.useState('');
-  const [filtroPreco, setFiltroPreco] = React.useState('');
-  const [filtroLocalizacao, setFiltroLocalizacao] = React.useState('');
-
   /**
    * Dados dos lançamentos - AQUI VOCÊ PODE CONECTAR COM SUA API
    * Para integrar com backend, substitua este array por uma chamada para sua API:
@@ -104,19 +97,6 @@ const Index = () => {
     }
   ];
 
-  /**
-   * Função para filtrar lançamentos baseado nos critérios selecionados
-   * Esta função pode ser expandida para incluir mais filtros conforme necessário
-   */
-  const filtrarLancamentos = () => {
-    return lancamentos.filter(lancamento => {
-      const matchQuartos = !filtroQuartos || lancamento.quartos.includes(filtroQuartos);
-      const matchLocalizacao = !filtroLocalizacao || lancamento.localizacao.toLowerCase().includes(filtroLocalizacao.toLowerCase());
-      // Adicione mais lógica de filtro de preço conforme necessário
-      return matchQuartos && matchLocalizacao;
-    });
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Principal */}
@@ -155,55 +135,84 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Seção de Filtros */}
-      <section className="py-8 bg-white">
+      {/* Seção de Valorização da Região */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h3 className="text-2xl font-semibold mb-6 text-center">
-              Encontre o Apartamento Ideal
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {/* Filtro por Quartos */}
-              <Select value={filtroQuartos} onValueChange={setFiltroQuartos}>
-                <SelectTrigger>
-                  <BedDouble className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Quartos" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 Quarto</SelectItem>
-                  <SelectItem value="2">2 Quartos</SelectItem>
-                  <SelectItem value="3">3 Quartos</SelectItem>
-                  <SelectItem value="4">4+ Quartos</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h3 className="text-4xl font-bold text-gray-900 mb-6">
+                Por que Investir no Porto Maravilha?
+              </h3>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                O maior projeto de revitalização urbana da América Latina está transformando 
+                a região portuária em um novo centro de negócios, cultura e moradia no Rio de Janeiro.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Card 1 - Valorização */}
+              <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6">
+                  <TrendingUp className="w-8 h-8 text-green-600" />
+                </div>
+                <h4 className="text-2xl font-bold text-gray-900 mb-4">
+                  Valorização Acelerada
+                </h4>
+                <p className="text-gray-600">
+                  Imóveis na região já apresentam valorização de até 35% ao ano, 
+                  impulsionados pelos investimentos em infraestrutura e mobilidade urbana.
+                </p>
+              </div>
 
-              {/* Filtro por Preço */}
-              <Select value={filtroPreco} onValueChange={setFiltroPreco}>
-                <SelectTrigger>
-                  <DollarSign className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Faixa de Preço" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ate-700k">Até R$ 700.000</SelectItem>
-                  <SelectItem value="700k-1m">R$ 700.000 - R$ 1.000.000</SelectItem>
-                  <SelectItem value="1m-1.5m">R$ 1.000.000 - R$ 1.500.000</SelectItem>
-                  <SelectItem value="acima-1.5m">Acima de R$ 1.500.000</SelectItem>
-                </SelectContent>
-              </Select>
+              {/* Card 2 - Infraestrutura */}
+              <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
+                  <Building2 className="w-8 h-8 text-blue-600" />
+                </div>
+                <h4 className="text-2xl font-bold text-gray-900 mb-4">
+                  Infraestrutura Moderna
+                </h4>
+                <p className="text-gray-600">
+                  VLT, Museu do Amanhã, Boulevard Olímpico e dezenas de novos 
+                  empreendimentos comerciais fazem da região o novo centro do Rio.
+                </p>
+              </div>
 
-              {/* Filtro por Localização */}
-              <Input
-                placeholder="Localização"
-                value={filtroLocalizacao}
-                onChange={(e) => setFiltroLocalizacao(e.target.value)}
-                className="w-full"
-              />
+              {/* Card 3 - Localização */}
+              <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-6">
+                  <Star className="w-8 h-8 text-purple-600" />
+                </div>
+                <h4 className="text-2xl font-bold text-gray-900 mb-4">
+                  Localização Privilegiada
+                </h4>
+                <p className="text-gray-600">
+                  Conectado ao Centro, Zona Sul e Norte por diversas opções de transporte, 
+                  com vista única da Baía de Guanabara e proximidade aos principais pontos turísticos.
+                </p>
+              </div>
+            </div>
 
-              {/* Botão de Busca */}
-              <Button className="w-full">
-                <Search className="w-4 h-4 mr-2" />
-                Buscar
-              </Button>
+            {/* Estatísticas */}
+            <div className="mt-16 bg-white rounded-lg shadow-lg p-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">R$ 8 Bi</div>
+                  <div className="text-gray-600">Investimento Total</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-green-600 mb-2">5 Mi m²</div>
+                  <div className="text-gray-600">Área Revitalizada</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-purple-600 mb-2">70+</div>
+                  <div className="text-gray-600">Novos Projetos</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-orange-600 mb-2">25 Anos</div>
+                  <div className="text-gray-600">Prazo do Projeto</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -225,7 +234,7 @@ const Index = () => {
             className="w-full"
           >
             <CarouselContent className="-ml-2 md:-ml-4">
-              {filtrarLancamentos().map((lancamento) => (
+              {lancamentos.map((lancamento) => (
                 <CarouselItem key={lancamento.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
                     {/* IMAGEM DO CARD: As imagens abaixo podem ser substituídas */}
