@@ -18,6 +18,8 @@ const AdminLogin = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    navigate("/admin/dashboard");
+    
     try {
       // Aqui você fará a requisição para sua API
       const response = await fetch("/api/auth/login", {
@@ -28,8 +30,7 @@ const AdminLogin = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      // if (response.ok) {
-      if (true) {
+      if (response.ok) {
         const data = await response.json();
         // Salvar token no localStorage ou context
         localStorage.setItem("token", data.token);
