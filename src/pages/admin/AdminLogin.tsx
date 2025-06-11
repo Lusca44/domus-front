@@ -18,23 +18,25 @@ const AdminLogin = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    navigate("/admin/dashboard");
-    
     try {
       // Aqui você fará a requisição para sua API
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // const response = await fetch("/api/auth/login", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ email, password }),
+      // });
 
-      if (response.ok) {
-        const data = await response.json();
+      // if (response.ok) {
+      if (true) {
+        // const data = await response.json();
+        // const data = await response.json();
         // Salvar token no localStorage ou context
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        // localStorage.setItem("token", data.token);
+        // localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("token", 'data.token');
+        localStorage.setItem("user", JSON.stringify('data.user'));
         
         toast({
           title: "Login realizado com sucesso!",
