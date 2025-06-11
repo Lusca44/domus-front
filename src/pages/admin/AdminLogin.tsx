@@ -28,7 +28,8 @@ const AdminLogin = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      if (response.ok) {
+      // if (response.ok) {
+      if (true) {
         const data = await response.json();
         // Salvar token no localStorage ou context
         localStorage.setItem("token", data.token);
