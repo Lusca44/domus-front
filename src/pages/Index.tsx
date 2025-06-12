@@ -228,10 +228,6 @@ const Index = () => {
                           <MapPin className="w-4 h-4 mr-1" />
                           {lancamento.localizacao}
                         </div>
-                        <div className="flex items-center text-sm font-semibold text-green-600">
-                          <DollarSign className="w-4 h-4 mr-1" />
-                          {lancamento.precoInicial}
-                        </div>
                       </div>
 
                       {/* Link para a landing page específica do lançamento */}

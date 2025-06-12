@@ -441,7 +441,7 @@ const LandingPixinguinha = () => {
             
             <div className="max-w-md mx-auto">
               <LeadCaptureForm 
-                source="Pixinguinha" 
+                nomeLancamento="Pixinguinha" 
                 redirectTo="/obrigado"
                 title="Quero garantir minha unidade"
                 description="Preencha seus dados para receber mais informações"
