@@ -1,94 +1,114 @@
 
-interface ApiConfig {
-  baseUrl: string;
-  apiKey: string;
-  timeout: number;
-}
+/**
+ * Configuração centralizada da API
+ */
+const API_CONFIG = {
+  baseUrl: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
 
 /**
- * Classe para gerenciar configurações da API
+ * Classe para realizar requisições HTTP com configuração centralizada
  */
-export class ApiConfigManager {
-  private static readonly CONFIG_KEY = 'apiConfig';
-  
-  private static readonly DEFAULT_CONFIG: ApiConfig = {
-    baseUrl: '',
-    apiKey: '',
-    timeout: 5000
-  };
+export class ApiClient {
+  private baseUrl: string;
+  private timeout: number;
+  private defaultHeaders: Record<string, string>;
 
-  /**
-   * Obter configurações da API
-   */
-  static getConfig(): ApiConfig {
-    try {
-      const saved = localStorage.getItem(this.CONFIG_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return { ...this.DEFAULT_CONFIG, ...parsed };
-      }
-    } catch (error) {
-      console.error('Erro ao carregar configurações da API:', error);
-    }
-    return this.DEFAULT_CONFIG;
+  constructor() {
+    this.baseUrl = API_CONFIG.baseUrl;
+    this.timeout = API_CONFIG.timeout;
+    this.defaultHeaders = API_CONFIG.headers;
   }
 
   /**
-   * Salvar configurações da API
+   * Obter headers com token de autenticação
    */
-  static saveConfig(config: ApiConfig): void {
-    try {
-      localStorage.setItem(this.CONFIG_KEY, JSON.stringify(config));
-    } catch (error) {
-      console.error('Erro ao salvar configurações da API:', error);
-      throw new Error('Não foi possível salvar as configurações');
-    }
-  }
-
-  /**
-   * Verificar se a API está configurada
-   */
-  static isConfigured(): boolean {
-    const config = this.getConfig();
-    return Boolean(config.baseUrl && config.apiKey);
-  }
-
-  /**
-   * Obter headers padrão para requisições
-   */
-  static getHeaders(): Record<string, string> {
-    const config = this.getConfig();
+  private getAuthHeaders(): Record<string, string> {
+    const token = localStorage.getItem('token');
     return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.apiKey}`,
+      ...this.defaultHeaders,
+      ...(token && { Authorization: `Bearer ${token}` }),
     };
   }
 
   /**
-   * Fazer requisição para a API com configurações automáticas
+   * Fazer requisição HTTP genérica
    */
-  static async makeRequest(
-    endpoint: string, 
+  private async request<T>(
+    endpoint: string,
     options: RequestInit = {}
-  ): Promise<Response> {
-    const config = this.getConfig();
-    
-    if (!this.isConfigured()) {
-      throw new Error('API não configurada. Configure as variáveis de ambiente primeiro.');
-    }
-
-    const url = `${config.baseUrl}${endpoint}`;
-    const requestOptions: RequestInit = {
+  ): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    const config: RequestInit = {
       ...options,
       headers: {
-        ...this.getHeaders(),
+        ...this.getAuthHeaders(),
         ...options.headers,
       },
-      signal: AbortSignal.timeout(config.timeout),
+      signal: AbortSignal.timeout(this.timeout),
     };
 
-    return fetch(url, requestOptions);
+    try {
+      const response = await fetch(url, config);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API Request Error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Métodos HTTP específicos
+   */
+  async get<T>(endpoint: string): Promise<T> {
+    return this.request<T>(endpoint, { method: 'GET' });
+  }
+
+  async post<T>(endpoint: string, data?: any): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
+  async put<T>(endpoint: string, data?: any): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'PUT',
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
+  async delete<T>(endpoint: string): Promise<T> {
+    return this.request<T>(endpoint, { method: 'DELETE' });
   }
 }
 
-export default ApiConfigManager;
+// Instância única do cliente de API
+export const apiClient = new ApiClient();
+
+// Funções específicas para diferentes recursos
+export const leadsApi = {
+  getAll: () => apiClient.get('/leads'),
+  getById: (id: string) => apiClient.get(`/leads/${id}`),
+  create: (data: any) => apiClient.post('/leads', data),
+  update: (id: string, data: any) => apiClient.put(`/leads/${id}`, data),
+  delete: (id: string) => apiClient.delete(`/leads/${id}`),
+};
+
+export const authApi = {
+  login: (credentials: any) => apiClient.post('/auth/login', credentials),
+  profile: () => apiClient.get('/auth/profile'),
+  updateProfile: (data: any) => apiClient.put('/auth/profile', data),
+  changePassword: (data: any) => apiClient.put('/auth/profile/password', data),
+};
+
+export default apiClient;

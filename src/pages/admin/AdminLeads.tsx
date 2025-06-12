@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Edit, Trash2, LogOut } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { leadsApi } from "@/utils/apiConfig";
+import { useApi } from "@/hooks/useApi";
 
 interface Lead {
   id: string;
@@ -22,13 +22,27 @@ interface Lead {
 
 const AdminLeads = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [editForm, setEditForm] = useState({ name: "", email: "", phone: "", interest: "" });
   const navigate = useNavigate();
-  const { toast } = useToast();
+
+  // Usando o hook customizado para diferentes operações
+  const { loading: loadingLeads, execute: executeGetLeads } = useApi<Lead[]>({
+    showErrorToast: true,
+    errorMessage: 'Erro ao carregar leads'
+  });
+
+  const { execute: executeUpdateLead } = useApi({
+    showSuccessToast: true,
+    successMessage: 'Lead atualizada com sucesso'
+  });
+
+  const { execute: executeDeleteLead } = useApi({
+    showSuccessToast: true,
+    successMessage: 'Lead excluída com sucesso'
+  });
 
   useEffect(() => {
     // Verificar se o usuário está autenticado
@@ -42,33 +56,10 @@ const AdminLeads = () => {
 
   const fetchLeads = async () => {
     try {
-      setIsLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/leads", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setLeads(data);
-      } else {
-        toast({
-          title: "Erro ao carregar leads",
-          description: "Não foi possível carregar as leads.",
-          variant: "destructive",
-        });
-      }
+      const data = await executeGetLeads(() => leadsApi.getAll());
+      setLeads(data || []);
     } catch (error) {
-      toast({
-        title: "Erro de conexão",
-        description: "Erro ao conectar com o servidor.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+      console.error('Erro ao buscar leads:', error);
     }
   };
 
@@ -87,36 +78,11 @@ const AdminLeads = () => {
     if (!selectedLead) return;
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`/api/leads/${selectedLead.id}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editForm),
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Lead atualizada",
-          description: "As informações foram atualizadas com sucesso.",
-        });
-        setEditModalOpen(false);
-        fetchLeads();
-      } else {
-        toast({
-          title: "Erro ao atualizar",
-          description: "Não foi possível atualizar a lead.",
-          variant: "destructive",
-        });
-      }
+      await executeUpdateLead(() => leadsApi.update(selectedLead.id, editForm));
+      setEditModalOpen(false);
+      fetchLeads();
     } catch (error) {
-      toast({
-        title: "Erro de conexão",
-        description: "Erro ao conectar com o servidor.",
-        variant: "destructive",
-      });
+      console.error('Erro ao atualizar lead:', error);
     }
   };
 
@@ -129,34 +95,11 @@ const AdminLeads = () => {
     if (!selectedLead) return;
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`/api/leads/${selectedLead.id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Lead excluída",
-          description: "A lead foi excluída com sucesso.",
-        });
-        setDeleteModalOpen(false);
-        fetchLeads();
-      } else {
-        toast({
-          title: "Erro ao excluir",
-          description: "Não foi possível excluir a lead.",
-          variant: "destructive",
-        });
-      }
+      await executeDeleteLead(() => leadsApi.delete(selectedLead.id));
+      setDeleteModalOpen(false);
+      fetchLeads();
     } catch (error) {
-      toast({
-        title: "Erro de conexão",
-        description: "Erro ao conectar com o servidor.",
-        variant: "destructive",
-      });
+      console.error('Erro ao excluir lead:', error);
     }
   };
 
@@ -196,7 +139,7 @@ const AdminLeads = () => {
             <CardTitle>Lista de Leads</CardTitle>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {loadingLeads ? (
               <div className="text-center py-8">Carregando leads...</div>
             ) : (
               <Table>
