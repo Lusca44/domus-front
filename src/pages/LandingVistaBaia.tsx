@@ -31,17 +31,10 @@ const LandingVistaBaia = () => {
    * IMPORTANTE: Substitua todas as URLs de imagens por suas imagens reais
    */
   const empreendimento = {
-    nome: 'Vista Baía Residencial',
-    slogan: 'Sua vista privilegiada para a Baía de Guanabara',
-    descricao: 'O Vista Baía Residencial oferece apartamentos com 2 e 3 quartos com acabamento de alto padrão, lazer completo e uma vista deslumbrante da Baía de Guanabara. Localizado no coração do Porto Maravilha, próximo a museus, restaurantes e todo o dinamismo da região portuária renovada.',
-    precoInicial: 'A partir de R$ 850.000',
-    entrega: 'Previsão de entrega: Dezembro/2025',
-    caracteristicas: [
-      { titulo: 'Quartos', valor: '2 e 3' },
-      { titulo: 'Banheiros', valor: '2 e 3' },
-      { titulo: 'Metragem', valor: '68 a 110 m²' },
-      { titulo: 'Vagas', valor: '1 a 2' }
-    ],
+    nome: 'Pixinguinha',
+    slogan: 'A junção do passado e o presente moldando o futuro.',
+    descricao: 'O Pixinguinha oferece estúdios e apartamentos com 1 à 3 quartos com acabamento de alto padrão. Condominio com lazer completo e um SkyBar com uma vista incrível. Localizado no coração do Porto Maravilha, próximo a museus, restaurantes e todo o dinamismo da região portuária renovada.',
+    entrega: 'Previsão de entrega: Maio/2027',
     diferenciais: [
       'Vista para a Baía de Guanabara',
       'Varandas em todos os apartamentos',
@@ -50,7 +43,7 @@ const LandingVistaBaia = () => {
       'Academia equipada',
       'Piscina com raia de 25m',
       'Segurança 24h',
-      'Próximo aos principais pontos turísticos'
+      'Próximo aos principais pontos turísticos da região'
     ],
     endereco: 'Rua da Gamboa, 123 - Gamboa, Rio de Janeiro - RJ',
     // IMAGENS: Array expandido com mais imagens 
@@ -118,23 +111,6 @@ const LandingVistaBaia = () => {
     mapa: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.371247893542!2d-43.1992!3d-22.8996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f07e1b6b49d%3A0x85bd8fe1a45fe9b2!2sPorto%20Maravilha%2C%20Rio%20de%20Janeiro%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1716053186148!5m2!1spt-BR!2sbr'
   };
 
-  /**
-   * Depoimentos de clientes
-   * Em um ambiente de produção, esses dados poderiam vir de uma API
-   */
-  const depoimentos = [
-    {
-      nome: 'Roberto Silva',
-      texto: 'Comprar um apartamento na planta no Porto Maravilha foi a melhor decisão que tomei. A valorização da região é impressionante!',
-      cargo: 'Engenheiro Civil'
-    },
-    {
-      nome: 'Ana Luiza',
-      texto: 'O processo de compra foi transparente e a construtora muito atenciosa em todos os momentos. Estou ansiosa para me mudar para o Vista Baía.',
-      cargo: 'Arquiteta'
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-white">
       {/* Cabeçalho */}
@@ -142,7 +118,7 @@ const LandingVistaBaia = () => {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link to="/" className="flex items-center text-blue-600 hover:text-blue-700">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar para todos os lançamentos
+            Voltar para todos os lançamentos no Porto Maravilha
           </Link>
           <Button variant="ghost" asChild>
             <a href="tel:+552122223333">
@@ -169,25 +145,14 @@ const LandingVistaBaia = () => {
                 <p>{empreendimento.endereco}</p>
               </div>
               <p className="text-2xl font-semibold text-blue-100">
-                {empreendimento.precoInicial}
-              </p>
-              <p className="text-lg">
                 {empreendimento.entrega}
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                {empreendimento.caracteristicas.map((item, index) => (
-                  <div key={index} className="bg-blue-800 bg-opacity-50 rounded-lg p-3 text-center">
-                    <p className="text-sm text-blue-200">{item.titulo}</p>
-                    <p className="font-semibold text-lg">{item.valor}</p>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Coluna do Formulário */}
             <div>
               <LeadCaptureForm 
-                source="vista-baia-hero" 
+                source="Pixinguinha" 
                 redirectTo="/obrigado"
                 title="Garanta sua unidade no lançamento!"
                 description="Preencha o formulário e nossa equipe entrará em contato com condições especiais"
@@ -463,7 +428,7 @@ const LandingVistaBaia = () => {
             
             <div className="max-w-md mx-auto">
               <LeadCaptureForm 
-                source="vista-baia-footer" 
+                source="Pixinguinha" 
                 redirectTo="/obrigado"
                 title="Quero garantir minha unidade"
                 description="Preencha seus dados para receber mais informações"
