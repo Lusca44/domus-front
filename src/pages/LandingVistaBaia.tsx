@@ -35,6 +35,11 @@ const LandingVistaBaia = () => {
     slogan: 'A junção do passado e o presente moldando o futuro.',
     descricao: 'O Pixinguinha oferece estúdios e apartamentos com 1 à 3 quartos com acabamento de alto padrão. Condominio com lazer completo e um SkyBar com uma vista incrível. Localizado no coração do Porto Maravilha, próximo a museus, restaurantes e todo o dinamismo da região portuária renovada.',
     entrega: 'Previsão de entrega: Maio/2027',
+    caracteristicas: [
+      { titulo: 'Quartos', valor: '1 à 3' },
+      { titulo: 'Metragem', valor: '68 a 110 m²' },
+      { titulo: 'Vagas', valor: '1 a 2' }
+    ],
     diferenciais: [
       'Vista para a Baía de Guanabara',
       'Varandas em todos os apartamentos',
