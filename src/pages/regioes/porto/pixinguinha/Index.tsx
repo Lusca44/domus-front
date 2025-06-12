@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { MapPin, BedDouble, DollarSign, TrendingUp, Building2, Star } from 'lucide-react';
-import ImagemPortoBackGround from '../assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg'
+import ImagemPortoBackGround from '@/assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg'
+import lancamentos from './cards-index';
 
 /**
  * Página Principal - Portal de Lançamentos Porto Maravilha
@@ -19,40 +20,7 @@ import ImagemPortoBackGround from '../assets/images/imagem-regiao-portuaria-MAM-
  * - Formulário de captação de leads geral
  * - Links para landing pages específicas de cada projeto
  */
-const Index = () => {
-  /**
-   * Dados dos lançamentos - AQUI VOCÊ PODE CONECTAR COM SUA API
-   * Para integrar com backend, substitua este array por uma chamada para sua API:
-   * 
-   * useEffect(() => {
-   *   fetch('https://seuservidor.com/api/lancamentos')
-   *     .then(response => response.json())
-   *     .then(data => setLancamentos(data));
-   * }, []);
-   */
-  const lancamentos = [
-    {
-      id: 1,
-      nome: 'Residencial Pixinguinha',
-      descricao: 'Edifício residencial de alto padrão no coração da zona portuária',
-      quartos: '1-3',
-      localizacao: 'Gamboa',
-      // IMAGEM: Substitua o caminho abaixo pela URL da sua imagem
-      imagem: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&h=600&fit=crop',
-      // URL da landing page específica deste lançamento
-      urlLanding: '/lancamento/vista-baia'
-    },
-    {
-      id: 2,
-      nome: 'Porto Maravilha Tower',
-      descricao: 'Edifício residencial de alto padrão no coração da zona portuária',
-      quartos: '3-4',
-      localizacao: 'Santo Cristo',
-      // IMAGEM: Substitua o caminho abaixo pela URL da sua imagem
-      imagem: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=800&h=600&fit=crop',
-      urlLanding: '/lancamento/porto-maravilha-tower'
-    }
-  ];
+const IndexPorto = () => {
 
   const lancamentosRef = useRef(null);
 
@@ -63,6 +31,10 @@ const Index = () => {
     });
   };
 
+
+
+  const isPoucosLancamentos = lancamentos.length <= 3;
+  const isAtivarCarrocel = lancamentos.length > 3;
 
 
   return (
@@ -197,14 +169,16 @@ const Index = () => {
           {/* Carrossel de Lançamentos */}
           <Carousel
             opts={{
-              align: "start",
-              loop: true,
+              align: isPoucosLancamentos ? "center" : "start",
+              loop: isAtivarCarrocel,
+              containScroll: "trimSnaps"
             }}
-            className="w-full"
+            className="w-full relative"
           >
-            <CarouselContent className="-ml-2 md:-ml-4">
+            <CarouselContent className={isPoucosLancamentos ? "justify-center" : "-ml-2 md:-ml-4"}>
               {lancamentos.map((lancamento) => (
-                <CarouselItem key={lancamento.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                <CarouselItem key={lancamento.id} 
+                  className={isPoucosLancamentos ? "px-4 max-w-[400px] flex-shrink-0 basis-auto" :"pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3"}>
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
                     {/* IMAGEM DO CARD: As imagens abaixo podem ser substituídas */}
                     <div className="h-48 bg-cover bg-center"
@@ -241,8 +215,12 @@ const Index = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex" />
-            <CarouselNext className="hidden md:flex" />
+            {isAtivarCarrocel && (
+              <>
+                <CarouselPrevious className="hidden md:flex" />
+                <CarouselNext className="hidden md:flex" />
+              </>
+            )}
           </Carousel>
 
           {/* Indicador de navegação para mobile */}
@@ -267,4 +245,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default IndexPorto;

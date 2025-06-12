@@ -9,10 +9,10 @@ import LeadCaptureForm from '@/components/LeadCaptureForm';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 /**
- * Landing Page - Residencial Pixinguinha
+ * Landing Page - Vista Baía Residencial
  * 
  * Esta página apresenta informações detalhadas sobre o empreendimento
- * Residencial Pixinguinha e captura leads interessados neste lançamento específico.
+ * Vista Baía Residencial e captura leads interessados neste lançamento específico.
  * 
  * Características:
  * - Apresentação do empreendimento com imagens e vídeos
@@ -31,7 +31,7 @@ const LandingPixinguinha = () => {
    * IMPORTANTE: Substitua todas as URLs de imagens por suas imagens reais
    */
   const empreendimento = {
-    nome: 'Residencial Pixinguinha',
+    nome: 'Pixinguinha',
     slogan: 'A junção do passado e o presente moldando o futuro.',
     descricao: 'O Pixinguinha oferece estúdios e apartamentos com 1 à 3 quartos com acabamento de alto padrão. Condominio com lazer completo e um SkyBar com uma vista incrível. Localizado no coração do Porto Maravilha, próximo a museus, restaurantes e todo o dinamismo da região portuária renovada.',
     entrega: 'Previsão de entrega: Maio/2027',
@@ -121,7 +121,7 @@ const LandingPixinguinha = () => {
       {/* Cabeçalho */}
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link to="/" className="flex items-center text-blue-600 hover:text-blue-700">
+          <Link to="/porto-maravilha" className="flex items-center text-blue-600 hover:text-blue-700">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Voltar para todos os lançamentos no Porto Maravilha
           </Link>

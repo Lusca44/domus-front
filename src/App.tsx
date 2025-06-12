@@ -1,7 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import LandingVistaBaia from "./pages/LandingVistaBaia";
+import IndexPorto from "./pages/regioes/porto/pixinguinha/Index";
+import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
 import NotFound from "./pages/NotFound";
 import PaginaAgradecimento from "./pages/PaginaAgradecimento";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -16,9 +16,9 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          {/* Rotas públicas */}
-          <Route path="/" element={<Index />} />
-          <Route path="/lancamento/vista-baia" element={<LandingVistaBaia />} />
+          {/* Rotas região PORTO MARAVILHA*/}
+          <Route path="/porto-maravilha" element={<IndexPorto />} />
+          <Route path="/porto-maravilha/lancamento/pixinguinha" element={<LandingPixinguinha />} />
           <Route path="/obrigado" element={<PaginaAgradecimento />} />
           
           {/* Rotas administrativas */}

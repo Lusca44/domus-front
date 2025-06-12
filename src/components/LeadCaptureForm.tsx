@@ -321,10 +321,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
 
           {/* Política de Privacidade */}
           <p className="text-xs text-gray-500 text-center mt-4">
-            Ao enviar este formulário, você concorda com nossa{' '}
-            <a href="/politica-privacidade" className="underline hover:text-gray-800">
-              Política de Privacidade
-            </a>
+            Ao enviar este formulário, você estará concordando com em ser contactado via ligação, whastapp ou email.
           </p>
         </form>
       </CardContent>
