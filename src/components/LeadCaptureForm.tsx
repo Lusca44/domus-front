@@ -199,7 +199,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
         // etc...
       };
 
-      console.log('📝 Enviando lead para o backend:', dadosParaEnvio);
+      console.log('📝 Enviando lead para o backend:');
 
       /**
        * EXECUTAR REQUISIÇÃO USANDO A API CENTRALIZADA

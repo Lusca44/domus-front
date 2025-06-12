@@ -16,7 +16,7 @@ const lancamentos: Lancamento[] = [
     nome: 'Residencial Pixinguinha',
     descricao: 'Edifício residencial de alto padrão no coração da zona portuária',
     quartos: '1-3',
-    localizacao: 'Gamboa',
+    localizacao: 'Santo Cristo - Rio de Janeiro - RJ',
     imagem: `${imgCard}`,
     urlLanding: '/porto-maravilha/lancamento/pixinguinha'
   },

@@ -72,7 +72,7 @@ const LandingPixinguinha = () => {
       "Segurança 24h",
       "Próximo aos principais pontos turísticos da região",
     ],
-    endereco: "Rua da Gamboa, 123 - Gamboa, Rio de Janeiro - RJ",
+    endereco: "Rua General Luís Mendes de Morais, S/N, Santo Cristo. Rio de Janeiro - RJ",
     // IMAGENS: Array expandido com mais imagens
 
     imagens: fotos,
