@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,16 +8,22 @@ import { toast } from '@/components/ui/use-toast';
 import { Loader2, Send } from 'lucide-react';
 
 /**
+ * IMPORTAÇÕES PARA A NOVA CONFIGURAÇÃO DE API
+ * 
+ * Agora o formulário usa a configuração centralizada de API!
+ */
+import { leadsApi } from '@/utils/apiConfig';  // API específica para leads
+import { useApi } from '@/hooks/useApi';       // Hook customizado
+
+/**
  * Componente de Formulário de Captação de Leads
  * 
- * Este componente é responsável por capturar informações de leads interessados
- * nos lançamentos de apartamentos. É reutilizável em diferentes páginas.
+ * AGORA INTEGRADO COM A CONFIGURAÇÃO CENTRALIZADA DE API!
  * 
- * Props:
- * - source: string que identifica a origem do lead (ex: "portal-principal", "vista-baia")
- * - redirectTo: URL para redirecionamento após envio bem-sucedido
- * - title: título personalizado do formulário (opcional)
- * - description: descrição personalizada do formulário (opcional)
+ * Este componente agora usa:
+ * - leadsApi.create() para salvar leads
+ * - useApi() hook para gerenciar estados
+ * - Configuração automática de URL do apiConfig.ts
  */
 
 interface LeadCaptureFormProps {
@@ -51,8 +56,22 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     interesse: ''
   });
   
-  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
+
+  /**
+   * USANDO O HOOK useApi PARA GERENCIAR A REQUISIÇÃO
+   * 
+   * O hook já gerencia:
+   * - Estado de loading automaticamente
+   * - Tratamento de erros com toast
+   * - Mensagem de sucesso
+   */
+  const { loading: isLoading, execute: executeSaveLead } = useApi({
+    showSuccessToast: true,
+    successMessage: 'Lead cadastrada com sucesso! Nossa equipe entrará em contato.',
+    showErrorToast: true,
+    errorMessage: 'Erro ao cadastrar lead. Tente novamente.'
+  });
 
   /**
    * Função para validar os campos do formulário
@@ -128,18 +147,35 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
   };
 
   /**
-   * Função principal para envio do formulário
+   * NOVA FUNÇÃO DE ENVIO DO FORMULÁRIO
    * 
-   * IMPORTANTE: CONFIGURAÇÃO DO BACKEND
+   * AGORA USANDO A CONFIGURAÇÃO CENTRALIZADA DE API!
    * 
-   * Para conectar com seu backend, altere a URL abaixo para o endpoint correto:
-   * - URL_DO_BACKEND: substitua por sua URL real (ex: https://seuservidor.com/api/leads)
-   * - Adicione headers de autenticação se necessário
-   * - Modifique o formato dos dados se seu backend esperar estrutura diferente
+   * ✅ Não precisa mais configurar URL manualmente
+   * ✅ Usa leadsApi.create() automaticamente
+   * ✅ Tratamento de erro automático via useApi
+   * ✅ Loading state automático
+   * ✅ Toast notifications automáticas
+   * 
+   * PARA CONFIGURAR SUA API:
+   * 1. Vá no arquivo src/utils/apiConfig.ts
+   * 2. Altere a baseUrl para sua URL do backend
+   * 3. Se necessário, altere o path '/leads' na leadsApi
+   * 
+   * Exemplo de dados enviados para o backend:
+   * {
+   *   nome: "João Silva",
+   *   telefone: "11999999999",
+   *   email: "joao@email.com",
+   *   interesse: "Apartamento 2 quartos",
+   *   source: "portal-principal",
+   *   timestamp: "2024-01-15T10:30:00.000Z"
+   * }
    */
   const enviarFormulario = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validar formulário
     if (!validarFormulario()) {
       toast({
         title: 'Erro no formulário',
@@ -149,52 +185,40 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
       return;
     }
 
-    setIsLoading(true);
-
     try {
-      // CONFIGURAÇÃO DO BACKEND - ALTERE AQUI
-      const URL_DO_BACKEND = 'https://seuservidor.com/api/cadastrar-lead';
-      
-      // Dados que serão enviados para o backend
+      /**
+       * DADOS QUE SERÃO ENVIADOS PARA O BACKEND
+       * 
+       * Estrutura padrão de lead. Modifique conforme sua API:
+       */
       const dadosParaEnvio = {
         nome: formData.nome.trim(),
-        telefone: formData.telefone.replace(/\D/g, ''), // Remove formatação do telefone
+        telefone: formData.telefone.replace(/\D/g, ''), // Remove formatação
         email: formData.email.trim().toLowerCase(),
         interesse: formData.interesse || '',
-        source: source, // Identifica de onde veio o lead
-        timestamp: new Date().toISOString(), // Timestamp do cadastro
-        // Adicione outros campos conforme necessário para seu backend
+        source: source, // Identifica origem do lead
+        timestamp: new Date().toISOString(), // Data de cadastro
+        // Adicione outros campos conforme necessário:
+        // status: 'novo',
+        // canal: 'website',
+        // etc...
       };
 
-      console.log('Enviando dados para o backend:', dadosParaEnvio);
+      console.log('📝 Enviando lead para o backend:', dadosParaEnvio);
 
-      // Requisição POST para o backend
-      const response = await fetch(URL_DO_BACKEND, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // ADICIONE AQUI OUTROS HEADERS SE NECESSÁRIO:
-          // 'Authorization': 'Bearer ' + token,
-          // 'X-API-Key': 'sua-api-key',
-        },
-        body: JSON.stringify(dadosParaEnvio)
-      });
+      /**
+       * EXECUTAR REQUISIÇÃO USANDO A API CENTRALIZADA
+       * 
+       * Esta linha faz:
+       * 1. POST para {baseUrl}/leads com os dados
+       * 2. Adiciona automaticamente headers de autenticação (se houver token)
+       * 3. Mostra loading automático
+       * 4. Trata erros com toast
+       * 5. Mostra sucesso com toast
+       */
+      await executeSaveLead(() => leadsApi.create(dadosParaEnvio));
 
-      // Verificar se a resposta foi bem-sucedida
-      if (!response.ok) {
-        throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
-      }
-
-      const resultado = await response.json();
-      console.log('Resposta do backend:', resultado);
-
-      // Mostrar mensagem de sucesso
-      toast({
-        title: 'Cadastro realizado com sucesso!',
-        description: 'Nossa equipe entrará em contato em breve.',
-      });
-
-      // Limpar o formulário
+      // Limpar formulário após sucesso
       setFormData({
         nome: '',
         telefone: '',
@@ -208,31 +232,11 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
       }, 2000);
 
     } catch (error) {
-      console.error('Erro ao enviar formulário:', error);
+      // Erro já tratado pelo useApi hook com toast
+      console.error('❌ Erro ao salvar lead:', error);
       
-      // TRATAMENTO DE ERRO - MODO DESENVOLVIMENTO
-      // Em desenvolvimento, você pode querer simular o sucesso:
-      if (process.env.NODE_ENV === 'development') {
-        console.log('MODO DESENVOLVIMENTO: Simulando envio bem-sucedido');
-        toast({
-          title: 'Formulário enviado (modo desenvolvimento)',
-          description: 'Em produção, isso seria enviado para o backend real.',
-        });
-        
-        setTimeout(() => {
-          navigate(redirectTo);
-        }, 2000);
-      }
-      // Em produção, mostraria uma mensagem de erro:
-      else {
-        toast({
-          title: 'Erro ao enviar formulário',
-          description: 'Por favor, tente novamente mais tarde.',
-          variant: 'destructive'
-        });
-      }
-    } finally {
-      setIsLoading(false);
+      // Aqui você pode adicionar tratamento adicional se necessário
+      // Por exemplo, analytics, log específico, etc.
     }
   };
 
@@ -316,7 +320,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             />
           </div>
 
-          {/* Botão de Envio */}
+          {/* Botão agora usa isLoading do hook useApi */}
           <Button 
             type="submit" 
             className="w-full" 
