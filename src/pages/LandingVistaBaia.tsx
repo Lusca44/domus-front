@@ -152,6 +152,14 @@ const LandingVistaBaia = () => {
               <p className="text-2xl font-semibold text-blue-100">
                 {empreendimento.entrega}
               </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                {empreendimento.caracteristicas.map((item, index) => (
+                  <div key={index} className="bg-blue-800 bg-opacity-50 rounded-lg p-3 text-center">
+                    <p className="text-sm text-blue-200">{item.titulo}</p>
+                    <p className="font-semibold text-lg">{item.valor}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Coluna do Formulário */}
