@@ -27,35 +27,33 @@ import { useApi } from '@/hooks/useApi';       // Hook customizado
  */
 
 interface LeadCaptureFormProps {
-  source: string;
+  nomeLancamento: string;
   redirectTo?: string;
   title?: string;
   description?: string;
 }
 
 interface FormData {
-  nome: string;
-  telefone: string;
-  email: string;
-  interesse?: string;
+  nomeCliente: string;
+  telefoneCliente: string;
+  emailCliente: string;
 }
 
 const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
-  source,
+  nomeLancamento,
   redirectTo = '/obrigado',
   title = 'Tenho Interesse',
   description = 'Preencha seus dados e nossa equipe entrará em contato'
 }) => {
   const navigate = useNavigate();
-  
+
   // Estados do formulário
   const [formData, setFormData] = useState<FormData>({
-    nome: '',
-    telefone: '',
-    email: '',
-    interesse: ''
+    nomeCliente: '',
+    telefoneCliente: '',
+    emailCliente: ''
   });
-  
+
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
   /**
@@ -81,26 +79,26 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     const novosErros: Partial<FormData> = {};
 
     // Validação do nome
-    if (!formData.nome.trim()) {
-      novosErros.nome = 'Nome é obrigatório';
-    } else if (formData.nome.trim().length < 2) {
-      novosErros.nome = 'Nome deve ter pelo menos 2 caracteres';
+    if (!formData.nomeCliente.trim()) {
+      novosErros.nomeCliente = 'Nome é obrigatório';
+    } else if (formData.nomeCliente.trim().length < 2) {
+      novosErros.nomeCliente = 'Nome deve ter pelo menos 2 caracteres';
     }
 
     // Validação do telefone
     const telefoneRegex = /^[\d\s\-\(\)]+$/;
-    if (!formData.telefone.trim()) {
-      novosErros.telefone = 'Telefone é obrigatório';
-    } else if (!telefoneRegex.test(formData.telefone) || formData.telefone.replace(/\D/g, '').length < 10) {
-      novosErros.telefone = 'Telefone deve ter formato válido';
+    if (!formData.telefoneCliente.trim()) {
+      novosErros.telefoneCliente = 'Telefone é obrigatório';
+    } else if (!telefoneRegex.test(formData.telefoneCliente) || formData.telefoneCliente.replace(/\D/g, '').length < 10) {
+      novosErros.telefoneCliente = 'Telefone deve ter formato válido';
     }
 
     // Validação do email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      novosErros.email = 'Email é obrigatório';
-    } else if (!emailRegex.test(formData.email)) {
-      novosErros.email = 'Email deve ter formato válido';
+    if (!formData.emailCliente.trim()) {
+      novosErros.emailCliente = 'Email é obrigatório';
+    } else if (!emailRegex.test(formData.emailCliente)) {
+      novosErros.emailCliente = 'Email deve ter formato válido';
     }
 
     setErrors(novosErros);
@@ -113,7 +111,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
    */
   const formatarTelefone = (value: string): string => {
     const apenasNumeros = value.replace(/\D/g, '');
-    
+
     if (apenasNumeros.length <= 10) {
       return apenasNumeros.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
     } else {
@@ -126,17 +124,17 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
    */
   const handleInputChange = (campo: keyof FormData, valor: string) => {
     let valorFormatado = valor;
-    
+
     // Aplicar formatação específica para telefone
-    if (campo === 'telefone') {
+    if (campo === 'telefoneCliente') {
       valorFormatado = formatarTelefone(valor);
     }
-    
+
     setFormData(prev => ({
       ...prev,
       [campo]: valorFormatado
     }));
-    
+
     // Limpar erro do campo quando o usuário começar a digitar
     if (errors[campo]) {
       setErrors(prev => ({
@@ -164,17 +162,15 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
    * 
    * Exemplo de dados enviados para o backend:
    * {
-   *   nome: "João Silva",
-   *   telefone: "11999999999",
-   *   email: "joao@email.com",
-   *   interesse: "Apartamento 2 quartos",
-   *   source: "portal-principal",
-   *   timestamp: "2024-01-15T10:30:00.000Z"
+   *   nomeCliente: "João Silva",
+   *   telefoneCliente: "11999999999",
+   *   emailCliente: "joao@email.com",
+   *   nomeLancamento: "portal-principal"
    * }
    */
   const enviarFormulario = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validar formulário
     if (!validarFormulario()) {
       toast({
@@ -192,12 +188,10 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
        * Estrutura padrão de lead. Modifique conforme sua API:
        */
       const dadosParaEnvio = {
-        nome: formData.nome.trim(),
-        telefone: formData.telefone.replace(/\D/g, ''), // Remove formatação
-        email: formData.email.trim().toLowerCase(),
-        interesse: formData.interesse || '',
-        source: source, // Identifica origem do lead
-        timestamp: new Date().toISOString(), // Data de cadastro
+        nomeCliente: formData.nomeCliente.trim(),
+        telefoneCliente: formData.telefoneCliente.replace(/\D/g, ''), // Remove formatação
+        email: formData.emailCliente.trim().toLowerCase(),
+        nomeLancamento: nomeLancamento, // Identifica origem do lead
         // Adicione outros campos conforme necessário:
         // status: 'novo',
         // canal: 'website',
@@ -220,10 +214,9 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
 
       // Limpar formulário após sucesso
       setFormData({
-        nome: '',
-        telefone: '',
-        email: '',
-        interesse: ''
+        nomeCliente: '',
+        telefoneCliente: '',
+        emailCliente: ''
       });
 
       // Redirecionar para página de agradecimento
@@ -234,7 +227,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     } catch (error) {
       // Erro já tratado pelo useApi hook com toast
       console.error('❌ Erro ao salvar lead:', error);
-      
+
       // Aqui você pode adicionar tratamento adicional se necessário
       // Por exemplo, analytics, log específico, etc.
     }
@@ -256,14 +249,14 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             </Label>
             <Input
               id="nome"
-              value={formData.nome}
-              onChange={(e) => handleInputChange('nome', e.target.value)}
+              value={formData.nomeCliente}
+              onChange={(e) => handleInputChange('nomeCliente', e.target.value)}
               placeholder="Digite seu nome completo"
-              className={errors.nome ? 'border-red-500' : ''}
+              className={errors.nomeCliente ? 'border-red-500' : ''}
               disabled={isLoading}
             />
-            {errors.nome && (
-              <p className="text-sm text-red-500">{errors.nome}</p>
+            {errors.nomeCliente && (
+              <p className="text-sm text-red-500">{errors.nomeCliente}</p>
             )}
           </div>
 
@@ -275,14 +268,14 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             </Label>
             <Input
               id="telefone"
-              value={formData.telefone}
-              onChange={(e) => handleInputChange('telefone', e.target.value)}
+              value={formData.telefoneCliente}
+              onChange={(e) => handleInputChange('telefoneCliente', e.target.value)}
               placeholder="(XX) XXXXX-XXXX"
-              className={errors.telefone ? 'border-red-500' : ''}
+              className={errors.telefoneCliente ? 'border-red-500' : ''}
               disabled={isLoading}
             />
-            {errors.telefone && (
-              <p className="text-sm text-red-500">{errors.telefone}</p>
+            {errors.telefoneCliente && (
+              <p className="text-sm text-red-500">{errors.telefoneCliente}</p>
             )}
           </div>
 
@@ -295,35 +288,21 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             <Input
               id="email"
               type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              value={formData.emailCliente}
+              onChange={(e) => handleInputChange('emailCliente', e.target.value)}
               placeholder="seuemail@exemplo.com"
-              className={errors.email ? 'border-red-500' : ''}
+              className={errors.emailCliente ? 'border-red-500' : ''}
               disabled={isLoading}
             />
-            {errors.email && (
-              <p className="text-sm text-red-500">{errors.email}</p>
+            {errors.emailCliente && (
+              <p className="text-sm text-red-500">{errors.emailCliente}</p>
             )}
           </div>
 
-          {/* Campo de Interesse (opcional) */}
-          <div className="space-y-2">
-            <Label htmlFor="interesse">
-              Interesse específico (opcional)
-            </Label>
-            <Input
-              id="interesse"
-              value={formData.interesse}
-              onChange={(e) => handleInputChange('interesse', e.target.value)}
-              placeholder="Ex: Quero saber mais sobre apartamentos de 2 quartos"
-              disabled={isLoading}
-            />
-          </div>
-
           {/* Botão agora usa isLoading do hook useApi */}
-          <Button 
-            type="submit" 
-            className="w-full" 
+          <Button
+            type="submit"
+            className="w-full"
             disabled={isLoading}
           >
             {isLoading ? (

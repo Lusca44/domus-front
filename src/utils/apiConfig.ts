@@ -17,7 +17,8 @@
  * VITE_API_BASE_URL=https://sua-api.com/api
  */
 const API_CONFIG = {
-  baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
+  baseUrl: 'http://localhost:8080/',
+  // baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/',
   timeout: 10000, // Tempo limite para requisições (10 segundos)
   headers: {
     'Content-Type': 'application/json', // Tipo de conteúdo padrão
@@ -73,7 +74,7 @@ export class ApiClient {
   ): Promise<T> {
     // Monta a URL completa: baseUrl + endpoint
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     // Configuração da requisição
     const config: RequestInit = {
       ...options,
@@ -85,17 +86,24 @@ export class ApiClient {
     };
 
     try {
-      console.log(`📡 Fazendo requisição para: ${url}`);
       const response = await fetch(url, config);
-      
+
       // Verificar se a resposta foi bem-sucedida (status 200-299)
       if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
       }
 
-      const data = await response.json();
-      console.log(`✅ Resposta recebida:`, data);
-      return data;
+      const contentLength = response.headers.get('Content-Length');
+      const contentType = response.headers.get('Content-Type');
+
+      // Se não há conteúdo ou não é JSON, retorna vazio
+      if (contentLength === '0' || !contentType?.includes('application/json')) {
+        console.log('✅ Resposta vazia (status 200)');
+        return {} as T; // Ou null se preferir
+      }
+
+      console.log(`✅ Resposta recebida:`, response.status);
+      return response.json();
     } catch (error) {
       console.error('❌ Erro na requisição:', error);
       throw error; // Re-lança o erro para ser tratado pelo componente
@@ -111,7 +119,7 @@ export class ApiClient {
    * - put(): para atualizar dados existentes
    * - delete(): para excluir dados
    */
-  
+
   // GET: Buscar dados
   async get<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint, { method: 'GET' });
@@ -162,20 +170,23 @@ export const apiClient = new ApiClient();
  */
 export const leadsApi = {
   // GET /api/leads - Buscar todas as leads
-  getAll: (): Promise<any[]> => apiClient.get('/leads'),
-  
+  getAll: (): Promise<any[]> => apiClient.get('lancamento/obterLeads'),
+
   // GET /api/leads/:id - Buscar lead específica
-  getById: (id: string): Promise<any> => apiClient.get(`/leads/${id}`),
-  
+  getById: (id: string): Promise<any> => apiClient.get(`lancamento/${id}`),
+
+  // GET /api/leads/:id - Buscar lead específica
+  getByName: (nomeLancamento: string): Promise<any> => apiClient.get(`lancamento/${nomeLancamento}`),
+
   // POST /api/leads - Criar nova lead
   // ESTE É O MÉTODO QUE VOCÊ VAI USAR NO FORMULÁRIO
-  create: (data: any): Promise<any> => apiClient.post('/leads', data),
-  
+  create: (data: any): Promise<any> => apiClient.post('lancamento/cadastroLead', data),
+
   // PUT /api/leads/:id - Atualizar lead existente
-  update: (id: string, data: any): Promise<any> => apiClient.put(`/leads/${id}`, data),
-  
+  update: (id: string, data: any): Promise<any> => apiClient.put(`lancamento/${id}`, data),
+
   // DELETE /api/leads/:id - Excluir lead
-  delete: (id: string): Promise<any> => apiClient.delete(`/leads/${id}`),
+  delete: (id: string): Promise<any> => apiClient.delete(`lancamento/${id}`),
 };
 
 /**
@@ -186,13 +197,13 @@ export const leadsApi = {
 export const authApi = {
   // POST /api/auth/login - Fazer login
   login: (credentials: any): Promise<any> => apiClient.post('/auth/login', credentials),
-  
+
   // GET /api/auth/profile - Buscar perfil do usuário
   profile: (): Promise<any> => apiClient.get('/auth/profile'),
-  
+
   // PUT /api/auth/profile - Atualizar perfil
   updateProfile: (data: any): Promise<any> => apiClient.put('/auth/profile', data),
-  
+
   // PUT /api/auth/profile/password - Alterar senha
   changePassword: (data: any): Promise<any> => apiClient.put('/auth/profile/password', data),
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,10 +33,9 @@ const Index = () => {
   const lancamentos = [
     {
       id: 1,
-      nome: 'Vista Baía Residencial',
-      descricao: 'Apartamentos de 2 e 3 quartos com vista para a Baía de Guanabara',
-      quartos: '2-3',
-      precoInicial: 'A partir de R$ 850.000',
+      nome: 'Residencial Pixinguinha',
+      descricao: 'Edifício residencial de alto padrão no coração da zona portuária',
+      quartos: '1-3',
       localizacao: 'Gamboa',
       // IMAGEM: Substitua o caminho abaixo pela URL da sua imagem
       imagem: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&h=600&fit=crop',
@@ -47,54 +47,23 @@ const Index = () => {
       nome: 'Porto Maravilha Tower',
       descricao: 'Edifício residencial de alto padrão no coração da zona portuária',
       quartos: '3-4',
-      precoInicial: 'A partir de R$ 1.200.000',
       localizacao: 'Santo Cristo',
       // IMAGEM: Substitua o caminho abaixo pela URL da sua imagem
       imagem: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=800&h=600&fit=crop',
       urlLanding: '/lancamento/porto-maravilha-tower'
-    },
-    {
-      id: 3,
-      nome: 'Residencial Pier',
-      descricao: 'Apartamentos compactos e modernos para jovens profissionais',
-      quartos: '1-2',
-      precoInicial: 'A partir de R$ 650.000',
-      localizacao: 'Saúde',
-      // IMAGEM: Substitua o caminho abaixo pela URL da sua imagem
-      imagem: 'https://images.unsplash.com/photo-1496307653780-42ee777d4833?w=800&h=600&fit=crop',
-      urlLanding: '/lancamento/residencial-pier'
-    },
-    {
-      id: 4,
-      nome: 'Marina Bay Residence',
-      descricao: 'Apartamentos de luxo com vista panorâmica da marina',
-      quartos: '3-4',
-      precoInicial: 'A partir de R$ 1.800.000',
-      localizacao: 'Gamboa',
-      imagem: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
-      urlLanding: '/lancamento/marina-bay'
-    },
-    {
-      id: 5,
-      nome: 'Boulevard Porto',
-      descricao: 'Estúdios e apartamentos de 1 quarto no centro da renovação urbana',
-      quartos: '0-1',
-      precoInicial: 'A partir de R$ 450.000',
-      localizacao: 'Centro',
-      imagem: 'https://images.unsplash.com/photo-1502005229762-cf1b2da60b8e?w=800&h=600&fit=crop',
-      urlLanding: '/lancamento/boulevard-porto'
-    },
-    {
-      id: 6,
-      nome: 'Sunset Towers',
-      descricao: 'Torres residenciais com amenidades completas e piscina infinita',
-      quartos: '2-4',
-      precoInicial: 'A partir de R$ 1.400.000',
-      localizacao: 'Santo Cristo',
-      imagem: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
-      urlLanding: '/lancamento/sunset-towers'
     }
   ];
+
+  const lancamentosRef = useRef(null);
+
+  const scrollToLancamentos = () => {
+    lancamentosRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -103,7 +72,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              Porto Maravilha Lançamentos
+              Lançamentos de apartamentos no Porto Maravilha
             </h1>
             <p className="text-xl text-gray-600">
               Descubra seu novo lar na região portuária do Rio de Janeiro
@@ -113,21 +82,22 @@ const Index = () => {
       </header>
 
       {/* Seção Hero com imagem de fundo */}
-      <section className="relative h-96 bg-cover bg-center" 
-               style={{
-                 /* IMAGEM DE FUNDO: Substitua a URL abaixo pela imagem da região portuária */
-                 backgroundImage: 'url(https://images.unsplash.com/photo-1431576901776-e539bd916ba2?w=1200&h=800&fit=crop)'
-               }}>
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      <section className="relative h-96 bg-cover bg-center"
+        style={{
+          /* IMAGEM DE FUNDO: Substitua a URL abaixo pela imagem da região portuária */
+          backgroundImage: 'url(/src/assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg)'
+        }}>
+        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white">
             <h2 className="text-5xl font-bold mb-4">
-              Invista no Futuro do Rio
+              {/* Invista no Futuro do Rio */}
+              Venha fazer parte do Futuro do Rio
             </h2>
             <p className="text-xl mb-8">
               Apartamentos na planta na região de maior valorização da cidade
             </p>
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700" onClick={scrollToLancamentos}>
               Ver Lançamentos
             </Button>
           </div>
@@ -143,11 +113,11 @@ const Index = () => {
                 Por que Investir no Porto Maravilha?
               </h3>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                O maior projeto de revitalização urbana da América Latina está transformando 
+                O maior projeto de revitalização urbana da América Latina está transformando
                 a região portuária em um novo centro de negócios, cultura e moradia no Rio de Janeiro.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Card 1 - Valorização */}
               <div className="bg-white p-8 rounded-lg shadow-lg text-center">
@@ -158,7 +128,7 @@ const Index = () => {
                   Valorização Acelerada
                 </h4>
                 <p className="text-gray-600">
-                  Imóveis na região já apresentam valorização de até 35% ao ano, 
+                  Imóveis na região já apresentam valorização de até 35% ao ano,
                   impulsionados pelos investimentos em infraestrutura e mobilidade urbana.
                 </p>
               </div>
@@ -172,7 +142,7 @@ const Index = () => {
                   Infraestrutura Moderna
                 </h4>
                 <p className="text-gray-600">
-                  VLT, Museu do Amanhã, Boulevard Olímpico e dezenas de novos 
+                  VLT, Museu do Amanhã, Boulevard Olímpico e dezenas de novos
                   empreendimentos comerciais fazem da região o novo centro do Rio.
                 </p>
               </div>
@@ -186,7 +156,7 @@ const Index = () => {
                   Localização Privilegiada
                 </h4>
                 <p className="text-gray-600">
-                  Conectado ao Centro, Zona Sul e Norte por diversas opções de transporte, 
+                  Conectado ao Centro, Zona Sul e Norte por diversas opções de transporte,
                   com vista única da Baía de Guanabara e proximidade aos principais pontos turísticos.
                 </p>
               </div>
@@ -218,12 +188,12 @@ const Index = () => {
       </section>
 
       {/* Seção de Lançamentos com Carrossel */}
-      <section className="py-12">
+      <section className="py-12" ref={lancamentosRef}>
         <div className="container mx-auto px-4">
           <h3 className="text-3xl font-bold text-center mb-8">
             Nossos Lançamentos
           </h3>
-          
+
           {/* Carrossel de Lançamentos */}
           <Carousel
             opts={{
@@ -237,17 +207,17 @@ const Index = () => {
                 <CarouselItem key={lancamento.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
                     {/* IMAGEM DO CARD: As imagens abaixo podem ser substituídas */}
-                    <div className="h-48 bg-cover bg-center" 
-                         style={{ backgroundImage: `url(${lancamento.imagem})` }}>
+                    <div className="h-48 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${lancamento.imagem})` }}>
                       {/* Overlay para melhor legibilidade */}
                       <div className="h-full bg-black bg-opacity-20"></div>
                     </div>
-                    
+
                     <CardHeader>
                       <CardTitle className="text-xl">{lancamento.nome}</CardTitle>
                       <CardDescription>{lancamento.descricao}</CardDescription>
                     </CardHeader>
-                    
+
                     <CardContent className="flex-1">
                       <div className="space-y-2 mb-4">
                         <div className="flex items-center text-sm text-gray-600">
@@ -263,9 +233,9 @@ const Index = () => {
                           {lancamento.precoInicial}
                         </div>
                       </div>
-                      
+
                       {/* Link para a landing page específica do lançamento */}
-                      <Link to={lancamento.urlLanding}>
+                      <Link to={lancamento.urlLanding} onClick={() => window.scrollTo(0, 0)}>
                         <Button className="w-full">
                           Ver Detalhes
                         </Button>
@@ -278,7 +248,7 @@ const Index = () => {
             <CarouselPrevious className="hidden md:flex" />
             <CarouselNext className="hidden md:flex" />
           </Carousel>
-          
+
           {/* Indicador de navegação para mobile */}
           <div className="flex justify-center mt-6 md:hidden">
             <p className="text-sm text-gray-500">
