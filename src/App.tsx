@@ -17,6 +17,7 @@ function App() {
       <div className="App">
         <Routes>
           {/* Rotas região PORTO MARAVILHA*/}
+          <Route path="/" element={<IndexPorto />} />
           <Route path="/porto-maravilha" element={<IndexPorto />} />
           <Route path="/porto-maravilha/lancamento/pixinguinha" element={<LandingPixinguinha />} />
           <Route path="/obrigado" element={<PaginaAgradecimento />} />
