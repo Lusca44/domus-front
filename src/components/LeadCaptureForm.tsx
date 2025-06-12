@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -46,6 +46,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
   description = 'Preencha seus dados e nossa equipe entrará em contato'
 }) => {
   const navigate = useNavigate();
+  const uniqueId = useId();
 
   // Estados do formulário
   const [formData, setFormData] = useState<FormData>({
@@ -243,12 +244,12 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
         <form onSubmit={enviarFormulario} className="space-y-4">
           {/* Campo de Nome */}
           <div className="space-y-2">
-            <Label htmlFor="nome">
+            <Label htmlFor={`${uniqueId}-nome`}>
               Nome completo
               <span className="text-red-500 ml-1">*</span>
             </Label>
             <Input
-              id="nome"
+              id={`${uniqueId}-nome`}
               value={formData.nomeCliente}
               onChange={(e) => handleInputChange('nomeCliente', e.target.value)}
               placeholder="Digite seu nome completo"
@@ -262,12 +263,12 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
 
           {/* Campo de Telefone */}
           <div className="space-y-2">
-            <Label htmlFor="telefone">
+            <Label htmlFor={`${uniqueId}-telefone`}>
               Telefone
               <span className="text-red-500 ml-1">*</span>
             </Label>
             <Input
-              id="telefone"
+              id={`${uniqueId}-telefone`}
               value={formData.telefoneCliente}
               onChange={(e) => handleInputChange('telefoneCliente', e.target.value)}
               placeholder="(XX) XXXXX-XXXX"
@@ -281,12 +282,12 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
 
           {/* Campo de Email */}
           <div className="space-y-2">
-            <Label htmlFor="email">
+            <Label htmlFor={`${uniqueId}-email`}>
               E-mail
               <span className="text-red-500 ml-1">*</span>
             </Label>
             <Input
-              id="email"
+              id={`${uniqueId}-email`}
               type="email"
               value={formData.emailCliente}
               onChange={(e) => handleInputChange('emailCliente', e.target.value)}
