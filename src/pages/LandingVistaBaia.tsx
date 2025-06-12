@@ -326,7 +326,7 @@ const LandingVistaBaia = () => {
         </div>
       </section>
       
-      {/* Plantas e Tipologias */}
+      {/* Plantas e Tipologias
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-10 text-center">
@@ -399,7 +399,7 @@ const LandingVistaBaia = () => {
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
       
       {/* Localização */}
       <section className="py-16">
@@ -455,7 +455,7 @@ const LandingVistaBaia = () => {
         </div>
       </section>
       
-      {/* Depoimentos */}
+      {/* Depoimentos
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-10 text-center">
@@ -476,7 +476,7 @@ const LandingVistaBaia = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
       
       {/* CTA Final */}
       <section className="py-16 bg-blue-700 text-white">
@@ -536,10 +536,7 @@ const LandingVistaBaia = () => {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 text-sm">
-            <p>&copy; 2024 Porto Maravilha Lançamentos. Todos os direitos reservados.</p>
-            <p className="mt-2">
-              As imagens são meramente ilustrativas. A construtora reserva-se o direito de alterar o projeto.
-            </p>
+            <p>&copy; 2025 Imobiliária Feitozza. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

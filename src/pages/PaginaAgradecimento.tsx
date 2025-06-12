@@ -122,7 +122,7 @@ const PaginaAgradecimento = () => {
       
       {/* Footer simples */}
       <p className="mt-8 text-gray-500 text-sm text-center">
-        &copy; 2024 Porto Maravilha Lançamentos. Todos os direitos reservados.
+        &copy; 2025 Imobiliária Feitozza. Todos os direitos reservados.
       </p>
     </div>
   );
