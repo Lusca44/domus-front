@@ -326,81 +326,6 @@ const LandingVistaBaia = () => {
         </div>
       </section>
       
-      {/* Plantas e Tipologias
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-10 text-center">
-            Plantas e Tipologias
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Planta 1 */}
-            <Card className="overflow-hidden">
-              <div className="bg-gray-200 h-64">
-                {/* IMAGEM: Substitua esta URL pela imagem da planta */}
-                <img 
-                  src="https://images.unsplash.com/photo-1494891848038-7bd202a2afeb?w=800&h=500&fit=crop" 
-                  alt="Planta de 2 quartos" 
-                  className="object-contain w-full h-full"
-                />
-              </div>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-4">Apartamento 2 Quartos</h3>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="flex items-center">
-                    <BedDouble className="w-5 h-5 text-blue-600 mr-2" />
-                    <span>2 Quartos (1 suíte)</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Bath className="w-5 h-5 text-blue-600 mr-2" />
-                    <span>2 Banheiros</span>
-                  </div>
-                  <div>
-                    <span className="font-semibold">68 m²</span>
-                  </div>
-                  <div>
-                    <span className="font-semibold">1 Vaga</span>
-                  </div>
-                </div>
-                <Button className="w-full">Ver Detalhes da Planta</Button>
-              </CardContent>
-            </Card>
-            
-            {/* Planta 2 */}
-            <Card className="overflow-hidden">
-              <div className="bg-gray-200 h-64">
-                {/* IMAGEM: Substitua esta URL pela imagem da planta */}
-                <img 
-                  src="https://images.unsplash.com/photo-1551038247-3d9af20df552?w=800&h=500&fit=crop" 
-                  alt="Planta de 3 quartos" 
-                  className="object-contain w-full h-full"
-                />
-              </div>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-4">Apartamento 3 Quartos</h3>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="flex items-center">
-                    <BedDouble className="w-5 h-5 text-blue-600 mr-2" />
-                    <span>3 Quartos (1 suíte)</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Bath className="w-5 h-5 text-blue-600 mr-2" />
-                    <span>3 Banheiros</span>
-                  </div>
-                  <div>
-                    <span className="font-semibold">110 m²</span>
-                  </div>
-                  <div>
-                    <span className="font-semibold">2 Vagas</span>
-                  </div>
-                </div>
-                <Button className="w-full">Ver Detalhes da Planta</Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section> */}
-      
       {/* Localização */}
       <section className="py-16">
         <div className="container mx-auto px-4">
@@ -454,29 +379,6 @@ const LandingVistaBaia = () => {
           </div>
         </div>
       </section>
-      
-      {/* Depoimentos
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-10 text-center">
-            O Que Nossos Clientes Dizem
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {depoimentos.map((item, index) => (
-              <Card key={index} className="bg-white shadow-md">
-                <CardContent className="p-6">
-                  <div className="text-xl font-semibold mb-3">"{item.texto}"</div>
-                  <div className="mt-4">
-                    <p className="font-bold">{item.nome}</p>
-                    <p className="text-gray-600 text-sm">{item.cargo}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section> */}
       
       {/* CTA Final */}
       <section className="py-16 bg-blue-700 text-white">
