@@ -215,62 +215,64 @@ const LandingVistaBaia = () => {
             </p>
           </div>
           
-          {/* Carrossel Principal com Imagem Destacada */}
-          <div className="mb-12">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white p-4">
-              <AspectRatio ratio={16 / 9}>
-                <img 
-                  src={empreendimento.imagens[imagemAtual].url} 
-                  alt={empreendimento.imagens[imagemAtual].titulo} 
-                  className="object-cover w-full h-full rounded-xl"
-                />
-                {/* Overlay com informações */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 rounded-b-xl">
-                  <h3 className="text-white text-xl font-semibold mb-2">
-                    {empreendimento.imagens[imagemAtual].titulo}
-                  </h3>
-                  <div className="flex items-center justify-between">
-                    <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      {imagemAtual + 1} de {empreendimento.imagens.length}
-                    </span>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="secondary" size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
-                          <Maximize className="w-4 h-4 mr-2" />
-                          Ver em tela cheia
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-6xl max-h-[90vh] p-0">
-                        <div className="relative">
-                          <img 
-                            src={empreendimento.imagens[imagemAtual].url} 
-                            alt={empreendimento.imagens[imagemAtual].titulo} 
-                            className="w-full h-auto object-contain"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4">
-                            <h4 className="text-lg font-semibold">{empreendimento.imagens[imagemAtual].titulo}</h4>
+          {/* Layout lado a lado - Imagem Principal + Thumbnails */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
+            {/* Imagem Principal - 3/4 do espaço */}
+            <div className="lg:col-span-3">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white p-4">
+                <AspectRatio ratio={16 / 10}>
+                  <img 
+                    src={empreendimento.imagens[imagemAtual].url} 
+                    alt={empreendimento.imagens[imagemAtual].titulo} 
+                    className="object-cover w-full h-full rounded-xl"
+                  />
+                  {/* Overlay com informações */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 rounded-b-xl">
+                    <h3 className="text-white text-xl font-semibold mb-2">
+                      {empreendimento.imagens[imagemAtual].titulo}
+                    </h3>
+                    <div className="flex items-center justify-between">
+                      <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {imagemAtual + 1} de {empreendimento.imagens.length}
+                      </span>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="secondary" size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                            <Maximize className="w-4 h-4 mr-2" />
+                            Ver em tela cheia
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-6xl max-h-[90vh] p-0">
+                          <div className="relative">
+                            <img 
+                              src={empreendimento.imagens[imagemAtual].url} 
+                              alt={empreendimento.imagens[imagemAtual].titulo} 
+                              className="w-full h-auto object-contain"
+                            />
+                            <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4">
+                              <h4 className="text-lg font-semibold">{empreendimento.imagens[imagemAtual].titulo}</h4>
+                            </div>
                           </div>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                   </div>
-                </div>
-              </AspectRatio>
+                </AspectRatio>
+              </div>
             </div>
-          </div>
-          
-          {/* Carrossel de Thumbnails */}
-          <div className="relative">
-            <h3 className="text-xl font-bold mb-6 text-center">Navegue pelas fotos</h3>
-            <Carousel className="w-full max-w-5xl mx-auto">
-              <CarouselContent className="-ml-2 md:-ml-4">
-                {empreendimento.imagens.map((img, index) => (
-                  <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 md:basis-1/4 lg:basis-1/5">
+            
+            {/* Lista de Thumbnails - 1/4 do espaço */}
+            <div className="lg:col-span-1">
+              <div className="h-full">
+                <h3 className="text-lg font-bold mb-4 text-center lg:text-left">Todas as fotos</h3>
+                <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 max-h-[500px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  {empreendimento.imagens.map((img, index) => (
                     <div 
-                      className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                      key={index}
+                      className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 shadow-md ${
                         imagemAtual === index 
-                          ? 'ring-4 ring-blue-500 ring-offset-2 shadow-blue-500/50' 
-                          : 'hover:shadow-xl'
+                          ? 'ring-3 ring-blue-500 ring-offset-2 shadow-blue-500/50' 
+                          : 'hover:shadow-lg'
                       }`}
                       onClick={() => setImagemAtual(index)}
                     >
@@ -300,12 +302,10 @@ const LandingVistaBaia = () => {
                         <p className="text-xs font-medium truncate">{img.titulo}</p>
                       </div>
                     </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
-              <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
-            </Carousel>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Seção de Vídeos Melhorada */}
