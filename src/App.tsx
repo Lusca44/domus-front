@@ -12,23 +12,26 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import { Toaster } from "@/components/ui/toaster";
 
 function App() {
+
   return (
     <Router>
       <div className="App">
         <Routes>
           {/* Rotas região PORTO MARAVILHA*/}
-          <Route path="/" element={<IndexPorto />} />
           <Route path="/porto-maravilha" element={<IndexPorto />} />
-          <Route path="/porto-maravilha/lancamento/pixinguinha" element={<LandingPixinguinha />} />
+          <Route
+            path="/porto-maravilha/lancamento/pixinguinha"
+            element={<LandingPixinguinha />}
+          />
           <Route path="/obrigado" element={<PaginaAgradecimento />} />
-          
+
           {/* Rotas administrativas */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/leads" element={<AdminLeads />} />
           <Route path="/admin/profile" element={<AdminProfile />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
-          
+
           {/* Rota 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
