@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { MapPin, BedDouble, DollarSign, TrendingUp, Building2, Star } from 'lucide-react';
-import LeadCaptureForm from '@/components/LeadCaptureForm';
+import ImagemPortoBackGround from '../assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg'
 
 /**
  * Página Principal - Portal de Lançamentos Porto Maravilha
@@ -85,7 +85,7 @@ const Index = () => {
       <section className="relative h-96 bg-cover bg-center"
         style={{
           /* IMAGEM DE FUNDO: Substitua a URL abaixo pela imagem da região portuária */
-          backgroundImage: 'url(/src/assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg)'
+          backgroundImage: `url(${ImagemPortoBackGround})`
         }}>
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
