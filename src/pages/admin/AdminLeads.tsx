@@ -29,7 +29,7 @@ const AdminLeads = () => {
   const navigate = useNavigate();
 
   // Usando o hook customizado para diferentes operações
-  const { loading: loadingLeads, execute: executeGetLeads } = useApi<Lead[]>({
+  const { loading: loadingLeads, execute: executeGetLeads } = useApi<any[]>({
     showErrorToast: true,
     errorMessage: 'Erro ao carregar leads'
   });

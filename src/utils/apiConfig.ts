@@ -3,7 +3,7 @@
  * Configuração centralizada da API
  */
 const API_CONFIG = {
-  baseUrl: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001/api',
+  baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -97,18 +97,18 @@ export const apiClient = new ApiClient();
 
 // Funções específicas para diferentes recursos
 export const leadsApi = {
-  getAll: () => apiClient.get('/leads'),
-  getById: (id: string) => apiClient.get(`/leads/${id}`),
-  create: (data: any) => apiClient.post('/leads', data),
-  update: (id: string, data: any) => apiClient.put(`/leads/${id}`, data),
-  delete: (id: string) => apiClient.delete(`/leads/${id}`),
+  getAll: (): Promise<any[]> => apiClient.get('/leads'),
+  getById: (id: string): Promise<any> => apiClient.get(`/leads/${id}`),
+  create: (data: any): Promise<any> => apiClient.post('/leads', data),
+  update: (id: string, data: any): Promise<any> => apiClient.put(`/leads/${id}`, data),
+  delete: (id: string): Promise<any> => apiClient.delete(`/leads/${id}`),
 };
 
 export const authApi = {
-  login: (credentials: any) => apiClient.post('/auth/login', credentials),
-  profile: () => apiClient.get('/auth/profile'),
-  updateProfile: (data: any) => apiClient.put('/auth/profile', data),
-  changePassword: (data: any) => apiClient.put('/auth/profile/password', data),
+  login: (credentials: any): Promise<any> => apiClient.post('/auth/login', credentials),
+  profile: (): Promise<any> => apiClient.get('/auth/profile'),
+  updateProfile: (data: any): Promise<any> => apiClient.put('/auth/profile', data),
+  changePassword: (data: any): Promise<any> => apiClient.put('/auth/profile/password', data),
 };
 
 export default apiClient;
