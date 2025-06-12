@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { BedDouble, Bath, ExternalLink, CheckCircle, MapPin, ArrowLeft, Play } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { BedDouble, Bath, ExternalLink, CheckCircle, MapPin, ArrowLeft, Play, Eye, Maximize } from 'lucide-react';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
@@ -202,97 +203,166 @@ const LandingVistaBaia = () => {
         ></div>
       </section>
 
-      {/* Seção de Galeria Expandida */}
+      {/* Seção de Galeria Renovada */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-10 text-center">
-            Galeria de Fotos e Vídeos
-          </h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Galeria de Fotos
+            </h2>
+            <p className="text-gray-600 text-lg">
+              Conheça todos os detalhes do empreendimento através de nossas imagens
+            </p>
+          </div>
           
-          {/* Imagem Principal */}
-          <div className="mb-8">
-            <div className="rounded-lg overflow-hidden shadow-lg">
+          {/* Carrossel Principal com Imagem Destacada */}
+          <div className="mb-12">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white p-4">
               <AspectRatio ratio={16 / 9}>
                 <img 
                   src={empreendimento.imagens[imagemAtual].url} 
                   alt={empreendimento.imagens[imagemAtual].titulo} 
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full rounded-xl"
                 />
+                {/* Overlay com informações */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 rounded-b-xl">
+                  <h3 className="text-white text-xl font-semibold mb-2">
+                    {empreendimento.imagens[imagemAtual].titulo}
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                      {imagemAtual + 1} de {empreendimento.imagens.length}
+                    </span>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="secondary" size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                          <Maximize className="w-4 h-4 mr-2" />
+                          Ver em tela cheia
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-6xl max-h-[90vh] p-0">
+                        <div className="relative">
+                          <img 
+                            src={empreendimento.imagens[imagemAtual].url} 
+                            alt={empreendimento.imagens[imagemAtual].titulo} 
+                            className="w-full h-auto object-contain"
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4">
+                            <h4 className="text-lg font-semibold">{empreendimento.imagens[imagemAtual].titulo}</h4>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </div>
               </AspectRatio>
-            </div>
-            <div className="text-center mt-3">
-              <h3 className="text-lg font-semibold text-gray-800">
-                {empreendimento.imagens[imagemAtual].titulo}
-              </h3>
             </div>
           </div>
           
-          {/* Grid de Thumbnails de Imagens */}
-          <div className="mb-8">
-            <h3 className="text-xl font-bold mb-4">Fotos do Empreendimento</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {empreendimento.imagens.map((img, index) => (
-                <div 
-                  key={index} 
-                  className={`rounded-lg overflow-hidden cursor-pointer transition-all hover:opacity-90 shadow-sm ${imagemAtual === index ? 'ring-2 ring-blue-500' : ''}`}
-                  onClick={() => setImagemAtual(index)}
-                >
-                  <AspectRatio ratio={4 / 3}>
-                    <img 
-                      src={img.url} 
-                      alt={img.titulo} 
-                      className="object-cover w-full h-full"
-                    />
-                  </AspectRatio>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Grid de Vídeos */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Vídeos</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {empreendimento.videos.map((video, index) => (
-                <Dialog key={index}>
-                  <DialogTrigger asChild>
-                    <div className="relative rounded-lg overflow-hidden cursor-pointer shadow-md hover:shadow-lg transition-shadow group">
-                      <AspectRatio ratio={16 / 9}>
+          {/* Carrossel de Thumbnails */}
+          <div className="relative">
+            <h3 className="text-xl font-bold mb-6 text-center">Navegue pelas fotos</h3>
+            <Carousel className="w-full max-w-5xl mx-auto">
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {empreendimento.imagens.map((img, index) => (
+                  <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 md:basis-1/4 lg:basis-1/5">
+                    <div 
+                      className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                        imagemAtual === index 
+                          ? 'ring-4 ring-blue-500 ring-offset-2 shadow-blue-500/50' 
+                          : 'hover:shadow-xl'
+                      }`}
+                      onClick={() => setImagemAtual(index)}
+                    >
+                      <AspectRatio ratio={4 / 3}>
                         <img 
-                          src={video.thumbnail} 
-                          alt={video.titulo} 
-                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                          src={img.url} 
+                          alt={img.titulo} 
+                          className="object-cover w-full h-full transition-all duration-300"
                         />
-                        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                          <div className="bg-white bg-opacity-90 rounded-full p-3 group-hover:bg-opacity-100 transition-all">
-                            <Play className="w-6 h-6 text-blue-600" />
+                        {/* Overlay sutil */}
+                        <div className={`absolute inset-0 transition-all duration-300 ${
+                          imagemAtual === index 
+                            ? 'bg-blue-600/20' 
+                            : 'bg-black/10 hover:bg-black/20'
+                        }`} />
+                        {/* Indicador de seleção */}
+                        {imagemAtual === index && (
+                          <div className="absolute top-2 right-2">
+                            <div className="bg-blue-500 text-white rounded-full p-1">
+                              <Eye className="w-3 h-3" />
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </AspectRatio>
-                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-2">
-                        <p className="text-sm font-medium">{video.titulo}</p>
+                      {/* Título da thumbnail */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2">
+                        <p className="text-xs font-medium truncate">{img.titulo}</p>
                       </div>
                     </div>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-4xl">
-                    <div className="aspect-video">
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        src={video.url}
-                        title={video.titulo}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="rounded"
-                      ></iframe>
-                    </div>
-                    <div className="mt-4">
-                      <h4 className="text-lg font-semibold">{video.titulo}</h4>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              ))}
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
+              <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
+            </Carousel>
+          </div>
+
+          {/* Seção de Vídeos Melhorada */}
+          <div className="mt-16">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold mb-4">Vídeos do Empreendimento</h3>
+              <p className="text-gray-600">Faça um tour virtual e conheça cada detalhe</p>
             </div>
+            <Carousel className="w-full max-w-4xl mx-auto">
+              <CarouselContent className="-ml-4">
+                {empreendimento.videos.map((video, index) => (
+                  <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                          <div className="relative">
+                            <AspectRatio ratio={16 / 9}>
+                              <img 
+                                src={video.thumbnail} 
+                                alt={video.titulo} 
+                                className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                              />
+                              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                                  <Play className="w-8 h-8 text-blue-600 ml-1" />
+                                </div>
+                              </div>
+                            </AspectRatio>
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
+                              <p className="font-semibold text-sm">{video.titulo}</p>
+                            </div>
+                          </div>
+                        </Card>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl">
+                        <div className="aspect-video">
+                          <iframe
+                            width="100%"
+                            height="100%"
+                            src={video.url}
+                            title={video.titulo}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="rounded"
+                          ></iframe>
+                        </div>
+                        <div className="mt-4">
+                          <h4 className="text-lg font-semibold">{video.titulo}</h4>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
+              <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
+            </Carousel>
           </div>
         </div>
       </section>
