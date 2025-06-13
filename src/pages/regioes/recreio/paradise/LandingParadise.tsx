@@ -101,7 +101,7 @@ const LandingParadise = () => {
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-green-900 to-emerald-700 text-white">
-        <div className="container mx-auto px-4 py-16 md:py-24">
+        <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold leading-tight">
@@ -142,7 +142,7 @@ const LandingParadise = () => {
         </div>
 
         <div
-          className="absolute inset-0 opacity-20 bg-center bg-cover"
+          className="absolute inset-0 opacity-20 bg-center bg-cover z-0"
           style={{
             backgroundImage: `url(https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&h=800&fit=crop)`,
           }}
