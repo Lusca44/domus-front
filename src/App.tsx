@@ -1,5 +1,6 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
 import IndexPorto from "./pages/regioes/porto/pixinguinha/Index";
 import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
 import NotFound from "./pages/NotFound";
@@ -12,11 +13,13 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import { Toaster } from "@/components/ui/toaster";
 
 function App() {
-
   return (
     <Router>
       <div className="App">
         <Routes>
+          {/* Página inicial com hubs de regiões */}
+          <Route path="/" element={<HomePage />} />
+
           {/* Rotas região PORTO MARAVILHA*/}
           <Route path="/porto-maravilha" element={<IndexPorto />} />
           <Route
