@@ -22,6 +22,7 @@ import {
   Maximize,
 } from "lucide-react";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
+import Footer from "@/components/Footer";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import fotos from "./assets/fotos";
 import videos from "./assets/videos";
@@ -144,12 +145,11 @@ const LandingPixinguinha = () => {
           </div>
         </div>
 
-        {/* Decoração de fundo - substitua a URL pela imagem desejada */}
+        {/* Decoração de fundo - reduzindo opacidade para melhor contraste do texto */}
         <div
-          className="absolute inset-0 opacity-80 bg-center bg-cover z-0"
+          className="absolute inset-0 opacity-40 bg-center bg-cover z-0"
           style={{
-            backgroundImage:
-              `url(${ImgBackground})`,
+            backgroundImage: `url(${ImgBackground})`,
           }}
         ></div>
       </section>
@@ -465,44 +465,15 @@ const LandingPixinguinha = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">
-                Residencial Pixinguinha
-              </h3>
-              <p className="text-gray-400">{empreendimento.endereco}</p>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Contato</h3>
-              <p className="text-gray-400">Central de Vendas: (21) 2222-3333</p>
-              <p className="text-gray-400">
-                Email: contato@portolancamentos.com.br
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Links Úteis</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link to="/" className="hover:text-white">
-                    Todos os Lançamentos no Rio de Janeiro
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 text-sm">
-            <p>
-              &copy; 2025 Imobiliária Feitozza. Todos os direitos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer usando o novo componente */}
+      <Footer 
+        empreendimentoNome={empreendimento.nome}
+        empreendimentoEndereco={empreendimento.endereco}
+        regiao={{
+          nome: "no Porto Maravilha",
+          path: "/porto-maravilha"
+        }}
+      />
     </div>
   );
 };
