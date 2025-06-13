@@ -1,14 +1,14 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/general-pages/HomePage";
 import IndexPorto from "./pages/regioes/porto/pixinguinha/Index";
 import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
 import IndexBarra from "./pages/regioes/barra/Index";
 import LandingAtlantico from "./pages/regioes/barra/atlantico/LandingAtlantico";
 import IndexRecreiro from "./pages/regioes/recreio/Index";
 import LandingParadise from "./pages/regioes/recreio/paradise/LandingParadise";
-import NotFound from "./pages/NotFound";
-import PaginaAgradecimento from "./pages/PaginaAgradecimento";
+import NotFound from "./pages/general-pages/NotFound";
+import PaginaAgradecimento from "./pages/general-pages/PaginaAgradecimento";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLeads from "./pages/admin/AdminLeads";

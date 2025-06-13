@@ -1,73 +1,38 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { MapPin, Building2, Phone, Mail, ArrowRight, Star } from "lucide-react";
-import ImgPortoRegion from "../assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg";
+import regioesHubs from "./cards-home-page";
+import Footer from "@/components/Footer";
 
 /**
  * Página Inicial - Hubs de Regiões
- * 
+ *
  * Esta página apresenta todos os hubs de lançamentos organizados por região,
  * permitindo que os usuários naveguem facilmente para os empreendimentos
  * de seu interesse em diferentes áreas do Rio de Janeiro.
  */
 const HomePage = () => {
-  // Dados dos hubs de regiões disponíveis
-  const regioesHubs = [
-    {
-      id: "porto-maravilha",
-      nome: "Porto Maravilha",
-      descricao: "Zona portuária revitalizada com vista para a Baía de Guanabara",
-      caracteristicas: [
-        "Região em constante valorização",
-        "Próximo a museus e pontos turísticos", 
-        "Excelente infraestrutura de transporte",
-        "Vista privilegiada da Baía de Guanabara"
-      ],
-      lancamentosAtivos: 1,
-      precoPartir: "A partir de R$ 350.000",
-      imagem: ImgPortoRegion,
-      url: "/porto-maravilha",
-      status: "Disponível",
-      destaque: true
-    },
-    {
-      id: "barra-tijuca",
-      nome: "Barra da Tijuca",
-      descricao: "Região moderna com praias e centros comerciais",
-      caracteristicas: [
-        "Praias de classe mundial",
-        "Shopping centers e entretenimento",
-        "Condomínios de alto padrão",
-        "Fácil acesso à Zona Oeste"
-      ],
-      lancamentosAtivos: 0,
-      precoPartir: "Em breve",
-      imagem: "https://images.unsplash.com/photo-1544989164-19c0c8d9d1b8?w=800&h=600&fit=crop",
-      url: "/barra-tijuca",
-      status: "Em Breve",
-      destaque: false
-    },
-    {
-      id: "recreio",
-      nome: "Recreio dos Bandeirantes",
-      descricao: "Tranquilidade à beira-mar com natureza preservada",
-      caracteristicas: [
-        "Praias extensas e preservadas",
-        "Ambiente familiar e seguro",
-        "Próximo à natureza exuberante",
-        "Qualidade de vida diferenciada"
-      ],
-      lancamentosAtivos: 0,
-      precoPartir: "Em breve",
-      imagem: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop",
-      url: "/recreio",
-      status: "Em Breve",
-      destaque: false
-    }
-  ];
+  const qtdLancamentosAtivos = () => {
+    let quantidade = 0;
+    regioesHubs.forEach((regiao) => {
+      console.log(regiao.lancamentosAtivos);
+      quantidade += regiao.lancamentosAtivos;
+      console.log("quandidade" + quantidade);
+    });
+    return quantidade;
+  };
+
+  const qtdRegioes = () => {
+    return regioesHubs.length;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
@@ -108,23 +73,36 @@ const HomePage = () => {
               </span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-700 mb-8 sm:mb-10 leading-relaxed px-4">
-              Descubra lançamentos exclusivos nas melhores regiões do Rio de Janeiro. 
-              Qualidade, localização privilegiada e o melhor custo-benefício.
+              Descubra lançamentos exclusivos nas melhores regiões do Rio de
+              Janeiro. Qualidade, localização privilegiada e o melhor
+              custo-benefício.
             </p>
-            
+
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl mx-auto">
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600">3</div>
-                <div className="text-sm sm:text-base text-gray-600">Regiões Atendidas</div>
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600">
+                  {qtdRegioes()}
+                </div>
+                <div className="text-sm sm:text-base text-gray-600">
+                  Regiões Atendidas
+                </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600">1</div>
-                <div className="text-sm sm:text-base text-gray-600">Lançamento Ativo</div>
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600">
+                  {qtdLancamentosAtivos()}
+                </div>
+                <div className="text-sm sm:text-base text-gray-600">
+                  Lançamento Ativo
+                </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600">24h</div>
-                <div className="text-sm sm:text-base text-gray-600">Atendimento</div>
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600">
+                  24h
+                </div>
+                <div className="text-sm sm:text-base text-gray-600">
+                  Atendimento
+                </div>
               </div>
             </div>
           </div>
@@ -139,17 +117,17 @@ const HomePage = () => {
               Escolha Sua Região Ideal
             </h3>
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-              Explore nossos empreendimentos organizados por região e encontre 
-              a localização perfeita para seu novo lar.
+              Explore nossos empreendimentos organizados por região e encontre a
+              localização perfeita para seu novo lar.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
             {regioesHubs.map((regiao) => (
-              <Card 
-                key={regiao.id} 
+              <Card
+                key={regiao.id}
                 className={`group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${
-                  regiao.destaque ? 'ring-2 ring-blue-500 ring-offset-2' : ''
+                  regiao.destaque ? "ring-2 ring-blue-500 ring-offset-2" : ""
                 }`}
               >
                 {regiao.destaque && (
@@ -158,7 +136,7 @@ const HomePage = () => {
                     Destaque
                   </div>
                 )}
-                
+
                 <div className="relative overflow-hidden rounded-t-lg">
                   <img
                     src={regiao.imagem}
@@ -166,11 +144,13 @@ const HomePage = () => {
                     className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-4 right-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      regiao.status === 'Disponível' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        regiao.status === "Disponível"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
                       {regiao.status}
                     </span>
                   </div>
@@ -191,37 +171,51 @@ const HomePage = () => {
 
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    {regiao.caracteristicas.slice(0, 3).map((caracteristica, index) => (
-                      <div key={index} className="flex items-center text-sm text-gray-600">
-                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></div>
-                        <span>{caracteristica}</span>
-                      </div>
-                    ))}
+                    {regiao.caracteristicas
+                      .slice(0, 3)
+                      .map((caracteristica, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center text-sm text-gray-600"
+                        >
+                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></div>
+                          <span>{caracteristica}</span>
+                        </div>
+                      ))}
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4 border-t">
                     <div>
                       <p className="text-xs text-gray-500">
-                        {regiao.lancamentosAtivos} lançamento{regiao.lancamentosAtivos !== 1 ? 's' : ''} ativo{regiao.lancamentosAtivos !== 1 ? 's' : ''}
+                        {regiao.lancamentosAtivos} lançamento
+                        {regiao.lancamentosAtivos !== 1 ? "s" : ""} ativo
+                        {regiao.lancamentosAtivos !== 1 ? "s" : ""}
                       </p>
                       <p className="font-semibold text-blue-600 text-sm sm:text-base">
                         {regiao.precoPartir}
                       </p>
                     </div>
-                    
-                    <Button 
-                      asChild 
+
+                    <Button
+                      asChild
                       className={`w-full sm:w-auto ${
-                        regiao.status === 'Disponível' 
-                          ? 'bg-blue-600 hover:bg-blue-700' 
-                          : 'bg-gray-400 cursor-not-allowed'
+                        regiao.status === "Disponível"
+                          ? "bg-blue-600 hover:bg-blue-700"
+                          : "bg-gray-400 cursor-not-allowed"
                       }`}
-                      disabled={regiao.status !== 'Disponível'}
+                      disabled={regiao.status !== "Disponível"}
                     >
-                      <Link to={regiao.status === 'Disponível' ? regiao.url : '#'}>
+                      <Link
+                        to={regiao.status === "Disponível" ? regiao.url : "#"}
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
                         <span className="flex items-center gap-2">
-                          {regiao.status === 'Disponível' ? 'Ver Lançamentos' : 'Em Breve'}
-                          {regiao.status === 'Disponível' && <ArrowRight className="w-4 h-4" />}
+                          {regiao.status === "Disponível"
+                            ? "Ver Lançamentos"
+                            : "Em Breve"}
+                          {regiao.status === "Disponível" && (
+                            <ArrowRight className="w-4 h-4" />
+                          )}
                         </span>
                       </Link>
                     </Button>
@@ -241,12 +235,12 @@ const HomePage = () => {
               Não Encontrou Sua Região Ideal?
             </h3>
             <p className="text-lg sm:text-xl mb-6 sm:mb-8 opacity-90">
-              Entre em contato conosco e descubra outras oportunidades 
-              de investimento no Rio de Janeiro.
+              Entre em contato conosco e descubra outras oportunidades de
+              investimento no Rio de Janeiro.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 variant="secondary"
                 className="bg-white text-blue-600 hover:bg-gray-100"
                 asChild
@@ -256,8 +250,8 @@ const HomePage = () => {
                   Ligar Agora
                 </a>
               </Button>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-blue-600"
                 asChild
@@ -272,57 +266,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8 sm:py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Feitozza Imóveis</h4>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Especializada em lançamentos imobiliários de alto padrão 
-                no Rio de Janeiro.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Regiões</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link to="/porto-maravilha" className="text-gray-400 hover:text-white transition-colors">
-                    Porto Maravilha
-                  </Link>
-                </li>
-                <li className="text-gray-500">Barra da Tijuca (Em breve)</li>
-                <li className="text-gray-500">Recreio (Em breve)</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Contato</h4>
-              <div className="space-y-2 text-sm text-gray-400">
-                <p>(21) 2222-3333</p>
-                <p>contato@feitozza.com.br</p>
-                <p>Rio de Janeiro - RJ</p>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Informações</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link to="/admin/login" className="text-gray-400 hover:text-white transition-colors">
-                    Área Administrativa
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 text-sm">
-            <p>&copy; 2025 Feitozza Imóveis. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer usando o novo componente */}
+      <Footer />
     </div>
   );
 };

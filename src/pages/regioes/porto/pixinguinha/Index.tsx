@@ -7,6 +7,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { MapPin, BedDouble, DollarSign, TrendingUp, Building2, Star } from 'lucide-react';
 import ImagemPortoBackGround from '@/assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg'
 import lancamentos from './cards-index';
+import Footer from "@/components/Footer";
 
 /**
  * Página Principal - Portal de Lançamentos Porto Maravilha
@@ -233,14 +234,7 @@ const IndexPorto = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2024 Porto Maravilha Lançamentos. Todos os direitos reservados.</p>
-          <p className="text-gray-400 mt-2">
-            Região Portuária - Rio de Janeiro, RJ
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

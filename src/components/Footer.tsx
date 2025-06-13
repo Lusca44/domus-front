@@ -3,8 +3,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface FooterProps {
-  empreendimentoNome: string;
-  empreendimentoEndereco: string;
+  isHomePage?: boolean;
+  empreendimentoNome?: string;
+  empreendimentoEndereco?: string;
   regiao?: {
     nome: string;
     path: string;
@@ -22,18 +23,24 @@ const Footer: React.FC<FooterProps> = ({
   empreendimentoEndereco, 
   regiao 
 }) => {
+
+  const isHomePage = true
+
   return (
     <footer className="bg-gray-900 text-white py-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
+        <div className="flex flex-col md:flex-row justify-center items-center flex-wrap gap-8">
+          
+           {/* Bloco 1 - Empreendimento */}
+          <div className="text-center max-w-xs">
             <h3 className="text-lg font-semibold mb-4">
               {empreendimentoNome}
             </h3>
             <p className="text-gray-400">{empreendimentoEndereco}</p>
           </div>
 
-          <div>
+          {/* Bloco 2 - Contato */}
+          <div className="text-center max-w-xs">
             <h3 className="text-lg font-semibold mb-4">Contato</h3>
             <p className="text-gray-400">Central de Vendas: (21) 2222-3333</p>
             <p className="text-gray-400">
@@ -41,7 +48,8 @@ const Footer: React.FC<FooterProps> = ({
             </p>
           </div>
 
-          <div>
+          {/* Bloco 3 - Links */}
+          <div className="text-center max-w-xs">
             <h3 className="text-lg font-semibold mb-4">Links Úteis</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
