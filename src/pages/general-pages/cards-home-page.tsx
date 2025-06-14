@@ -17,7 +17,7 @@ const cardsRegioes: RegiaoCard[] = [
   {
     id: "porto-maravilha",
     nome: "Porto Maravilha",
-    descricao: "Zona portuária revitalizada com vista para a Baía de Guanabara",
+    descricao: "Hub de inovação e cultura com vista para a Baía de Guanabara",
     caracteristicas: [
       "Região em constante valorização",
       "Próximo a museus e pontos turísticos",
@@ -34,7 +34,7 @@ const cardsRegioes: RegiaoCard[] = [
   {
     id: "barra-tijuca",
     nome: "Barra da Tijuca",
-    descricao: "Região moderna com praias, centros gourmets e de entretenimento",
+    descricao: "Urbanização premium entre lagoas, praias e centros de luxo",
     caracteristicas: [
       "Praias de classe mundial",
       "Shopping centers e entretenimento",
@@ -51,7 +51,7 @@ const cardsRegioes: RegiaoCard[] = [
   {
     id: "recreio",
     nome: "Recreio dos Bandeirantes",
-    descricao: "Tranquilidade à beira-mar com natureza preservada",
+    descricao: "Tranquilidade entre trilhas, praias e infraestrutura planejada",
     caracteristicas: [
       "Praias extensas e preservadas",
       "Ambiente familiar e seguro",
