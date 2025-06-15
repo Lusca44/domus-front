@@ -31,6 +31,8 @@ const AdminLeads = () => {
   
   // Filtros e paginação
   const [correctorFilter, setCorrectorFilter] = useState("all");
+  const [nomeLancamentoFilter, setNomeLancamentoFilter] = useState("");
+  const [nomeClienteFilter, setNomeClienteFilter] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   
@@ -73,36 +75,52 @@ const AdminLeads = () => {
   };
 
   const handleSearch = () => {
-    // Aqui seria o local ideal para fazer uma nova requisição à API com os filtros
-    // Exemplo de como seria a implementação futura:
-    // fetchLeadsWithFilters(1, itemsPerPage, correctorFilter);
-    
-    // Por enquanto, apenas resetamos a página atual para aplicar os filtros localmente
+    // Resetamos a página atual para aplicar os filtros
     setCurrentPage(1);
-    console.log('Pesquisando com filtro:', correctorFilter);
+    console.log('Pesquisando com filtros:', {
+      corrector: correctorFilter,
+      nomeLancamento: nomeLancamentoFilter,
+      nomeCliente: nomeClienteFilter
+    });
   };
 
-  // Filtrar leads baseado no filtro selecionado
+  // Filtrar leads baseado nos filtros selecionados
   const filteredLeads = useMemo(() => {
-    if (correctorFilter === "all") return leads;
+    let filtered = leads;
+
+    // Filtro por corretor
     if (correctorFilter === "with-corrector") {
-      return leads.filter(lead => lead.usuarioOpcionista && lead.usuarioOpcionista.trim() !== "");
+      filtered = filtered.filter(lead => lead.usuarioOpcionista && lead.usuarioOpcionista.trim() !== "");
+    } else if (correctorFilter === "without-corrector") {
+      filtered = filtered.filter(lead => !lead.usuarioOpcionista || lead.usuarioOpcionista.trim() === "");
     }
-    if (correctorFilter === "without-corrector") {
-      return leads.filter(lead => !lead.usuarioOpcionista || lead.usuarioOpcionista.trim() === "");
+
+    // Filtro por nome do lançamento
+    if (nomeLancamentoFilter.trim() !== "") {
+      filtered = filtered.filter(lead => 
+        lead.nomeLancamento.toLowerCase().includes(nomeLancamentoFilter.toLowerCase())
+      );
     }
-    return leads;
-  }, [leads, correctorFilter]);
+
+    // Filtro por nome do cliente
+    if (nomeClienteFilter.trim() !== "") {
+      filtered = filtered.filter(lead => 
+        lead.nomeCliente.toLowerCase().includes(nomeClienteFilter.toLowerCase())
+      );
+    }
+
+    return filtered;
+  }, [leads, correctorFilter, nomeLancamentoFilter, nomeClienteFilter]);
 
   // Calcular paginação
   const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedLeads = filteredLeads.slice(startIndex, startIndex + itemsPerPage);
 
-  // Reset página quando mudar filtro
+  // Reset página quando mudar filtros
   useEffect(() => {
     setCurrentPage(1);
-  }, [correctorFilter, itemsPerPage]);
+  }, [correctorFilter, nomeLancamentoFilter, nomeClienteFilter, itemsPerPage]);
 
   const handleEdit = (lead: Lead) => {
     setSelectedLead(lead);
@@ -147,27 +165,6 @@ const AdminLeads = () => {
     exportLeadsToExcel(leads); // Exporta todas as leads do backend, não apenas as filtradas/paginadas
   };
 
-  // Para implementação futura com API:
-  // const fetchLeadsWithFilters = async (page: number, limit: number, filter: string) => {
-  //   const params = new URLSearchParams({
-  //     page: page.toString(),
-  //     limit: limit.toString(),
-  //     correctorFilter: filter
-  //   });
-  //   
-  //   try {
-  //     const data = await executeGetLeads(() => 
-  //       fetch(`${API_BASE_URL}/leads?${params}`, {
-  //         headers: { Authorization: `Bearer ${token}` }
-  //       }).then(res => res.json())
-  //     );
-  //     setLeads(data.leads);
-  //     setTotalPages(data.totalPages);
-  //   } catch (error) {
-  //     console.error('Erro ao buscar leads:', error);
-  //   }
-  // };
-
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -189,6 +186,10 @@ const AdminLeads = () => {
             <LeadsFilters
               correctorFilter={correctorFilter}
               onCorrectorFilterChange={setCorrectorFilter}
+              nomeLancamentoFilter={nomeLancamentoFilter}
+              onNomeLancamentoFilterChange={setNomeLancamentoFilter}
+              nomeClienteFilter={nomeClienteFilter}
+              onNomeClienteFilterChange={setNomeClienteFilter}
               onSearch={handleSearch}
             />
           </CardContent>
