@@ -3,13 +3,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Search } from "lucide-react";
 
 interface LeadsFiltersProps {
-  // Estado do filtro de corretor - pode ser "all", "with-corrector" ou "without-corrector"
-  correctorFilter: string;
+  // Estado do filtro de corretor - agora é um boolean (true = sem corretor, false = todos)
+  correctorFilter: boolean;
   // Função callback para atualizar o filtro de corretor
-  onCorrectorFilterChange: (value: string) => void;
+  onCorrectorFilterChange: (value: boolean) => void;
   // Estado do filtro por nome do lançamento - string de busca
   nomeLancamentoFilter: string;
   // Função callback para atualizar o filtro de nome do lançamento
@@ -33,22 +34,18 @@ export function LeadsFilters({
 }: LeadsFiltersProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {/* FILTRO 1: DROPDOWN PARA FILTRAR POR CORRETOR */}
+      {/* FILTRO 1: CHECKBOX PARA FILTRAR APENAS LEADS SEM CORRETOR */}
       <div className="flex flex-col space-y-2">
-        <Label htmlFor="corrector-filter">Filtrar por Corretor</Label>
-        <Select value={correctorFilter} onValueChange={onCorrectorFilterChange}>
-          <SelectTrigger>
-            <SelectValue placeholder="Selecione..." />
-          </SelectTrigger>
-          <SelectContent>
-            {/* Opção "all" - mostra todas as leads independente de ter corretor ou não */}
-            <SelectItem value="all">Todos</SelectItem>
-            {/* Opção "with-corrector" - mostra apenas leads que TEM corretor atribuído */}
-            <SelectItem value="with-corrector">Com Corretor</SelectItem>
-            {/* Opção "without-corrector" - mostra apenas leads que NÃO TEM corretor atribuído */}
-            <SelectItem value="without-corrector">Sem Corretor</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="corrector-filter"
+            checked={correctorFilter}
+            onCheckedChange={(checked) => onCorrectorFilterChange(!!checked)}
+          />
+          <Label htmlFor="corrector-filter" className="cursor-pointer">
+            Sem corretor vinculado
+          </Label>
+        </div>
       </div>
 
       {/* FILTRO 2: INPUT DE TEXTO PARA BUSCAR POR NOME DO LANÇAMENTO */}

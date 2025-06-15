@@ -31,8 +31,8 @@ const AdminLeads = () => {
   const [editForm, setEditForm] = useState({ nomeCliente: "", telefoneCliente: "", nomeLancamento: ""});
   
   // ===== ESTADOS DOS FILTROS =====
-  // FILTRO 1: Corretor - valores possíveis: "all", "with-corrector", "without-corrector"
-  const [correctorFilter, setCorrectorFilter] = useState("all");
+  // FILTRO 1: Corretor - agora é um boolean (true = mostrar apenas sem corretor, false = mostrar todos)
+  const [correctorFilter, setCorrectorFilter] = useState(false);
   
   // FILTRO 2: Nome do Lançamento - string de busca (busca parcial, case-insensitive)
   const [nomeLancamentoFilter, setNomeLancamentoFilter] = useState("");
@@ -125,18 +125,13 @@ const AdminLeads = () => {
     let filtered = leads;
 
     // === FILTRO 1: POR CORRETOR ===
-    if (correctorFilter === "with-corrector") {
-      // Filtra leads que TEM corretor atribuído
-      // Verifica se usuarioOpcionista existe e não é string vazia/só espaços
-      filtered = filtered.filter(lead => lead.usuarioOpcionista && lead.usuarioOpcionista.trim() !== "");
-      console.log('Filtro aplicado: COM corretor');
-    } else if (correctorFilter === "without-corrector") {
-      // Filtra leads que NÃO TEM corretor atribuído
+    if (correctorFilter === true) {
+      // Filtra leads que NÃO TEM corretor atribuído (checkbox marcado = sem corretor)
       // Verifica se usuarioOpcionista é null, undefined ou string vazia/só espaços
       filtered = filtered.filter(lead => !lead.usuarioOpcionista || lead.usuarioOpcionista.trim() === "");
-      console.log('Filtro aplicado: SEM corretor');
+      console.log('Filtro aplicado: SEM corretor (checkbox marcado)');
     }
-    // Se correctorFilter === "all", não aplica filtro (mostra todas)
+    // Se correctorFilter === false, não aplica filtro (mostra todas)
 
     // === FILTRO 2: POR NOME DO LANÇAMENTO ===
     if (nomeLancamentoFilter.trim() !== "") {
