@@ -58,16 +58,16 @@ const PaginaAgradecimento = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="max-w-lg w-full bg-white rounded-lg shadow-lg p-6 sm:p-8 text-center">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 sm:p-8 text-center">
         {/* Ícone de sucesso */}
         <div className="flex justify-center mb-4 sm:mb-6">
-          <div className="rounded-full bg-green-100 p-3 sm:p-4">
-            <CheckCircle2 className="h-8 w-8 sm:h-12 sm:w-12 text-green-600" />
+          <div className="rounded-full bg-green-100 p-3">
+            <CheckCircle2 className="h-10 w-10 sm:h-12 sm:w-12 text-green-600" />
           </div>
         </div>
 
         {/* Título e mensagem */}
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
           {mensagem.titulo}
         </h1>
 
@@ -76,12 +76,12 @@ const PaginaAgradecimento = () => {
         </p>
 
         {/* Detalhes sobre próximos passos */}
-        <div className="bg-blue-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
-          <p className="text-blue-700 text-xs sm:text-sm leading-relaxed mb-2">
+        <div className="bg-blue-50 rounded-lg p-4 mb-6 sm:mb-8">
+          <p className="text-blue-700 text-xs sm:text-sm leading-relaxed">
             Nossa equipe geralmente retorna o contato em até 24 horas úteis. Se
             preferir, também pode nos ligar diretamente:
           </p>
-          <p className="text-blue-800 font-semibold text-sm sm:text-base">
+          <p className="text-blue-800 font-semibold mt-2 text-sm sm:text-base">
             Central de Vendas: (21) 2222-3333
           </p>
         </div>
@@ -89,11 +89,7 @@ const PaginaAgradecimento = () => {
         {/* Botões de ação */}
         <div className="space-y-3 sm:space-y-4">
           {mensagem.acoes.map((acao, index) => (
-            <Button 
-              key={index} 
-              className="w-full text-sm sm:text-base py-2 sm:py-3" 
-              asChild
-            >
+            <Button key={index} className="w-full text-sm sm:text-base" asChild>
               <Link to={acao.url}>
                 {acao.texto}
               </Link>
