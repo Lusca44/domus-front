@@ -13,11 +13,10 @@ import { useApi } from "@/hooks/useApi";
 
 interface Lead {
   id: string;
-  name: string;
-  email: string;
-  phone: string;
-  interest: string;
-  createdAt: string;
+  nomeLancamento: string;
+  nomeCliente: string;
+  telefoneCliente: string;
+  usuarioOpcionista: string;
 }
 
 const AdminLeads = () => {
@@ -25,7 +24,7 @@ const AdminLeads = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [editForm, setEditForm] = useState({ name: "", email: "", phone: "", interest: "" });
+  const [editForm, setEditForm] = useState({ nomeCliente: "", telefoneCliente: "", nomeLancamento: ""});
   const navigate = useNavigate();
 
   // Usando o hook customizado para diferentes operações
@@ -57,6 +56,7 @@ const AdminLeads = () => {
   const fetchLeads = async () => {
     try {
       const data = await executeGetLeads(() => leadsApi.getAll());
+      console.log(data)
       setLeads(data || []);
     } catch (error) {
       console.error('Erro ao buscar leads:', error);
@@ -66,10 +66,9 @@ const AdminLeads = () => {
   const handleEdit = (lead: Lead) => {
     setSelectedLead(lead);
     setEditForm({
-      name: lead.name,
-      email: lead.email,
-      phone: lead.phone,
-      interest: lead.interest,
+      nomeCliente: lead.nomeCliente,
+      telefoneCliente: lead.telefoneCliente,
+      nomeLancamento: lead.nomeLancamento
     });
     setEditModalOpen(true);
   };
@@ -145,22 +144,24 @@ const AdminLeads = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Nome</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Telefone</TableHead>
                     <TableHead>Interesse</TableHead>
-                    <TableHead>Data</TableHead>
+                    <TableHead>Nome</TableHead>
+                    <TableHead>Telefone</TableHead>
+                    <TableHead>Corretor Opcionista</TableHead>
                     <TableHead>Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {leads.map((lead) => (
                     <TableRow key={lead.id}>
-                      <TableCell>{lead.name}</TableCell>
-                      <TableCell>{lead.email}</TableCell>
-                      <TableCell>{lead.phone}</TableCell>
-                      <TableCell>{lead.interest}</TableCell>
-                      <TableCell>{new Date(lead.createdAt).toLocaleDateString()}</TableCell>
+                      {/* INTERESSE */}
+                      <TableCell>{lead.nomeLancamento}</TableCell> 
+                      {/* NOME */}
+                      <TableCell>{lead.nomeCliente}</TableCell>
+                      {/* TELEFONE */}
+                      <TableCell>{lead.telefoneCliente}</TableCell>
+                      <TableCell>{lead.usuarioOpcionista}</TableCell>
+                      {/* DATA */}
                       <TableCell>
                         <div className="flex space-x-2">
                           <Button
@@ -202,33 +203,24 @@ const AdminLeads = () => {
               <Label htmlFor="name">Nome</Label>
               <Input
                 id="name"
-                value={editForm.name}
-                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={editForm.email}
-                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                value={editForm.nomeCliente}
+                onChange={(e) => setEditForm({ ...editForm, nomeCliente: e.target.value })}
               />
             </div>
             <div>
               <Label htmlFor="phone">Telefone</Label>
               <Input
                 id="phone"
-                value={editForm.phone}
-                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                value={editForm.telefoneCliente}
+                onChange={(e) => setEditForm({ ...editForm, telefoneCliente: e.target.value })}
               />
             </div>
             <div>
               <Label htmlFor="interest">Interesse</Label>
               <Input
                 id="interest"
-                value={editForm.interest}
-                onChange={(e) => setEditForm({ ...editForm, interest: e.target.value })}
+                value={editForm.nomeLancamento}
+                onChange={(e) => setEditForm({ ...editForm, nomeLancamento: e.target.value })}
               />
             </div>
           </div>
@@ -247,7 +239,7 @@ const AdminLeads = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir a lead "{selectedLead?.name}"? Esta ação não pode ser desfeita.
+              Tem certeza que deseja excluir a lead "{selectedLead?.nomeCliente}"? Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
