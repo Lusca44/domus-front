@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+
+import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,9 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Edit, Trash2, LogOut } from "lucide-react";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Edit, Trash2, Download } from "lucide-react";
 import { leadsApi } from "@/utils/apiConfig";
 import { useApi } from "@/hooks/useApi";
+import { AdminLayout } from "@/components/admin/AdminLayout";
+import { LeadsFilters } from "@/components/admin/LeadsFilters";
+import { exportLeadsToExcel } from "@/utils/excelExport";
 
 interface Lead {
   id: string;
@@ -25,6 +30,12 @@ const AdminLeads = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [editForm, setEditForm] = useState({ nomeCliente: "", telefoneCliente: "", nomeLancamento: ""});
+  
+  // Filtros e paginação
+  const [correctorFilter, setCorrectorFilter] = useState("all");
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  
   const navigate = useNavigate();
 
   // Usando o hook customizado para diferentes operações
@@ -62,6 +73,28 @@ const AdminLeads = () => {
       console.error('Erro ao buscar leads:', error);
     }
   };
+
+  // Filtrar leads baseado no filtro selecionado
+  const filteredLeads = useMemo(() => {
+    if (correctorFilter === "all") return leads;
+    if (correctorFilter === "with-corrector") {
+      return leads.filter(lead => lead.usuarioOpcionista && lead.usuarioOpcionista.trim() !== "");
+    }
+    if (correctorFilter === "without-corrector") {
+      return leads.filter(lead => !lead.usuarioOpcionista || lead.usuarioOpcionista.trim() === "");
+    }
+    return leads;
+  }, [leads, correctorFilter]);
+
+  // Calcular paginação
+  const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedLeads = filteredLeads.slice(startIndex, startIndex + itemsPerPage);
+
+  // Reset página quando mudar filtro
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [correctorFilter, itemsPerPage]);
 
   const handleEdit = (lead: Lead) => {
     setSelectedLead(lead);
@@ -102,37 +135,59 @@ const AdminLeads = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/admin/login");
+  const handleExportExcel = () => {
+    exportLeadsToExcel(leads); // Exporta todas as leads do backend, não apenas as filtradas/paginadas
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Link to="/admin/dashboard">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Voltar
-                </Button>
-              </Link>
-              <h1 className="text-xl font-semibold text-gray-900">
-                Gerenciar Leads
-              </h1>
-            </div>
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Sair
-            </Button>
-          </div>
-        </div>
-      </header>
+  // Para implementação futura com API:
+  // const fetchLeadsWithFilters = async (page: number, limit: number, filter: string) => {
+  //   const params = new URLSearchParams({
+  //     page: page.toString(),
+  //     limit: limit.toString(),
+  //     correctorFilter: filter
+  //   });
+  //   
+  //   try {
+  //     const data = await executeGetLeads(() => 
+  //       fetch(`${API_BASE_URL}/leads?${params}`, {
+  //         headers: { Authorization: `Bearer ${token}` }
+  //       }).then(res => res.json())
+  //     );
+  //     setLeads(data.leads);
+  //     setTotalPages(data.totalPages);
+  //   } catch (error) {
+  //     console.error('Erro ao buscar leads:', error);
+  //   }
+  // };
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  return (
+    <AdminLayout>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Gerenciar Leads</h2>
+            <p className="text-gray-600">Total de {filteredLeads.length} leads encontradas</p>
+          </div>
+          <Button onClick={handleExportExcel} className="gap-2">
+            <Download className="h-4 w-4" />
+            Exportar Excel
+          </Button>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Filtros e Configurações</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LeadsFilters
+              correctorFilter={correctorFilter}
+              onCorrectorFilterChange={setCorrectorFilter}
+              itemsPerPage={itemsPerPage}
+              onItemsPerPageChange={setItemsPerPage}
+            />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Lista de Leads</CardTitle>
@@ -141,53 +196,86 @@ const AdminLeads = () => {
             {loadingLeads ? (
               <div className="text-center py-8">Carregando leads...</div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Interesse</TableHead>
-                    <TableHead>Nome</TableHead>
-                    <TableHead>Telefone</TableHead>
-                    <TableHead>Corretor Opcionista</TableHead>
-                    <TableHead>Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {leads.map((lead) => (
-                    <TableRow key={lead.id}>
-                      {/* INTERESSE */}
-                      <TableCell>{lead.nomeLancamento}</TableCell> 
-                      {/* NOME */}
-                      <TableCell>{lead.nomeCliente}</TableCell>
-                      {/* TELEFONE */}
-                      <TableCell>{lead.telefoneCliente}</TableCell>
-                      <TableCell>{lead.usuarioOpcionista}</TableCell>
-                      {/* DATA */}
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(lead)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDelete(lead)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+              <>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Interesse</TableHead>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>Telefone</TableHead>
+                      <TableHead>Corretor Opcionista</TableHead>
+                      <TableHead>Ações</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedLeads.map((lead) => (
+                      <TableRow key={lead.id}>
+                        <TableCell>{lead.nomeLancamento}</TableCell>
+                        <TableCell>{lead.nomeCliente}</TableCell>
+                        <TableCell>{lead.telefoneCliente}</TableCell>
+                        <TableCell>{lead.usuarioOpcionista || '-'}</TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(lead)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDelete(lead)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+
+                {/* Paginação */}
+                {totalPages > 1 && (
+                  <div className="mt-4">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                            className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                          />
+                        </PaginationItem>
+                        
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              onClick={() => setCurrentPage(page)}
+                              isActive={currentPage === page}
+                              className="cursor-pointer"
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        
+                        <PaginationItem>
+                          <PaginationNext 
+                            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                )}
+              </>
             )}
           </CardContent>
         </Card>
-      </main>
+      </div>
 
       {/* Modal de Edição */}
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
@@ -248,7 +336,7 @@ const AdminLeads = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </AdminLayout>
   );
 };
 
