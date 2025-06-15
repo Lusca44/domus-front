@@ -1,4 +1,5 @@
 import ImgCardPorto from '../../assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg'
+import ImgCardBarra from '../../assets/images/imagem-barra-da-tijuca.webp'
 
 export interface RegiaoCard {
   id: string;
@@ -43,7 +44,7 @@ const cardsRegioes: RegiaoCard[] = [
     ],
     lancamentosAtivos: 1,
     precoPartir: "A partir de R$ 294.900",
-    imagem: ImgCardPorto,
+    imagem: ImgCardBarra,
     url: "/barra-tijuca",
     status: "Disponível",
     destaque: false,

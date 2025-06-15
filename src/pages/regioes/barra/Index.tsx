@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { MapPin, BedDouble, TrendingUp, Building2, Star, Waves, Car, ShoppingBag } from 'lucide-react';
 import lancamentos from './cards-index';
+import imgBarra from '../../../assets/images/imagem-barra-da-tijuca.webp';
 
 const IndexBarra = () => {
   const lancamentosRef = useRef(null);
@@ -40,9 +41,9 @@ const IndexBarra = () => {
       {/* Seção Hero com imagem de fundo */}
       <section className="relative h-96 bg-cover bg-center"
         style={{
-          backgroundImage: `url(https://images.unsplash.com/photo-1544989164-19c0c8d9d1b8?w=1200&h=800&fit=crop)`
+          backgroundImage: `url(${imgBarra})`
         }}>
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white">
             <h2 className="text-5xl font-bold mb-4">

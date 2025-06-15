@@ -23,9 +23,7 @@ const HomePage = () => {
   const qtdLancamentosAtivos = () => {
     let quantidade = 0;
     regioesHubs.forEach((regiao) => {
-      console.log(regiao.lancamentosAtivos);
       quantidade += regiao.lancamentosAtivos;
-      console.log("quandidade" + quantidade);
     });
     return quantidade;
   };
@@ -267,7 +265,7 @@ const HomePage = () => {
       </section>
 
       {/* Footer usando o novo componente */}
-      <Footer />
+      <Footer isHomePage={true} />
     </div>
   );
 };

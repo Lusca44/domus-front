@@ -449,7 +449,7 @@ const LandingPixinguinha = () => {
               Não Perca Esta Oportunidade!
             </h2>
             <p className="text-lg md:text-xl mb-8">
-              Garanta já sua unidade no Vista Baía Residencial com condições
+              Garanta já sua unidade no Residencial Pixinguinha com condições
               especiais de lançamento.
             </p>
 
@@ -466,12 +466,12 @@ const LandingPixinguinha = () => {
       </section>
 
       {/* Footer usando o novo componente */}
-      <Footer 
+      <Footer
         empreendimentoNome={empreendimento.nome}
         empreendimentoEndereco={empreendimento.endereco}
         regiao={{
           nome: "no Porto Maravilha",
-          path: "/porto-maravilha"
+          path: "/porto-maravilha",
         }}
       />
     </div>

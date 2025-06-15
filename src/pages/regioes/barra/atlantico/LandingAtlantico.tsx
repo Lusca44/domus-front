@@ -25,6 +25,8 @@ import {
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import imgBackGround from '@/assets/images/imagem-barra-da-tijuca.webp' // tirar esse import e criar uma pasta de assets so pra isso
+
 
 const LandingAtlantico = () => {
   const [imagemAtual, setImagemAtual] = useState(0);
@@ -100,7 +102,7 @@ const LandingAtlantico = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-cyan-900 to-blue-700 text-white">
+      <section className="relative bg-gradient-to-r from-cyan-700 to-blue-500 text-white">
         <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-6">
@@ -142,9 +144,9 @@ const LandingAtlantico = () => {
         </div>
 
         <div
-          className="absolute inset-0 opacity-20 bg-center bg-cover z-0"
+          className="absolute inset-0 opacity-40 bg-center bg-cover z-0"
           style={{
-            backgroundImage: `url(https://images.unsplash.com/photo-1544989164-19c0c8d9d1b8?w=1200&h=800&fit=crop)`,
+            backgroundImage: `url(${imgBackGround})`,
           }}
         ></div>
       </section>

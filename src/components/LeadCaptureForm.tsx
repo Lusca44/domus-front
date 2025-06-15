@@ -212,25 +212,32 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
        * 5. Mostra sucesso com toast
        */
       await executeSaveLead(() => leadsApi.create(dadosParaEnvio));
-
-      // Limpar formulário após sucesso
-      setFormData({
-        nomeCliente: '',
-        telefoneCliente: '',
-        emailCliente: ''
-      });
-
       // Redirecionar para página de agradecimento
       setTimeout(() => {
-        navigate(redirectTo);
-      }, 2000);
+        const dadosAgradecimento = {
+          nomeCliente: dadosParaEnvio.nomeCliente.trim(),
+          nomeLancamento: dadosParaEnvio.nomeLancamento,
+        };
 
+        navigate(
+          `${redirectTo}?${new URLSearchParams(dadosAgradecimento).toString()}`
+        );
+      }, 2000);
+      
     } catch (error) {
       // Erro já tratado pelo useApi hook com toast
       console.error('❌ Erro ao salvar lead:', error);
-
+      
       // Aqui você pode adicionar tratamento adicional se necessário
       // Por exemplo, analytics, log específico, etc.
+    }
+    finally{
+      // Limpar formulário após sucesso
+      setFormData({
+        nomeCliente: "",
+        telefoneCliente: "",
+        emailCliente: "",
+      });
     }
   };
 
@@ -251,9 +258,9 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             <Input
               id={`${uniqueId}-nome`}
               value={formData.nomeCliente}
-              onChange={(e) => handleInputChange('nomeCliente', e.target.value)}
+              onChange={(e) => handleInputChange("nomeCliente", e.target.value)}
               placeholder="Digite seu nome completo"
-              className={errors.nomeCliente ? 'border-red-500' : ''}
+              className={errors.nomeCliente ? "border-red-500" : ""}
               disabled={isLoading}
             />
             {errors.nomeCliente && (
@@ -270,9 +277,11 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             <Input
               id={`${uniqueId}-telefone`}
               value={formData.telefoneCliente}
-              onChange={(e) => handleInputChange('telefoneCliente', e.target.value)}
+              onChange={(e) =>
+                handleInputChange("telefoneCliente", e.target.value)
+              }
               placeholder="(XX) XXXXX-XXXX"
-              className={errors.telefoneCliente ? 'border-red-500' : ''}
+              className={errors.telefoneCliente ? "border-red-500" : ""}
               disabled={isLoading}
             />
             {errors.telefoneCliente && (
@@ -290,9 +299,11 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
               id={`${uniqueId}-email`}
               type="email"
               value={formData.emailCliente}
-              onChange={(e) => handleInputChange('emailCliente', e.target.value)}
+              onChange={(e) =>
+                handleInputChange("emailCliente", e.target.value)
+              }
               placeholder="seuemail@exemplo.com"
-              className={errors.emailCliente ? 'border-red-500' : ''}
+              className={errors.emailCliente ? "border-red-500" : ""}
               disabled={isLoading}
             />
             {errors.emailCliente && (
@@ -301,11 +312,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
           </div>
 
           {/* Botão agora usa isLoading do hook useApi */}
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -321,7 +328,8 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
 
           {/* Política de Privacidade */}
           <p className="text-xs text-gray-500 text-center mt-4">
-            Ao enviar este formulário, você estará concordando com em ser contactado via ligação, whastapp ou email.
+            Ao enviar este formulário, você estará concordando com em ser
+            contactado via ligação, whastapp ou email.
           </p>
         </form>
       </CardContent>

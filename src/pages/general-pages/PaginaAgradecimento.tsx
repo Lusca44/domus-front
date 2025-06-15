@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ArrowRight, Home } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 /**
  * Página de Agradecimento
@@ -14,25 +15,41 @@ import { CheckCircle2, ArrowRight, Home } from "lucide-react";
  * a origem do formulário, usando parâmetros na URL.
  */
 const PaginaAgradecimento = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const dadosAgradecimento = {
+    nomeCliente: searchParams.get('nomeCliente'),
+    nomeLancamento: searchParams.get('nomeLancamento')
+  }
+
   /**
    * Mensagens personalizadas conforme a origem do lead
    * Pode ser expandido conforme necessário
    */
   const getMensagem = () => {
-    // Personalização caso o nome tenha sido passado na URL
+    
+    var acaoLancamento = null;
 
-    // Personalização por origem do formulário
-    // Mensagem padrão para qualquer outra origem
+    switch (dadosAgradecimento.nomeLancamento) {
+      case "Pixinguinha":
+      acaoLancamento = {
+        texto: `Retornar para o lançamento ${dadosAgradecimento.nomeLancamento}.`,
+        url: "/porto-maravilha/lancamento/pixinguinha",
+      };
+      default:
+        break;
+    }
+
     return {
-      titulo: `Obrigado pelo seu interesse!`,
-      subtitulo:
-        "Sua solicitação foi recebida com sucesso. Nossa equipe entrará em contato em breve.",
+      titulo: `Obrigado pelo seu interesse, ${dadosAgradecimento.nomeCliente}!`,
+      subtitulo: `Sua solicitação informações sobre o ${dadosAgradecimento.nomeLancamento} foi recebida com sucesso. Nossa equipe entrará em contato em breve.`,
       acoes: [
         {
-          texto: "Ver todos os lançamentos",
+          texto: "Ver todos os lançamentos no Rio de Janeiro!",
           url: "/",
-          icone: <Home className="ml-2 h-4 w-4" />,
         },
+        acaoLancamento,
       ],
     };
   };
@@ -75,14 +92,9 @@ const PaginaAgradecimento = () => {
             <Button key={index} className="w-full text-sm sm:text-base" asChild>
               <Link to={acao.url}>
                 {acao.texto}
-                {acao.icone}
               </Link>
             </Button>
           ))}
-
-          <Button variant="outline" className="w-full text-sm sm:text-base" asChild>
-            <Link to="/">Voltar para a página inicial</Link>
-          </Button>
         </div>
       </div>
 

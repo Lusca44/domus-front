@@ -55,11 +55,13 @@ const IndexPorto = () => {
       </header>
 
       {/* Seção Hero com imagem de fundo */}
-      <section className="relative h-96 bg-cover bg-center"
+      <section
+        className="relative h-96 bg-cover bg-center"
         style={{
           /* IMAGEM DE FUNDO: Substitua a URL abaixo pela imagem da região portuária */
-          backgroundImage: `url(${ImagemPortoBackGround})`
-        }}>
+          backgroundImage: `url(${ImagemPortoBackGround})`,
+        }}
+      >
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white">
@@ -70,7 +72,11 @@ const IndexPorto = () => {
             <p className="text-xl mb-8">
               Apartamentos na planta na região de maior valorização da cidade
             </p>
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700" onClick={scrollToLancamentos}>
+            <Button
+              size="lg"
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={scrollToLancamentos}
+            >
               Ver Lançamentos
             </Button>
           </div>
@@ -86,8 +92,9 @@ const IndexPorto = () => {
                 Por que Investir no Porto Maravilha?
               </h3>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                O maior projeto de revitalização urbana da América Latina está transformando
-                a região portuária em um novo centro de negócios, cultura e moradia no Rio de Janeiro.
+                O maior projeto de revitalização urbana da América Latina está
+                transformando a região portuária em um novo centro de negócios,
+                cultura e moradia no Rio de Janeiro.
               </p>
             </div>
 
@@ -102,7 +109,8 @@ const IndexPorto = () => {
                 </h4>
                 <p className="text-gray-600">
                   Imóveis na região já apresentam valorização de até 35% ao ano,
-                  impulsionados pelos investimentos em infraestrutura e mobilidade urbana.
+                  impulsionados pelos investimentos em infraestrutura e
+                  mobilidade urbana.
                 </p>
               </div>
 
@@ -116,7 +124,8 @@ const IndexPorto = () => {
                 </h4>
                 <p className="text-gray-600">
                   VLT, Museu do Amanhã, Boulevard Olímpico e dezenas de novos
-                  empreendimentos comerciais fazem da região o novo centro do Rio.
+                  empreendimentos comerciais fazem da região o novo centro do
+                  Rio.
                 </p>
               </div>
 
@@ -129,8 +138,9 @@ const IndexPorto = () => {
                   Localização Privilegiada
                 </h4>
                 <p className="text-gray-600">
-                  Conectado ao Centro, Zona Sul e Norte por diversas opções de transporte,
-                  com vista única da Baía de Guanabara e proximidade aos principais pontos turísticos.
+                  Conectado ao Centro, Zona Sul e Norte por diversas opções de
+                  transporte, com vista única da Baía de Guanabara e proximidade
+                  aos principais pontos turísticos.
                 </p>
               </div>
             </div>
@@ -139,19 +149,27 @@ const IndexPorto = () => {
             <div className="mt-16 bg-white rounded-lg shadow-lg p-8">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                 <div>
-                  <div className="text-3xl font-bold text-blue-600 mb-2">R$ 8 Bi</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                    R$ 8 Bi
+                  </div>
                   <div className="text-gray-600">Investimento Total</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-green-600 mb-2">5 Mi m²</div>
+                  <div className="text-3xl font-bold text-green-600 mb-2">
+                    5 Mi m²
+                  </div>
                   <div className="text-gray-600">Área Revitalizada</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-purple-600 mb-2">70+</div>
+                  <div className="text-3xl font-bold text-purple-600 mb-2">
+                    70+
+                  </div>
                   <div className="text-gray-600">Novos Projetos</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-orange-600 mb-2">25 Anos</div>
+                  <div className="text-3xl font-bold text-orange-600 mb-2">
+                    25 Anos
+                  </div>
                   <div className="text-gray-600">Prazo do Projeto</div>
                 </div>
               </div>
@@ -172,24 +190,38 @@ const IndexPorto = () => {
             opts={{
               align: isPoucosLancamentos ? "center" : "start",
               loop: isAtivarCarrocel,
-              containScroll: "trimSnaps"
+              containScroll: "trimSnaps",
             }}
             className="w-full relative"
           >
-            <CarouselContent className={isPoucosLancamentos ? "justify-center" : "-ml-2 md:-ml-4"}>
+            <CarouselContent
+              className={
+                isPoucosLancamentos ? "justify-center" : "-ml-2 md:-ml-4"
+              }
+            >
               {lancamentos.map((lancamento) => (
-                <CarouselItem key={lancamento.id} 
-                  className={isPoucosLancamentos ? "px-4 max-w-[400px] flex-shrink-0 basis-auto" :"pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3"}>
+                <CarouselItem
+                  key={lancamento.id}
+                  className={
+                    isPoucosLancamentos
+                      ? "px-4 max-w-[400px] flex-shrink-0 basis-auto"
+                      : "pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3"
+                  }
+                >
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
                     {/* IMAGEM DO CARD: As imagens abaixo podem ser substituídas */}
-                    <div className="h-48 bg-cover bg-center"
-                      style={{ backgroundImage: `url(${lancamento.imagem})` }}>
+                    <div
+                      className="h-48 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${lancamento.imagem})` }}
+                    >
                       {/* Overlay para melhor legibilidade */}
                       <div className="h-full bg-black bg-opacity-20"></div>
                     </div>
 
                     <CardHeader>
-                      <CardTitle className="text-xl">{lancamento.nome}</CardTitle>
+                      <CardTitle className="text-xl">
+                        {lancamento.nome}
+                      </CardTitle>
                       <CardDescription>{lancamento.descricao}</CardDescription>
                     </CardHeader>
 
@@ -206,10 +238,11 @@ const IndexPorto = () => {
                       </div>
 
                       {/* Link para a landing page específica do lançamento */}
-                      <Link to={lancamento.urlLanding} onClick={() => window.scrollTo(0, 0)}>
-                        <Button className="w-full">
-                          Ver Detalhes
-                        </Button>
+                      <Link
+                        to={lancamento.urlLanding}
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
+                        <Button className="w-full">Ver Detalhes</Button>
                       </Link>
                     </CardContent>
                   </Card>
