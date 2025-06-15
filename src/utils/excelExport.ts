@@ -8,18 +8,16 @@ interface Lead {
 }
 
 export const exportLeadsToExcel = (leads: Lead[]) => {
-  // Criar o cabeçalho CSV
-  const headers = ['ID', 'Interesse', 'Nome', 'Telefone', 'Corretor Opcionista'];
+  // Criar o cabeçalho CSV sem ID e Corretor Opcionista
+  const headers = ['Interesse', 'Nome', 'Telefone'];
   
-  // Converter dados para CSV
+  // Converter dados para CSV sem ID e Corretor Opcionista
   const csvContent = [
     headers.join(','),
     ...leads.map(lead => [
-      lead.id,
       `"${lead.nomeLancamento}"`,
       `"${lead.nomeCliente}"`,
-      `"${lead.telefoneCliente}"`,
-      `"${lead.usuarioOpcionista || ''}"`
+      `"${lead.telefoneCliente}"`
     ].join(','))
   ].join('\n');
 
