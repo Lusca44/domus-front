@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -26,36 +27,36 @@ const Footer: React.FC<FooterProps> = ({
   regiao,
 }) => {
   return (
-    <footer className="bg-gray-900 text-white py-8">
+    <footer className="bg-gray-900 text-white py-8 sm:py-12">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-center items-center flex-wrap gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           {/* Bloco 1 - Empreendimento */}
-          <div className="text-center max-w-xs">
+          <div className="space-y-2">
             <h3 className="text-lg font-semibold mb-4">{empreendimentoNome}</h3>
-            <p className="text-gray-400">{empreendimentoEndereco}</p>
+            <p className="text-gray-400 text-sm sm:text-base">{empreendimentoEndereco}</p>
           </div>
 
           {/* Bloco 2 - Contato */}
-          <div className="text-center max-w-xs">
+          <div className="space-y-2">
             <h3 className="text-lg font-semibold mb-4">Contato</h3>
-            <p className="text-gray-400">Central de Vendas: (21) 2222-3333</p>
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-sm sm:text-base">Central de Vendas: (21) 2222-3333</p>
+            <p className="text-gray-400 text-sm sm:text-base break-all sm:break-normal">
               Email: contato@portolancamentos.com.br
             </p>
           </div>
 
           {/* Bloco 3 - Links */}
-          <div className="text-center max-w-xs">
+          <div className="space-y-2">
             <h3 className="text-lg font-semibold mb-4">Links Úteis</h3>
-            <ul className="space-y-2 text-gray-400">
+            <ul className="space-y-2 text-gray-400 text-sm sm:text-base">
               {isHomePage ? (
                 <li>
                   <Link
                     to="/admin/login"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors block"
                     onClick={() => window.scrollTo(0, 0)}
                   >
-                    Area administrativa
+                    Área administrativa
                   </Link>
                 </li>
               ) : (
@@ -63,7 +64,7 @@ const Footer: React.FC<FooterProps> = ({
                   <li>
                     <Link
                       to="/"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-white transition-colors block"
                       onClick={() => window.scrollTo(0, 0)}
                     >
                       Todos os Lançamentos no Rio de Janeiro
@@ -73,7 +74,7 @@ const Footer: React.FC<FooterProps> = ({
                     <li>
                       <Link
                         to={regiao.path}
-                        className="hover:text-white transition-colors"
+                        className="hover:text-white transition-colors block"
                         onClick={() => window.scrollTo(0, 0)}
                       >
                         Todos os Lançamentos {regiao.nome}
@@ -85,7 +86,11 @@ const Footer: React.FC<FooterProps> = ({
 
               {isLinkRio ? (
                 <li>
-                  <Link to="/" className="hover:text-white transition-colors">
+                  <Link 
+                    to="/" 
+                    className="hover:text-white transition-colors block"
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
                     Todos os Lançamentos no Rio de Janeiro
                   </Link>
                 </li>
@@ -94,7 +99,7 @@ const Footer: React.FC<FooterProps> = ({
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 text-sm">
+        <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 text-xs sm:text-sm">
           <p>&copy; 2025 Imobiliária Feitozza. Todos os direitos reservados.</p>
         </div>
       </div>

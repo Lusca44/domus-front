@@ -40,20 +40,24 @@ export function AdminSidebar({ onLogout }: AdminSidebarProps) {
   const location = useLocation();
 
   return (
-    <Sidebar>
-      <SidebarContent>
+    <Sidebar className="w-64 sm:w-72">
+      <SidebarContent className="p-2 sm:p-4">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-lg font-semibold">
+          <SidebarGroupLabel className="text-base sm:text-lg font-semibold px-2">
             Painel Admin
           </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
+          <SidebarGroupContent className="mt-2">
+            <SidebarMenu className="space-y-1">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location.pathname === item.url}>
-                    <Link to={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={location.pathname === item.url}
+                    className="w-full justify-start px-3 py-2 text-sm sm:text-base"
+                  >
+                    <Link to={item.url} className="flex items-center gap-3">
+                      <item.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                      <span className="hidden sm:inline">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -62,10 +66,14 @@ export function AdminSidebar({ onLogout }: AdminSidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <Button variant="outline" onClick={onLogout} className="w-full">
+      <SidebarFooter className="p-2 sm:p-4">
+        <Button 
+          variant="outline" 
+          onClick={onLogout} 
+          className="w-full text-sm sm:text-base py-2"
+        >
           <LogOut className="h-4 w-4 mr-2" />
-          Sair
+          <span className="hidden sm:inline">Sair</span>
         </Button>
       </SidebarFooter>
     </Sidebar>
