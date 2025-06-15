@@ -1,20 +1,19 @@
 
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 interface LeadsFiltersProps {
   correctorFilter: string;
   onCorrectorFilterChange: (value: string) => void;
-  itemsPerPage: number;
-  onItemsPerPageChange: (value: number) => void;
+  onSearch: () => void;
 }
 
 export function LeadsFilters({
   correctorFilter,
   onCorrectorFilterChange,
-  itemsPerPage,
-  onItemsPerPageChange,
+  onSearch,
 }: LeadsFiltersProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -32,20 +31,11 @@ export function LeadsFilters({
         </Select>
       </div>
 
-      <div className="flex flex-col space-y-2">
-        <Label htmlFor="items-per-page">Itens por página</Label>
-        <Input
-          id="items-per-page"
-          type="number"
-          min="1"
-          max="100"
-          value={itemsPerPage}
-          onChange={(e) => {
-            const value = parseInt(e.target.value) || 1;
-            onItemsPerPageChange(Math.max(1, Math.min(100, value)));
-          }}
-          className="w-[120px]"
-        />
+      <div className="flex items-end">
+        <Button onClick={onSearch} className="gap-2">
+          <Search className="h-4 w-4" />
+          Pesquisar
+        </Button>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { leadsApi } from "@/utils/apiConfig";
 import { useApi } from "@/hooks/useApi";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { LeadsFilters } from "@/components/admin/LeadsFilters";
+import { LeadsTableControls } from "@/components/admin/LeadsTableControls";
 import { LeadsTable } from "@/components/admin/LeadsTable";
 import { LeadsEditModal } from "@/components/admin/LeadsEditModal";
 import { LeadsDeleteModal } from "@/components/admin/LeadsDeleteModal";
@@ -70,6 +70,16 @@ const AdminLeads = () => {
     } catch (error) {
       console.error('Erro ao buscar leads:', error);
     }
+  };
+
+  const handleSearch = () => {
+    // Aqui seria o local ideal para fazer uma nova requisição à API com os filtros
+    // Exemplo de como seria a implementação futura:
+    // fetchLeadsWithFilters(1, itemsPerPage, correctorFilter);
+    
+    // Por enquanto, apenas resetamos a página atual para aplicar os filtros localmente
+    setCurrentPage(1);
+    console.log('Pesquisando com filtro:', correctorFilter);
   };
 
   // Filtrar leads baseado no filtro selecionado
@@ -164,7 +174,6 @@ const AdminLeads = () => {
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Gerenciar Leads</h2>
-            <p className="text-gray-600">Total de {filteredLeads.length} leads encontradas</p>
           </div>
           <Button onClick={handleExportExcel} className="gap-2">
             <Download className="h-4 w-4" />
@@ -174,14 +183,13 @@ const AdminLeads = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Filtros e Configurações</CardTitle>
+            <CardTitle>Filtros</CardTitle>
           </CardHeader>
           <CardContent>
             <LeadsFilters
               correctorFilter={correctorFilter}
               onCorrectorFilterChange={setCorrectorFilter}
-              itemsPerPage={itemsPerPage}
-              onItemsPerPageChange={setItemsPerPage}
+              onSearch={handleSearch}
             />
           </CardContent>
         </Card>
@@ -195,6 +203,12 @@ const AdminLeads = () => {
               <div className="text-center py-8">Carregando leads...</div>
             ) : (
               <>
+                <LeadsTableControls
+                  itemsPerPage={itemsPerPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                  totalItems={filteredLeads.length}
+                />
+
                 <LeadsTable
                   leads={paginatedLeads}
                   onEdit={handleEdit}
