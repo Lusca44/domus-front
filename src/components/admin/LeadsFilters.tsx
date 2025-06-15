@@ -1,10 +1,14 @@
 
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Search } from "lucide-react";
+import { Search, Filter } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface LeadsFiltersProps {
   // Estado do filtro de corretor - agora é um boolean (true = sem corretor, false = todos)
@@ -33,54 +37,65 @@ export function LeadsFilters({
   onSearch,
 }: LeadsFiltersProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {/* FILTRO 1: CHECKBOX PARA FILTRAR APENAS LEADS SEM CORRETOR */}
-      <div className="flex flex-col space-y-2">
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="corrector-filter"
-            checked={correctorFilter}
-            onCheckedChange={(checked) => onCorrectorFilterChange(!!checked)}
-          />
-          <Label htmlFor="corrector-filter" className="cursor-pointer">
-            Sem corretor vinculado
-          </Label>
-        </div>
-      </div>
+    <div className="flex items-center gap-4 mb-6">
+      {/* DROPDOWN COM TODOS OS FILTROS */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="gap-2">
+            <Filter className="h-4 w-4" />
+            Filtros
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-80 p-4 bg-white border shadow-lg z-50">
+          <div className="space-y-4">
+            {/* FILTRO 1: CHECKBOX PARA FILTRAR APENAS LEADS SEM CORRETOR */}
+            <div className="flex flex-col space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="corrector-filter"
+                  checked={correctorFilter}
+                  onCheckedChange={(checked) => onCorrectorFilterChange(!!checked)}
+                />
+                <Label htmlFor="corrector-filter" className="cursor-pointer">
+                  Sem corretor vinculado
+                </Label>
+              </div>
+            </div>
 
-      {/* FILTRO 2: INPUT DE TEXTO PARA BUSCAR POR NOME DO LANÇAMENTO */}
-      <div className="flex flex-col space-y-2">
-        <Label htmlFor="nome-lancamento-filter">Nome do Lançamento</Label>
-        <Input
-          id="nome-lancamento-filter"
-          type="text"
-          placeholder="Digite o nome do lançamento..."
-          value={nomeLancamentoFilter}
-          // Atualiza o estado a cada digitação do usuário
-          onChange={(e) => onNomeLancamentoFilterChange(e.target.value)}
-        />
-      </div>
+            {/* FILTRO 2: INPUT DE TEXTO PARA BUSCAR POR NOME DO LANÇAMENTO */}
+            <div className="flex flex-col space-y-2">
+              <Label htmlFor="nome-lancamento-filter">Nome do Lançamento</Label>
+              <Input
+                id="nome-lancamento-filter"
+                type="text"
+                placeholder="Digite o nome do lançamento..."
+                value={nomeLancamentoFilter}
+                // Atualiza o estado a cada digitação do usuário
+                onChange={(e) => onNomeLancamentoFilterChange(e.target.value)}
+              />
+            </div>
 
-      {/* FILTRO 3: INPUT DE TEXTO PARA BUSCAR POR NOME DO CLIENTE */}
-      <div className="flex flex-col space-y-2">
-        <Label htmlFor="nome-cliente-filter">Nome do Cliente</Label>
-        <Input
-          id="nome-cliente-filter"
-          type="text"
-          placeholder="Digite o nome do cliente..."
-          value={nomeClienteFilter}
-          // Atualiza o estado a cada digitação do usuário
-          onChange={(e) => onNomeClienteFilterChange(e.target.value)}
-        />
-      </div>
+            {/* FILTRO 3: INPUT DE TEXTO PARA BUSCAR POR NOME DO CLIENTE */}
+            <div className="flex flex-col space-y-2">
+              <Label htmlFor="nome-cliente-filter">Nome do Cliente</Label>
+              <Input
+                id="nome-cliente-filter"
+                type="text"
+                placeholder="Digite o nome do cliente..."
+                value={nomeClienteFilter}
+                // Atualiza o estado a cada digitação do usuário
+                onChange={(e) => onNomeClienteFilterChange(e.target.value)}
+              />
+            </div>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* BOTÃO DE APLICAR FILTROS */}
-      <div className="flex items-end">
-        <Button onClick={onSearch} className="gap-2 w-full">
-          <Search className="h-4 w-4" />
-          Pesquisar
-        </Button>
-      </div>
+      <Button onClick={onSearch} className="gap-2">
+        <Search className="h-4 w-4" />
+        Pesquisar
+      </Button>
     </div>
   );
 }
