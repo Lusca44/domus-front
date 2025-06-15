@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -23,16 +24,24 @@ interface Lead {
 }
 
 const AdminLeads = () => {
+  // Estado para armazenar todas as leads vindas do backend
   const [leads, setLeads] = useState<Lead[]>([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [editForm, setEditForm] = useState({ nomeCliente: "", telefoneCliente: "", nomeLancamento: ""});
   
-  // Filtros e paginação
+  // ===== ESTADOS DOS FILTROS =====
+  // FILTRO 1: Corretor - valores possíveis: "all", "with-corrector", "without-corrector"
   const [correctorFilter, setCorrectorFilter] = useState("all");
+  
+  // FILTRO 2: Nome do Lançamento - string de busca (busca parcial, case-insensitive)
   const [nomeLancamentoFilter, setNomeLancamentoFilter] = useState("");
+  
+  // FILTRO 3: Nome do Cliente - string de busca (busca parcial, case-insensitive)
   const [nomeClienteFilter, setNomeClienteFilter] = useState("");
+  
+  // ===== ESTADOS DA PAGINAÇÃO =====
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   
@@ -74,52 +83,83 @@ const AdminLeads = () => {
     }
   };
 
+  // FUNÇÃO CHAMADA QUANDO O USUÁRIO CLICA NO BOTÃO "PESQUISAR"
+  // Atualmente apenas reseta a página, mas aqui você pode adicionar lógica adicional
+  // como fazer nova chamada para o backend com os filtros aplicados
   const handleSearch = () => {
-    // Resetamos a página atual para aplicar os filtros
+    // Resetamos a página atual para aplicar os filtros na primeira página
     setCurrentPage(1);
     console.log('Pesquisando com filtros:', {
       corrector: correctorFilter,
       nomeLancamento: nomeLancamentoFilter,
       nomeCliente: nomeClienteFilter
     });
+    
+    // PONTO DE INTEGRAÇÃO COM BACKEND:
+    // Aqui você pode fazer uma nova chamada para o backend passando os filtros
+    // Exemplo: fetchLeadsWithFilters({ correctorFilter, nomeLancamentoFilter, nomeClienteFilter });
   };
 
-  // Filtrar leads baseado nos filtros selecionados
+  // ===== LÓGICA DE FILTROS APLICADA NO FRONTEND =====
+  // Este useMemo recalcula as leads filtradas sempre que os filtros ou a lista de leads muda
+  // IMPORTANTE: Esta lógica deve ser replicada no backend para filtrar no banco de dados
   const filteredLeads = useMemo(() => {
+    console.log('Aplicando filtros no frontend...');
     let filtered = leads;
 
-    // Filtro por corretor
+    // === FILTRO 1: POR CORRETOR ===
     if (correctorFilter === "with-corrector") {
+      // Filtra leads que TEM corretor atribuído
+      // Verifica se usuarioOpcionista existe e não é string vazia/só espaços
       filtered = filtered.filter(lead => lead.usuarioOpcionista && lead.usuarioOpcionista.trim() !== "");
+      console.log('Filtro aplicado: COM corretor');
     } else if (correctorFilter === "without-corrector") {
+      // Filtra leads que NÃO TEM corretor atribuído
+      // Verifica se usuarioOpcionista é null, undefined ou string vazia/só espaços
       filtered = filtered.filter(lead => !lead.usuarioOpcionista || lead.usuarioOpcionista.trim() === "");
+      console.log('Filtro aplicado: SEM corretor');
     }
+    // Se correctorFilter === "all", não aplica filtro (mostra todas)
 
-    // Filtro por nome do lançamento
+    // === FILTRO 2: POR NOME DO LANÇAMENTO ===
     if (nomeLancamentoFilter.trim() !== "") {
+      // Busca parcial, case-insensitive no nome do lançamento
+      // Converte tanto o filtro quanto o campo para lowercase para comparação
       filtered = filtered.filter(lead => 
         lead.nomeLancamento.toLowerCase().includes(nomeLancamentoFilter.toLowerCase())
       );
+      console.log('Filtro aplicado: Nome do lançamento contém:', nomeLancamentoFilter);
     }
 
-    // Filtro por nome do cliente
+    // === FILTRO 3: POR NOME DO CLIENTE ===
     if (nomeClienteFilter.trim() !== "") {
+      // Busca parcial, case-insensitive no nome do cliente
+      // Converte tanto o filtro quanto o campo para lowercase para comparação
       filtered = filtered.filter(lead => 
         lead.nomeCliente.toLowerCase().includes(nomeClienteFilter.toLowerCase())
       );
+      console.log('Filtro aplicado: Nome do cliente contém:', nomeClienteFilter);
     }
 
+    console.log('Total de leads após filtros:', filtered.length);
     return filtered;
   }, [leads, correctorFilter, nomeLancamentoFilter, nomeClienteFilter]);
 
-  // Calcular paginação
+  // ===== LÓGICA DE PAGINAÇÃO =====
+  // Calcula o total de páginas baseado no número de leads filtradas
   const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
+  
+  // Calcula o índice inicial para a paginação
   const startIndex = (currentPage - 1) * itemsPerPage;
+  
+  // Aplica a paginação no array já filtrado
   const paginatedLeads = filteredLeads.slice(startIndex, startIndex + itemsPerPage);
 
-  // Reset página quando mudar filtros
+  // Reset da página quando mudam os filtros ou itens por página
+  // Isso garante que o usuário sempre volte para a primeira página ao aplicar novos filtros
   useEffect(() => {
     setCurrentPage(1);
+    console.log('Página resetada para 1 devido a mudança nos filtros');
   }, [correctorFilter, nomeLancamentoFilter, nomeClienteFilter, itemsPerPage]);
 
   const handleEdit = (lead: Lead) => {
@@ -178,11 +218,13 @@ const AdminLeads = () => {
           </Button>
         </div>
 
+        {/* CARD DOS FILTROS */}
         <Card>
           <CardHeader>
             <CardTitle>Filtros</CardTitle>
           </CardHeader>
           <CardContent>
+            {/* Componente de filtros - todos os estados e callbacks são passados via props */}
             <LeadsFilters
               correctorFilter={correctorFilter}
               onCorrectorFilterChange={setCorrectorFilter}
@@ -195,6 +237,7 @@ const AdminLeads = () => {
           </CardContent>
         </Card>
 
+        {/* CARD DA TABELA DE LEADS */}
         <Card>
           <CardHeader>
             <CardTitle>Lista de Leads</CardTitle>
@@ -204,23 +247,27 @@ const AdminLeads = () => {
               <div className="text-center py-8">Carregando leads...</div>
             ) : (
               <>
+                {/* Controles da tabela - mostra quantos itens por página e total filtrado */}
                 <LeadsTableControls
                   itemsPerPage={itemsPerPage}
                   onItemsPerPageChange={setItemsPerPage}
                   totalItems={filteredLeads.length}
                 />
 
+                {/* Tabela com as leads paginadas (já filtradas) */}
                 <LeadsTable
                   leads={paginatedLeads}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                 />
 
-                {/* Paginação */}
+                {/* COMPONENTE DE PAGINAÇÃO */}
+                {/* Só mostra se houver mais de uma página */}
                 {totalPages > 1 && (
                   <div className="mt-4">
                     <Pagination>
                       <PaginationContent>
+                        {/* Botão "Anterior" - desabilitado se estiver na primeira página */}
                         <PaginationItem>
                           <PaginationPrevious 
                             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
@@ -228,6 +275,7 @@ const AdminLeads = () => {
                           />
                         </PaginationItem>
                         
+                        {/* Botões numerados das páginas */}
                         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                           <PaginationItem key={page}>
                             <PaginationLink
@@ -240,6 +288,7 @@ const AdminLeads = () => {
                           </PaginationItem>
                         ))}
                         
+                        {/* Botão "Próximo" - desabilitado se estiver na última página */}
                         <PaginationItem>
                           <PaginationNext 
                             onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
