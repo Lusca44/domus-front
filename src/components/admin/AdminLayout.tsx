@@ -24,16 +24,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <AdminSidebar onLogout={handleLogout} />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-white">
-            <SidebarTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="h-8 w-8 p-0 hover:bg-gray-100 transition-colors"
-              >
-                <Menu className="h-4 w-4" />
-                <span className="sr-only">Alternar menu lateral</span>
-              </Button>
-            </SidebarTrigger>
+            <SidebarTrigger className="h-8 w-8 p-0 hover:bg-gray-100 transition-colors -ml-1" />
             <div className="ml-auto">
               <h1 className="text-xl font-semibold text-gray-900">
                 Sistema Administrativo
