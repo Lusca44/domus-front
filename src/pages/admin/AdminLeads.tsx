@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -84,20 +83,38 @@ const AdminLeads = () => {
   };
 
   // FUNÇÃO CHAMADA QUANDO O USUÁRIO CLICA NO BOTÃO "PESQUISAR"
-  // Atualmente apenas reseta a página, mas aqui você pode adicionar lógica adicional
-  // como fazer nova chamada para o backend com os filtros aplicados
-  const handleSearch = () => {
-    // Resetamos a página atual para aplicar os filtros na primeira página
-    setCurrentPage(1);
-    console.log('Pesquisando com filtros:', {
+  // Esta função agora refaz a consulta ao backend com os filtros aplicados
+  const handleSearch = async () => {
+    console.log('🔍 Iniciando pesquisa com filtros:', {
       corrector: correctorFilter,
       nomeLancamento: nomeLancamentoFilter,
       nomeCliente: nomeClienteFilter
     });
     
-    // PONTO DE INTEGRAÇÃO COM BACKEND:
-    // Aqui você pode fazer uma nova chamada para o backend passando os filtros
-    // Exemplo: fetchLeadsWithFilters({ correctorFilter, nomeLancamentoFilter, nomeClienteFilter });
+    // Resetamos a página atual para aplicar os filtros na primeira página
+    setCurrentPage(1);
+    
+    try {
+      // PONTO DE INTEGRAÇÃO COM BACKEND:
+      // Aqui fazemos uma nova chamada para o backend passando os filtros
+      // Por enquanto, como o backend ainda não tem os endpoints com filtros,
+      // continuamos usando getAll() mas você pode substituir por:
+      // const data = await executeGetLeads(() => leadsApi.getAllWithFilters({
+      //   correctorFilter, 
+      //   nomeLancamentoFilter, 
+      //   nomeClienteFilter 
+      // }));
+      
+      console.log('🚀 Fazendo nova consulta ao backend...');
+      const data = await executeGetLeads(() => leadsApi.getAll());
+      console.log('✅ Dados recebidos do backend:', data);
+      
+      setLeads(data || []);
+      
+      console.log('📊 Total de leads carregadas do backend:', (data || []).length);
+    } catch (error) {
+      console.error('❌ Erro ao pesquisar leads:', error);
+    }
   };
 
   // ===== LÓGICA DE FILTROS APLICADA NO FRONTEND =====
