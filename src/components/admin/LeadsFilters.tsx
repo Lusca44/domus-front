@@ -1,5 +1,6 @@
 
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface LeadsFiltersProps {
@@ -33,17 +34,18 @@ export function LeadsFilters({
 
       <div className="flex flex-col space-y-2">
         <Label htmlFor="items-per-page">Itens por página</Label>
-        <Select value={itemsPerPage.toString()} onValueChange={(value) => onItemsPerPageChange(Number(value))}>
-          <SelectTrigger className="w-[120px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="10">10</SelectItem>
-            <SelectItem value="25">25</SelectItem>
-            <SelectItem value="50">50</SelectItem>
-            <SelectItem value="100">100</SelectItem>
-          </SelectContent>
-        </Select>
+        <Input
+          id="items-per-page"
+          type="number"
+          min="1"
+          max="100"
+          value={itemsPerPage}
+          onChange={(e) => {
+            const value = parseInt(e.target.value) || 1;
+            onItemsPerPageChange(Math.max(1, Math.min(100, value)));
+          }}
+          className="w-[120px]"
+        />
       </div>
     </div>
   );

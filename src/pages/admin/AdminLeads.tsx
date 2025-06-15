@@ -2,18 +2,16 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Edit, Trash2, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { leadsApi } from "@/utils/apiConfig";
 import { useApi } from "@/hooks/useApi";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { LeadsFilters } from "@/components/admin/LeadsFilters";
+import { LeadsTable } from "@/components/admin/LeadsTable";
+import { LeadsEditModal } from "@/components/admin/LeadsEditModal";
+import { LeadsDeleteModal } from "@/components/admin/LeadsDeleteModal";
 import { exportLeadsToExcel } from "@/utils/excelExport";
 
 interface Lead {
@@ -197,45 +195,11 @@ const AdminLeads = () => {
               <div className="text-center py-8">Carregando leads...</div>
             ) : (
               <>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Interesse</TableHead>
-                      <TableHead>Nome</TableHead>
-                      <TableHead>Telefone</TableHead>
-                      <TableHead>Corretor Opcionista</TableHead>
-                      <TableHead>Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {paginatedLeads.map((lead) => (
-                      <TableRow key={lead.id}>
-                        <TableCell>{lead.nomeLancamento}</TableCell>
-                        <TableCell>{lead.nomeCliente}</TableCell>
-                        <TableCell>{lead.telefoneCliente}</TableCell>
-                        <TableCell>{lead.usuarioOpcionista || '-'}</TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleEdit(lead)}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDelete(lead)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <LeadsTable
+                  leads={paginatedLeads}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
 
                 {/* Paginação */}
                 {totalPages > 1 && (
@@ -277,65 +241,20 @@ const AdminLeads = () => {
         </Card>
       </div>
 
-      {/* Modal de Edição */}
-      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editar Lead</DialogTitle>
-            <DialogDescription>
-              Edite as informações da lead selecionada.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="name">Nome</Label>
-              <Input
-                id="name"
-                value={editForm.nomeCliente}
-                onChange={(e) => setEditForm({ ...editForm, nomeCliente: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="phone">Telefone</Label>
-              <Input
-                id="phone"
-                value={editForm.telefoneCliente}
-                onChange={(e) => setEditForm({ ...editForm, telefoneCliente: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="interest">Interesse</Label>
-              <Input
-                id="interest"
-                value={editForm.nomeLancamento}
-                onChange={(e) => setEditForm({ ...editForm, nomeLancamento: e.target.value })}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditModalOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSaveEdit}>Salvar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <LeadsEditModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        editForm={editForm}
+        onEditFormChange={setEditForm}
+        onSave={handleSaveEdit}
+      />
 
-      {/* Modal de Exclusão */}
-      <AlertDialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja excluir a lead "{selectedLead?.nomeCliente}"? Esta ação não pode ser desfeita.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>Excluir</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <LeadsDeleteModal
+        open={deleteModalOpen}
+        onOpenChange={setDeleteModalOpen}
+        selectedLead={selectedLead}
+        onConfirm={confirmDelete}
+      />
     </AdminLayout>
   );
 };
