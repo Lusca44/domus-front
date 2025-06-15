@@ -1,3 +1,4 @@
+
 import React, { useState, useId } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,7 +37,6 @@ interface LeadCaptureFormProps {
 interface FormData {
   nomeCliente: string;
   telefoneCliente: string;
-  emailCliente: string;
 }
 
 const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
@@ -51,8 +51,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
   // Estados do formulário
   const [formData, setFormData] = useState<FormData>({
     nomeCliente: '',
-    telefoneCliente: '',
-    emailCliente: ''
+    telefoneCliente: ''
   });
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
@@ -92,14 +91,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
       novosErros.telefoneCliente = 'Telefone é obrigatório';
     } else if (!telefoneRegex.test(formData.telefoneCliente) || formData.telefoneCliente.replace(/\D/g, '').length < 10) {
       novosErros.telefoneCliente = 'Telefone deve ter formato válido';
-    }
-
-    // Validação do email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.emailCliente.trim()) {
-      novosErros.emailCliente = 'Email é obrigatório';
-    } else if (!emailRegex.test(formData.emailCliente)) {
-      novosErros.emailCliente = 'Email deve ter formato válido';
     }
 
     setErrors(novosErros);
@@ -165,7 +156,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
    * {
    *   nomeCliente: "João Silva",
    *   telefoneCliente: "11999999999",
-   *   emailCliente: "joao@email.com",
    *   nomeLancamento: "portal-principal"
    * }
    */
@@ -191,7 +181,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
       const dadosParaEnvio = {
         nomeCliente: formData.nomeCliente.trim(),
         telefoneCliente: formData.telefoneCliente.replace(/\D/g, ''), // Remove formatação
-        email: formData.emailCliente.trim().toLowerCase(),
         nomeLancamento: nomeLancamento, // Identifica origem do lead
         // Adicione outros campos conforme necessário:
         // status: 'novo',
@@ -236,7 +225,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
       setFormData({
         nomeCliente: "",
         telefoneCliente: "",
-        emailCliente: "",
       });
     }
   };
@@ -286,28 +274,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             />
             {errors.telefoneCliente && (
               <p className="text-sm text-red-500">{errors.telefoneCliente}</p>
-            )}
-          </div>
-
-          {/* Campo de Email */}
-          <div className="space-y-2">
-            <Label htmlFor={`${uniqueId}-email`}>
-              E-mail
-              <span className="text-red-500 ml-1">*</span>
-            </Label>
-            <Input
-              id={`${uniqueId}-email`}
-              type="email"
-              value={formData.emailCliente}
-              onChange={(e) =>
-                handleInputChange("emailCliente", e.target.value)
-              }
-              placeholder="seuemail@exemplo.com"
-              className={errors.emailCliente ? "border-red-500" : ""}
-              disabled={isLoading}
-            />
-            {errors.emailCliente && (
-              <p className="text-sm text-red-500">{errors.emailCliente}</p>
             )}
           </div>
 
