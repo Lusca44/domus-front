@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,43 +11,36 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
   const { toast } = useToast();
+
+  // Redirecionar se já estiver logado
+  useEffect(() => {
+    if (isAuthenticated) {
+      window.location.href = '/admin/dashboard';
+    }
+  }, [isAuthenticated]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Aqui você fará a requisição para sua API
-      // const response = await fetch("/api/auth/login", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ email, password }),
-      // });
-
-      // if (response.ok) {
-      if (true) {
-        // const data = await response.json();
-        // const data = await response.json();
-        // Salvar token no localStorage ou context
-        // localStorage.setItem("token", data.token);
-        // localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("token", 'data.token');
-        localStorage.setItem("user", JSON.stringify('data.user'));
+      // Simular autenticação (substituir pela sua API real)
+      if (email && password) {
+        // Simular resposta da API
+        const mockToken = `token_${Date.now()}`;
+        const mockUser = {
+          id: 1,
+          name: "Administrador",
+          email: email
+        };
         
-        toast({
-          title: "Login realizado com sucesso!",
-          description: "Redirecionando para o dashboard...",
-        });
-        
-        navigate("/admin/dashboard");
+        login(mockToken, mockUser);
       } else {
         toast({
           title: "Erro no login",
-          description: "Email ou senha incorretos.",
+          description: "Email e senha são obrigatórios.",
           variant: "destructive",
         });
       }

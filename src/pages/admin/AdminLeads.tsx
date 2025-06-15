@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
@@ -7,6 +6,7 @@ import { Download } from "lucide-react";
 import { leadsApi } from "@/utils/apiConfig";
 import { useApi } from "@/hooks/useApi";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import { LeadsFilters } from "@/components/admin/LeadsFilters";
 import { LeadsTableControls } from "@/components/admin/LeadsTableControls";
 import { LeadsTable } from "@/components/admin/LeadsTable";
@@ -44,9 +44,6 @@ const AdminLeads = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   
-  const navigate = useNavigate();
-
-  // Usando o hook customizado para diferentes operações
   const { loading: loadingLeads, execute: executeGetLeads } = useApi<any[]>({
     showErrorToast: true,
     errorMessage: 'Erro ao carregar leads'
@@ -63,14 +60,8 @@ const AdminLeads = () => {
   });
 
   useEffect(() => {
-    // Verificar se o usuário está autenticado
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/admin/login");
-      return;
-    }
     fetchLeads();
-  }, [navigate]);
+  }, []);
 
   const fetchLeads = async () => {
     try {
@@ -218,120 +209,122 @@ const AdminLeads = () => {
   };
 
   return (
-    <AdminLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Gerenciar Leads</h2>
+    <ProtectedRoute>
+      <AdminLayout>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Gerenciar Leads</h2>
+            </div>
+            <Button onClick={handleExportExcel} className="gap-2">
+              <Download className="h-4 w-4" />
+              Exportar Excel
+            </Button>
           </div>
-          <Button onClick={handleExportExcel} className="gap-2">
-            <Download className="h-4 w-4" />
-            Exportar Excel
-          </Button>
+
+          {/* CARD DOS FILTROS */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Filtros</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {/* Componente de filtros - todos os estados e callbacks são passados via props */}
+              <LeadsFilters
+                correctorFilter={correctorFilter}
+                onCorrectorFilterChange={setCorrectorFilter}
+                nomeLancamentoFilter={nomeLancamentoFilter}
+                onNomeLancamentoFilterChange={setNomeLancamentoFilter}
+                nomeClienteFilter={nomeClienteFilter}
+                onNomeClienteFilterChange={setNomeClienteFilter}
+                onSearch={handleSearch}
+              />
+            </CardContent>
+          </Card>
+
+          {/* CARD DA TABELA DE LEADS */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Lista de Leads</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loadingLeads ? (
+                <div className="text-center py-8">Carregando leads...</div>
+              ) : (
+                <>
+                  {/* Controles da tabela - mostra quantos itens por página e total filtrado */}
+                  <LeadsTableControls
+                    itemsPerPage={itemsPerPage}
+                    onItemsPerPageChange={setItemsPerPage}
+                    totalItems={filteredLeads.length}
+                  />
+
+                  {/* Tabela com as leads paginadas (já filtradas) */}
+                  <LeadsTable
+                    leads={paginatedLeads}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+
+                  {/* COMPONENTE DE PAGINAÇÃO */}
+                  {/* Só mostra se houver mais de uma página */}
+                  {totalPages > 1 && (
+                    <div className="mt-4">
+                      <Pagination>
+                        <PaginationContent>
+                          {/* Botão "Anterior" - desabilitado se estiver na primeira página */}
+                          <PaginationItem>
+                            <PaginationPrevious 
+                              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                              className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                            />
+                          </PaginationItem>
+                          
+                          {/* Botões numerados das páginas */}
+                          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                            <PaginationItem key={page}>
+                              <PaginationLink
+                                onClick={() => setCurrentPage(page)}
+                                isActive={currentPage === page}
+                                className="cursor-pointer"
+                              >
+                                {page}
+                              </PaginationLink>
+                            </PaginationItem>
+                          ))}
+                          
+                          {/* Botão "Próximo" - desabilitado se estiver na última página */}
+                          <PaginationItem>
+                            <PaginationNext 
+                              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                              className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                            />
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    </div>
+                  )}
+                </>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
-        {/* CARD DOS FILTROS */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Filtros</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Componente de filtros - todos os estados e callbacks são passados via props */}
-            <LeadsFilters
-              correctorFilter={correctorFilter}
-              onCorrectorFilterChange={setCorrectorFilter}
-              nomeLancamentoFilter={nomeLancamentoFilter}
-              onNomeLancamentoFilterChange={setNomeLancamentoFilter}
-              nomeClienteFilter={nomeClienteFilter}
-              onNomeClienteFilterChange={setNomeClienteFilter}
-              onSearch={handleSearch}
-            />
-          </CardContent>
-        </Card>
+        <LeadsEditModal
+          open={editModalOpen}
+          onOpenChange={setEditModalOpen}
+          editForm={editForm}
+          onEditFormChange={setEditForm}
+          onSave={handleSaveEdit}
+        />
 
-        {/* CARD DA TABELA DE LEADS */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Lista de Leads</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loadingLeads ? (
-              <div className="text-center py-8">Carregando leads...</div>
-            ) : (
-              <>
-                {/* Controles da tabela - mostra quantos itens por página e total filtrado */}
-                <LeadsTableControls
-                  itemsPerPage={itemsPerPage}
-                  onItemsPerPageChange={setItemsPerPage}
-                  totalItems={filteredLeads.length}
-                />
-
-                {/* Tabela com as leads paginadas (já filtradas) */}
-                <LeadsTable
-                  leads={paginatedLeads}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-
-                {/* COMPONENTE DE PAGINAÇÃO */}
-                {/* Só mostra se houver mais de uma página */}
-                {totalPages > 1 && (
-                  <div className="mt-4">
-                    <Pagination>
-                      <PaginationContent>
-                        {/* Botão "Anterior" - desabilitado se estiver na primeira página */}
-                        <PaginationItem>
-                          <PaginationPrevious 
-                            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                            className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                          />
-                        </PaginationItem>
-                        
-                        {/* Botões numerados das páginas */}
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                          <PaginationItem key={page}>
-                            <PaginationLink
-                              onClick={() => setCurrentPage(page)}
-                              isActive={currentPage === page}
-                              className="cursor-pointer"
-                            >
-                              {page}
-                            </PaginationLink>
-                          </PaginationItem>
-                        ))}
-                        
-                        {/* Botão "Próximo" - desabilitado se estiver na última página */}
-                        <PaginationItem>
-                          <PaginationNext 
-                            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                          />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
-                  </div>
-                )}
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <LeadsEditModal
-        open={editModalOpen}
-        onOpenChange={setEditModalOpen}
-        editForm={editForm}
-        onEditFormChange={setEditForm}
-        onSave={handleSaveEdit}
-      />
-
-      <LeadsDeleteModal
-        open={deleteModalOpen}
-        onOpenChange={setDeleteModalOpen}
-        selectedLead={selectedLead}
-        onConfirm={confirmDelete}
-      />
-    </AdminLayout>
+        <LeadsDeleteModal
+          open={deleteModalOpen}
+          onOpenChange={setDeleteModalOpen}
+          selectedLead={selectedLead}
+          onConfirm={confirmDelete}
+        />
+      </AdminLayout>
+    </ProtectedRoute>
   );
 };
 

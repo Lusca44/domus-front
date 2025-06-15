@@ -1,31 +1,26 @@
 
-import { useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/admin/login");
-  };
+  const { logout, user } = useAuth();
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <AdminSidebar onLogout={handleLogout} />
+        <AdminSidebar onLogout={logout} />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-white">
             <SidebarTrigger className="h-8 w-8 p-0 hover:bg-gray-100 transition-colors -ml-1" />
-            <div className="ml-auto">
+            <div className="ml-auto flex items-center gap-4">
+              <div className="text-sm text-gray-600">
+                Bem-vindo, {user?.name || user?.email || 'Usuário'}
+              </div>
               <h1 className="text-xl font-semibold text-gray-900">
                 Sistema Administrativo
               </h1>
