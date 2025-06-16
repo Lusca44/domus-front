@@ -105,7 +105,7 @@ const AdminLeads = () => {
       // }));
       
       console.log('🚀 Fazendo nova consulta ao backend...');
-      const data = await executeGetLeads(() => leadsApi.getAll());
+      // const data = await executeGetLeads(() => leadsApi.getAll());
       console.log('✅ Dados recebidos do backend:', data);
       
 const mockCorretores: Lead[] = [
