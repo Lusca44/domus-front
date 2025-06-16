@@ -13,6 +13,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLeads from "./pages/admin/AdminLeads";
 import AdminProfile from "./pages/admin/AdminProfile";
+import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -51,6 +52,7 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/leads" element={<AdminLeads />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/profile" element={<AdminProfile />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
 

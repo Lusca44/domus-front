@@ -1,7 +1,7 @@
 
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Users, FileText, LogOut, Home } from "lucide-react";
+import { Users, FileText, LogOut, Home, UserPlus } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +28,11 @@ const menuItems = [
     title: "Gerenciar Leads",
     url: "/admin/leads",
     icon: Users,
+  },
+  {
+    title: "Cadastrar Usuários",
+    url: "/admin/users",
+    icon: UserPlus,
   },
   {
     title: "Meu Perfil",
