@@ -108,7 +108,19 @@ const AdminLeads = () => {
       const data = await executeGetLeads(() => leadsApi.getAll());
       console.log('✅ Dados recebidos do backend:', data);
       
-      setLeads(data || []);
+const mockCorretores: Lead[] = [
+  {
+    id: " string",
+    nomeLancamento: "string",
+    nomeCliente: "string",
+    telefoneCliente: "string",
+    usuarioOpcionista: "string",
+  },
+];
+
+setLeads(mockCorretores || []);
+
+      // setLeads(data || []);
       
       console.log('📊 Total de leads carregadas do backend:', (data || []).length);
     } catch (error) {
