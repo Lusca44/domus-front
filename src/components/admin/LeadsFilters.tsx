@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Search, Filter } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +24,10 @@ interface LeadsFiltersProps {
   nomeClienteFilter: string;
   // Função callback para atualizar o filtro de nome do cliente
   onNomeClienteFilterChange: (value: string) => void;
+  // NOVO: Estado do filtro "Minhas leads" para administradores
+  myLeadsFilter: boolean;
+  // NOVO: Função callback para atualizar o filtro "Minhas leads"
+  onMyLeadsFilterChange: (value: boolean) => void;
   // Função callback executada quando o usuário clica no botão "Pesquisar"
   onSearch: () => void;
 }
@@ -34,8 +39,12 @@ export function LeadsFilters({
   onNomeLancamentoFilterChange,
   nomeClienteFilter,
   onNomeClienteFilterChange,
+  myLeadsFilter,
+  onMyLeadsFilterChange,
   onSearch,
 }: LeadsFiltersProps) {
+  const { isAdmin } = useAuth(); // Verificar se é administrador
+
   return (
     <div className="flex items-center gap-4 mb-6">
       {/* DROPDOWN COM TODOS OS FILTROS */}
@@ -49,18 +58,38 @@ export function LeadsFilters({
         <DropdownMenuContent className="w-80 p-4 bg-white border shadow-lg z-50">
           <div className="space-y-4">
             {/* FILTRO 1: CHECKBOX PARA FILTRAR APENAS LEADS SEM CORRETOR */}
-            <div className="flex flex-col space-y-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="corrector-filter"
-                  checked={correctorFilter}
-                  onCheckedChange={(checked) => onCorrectorFilterChange(!!checked)}
-                />
-                <Label htmlFor="corrector-filter" className="cursor-pointer">
-                  Sem corretor vinculado
-                </Label>
+            {/* Este filtro só aparece para administradores */}
+            {isAdmin && (
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="corrector-filter"
+                    checked={correctorFilter}
+                    onCheckedChange={(checked) => onCorrectorFilterChange(!!checked)}
+                  />
+                  <Label htmlFor="corrector-filter" className="cursor-pointer">
+                    Sem corretor vinculado
+                  </Label>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* NOVO FILTRO: CHECKBOX PARA ADMINISTRADOR VER APENAS SUAS LEADS */}
+            {/* Este filtro só aparece para administradores */}
+            {isAdmin && (
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="my-leads-filter"
+                    checked={myLeadsFilter}
+                    onCheckedChange={(checked) => onMyLeadsFilterChange(!!checked)}
+                  />
+                  <Label htmlFor="my-leads-filter" className="cursor-pointer">
+                    Apenas minhas leads (como corretor)
+                  </Label>
+                </div>
+              </div>
+            )}
 
             {/* FILTRO 2: INPUT DE TEXTO PARA BUSCAR POR NOME DO LANÇAMENTO */}
             <div className="flex flex-col space-y-2">

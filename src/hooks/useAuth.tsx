@@ -8,6 +8,7 @@ interface AuthState {
   user: any | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isAdmin: boolean; // Nova flag para identificar administradores
 }
 
 export const useAuth = () => {
@@ -15,7 +16,8 @@ export const useAuth = () => {
     token: null,
     user: null,
     isAuthenticated: false,
-    isLoading: true
+    isLoading: true,
+    isAdmin: false
   });
   
   const navigate = useNavigate();
@@ -29,18 +31,24 @@ export const useAuth = () => {
         const user = localStorage.getItem('user');
         
         if (token && user) {
+          const userData = JSON.parse(user);
+          // Verificar se o usuário é admin (isAdmin === 'S')
+          const isAdminUser = userData?.isAdmin === 'S';
+          
           setAuthState({
             token,
-            user: JSON.parse(user),
+            user: userData,
             isAuthenticated: true,
-            isLoading: false
+            isLoading: false,
+            isAdmin: isAdminUser
           });
         } else {
           setAuthState({
             token: null,
             user: null,
             isAuthenticated: false,
-            isLoading: false
+            isLoading: false,
+            isAdmin: false
           });
         }
       } catch (error) {
@@ -52,7 +60,8 @@ export const useAuth = () => {
           token: null,
           user: null,
           isAuthenticated: false,
-          isLoading: false
+          isLoading: false,
+          isAdmin: false
         });
       }
     };
@@ -65,11 +74,15 @@ export const useAuth = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
       
+      // Verificar se o usuário é admin
+      const isAdminUser = userData?.isAdmin === 'S';
+      
       setAuthState({
         token,
         user: userData,
         isAuthenticated: true,
-        isLoading: false
+        isLoading: false,
+        isAdmin: isAdminUser
       });
 
       toast({
@@ -96,7 +109,8 @@ export const useAuth = () => {
       token: null,
       user: null,
       isAuthenticated: false,
-      isLoading: false
+      isLoading: false,
+      isAdmin: false
     });
 
     toast({

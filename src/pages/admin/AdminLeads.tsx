@@ -1,10 +1,12 @@
+
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Download } from "lucide-react";
+import { Download, Users } from "lucide-react";
 import { leadsApi } from "@/utils/apiConfig";
 import { useApi } from "@/hooks/useApi";
+import { useAuth } from "@/hooks/useAuth";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import { LeadsFilters } from "@/components/admin/LeadsFilters";
@@ -12,6 +14,7 @@ import { LeadsTableControls } from "@/components/admin/LeadsTableControls";
 import { LeadsTable } from "@/components/admin/LeadsTable";
 import { LeadsEditModal } from "@/components/admin/LeadsEditModal";
 import { LeadsDeleteModal } from "@/components/admin/LeadsDeleteModal";
+import { LeadsBulkEditModal } from "@/components/admin/LeadsBulkEditModal";
 import { exportLeadsToExcel } from "@/utils/excelExport";
 
 interface Lead {
@@ -23,10 +26,13 @@ interface Lead {
 }
 
 const AdminLeads = () => {
+  const { isAdmin, user } = useAuth(); // Obter informações do usuário logado
+  
   // Estado para armazenar todas as leads vindas do backend
   const [leads, setLeads] = useState<Lead[]>([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [bulkEditModalOpen, setBulkEditModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   
   // ATUALIZADO: Incluindo o campo corretorOpcionistaId no formulário
@@ -47,6 +53,9 @@ const AdminLeads = () => {
   // FILTRO 3: Nome do Cliente - string de busca (busca parcial, case-insensitive)
   const [nomeClienteFilter, setNomeClienteFilter] = useState("");
   
+  // NOVO FILTRO 4: Minhas leads - boolean (true = mostrar apenas leads onde eu sou o corretor)
+  const [myLeadsFilter, setMyLeadsFilter] = useState(false);
+  
   // ===== ESTADOS DA PAGINAÇÃO =====
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,15 +75,35 @@ const AdminLeads = () => {
     successMessage: 'Lead excluída com sucesso'
   });
 
+  const { execute: executeBulkUpdateLeads } = useApi({
+    showSuccessToast: true,
+    successMessage: 'Leads atualizadas em lote com sucesso'
+  });
+
   useEffect(() => {
     fetchLeads();
   }, []);
 
   const fetchLeads = async () => {
     try {
+      // TODO: IMPLEMENTAR FILTRO AUTOMÁTICO PARA CORRETORES
+      // Se o usuário não for admin, deve filtrar automaticamente apenas suas leads
+      // Exemplo de parâmetros para o backend:
+      // const params = !isAdmin ? { corretorId: user?.id } : {};
+      // const data = await executeGetLeads(() => leadsApi.getAllWithFilters(params));
+      
       const data = await executeGetLeads(() => leadsApi.getAll());
       console.log(data)
-      setLeads(data || []);
+      
+      let filteredData = data || [];
+      
+      // LÓGICA COMENTADA: Filtrar automaticamente leads do corretor se não for admin
+      // if (!isAdmin && user?.id) {
+      //   filteredData = filteredData.filter(lead => lead.usuarioOpcionista === user.id);
+      //   console.log('🔒 Corretor logado - mostrando apenas suas leads:', filteredData.length);
+      // }
+      
+      setLeads(filteredData);
     } catch (error) {
       console.error('Erro ao buscar leads:', error);
     }
@@ -86,22 +115,26 @@ const AdminLeads = () => {
     console.log('🔍 Iniciando pesquisa com filtros:', {
       corrector: correctorFilter,
       nomeLancamento: nomeLancamentoFilter,
-      nomeCliente: nomeClienteFilter
+      nomeCliente: nomeClienteFilter,
+      myLeads: myLeadsFilter,
+      isAdmin: isAdmin,
+      userId: user?.id
     });
     
     // Resetamos a página atual para aplicar os filtros na primeira página
     setCurrentPage(1);
     
     try {
-      // PONTO DE INTEGRAÇÃO COM BACKEND:
-      // Aqui fazemos uma nova chamada para o backend passando os filtros
-      // Por enquanto, como o backend ainda não tem os endpoints com filtros,
-      // continuamos usando getAll() mas você pode substituir por:
-      // const data = await executeGetLeads(() => leadsApi.getAllWithFilters({
-      //   correctorFilter, 
-      //   nomeLancamentoFilter, 
-      //   nomeClienteFilter 
-      // }));
+      // TODO: IMPLEMENTAR CHAMADA COM FILTROS PARA O BACKEND
+      // Aqui você deve enviar todos os filtros para o backend:
+      // const filterParams = {
+      //   correctorFilter: isAdmin ? correctorFilter : false, // Só admin pode filtrar por "sem corretor"
+      //   nomeLancamentoFilter,
+      //   nomeClienteFilter,
+      //   myLeadsFilter: isAdmin ? myLeadsFilter : true, // Corretor sempre vê apenas suas leads
+      //   currentUserId: user?.id // ID do usuário logado para filtros
+      // };
+      // const data = await executeGetLeads(() => leadsApi.getAllWithFilters(filterParams));
       
       console.log('🚀 Fazendo nova consulta ao backend...');
       const data = await executeGetLeads(() => leadsApi.getAll());
@@ -132,14 +165,27 @@ const AdminLeads = () => {
     console.log('Aplicando filtros no frontend...');
     let filtered = leads;
 
-    // === FILTRO 1: POR CORRETOR ===
-    if (correctorFilter === true) {
+    // === FILTRO AUTOMÁTICO PARA CORRETORES ===
+    // LÓGICA COMENTADA: Corretores só veem suas próprias leads
+    // if (!isAdmin && user?.id) {
+    //   filtered = filtered.filter(lead => lead.usuarioOpcionista === user.id);
+    //   console.log('🔒 Filtro automático do corretor aplicado');
+    // }
+
+    // === FILTRO 1: POR CORRETOR (APENAS PARA ADMIN) ===
+    if (isAdmin && correctorFilter === true) {
       // Filtra leads que NÃO TEM corretor atribuído (checkbox marcado = sem corretor)
       // Verifica se usuarioOpcionista é null, undefined ou string vazia/só espaços
       filtered = filtered.filter(lead => !lead.usuarioOpcionista || lead.usuarioOpcionista.trim() === "");
       console.log('Filtro aplicado: SEM corretor (checkbox marcado)');
     }
-    // Se correctorFilter === false, não aplica filtro (mostra todas)
+
+    // === NOVO FILTRO: MINHAS LEADS (APENAS PARA ADMIN) ===
+    // Permite que admin veja apenas as leads onde ele é o corretor opcionista
+    if (isAdmin && myLeadsFilter === true && user?.id) {
+      filtered = filtered.filter(lead => lead.usuarioOpcionista === user.id);
+      console.log('Filtro aplicado: Minhas leads como corretor (admin)');
+    }
 
     // === FILTRO 2: POR NOME DO LANÇAMENTO ===
     if (nomeLancamentoFilter.trim() !== "") {
@@ -163,7 +209,7 @@ const AdminLeads = () => {
 
     console.log('Total de leads após filtros:', filtered.length);
     return filtered;
-  }, [leads, correctorFilter, nomeLancamentoFilter, nomeClienteFilter]);
+  }, [leads, correctorFilter, nomeLancamentoFilter, nomeClienteFilter, myLeadsFilter, isAdmin, user?.id]);
 
   // ===== LÓGICA DE PAGINAÇÃO =====
   // Calcula o total de páginas baseado no número de leads filtradas
@@ -180,7 +226,7 @@ const AdminLeads = () => {
   useEffect(() => {
     setCurrentPage(1);
     console.log('Página resetada para 1 devido a mudança nos filtros');
-  }, [correctorFilter, nomeLancamentoFilter, nomeClienteFilter, itemsPerPage]);
+  }, [correctorFilter, nomeLancamentoFilter, nomeClienteFilter, myLeadsFilter, itemsPerPage]);
 
   const handleEdit = (lead: Lead) => {
     setSelectedLead(lead);
@@ -240,6 +286,30 @@ const AdminLeads = () => {
     }
   };
 
+  // NOVA FUNÇÃO: Atualização em lote de corretores
+  const handleBulkUpdate = async (leadIds: string[], newCorretorId: string) => {
+    try {
+      // TODO: IMPLEMENTAR CHAMADA PARA ATUALIZAÇÃO EM LOTE NO BACKEND
+      // const updateData = {
+      //   leadIds: leadIds,
+      //   newCorretorId: newCorretorId || null // null para remover corretor
+      // };
+      // await executeBulkUpdateLeads(() => leadsApi.bulkUpdateCorretor(updateData));
+      
+      console.log('📤 Atualizando leads em lote:', {
+        leadIds,
+        newCorretorId: newCorretorId || 'Remover corretor'
+      });
+      
+      // Simular sucesso
+      await executeBulkUpdateLeads(() => Promise.resolve({ success: true }));
+      
+      fetchLeads(); // Recarregar a lista após atualização
+    } catch (error) {
+      console.error('Erro ao atualizar leads em lote:', error);
+    }
+  };
+
   const handleExportExcel = () => {
     exportLeadsToExcel(leads); // Exporta todas as leads do backend, não apenas as filtradas/paginadas
   };
@@ -250,12 +320,34 @@ const AdminLeads = () => {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Gerenciar Leads</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {isAdmin ? 'Gerenciar Leads' : 'Minhas Leads'}
+              </h2>
+              <p className="text-gray-600 mt-1">
+                {isAdmin 
+                  ? 'Gerencie todas as leads e atribua corretores' 
+                  : 'Visualize e gerencie suas leads como corretor opcionista'
+                }
+              </p>
             </div>
-            <Button onClick={handleExportExcel} className="gap-2">
-              <Download className="h-4 w-4" />
-              Exportar Excel
-            </Button>
+            <div className="flex gap-3">
+              {/* Botão de edição em lote - apenas para administradores */}
+              {isAdmin && (
+                <Button 
+                  onClick={() => setBulkEditModalOpen(true)}
+                  variant="outline" 
+                  className="gap-2"
+                  disabled={filteredLeads.length === 0}
+                >
+                  <Users className="h-4 w-4" />
+                  Editar em Lote
+                </Button>
+              )}
+              <Button onClick={handleExportExcel} className="gap-2">
+                <Download className="h-4 w-4" />
+                Exportar Excel
+              </Button>
+            </div>
           </div>
 
           {/* CARD DOS FILTROS */}
@@ -272,6 +364,8 @@ const AdminLeads = () => {
                 onNomeLancamentoFilterChange={setNomeLancamentoFilter}
                 nomeClienteFilter={nomeClienteFilter}
                 onNomeClienteFilterChange={setNomeClienteFilter}
+                myLeadsFilter={myLeadsFilter}
+                onMyLeadsFilterChange={setMyLeadsFilter}
                 onSearch={handleSearch}
               />
             </CardContent>
@@ -359,6 +453,16 @@ const AdminLeads = () => {
           selectedLead={selectedLead}
           onConfirm={confirmDelete}
         />
+
+        {/* Modal para edição em lote - apenas para administradores */}
+        {isAdmin && (
+          <LeadsBulkEditModal
+            open={bulkEditModalOpen}
+            onOpenChange={setBulkEditModalOpen}
+            leads={filteredLeads}
+            onBulkUpdate={handleBulkUpdate}
+          />
+        )}
       </AdminLayout>
     </ProtectedRoute>
   );
