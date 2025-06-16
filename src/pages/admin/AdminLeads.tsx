@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -105,24 +104,22 @@ const AdminLeads = () => {
       // }));
       
       console.log('🚀 Fazendo nova consulta ao backend...');
-      // const data = await executeGetLeads(() => leadsApi.getAll());
+      const data = await executeGetLeads(() => leadsApi.getAll());
       console.log('✅ Dados recebidos do backend:', data);
       
-const mockCorretores: Lead[] = [
-  {
-    id: " string",
-    nomeLancamento: "string",
-    nomeCliente: "string",
-    telefoneCliente: "string",
-    usuarioOpcionista: "string",
-  },
-];
+      const mockCorretores: Lead[] = [
+        {
+          id: "1",
+          nomeLancamento: "Lançamento Teste",
+          nomeCliente: "Cliente Teste",
+          telefoneCliente: "(11) 99999-9999",
+          usuarioOpcionista: "1",
+        },
+      ];
 
-setLeads(mockCorretores || []);
-
-      // setLeads(data || []);
+      setLeads(mockCorretores || []);
       
-      console.log('📊 Total de leads carregadas do backend:', (data || []).length);
+      console.log('📊 Total de leads carregadas do backend:', (mockCorretores || []).length);
     } catch (error) {
       console.error('❌ Erro ao pesquisar leads:', error);
     }
