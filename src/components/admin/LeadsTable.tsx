@@ -2,13 +2,20 @@
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface Lead {
   id: string;
   nomeLancamento: string;
   nomeCliente: string;
   telefoneCliente: string;
-  usuarioOpcionista: string;
+  usuarioOpcionista: string; // ID do corretor
+}
+
+interface Corretor {
+  id: string;
+  nome: string;
+  email?: string;
 }
 
 interface LeadsTableProps {
@@ -18,6 +25,64 @@ interface LeadsTableProps {
 }
 
 export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
+  const [corretoresMap, setCorretoresMap] = useState<Map<string, string>>(new Map());
+  const [loadingCorretores, setLoadingCorretores] = useState(false);
+
+  // Buscar nomes dos corretores quando as leads mudarem
+  useEffect(() => {
+    const corretorIds = leads
+      .map(lead => lead.usuarioOpcionista)
+      .filter(id => id && id.trim() !== '') // Filtrar IDs válidos
+      .filter((id, index, arr) => arr.indexOf(id) === index); // Remover duplicatas
+
+    if (corretorIds.length > 0) {
+      fetchCorretoresNomes(corretorIds);
+    }
+  }, [leads]);
+
+  const fetchCorretoresNomes = async (ids: string[]) => {
+    setLoadingCorretores(true);
+    try {
+      // TODO: SUBSTITUIR PELA SUA CHAMADA DE API REAL
+      // Exemplo de como deve ser a chamada:
+      // const response = await corretoresApi.getByIds(ids);
+      // const map = new Map(response.map(corretor => [corretor.id, corretor.nome]));
+      // setCorretoresMap(map);
+      
+      console.log('🔍 Buscando nomes dos corretores para IDs:', ids);
+      
+      // MOCK DE DADOS - REMOVER QUANDO IMPLEMENTAR A API REAL
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Dados mockados - substitua pela sua API
+      const mockCorretoresMap = new Map([
+        ["1", "João Silva"],
+        ["2", "Maria Santos"], 
+        ["3", "Pedro Oliveira"],
+      ]);
+      
+      setCorretoresMap(mockCorretoresMap);
+      console.log('✅ Nomes dos corretores carregados:', Object.fromEntries(mockCorretoresMap));
+    } catch (error) {
+      console.error('❌ Erro ao buscar nomes dos corretores:', error);
+    } finally {
+      setLoadingCorretores(false);
+    }
+  };
+
+  const getCorretorNome = (corretorId: string) => {
+    if (!corretorId || corretorId.trim() === '') {
+      return '-';
+    }
+    
+    if (loadingCorretores) {
+      return 'Carregando...';
+    }
+    
+    return corretoresMap.get(corretorId) || `ID: ${corretorId}`;
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -35,7 +100,7 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
             <TableCell>{lead.nomeLancamento}</TableCell>
             <TableCell>{lead.nomeCliente}</TableCell>
             <TableCell>{lead.telefoneCliente}</TableCell>
-            <TableCell>{lead.usuarioOpcionista || '-'}</TableCell>
+            <TableCell>{getCorretorNome(lead.usuarioOpcionista)}</TableCell>
             <TableCell>
               <div className="flex space-x-2">
                 <Button

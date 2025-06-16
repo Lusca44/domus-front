@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,7 +29,14 @@ const AdminLeads = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [editForm, setEditForm] = useState({ nomeCliente: "", telefoneCliente: "", nomeLancamento: ""});
+  
+  // ATUALIZADO: Incluindo o campo corretorOpcionistaId no formulário
+  const [editForm, setEditForm] = useState({ 
+    nomeCliente: "", 
+    telefoneCliente: "", 
+    nomeLancamento: "",
+    corretorOpcionistaId: "" // ID do corretor selecionado
+  });
   
   // ===== ESTADOS DOS FILTROS =====
   // FILTRO 1: Corretor - agora é um boolean (true = mostrar apenas sem corretor, false = mostrar todos)
@@ -170,7 +178,8 @@ const AdminLeads = () => {
     setEditForm({
       nomeCliente: lead.nomeCliente,
       telefoneCliente: lead.telefoneCliente,
-      nomeLancamento: lead.nomeLancamento
+      nomeLancamento: lead.nomeLancamento,
+      corretorOpcionistaId: lead.usuarioOpcionista || "" // Usar o ID atual do corretor
     });
     setEditModalOpen(true);
   };
@@ -179,7 +188,25 @@ const AdminLeads = () => {
     if (!selectedLead) return;
 
     try {
-      await executeUpdateLead(() => leadsApi.update(selectedLead.id, editForm));
+      // TODO: AJUSTAR A ESTRUTURA DE DADOS ENVIADA PARA O BACKEND
+      // O backend provavelmente espera algo como:
+      // {
+      //   nomeCliente: editForm.nomeCliente,
+      //   telefoneCliente: editForm.telefoneCliente, 
+      //   nomeLancamento: editForm.nomeLancamento,
+      //   usuarioOpcionista: editForm.corretorOpcionistaId // Enviar o ID do corretor
+      // }
+      
+      const updateData = {
+        nomeCliente: editForm.nomeCliente,
+        telefoneCliente: editForm.telefoneCliente,
+        nomeLancamento: editForm.nomeLancamento,
+        usuarioOpcionista: editForm.corretorOpcionistaId // ID do corretor selecionado
+      };
+
+      console.log('📤 Enviando dados para atualização:', updateData);
+      
+      await executeUpdateLead(() => leadsApi.update(selectedLead.id, updateData));
       setEditModalOpen(false);
       fetchLeads();
     } catch (error) {
