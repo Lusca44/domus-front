@@ -1,10 +1,12 @@
 
 /**
- * CONFIGURAÇÃO CENTRALIZADA DA API
+ * CONFIGURAÇÃO CENTRALIZADA DA API COM AXIOS
  * 
- * Este arquivo contém toda a configuração para fazer requisições HTTP para o backend.
+ * Este arquivo contém toda a configuração para fazer requisições HTTP para o backend usando Axios.
  * É o ponto central onde você configura a URL base da sua API e outros parâmetros.
  */
+
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 
 /**
  * CONFIGURAÇÃO PRINCIPAL - ALTERE AQUI SUA URL DO BACKEND
@@ -20,94 +22,100 @@ const API_CONFIG = {
   baseUrl: 'http://localhost:8080/',
   // baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/',
   timeout: 10000, // Tempo limite para requisições (10 segundos)
-  headers: {
-    'Content-Type': 'application/json', // Tipo de conteúdo padrão
-  },
 };
 
 /**
- * CLASSE PRINCIPAL PARA REQUISIÇÕES HTTP
+ * CLASSE PRINCIPAL PARA REQUISIÇÕES HTTP COM AXIOS
  * 
  * Esta classe encapsula toda a lógica de comunicação com o backend:
- * - Adiciona automaticamente o token de autenticação
+ * - Adiciona automaticamente o token de autenticação via interceptors
  * - Trata erros de forma consistente
  * - Aplica timeout nas requisições
  * - Centraliza a configuração de headers
  */
 export class ApiClient {
-  private baseUrl: string;
-  private timeout: number;
-  private defaultHeaders: Record<string, string>;
+  private axiosInstance: AxiosInstance;
 
   constructor() {
-    this.baseUrl = API_CONFIG.baseUrl;
-    this.timeout = API_CONFIG.timeout;
-    this.defaultHeaders = API_CONFIG.headers;
-  }
-
-  /**
-   * MÉTODO PRIVADO: Obter headers com token de autenticação
-   * 
-   * Automaticamente pega o token do localStorage e adiciona no header Authorization
-   * Formato: "Bearer seu-token-aqui"
-   */
-  private getAuthHeaders(): Record<string, string> {
-    const token = localStorage.getItem('token');
-    return {
-      ...this.defaultHeaders,
-      ...(token && { Authorization: `Bearer ${token}` }),
-    };
-  }
-
-  /**
-   * MÉTODO PRIVADO: Fazer requisição HTTP genérica
-   * 
-   * Este método é usado internamente por GET, POST, PUT, DELETE
-   * - Adiciona automaticamente os headers de autenticação
-   * - Aplica timeout para evitar requisições infinitas
-   * - Trata erros HTTP de forma consistente
-   * - Converte automaticamente a resposta para JSON
-   */
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
-    // Monta a URL completa: baseUrl + endpoint
-    const url = `${this.baseUrl}${endpoint}`;
-
-    // Configuração da requisição
-    const config: RequestInit = {
-      ...options,
+    // Criar instância do Axios com configurações padrão
+    this.axiosInstance = axios.create({
+      baseURL: API_CONFIG.baseUrl,
+      timeout: API_CONFIG.timeout,
       headers: {
-        ...this.getAuthHeaders(), // Headers com autenticação
-        ...options.headers, // Headers específicos da requisição
+        'Content-Type': 'application/json',
       },
-      signal: AbortSignal.timeout(this.timeout), // Timeout automático
-    };
+    });
 
-    try {
-      const response = await fetch(url, config);
+    // Configurar interceptors
+    this.setupInterceptors();
+  }
 
-      // Verificar se a resposta foi bem-sucedida (status 200-299)
-      if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
+  /**
+   * CONFIGURAÇÃO DOS INTERCEPTORS
+   * 
+   * Os interceptors permitem interceptar requisições e respostas automaticamente:
+   * - Request interceptor: adiciona token de autenticação automaticamente
+   * - Response interceptor: trata erros de forma consistente
+   */
+  private setupInterceptors(): void {
+    // REQUEST INTERCEPTOR - Adiciona token de autenticação automaticamente
+    this.axiosInstance.interceptors.request.use(
+      (config) => {
+        // Obter token do localStorage
+        const token = localStorage.getItem('token');
+        
+        // Adicionar token no header Authorization se existir
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        console.log(`🚀 Fazendo requisição: ${config.method?.toUpperCase()} ${config.url}`);
+        return config;
+      },
+      (error) => {
+        console.error('❌ Erro no request interceptor:', error);
+        return Promise.reject(error);
       }
+    );
 
-      const contentLength = response.headers.get('Content-Length');
-      const contentType = response.headers.get('Content-Type');
-
-      // Se não há conteúdo ou não é JSON, retorna vazio
-      if (contentLength === '0' || !contentType?.includes('application/json')) {
-        console.log('✅ Resposta vazia (status 200)');
-        return {} as T; // Ou null se preferir
+    // RESPONSE INTERCEPTOR - Trata respostas e erros
+    this.axiosInstance.interceptors.response.use(
+      (response: AxiosResponse) => {
+        console.log(`✅ Resposta recebida: ${response.status} - ${response.config.url}`);
+        
+        // Se a resposta não tem dados ou é vazia, retorna objeto vazio
+        if (!response.data) {
+          return {};
+        }
+        
+        return response.data; // Retorna apenas os dados, não o objeto completo da resposta
+      },
+      (error: AxiosError) => {
+        console.error('❌ Erro na resposta:', error);
+        
+        // Tratamento específico para diferentes tipos de erro
+        if (error.response) {
+          // Erro da API (4xx, 5xx)
+          const status = error.response.status;
+          const message = error.response.data || error.message;
+          
+          // Se for erro 401 (não autorizado), redirecionar para login
+          if (status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/admin/login';
+          }
+          
+          throw new Error(`HTTP Error ${status}: ${message}`);
+        } else if (error.request) {
+          // Erro de rede (sem resposta)
+          throw new Error('Erro de conexão. Verifique sua internet e tente novamente.');
+        } else {
+          // Erro na configuração da requisição
+          throw new Error(`Erro na requisição: ${error.message}`);
+        }
       }
-
-      console.log(`✅ Resposta recebida:`, response.status);
-      return response.json();
-    } catch (error) {
-      console.error('❌ Erro na requisição:', error);
-      throw error; // Re-lança o erro para ser tratado pelo componente
-    }
+    );
   }
 
   /**
@@ -121,29 +129,28 @@ export class ApiClient {
    */
 
   // GET: Buscar dados
-  async get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET' });
+  async get<T>(endpoint: string, params?: any): Promise<T> {
+    return this.axiosInstance.get(endpoint, { params });
   }
 
   // POST: Criar novos dados
   async post<T>(endpoint: string, data?: any): Promise<T> {
-    return this.request<T>(endpoint, {
-      method: 'POST',
-      body: data ? JSON.stringify(data) : undefined,
-    });
+    return this.axiosInstance.post(endpoint, data);
   }
 
   // PUT: Atualizar dados existentes
   async put<T>(endpoint: string, data?: any): Promise<T> {
-    return this.request<T>(endpoint, {
-      method: 'PUT',
-      body: data ? JSON.stringify(data) : undefined,
-    });
+    return this.axiosInstance.put(endpoint, data);
   }
 
   // DELETE: Excluir dados
   async delete<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
+    return this.axiosInstance.delete(endpoint);
+  }
+
+  // PATCH: Atualização parcial
+  async patch<T>(endpoint: string, data?: any): Promise<T> {
+    return this.axiosInstance.patch(endpoint, data);
   }
 }
 
@@ -169,24 +176,31 @@ export const apiClient = new ApiClient();
  * - leadsApi.getAll() // GET /api/leads
  */
 export const leadsApi = {
-  // GET /api/leads - Buscar todas as leads
+  // GET /lancamento/obterLeads - Buscar todas as leads
   getAll: (): Promise<any[]> => apiClient.get('lancamento/obterLeads'),
 
-  // GET /api/leads/:id - Buscar lead específica
+  // GET /lancamento/:id - Buscar lead específica
   getById: (id: string): Promise<any> => apiClient.get(`lancamento/${id}`),
 
-  // GET /api/leads/:id - Buscar lead específica
+  // GET /lancamento/:nomeLancamento - Buscar lead por nome do lançamento
   getByName: (nomeLancamento: string): Promise<any> => apiClient.get(`lancamento/${nomeLancamento}`),
 
-  // POST /api/leads - Criar nova lead
-  // ESTE É O MÉTODO QUE VOCÊ VAI USAR NO FORMULÁRIO
+  // POST /lancamento/cadastroLead - Criar nova lead
   create: (data: any): Promise<any> => apiClient.post('lancamento/cadastroLead', data),
 
-  // PUT /api/leads/:id - Atualizar lead existente
+  // PUT /lancamento/:id - Atualizar lead existente
   update: (id: string, data: any): Promise<any> => apiClient.put(`lancamento/${id}`, data),
 
-  // DELETE /api/leads/:id - Excluir lead
+  // DELETE /lancamento/:id - Excluir lead
   delete: (id: string): Promise<any> => apiClient.delete(`lancamento/${id}`),
+
+  // PATCH /lancamento/bulk-update - Atualização em lote de corretores
+  bulkUpdateCorretor: (data: { leadIds: string[], newCorretorId: string | null }): Promise<any> => 
+    apiClient.patch('lancamento/bulk-update-corretor', data),
+
+  // GET /lancamento/obterLeads com filtros - Buscar leads com filtros
+  getAllWithFilters: (filters: any): Promise<any[]> => 
+    apiClient.get('lancamento/obterLeads', filters),
 };
 
 /**
@@ -195,17 +209,39 @@ export const leadsApi = {
  * Endpoints para login, perfil do usuário, etc.
  */
 export const authApi = {
-  // POST /api/auth/login - Fazer login
-  login: (credentials: any): Promise<any> => apiClient.post('/auth/login', credentials),
+  // POST /auth/login - Fazer login
+  login: (credentials: any): Promise<any> => apiClient.post('auth/login', credentials),
 
-  // GET /api/auth/profile - Buscar perfil do usuário
-  profile: (): Promise<any> => apiClient.get('/auth/profile'),
+  // GET /auth/profile - Buscar perfil do usuário
+  profile: (): Promise<any> => apiClient.get('auth/profile'),
 
-  // PUT /api/auth/profile - Atualizar perfil
-  updateProfile: (data: any): Promise<any> => apiClient.put('/auth/profile', data),
+  // PUT /auth/profile - Atualizar perfil
+  updateProfile: (data: any): Promise<any> => apiClient.put('auth/profile', data),
 
-  // PUT /api/auth/profile/password - Alterar senha
-  changePassword: (data: any): Promise<any> => apiClient.put('/auth/profile/password', data),
+  // PUT /auth/profile/password - Alterar senha
+  changePassword: (data: any): Promise<any> => apiClient.put('auth/profile/password', data),
+};
+
+/**
+ * API PARA GERENCIAR USUÁRIOS (ADMIN)
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const usersApi = {
+  // GET /users - Buscar todos os usuários
+  getAll: (): Promise<any[]> => apiClient.get('users'),
+
+  // GET /users/:id - Buscar usuário específico
+  getById: (id: string): Promise<any> => apiClient.get(`users/${id}`),
+
+  // POST /users - Criar novo usuário
+  create: (data: any): Promise<any> => apiClient.post('users', data),
+
+  // PUT /users/:id - Atualizar usuário
+  update: (id: string, data: any): Promise<any> => apiClient.put(`users/${id}`, data),
+
+  // DELETE /users/:id - Excluir usuário
+  delete: (id: string): Promise<any> => apiClient.delete(`users/${id}`),
 };
 
 export default apiClient;
