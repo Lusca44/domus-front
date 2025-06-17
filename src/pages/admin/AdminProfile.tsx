@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +22,8 @@ import { Edit, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { userApi } from "@/utils/apiConfig";
+import { userApi, authApi } from "@/utils/apiConfig";
+import { useTokenValidation } from "@/hooks/useTokenValidation";
 
 interface UserProfile {
   id: string;
@@ -48,6 +50,9 @@ const AdminProfile = () => {
   });
   const { toast } = useToast();
   const { user } = useAuth();
+  
+  // Validação de token
+  useTokenValidation();
 
   useEffect(() => {
     fetchProfile();
@@ -56,37 +61,35 @@ const AdminProfile = () => {
   const fetchProfile = async () => {
     try {
       setIsLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const dataUsario = await userApi.getById("");
-
-      setProfile(dataUsario);
-
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data);
+      
+      // Tentar buscar perfil via API
+      try {
+        const profileData = await authApi.profile();
+        setProfile(profileData);
         setEditForm({
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
+          name: profileData.nome,
+          email: profileData.email,
+          phone: profileData.telefone,
         });
-      } else {
-        toast({
-          title: "Erro ao carregar perfil",
-          description: "Não foi possível carregar as informações do perfil.",
-          variant: "destructive",
-        });
+      } catch (error) {
+        // Se falhar, tentar buscar pelo ID do usuário logado
+        if (user?.id) {
+          const userData = await userApi.getById(user.id);
+          setProfile(userData);
+          setEditForm({
+            name: userData.nome,
+            email: userData.email,
+            phone: userData.telefone,
+          });
+        } else {
+          throw new Error("Usuário não encontrado");
+        }
       }
     } catch (error) {
+      console.error("Erro ao carregar perfil:", error);
       toast({
-        title: "Erro de conexão",
-        description: "Erro ao conectar com o servidor.",
+        title: "Erro ao carregar perfil",
+        description: "Não foi possível carregar as informações do perfil.",
         variant: "destructive",
       });
     } finally {
@@ -96,36 +99,25 @@ const AdminProfile = () => {
 
   const handleSaveProfile = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/profile", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editForm),
+      const updatedProfile = await authApi.updateProfile({
+        nome: editForm.name,
+        email: editForm.email,
+        telefone: editForm.phone,
       });
-
-      if (response.ok) {
-        const updatedProfile = await response.json();
-        setProfile(updatedProfile);
-        localStorage.setItem("user", JSON.stringify(updatedProfile));
-        toast({
-          title: "Perfil atualizado",
-          description: "Suas informações foram atualizadas com sucesso.",
-        });
-        setEditModalOpen(false);
-      } else {
-        toast({
-          title: "Erro ao atualizar",
-          description: "Não foi possível atualizar o perfil.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
+      
+      setProfile(updatedProfile);
+      localStorage.setItem("user", JSON.stringify(updatedProfile));
+      
       toast({
-        title: "Erro de conexão",
-        description: "Erro ao conectar com o servidor.",
+        title: "Perfil atualizado",
+        description: "Suas informações foram atualizadas com sucesso.",
+      });
+      setEditModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao atualizar perfil:", error);
+      toast({
+        title: "Erro ao atualizar",
+        description: "Não foi possível atualizar o perfil.",
         variant: "destructive",
       });
     }
@@ -142,41 +134,26 @@ const AdminProfile = () => {
     }
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/profile/password", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentPassword: passwordForm.currentPassword,
-          newPassword: passwordForm.newPassword,
-        }),
+      await authApi.changePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
       });
 
-      if (response.ok) {
-        toast({
-          title: "Senha alterada",
-          description: "Sua senha foi alterada com sucesso.",
-        });
-        setPasswordModalOpen(false);
-        setPasswordForm({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
-      } else {
-        toast({
-          title: "Erro ao alterar senha",
-          description: "Verifique se a senha atual está correta.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
       toast({
-        title: "Erro de conexão",
-        description: "Erro ao conectar com o servidor.",
+        title: "Senha alterada",
+        description: "Sua senha foi alterada com sucesso.",
+      });
+      setPasswordModalOpen(false);
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (error) {
+      console.error("Erro ao alterar senha:", error);
+      toast({
+        title: "Erro ao alterar senha",
+        description: "Verifique se a senha atual está correta.",
         variant: "destructive",
       });
     }
