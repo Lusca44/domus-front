@@ -163,13 +163,13 @@ export const apiClient = new ApiClient();
  * ALTERE OS PATHS AQUI CONFORME SUA API:
  */
 
-
 export interface LancamentoQueryParams {
   nomeLancamento?: string;
   isSemCorretor?: boolean;
   nomeCliente?: string;
   corretorId?: string;
 }
+
 /**
  * API PARA GERENCIAR LEADS
  *
@@ -191,7 +191,7 @@ export const leadsApi = {
   // GET /lancamento/:nomeLancamento - Buscar lead por nome do lançamento
   getByName: (nomeLancamento: string): Promise<any> => apiClient.get(`lancamento/${nomeLancamento}`),
 
-  // POST /lancamento/cadastroLead - Criar nova lead
+  // POST /lancamento/cadastroLead - Criar nova lead (agora com email)
   create: (data: any): Promise<any> => apiClient.post('lancamento/cadastroLead', data),
 
   // PUT /lancamento/:id - Atualizar lead existente

@@ -22,6 +22,7 @@ import { LeadsEditModal } from "@/components/admin/LeadsEditModal";
 import { LeadsDeleteModal } from "@/components/admin/LeadsDeleteModal";
 import { LeadsBulkEditModal } from "@/components/admin/LeadsBulkEditModal";
 import { exportLeadsToExcel } from "@/utils/excelExport";
+import { useTokenValidation } from "@/hooks/useTokenValidation";
 
 interface Lead {
   id: string;
@@ -32,6 +33,9 @@ interface Lead {
 }
 
 const AdminLeads = () => {
+  // Validação de token
+  useTokenValidation();
+
   const { isAdmin, user, isLoading: authLoading } = useAuth(); // Obter informações do usuário logado
 
   // Estado para armazenar todas as leads vindas do backend

@@ -7,25 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
 import { Loader2, Send } from 'lucide-react';
-
-/**
- * IMPORTAÇÕES PARA A NOVA CONFIGURAÇÃO DE API
- * 
- * Agora o formulário usa a configuração centralizada de API!
- */
-import { leadsApi } from '@/utils/apiConfig';  // API específica para leads
-import { useApi } from '@/hooks/useApi';       // Hook customizado
-
-/**
- * Componente de Formulário de Captação de Leads
- * 
- * AGORA INTEGRADO COM A CONFIGURAÇÃO CENTRALIZADA DE API!
- * 
- * Este componente agora usa:
- * - leadsApi.create() para salvar leads
- * - useApi() hook para gerenciar estados
- * - Configuração automática de URL do apiConfig.ts
- */
+import { leadsApi } from '@/utils/apiConfig';
+import { useApi } from '@/hooks/useApi';
 
 interface LeadCaptureFormProps {
   nomeLancamento: string;
@@ -36,6 +19,7 @@ interface LeadCaptureFormProps {
 
 interface FormData {
   nomeCliente: string;
+  emailCliente: string;
   telefoneCliente: string;
 }
 
@@ -48,22 +32,14 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
   const navigate = useNavigate();
   const uniqueId = useId();
 
-  // Estados do formulário
   const [formData, setFormData] = useState<FormData>({
     nomeCliente: '',
+    emailCliente: '',
     telefoneCliente: ''
   });
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
-  /**
-   * USANDO O HOOK useApi PARA GERENCIAR A REQUISIÇÃO
-   * 
-   * O hook já gerencia:
-   * - Estado de loading automaticamente
-   * - Tratamento de erros com toast
-   * - Mensagem de sucesso
-   */
   const { loading: isLoading, execute: executeSaveLead } = useApi({
     showSuccessToast: true,
     successMessage: 'Lead cadastrada com sucesso! Nossa equipe entrará em contato.',
@@ -71,10 +47,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     errorMessage: 'Erro ao cadastrar lead. Tente novamente.'
   });
 
-  /**
-   * Função para validar os campos do formulário
-   * Retorna true se todos os campos obrigatórios estão preenchidos corretamente
-   */
   const validarFormulario = (): boolean => {
     const novosErros: Partial<FormData> = {};
 
@@ -83,6 +55,14 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
       novosErros.nomeCliente = 'Nome é obrigatório';
     } else if (formData.nomeCliente.trim().length < 2) {
       novosErros.nomeCliente = 'Nome deve ter pelo menos 2 caracteres';
+    }
+
+    // Validação do email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.emailCliente.trim()) {
+      novosErros.emailCliente = 'Email é obrigatório';
+    } else if (!emailRegex.test(formData.emailCliente)) {
+      novosErros.emailCliente = 'Email deve ter formato válido';
     }
 
     // Validação do telefone
@@ -97,10 +77,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     return Object.keys(novosErros).length === 0;
   };
 
-  /**
-   * Função para formatar telefone automaticamente
-   * Aplica máscara (XX) XXXXX-XXXX conforme o usuário digita
-   */
   const formatarTelefone = (value: string): string => {
     const apenasNumeros = value.replace(/\D/g, '');
 
@@ -111,13 +87,9 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     }
   };
 
-  /**
-   * Manipulador de mudanças nos campos do formulário
-   */
   const handleInputChange = (campo: keyof FormData, valor: string) => {
     let valorFormatado = valor;
 
-    // Aplicar formatação específica para telefone
     if (campo === 'telefoneCliente') {
       valorFormatado = formatarTelefone(valor);
     }
@@ -127,7 +99,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
       [campo]: valorFormatado
     }));
 
-    // Limpar erro do campo quando o usuário começar a digitar
     if (errors[campo]) {
       setErrors(prev => ({
         ...prev,
@@ -136,33 +107,9 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     }
   };
 
-  /**
-   * NOVA FUNÇÃO DE ENVIO DO FORMULÁRIO
-   * 
-   * AGORA USANDO A CONFIGURAÇÃO CENTRALIZADA DE API!
-   * 
-   * ✅ Não precisa mais configurar URL manualmente
-   * ✅ Usa leadsApi.create() automaticamente
-   * ✅ Tratamento de erro automático via useApi
-   * ✅ Loading state automático
-   * ✅ Toast notifications automáticas
-   * 
-   * PARA CONFIGURAR SUA API:
-   * 1. Vá no arquivo src/utils/apiConfig.ts
-   * 2. Altere a baseUrl para sua URL do backend
-   * 3. Se necessário, altere o path '/leads' na leadsApi
-   * 
-   * Exemplo de dados enviados para o backend:
-   * {
-   *   nomeCliente: "João Silva",
-   *   telefoneCliente: "11999999999",
-   *   nomeLancamento: "portal-principal"
-   * }
-   */
   const enviarFormulario = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validar formulário
     if (!validarFormulario()) {
       toast({
         title: 'Erro no formulário',
@@ -173,35 +120,17 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
     }
 
     try {
-      /**
-       * DADOS QUE SERÃO ENVIADOS PARA O BACKEND
-       * 
-       * Estrutura padrão de lead. Modifique conforme sua API:
-       */
       const dadosParaEnvio = {
         nomeCliente: formData.nomeCliente.trim(),
-        telefoneCliente: formData.telefoneCliente.replace(/\D/g, ''), // Remove formatação
-        nomeLancamento: nomeLancamento, // Identifica origem do lead
-        // Adicione outros campos conforme necessário:
-        // status: 'novo',
-        // canal: 'website',
-        // etc...
+        emailCliente: formData.emailCliente.trim(),
+        telefoneCliente: formData.telefoneCliente.replace(/\D/g, ''),
+        nomeLancamento: nomeLancamento,
       };
 
-      console.log('📝 Enviando lead para o backend:');
+      console.log('📝 Enviando lead para o backend:', dadosParaEnvio);
 
-      /**
-       * EXECUTAR REQUISIÇÃO USANDO A API CENTRALIZADA
-       * 
-       * Esta linha faz:
-       * 1. POST para {baseUrl}/leads com os dados
-       * 2. Adiciona automaticamente headers de autenticação (se houver token)
-       * 3. Mostra loading automático
-       * 4. Trata erros com toast
-       * 5. Mostra sucesso com toast
-       */
       await executeSaveLead(() => leadsApi.create(dadosParaEnvio));
-      // Redirecionar para página de agradecimento
+      
       setTimeout(() => {
         const dadosAgradecimento = {
           nomeCliente: dadosParaEnvio.nomeCliente.trim(),
@@ -214,16 +143,12 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
       }, 2000);
       
     } catch (error) {
-      // Erro já tratado pelo useApi hook com toast
       console.error('❌ Erro ao salvar lead:', error);
-      
-      // Aqui você pode adicionar tratamento adicional se necessário
-      // Por exemplo, analytics, log específico, etc.
     }
     finally{
-      // Limpar formulário após sucesso
       setFormData({
         nomeCliente: "",
+        emailCliente: "",
         telefoneCliente: "",
       });
     }
@@ -256,6 +181,26 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             )}
           </div>
 
+          {/* Campo de Email */}
+          <div className="space-y-2">
+            <Label htmlFor={`${uniqueId}-email`}>
+              Email
+              <span className="text-red-500 ml-1">*</span>
+            </Label>
+            <Input
+              id={`${uniqueId}-email`}
+              type="email"
+              value={formData.emailCliente}
+              onChange={(e) => handleInputChange("emailCliente", e.target.value)}
+              placeholder="seu.email@exemplo.com"
+              className={errors.emailCliente ? "border-red-500" : ""}
+              disabled={isLoading}
+            />
+            {errors.emailCliente && (
+              <p className="text-sm text-red-500">{errors.emailCliente}</p>
+            )}
+          </div>
+
           {/* Campo de Telefone */}
           <div className="space-y-2">
             <Label htmlFor={`${uniqueId}-telefone`}>
@@ -277,7 +222,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             )}
           </div>
 
-          {/* Botão agora usa isLoading do hook useApi */}
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
               <>
@@ -292,7 +236,6 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             )}
           </Button>
 
-          {/* Política de Privacidade */}
           <p className="text-xs text-gray-500 text-center mt-4">
             Ao enviar este formulário, você estará concordando com em ser
             contactado via ligação, whastapp ou email.

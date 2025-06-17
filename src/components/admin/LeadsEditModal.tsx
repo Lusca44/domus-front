@@ -11,15 +11,17 @@ interface Lead {
   id: string;
   nomeLancamento: string;
   nomeCliente: string;
+  emailCliente?: string;
   telefoneCliente: string;
   usuarioOpcionista: string;
 }
 
 interface EditForm {
   nomeCliente: string;
+  emailCliente: string;
   telefoneCliente: string;
   nomeLancamento: string;
-  corretorOpcionistaId: string; // ID do corretor selecionado
+  corretorOpcionistaId: string;
 }
 
 interface Corretor {
@@ -46,7 +48,6 @@ export function LeadsEditModal({
   const [corretores, setCorretores] = useState<Corretor[]>([]);
   const [loadingCorretores, setLoadingCorretores] = useState(false);
 
-  // Buscar lista de corretores quando o modal abrir
   useEffect(() => {
     if (open) {
       fetchCorretores();
@@ -56,14 +57,7 @@ export function LeadsEditModal({
   const fetchCorretores = async () => {
     setLoadingCorretores(true);
     try {
-      // TODO: SUBSTITUIR PELA SUA CHAMADA DE API REAL
-      // Exemplo de como deve ser a chamada:
-      // const response = await corretoresApi.getAll();
-      // setCorretores(response);
-      
-      // MOCK DE DADOS - REMOVER QUANDO IMPLEMENTAR A API REAL
       console.log('🔍 Buscando corretores do backend...');
-      // Simular delay da API
       
       const data = await userApi.obterUsuarios();
       
@@ -71,7 +65,6 @@ export function LeadsEditModal({
       console.log('✅ Corretores carregados:', data);
     } catch (error) {
       console.error('❌ Erro ao buscar corretores:', error);
-      // TODO: Adicionar toast de erro se necessário
     } finally {
       setLoadingCorretores(false);
     }
@@ -93,6 +86,15 @@ export function LeadsEditModal({
               id="name"
               value={editForm.nomeCliente}
               onChange={(e) => onEditFormChange({ ...editForm, nomeCliente: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={editForm.emailCliente}
+              onChange={(e) => onEditFormChange({ ...editForm, emailCliente: e.target.value })}
             />
           </div>
           <div>

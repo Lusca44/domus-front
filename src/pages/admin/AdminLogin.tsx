@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { authApi } from "@/utils/apiConfig";
+import { useNavigate } from "react-router-dom";
 
 interface Usuario {
   id: string;
@@ -24,7 +25,7 @@ interface LoginResponse {
 }
 
 const AdminLogin = () => {
-
+  const navigate = useNavigate();
   const [loginResponse, setLoginResponse] = useState<LoginResponse>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,15 +33,19 @@ const AdminLogin = () => {
   const { login, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
+  // Redirecionar se já estiver autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Simular autenticação (substituir pela sua API real)
       if (email && password) {
-       
         const credenciais = {
           email: email,
           senha: password

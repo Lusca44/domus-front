@@ -1,221 +1,147 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
+import { UserPlus, Users, Edit, Trash2 } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
-import { UserPlus, Save } from "lucide-react";
+import { userApi } from "@/utils/apiConfig";
+import { UserCreateModal } from "@/components/admin/UserCreateModal";
+import { useTokenValidation } from "@/hooks/useTokenValidation";
 
-interface UserFormData {
+interface User {
+  id: string;
   nome: string;
   email: string;
-  senha: string;
-  telefone: string;
-  isAdmin: string;
-  isAtivo: boolean;
+  telefone?: string;
+  isAdmin: boolean;
+  ativo: boolean;
+  dataCadastro: string;
 }
 
 const AdminUsers = () => {
-  const { toast } = useToast();
-  const { loading, execute } = useApi({
-    showSuccessToast: true,
-    successMessage: "Usuário cadastrado com sucesso!",
+  // Validação de token
+  useTokenValidation();
+
+  const [users, setUsers] = useState<User[]>([]);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+
+  const { loading: loadingUsers, execute: executeGetUsers } = useApi<User[]>({
+    showErrorToast: true,
+    errorMessage: "Erro ao carregar usuários",
   });
 
-  const [formData, setFormData] = useState<UserFormData>({
-    nome: "",
-    email: "",
-    senha: "",
-    telefone: "",
-    isAdmin: "N", // 'S' para admin, 'N' para corretor
-    isAtivo: true,
-  });
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-  const handleInputChange = (field: keyof UserFormData, value: string | boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const resetForm = () => {
-    setFormData({
-      nome: "",
-      email: "",
-      senha: "",
-      telefone: "",
-      isAdmin: "N",
-      isAtivo: true,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.nome || !formData.email || !formData.senha) {
-      toast({
-        title: "Erro de validação",
-        description: "Nome, email e senha são obrigatórios.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const fetchUsers = async () => {
     try {
-      // TODO: Implementar a chamada real para sua API de cadastro de usuários
-      // A estrutura do objeto já está compatível com seu backend
-      await execute(async () => {
-        // Exemplo de como fazer a requisição:
-        // const response = await fetch('SUA_URL_API/usuarios', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({
-        //     ...formData,
-        //     dataCadastro: new Date().toISOString().split('T')[0], // formato yyyy-MM-dd
-        //   })
-        // });
-        // 
-        // if (!response.ok) {
-        //   throw new Error('Erro ao cadastrar usuário');
-        // }
-        // 
-        // return await response.json();
-        
-        // Por enquanto, simular sucesso
-        console.log('Dados a serem enviados:', formData);
-        return { success: true };
-      });
-
-      resetForm();
+      const data = await executeGetUsers(() => userApi.obterUsuarios());
+      setUsers(data || []);
     } catch (error) {
-      console.error('Erro ao cadastrar usuário:', error);
+      console.error("Erro ao buscar usuários:", error);
     }
+  };
+
+  const handleUserCreated = () => {
+    fetchUsers(); // Recarregar a lista após criar usuário
   };
 
   return (
     <ProtectedRoute>
       <AdminLayout>
         <div className="space-y-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Cadastrar Usuários
-            </h2>
-            <p className="text-gray-600">
-              Cadastre novos corretores ou administradores no sistema.
-            </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Gerenciar Usuários
+              </h2>
+              <p className="text-gray-600">
+                Liste e gerencie todos os usuários do sistema.
+              </p>
+            </div>
+            <Button
+              onClick={() => setCreateModalOpen(true)}
+              className="flex items-center gap-2"
+            >
+              <UserPlus className="h-4 w-4" />
+              Novo Usuário
+            </Button>
           </div>
 
-          <Card className="max-w-2xl">
+          <Card>
             <CardHeader>
               <div className="flex items-center space-x-2">
-                <UserPlus className="h-6 w-6 text-blue-600" />
-                <CardTitle>Novo Usuário</CardTitle>
+                <Users className="h-6 w-6 text-blue-600" />
+                <CardTitle>Lista de Usuários</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="nome">Nome *</Label>
-                    <Input
-                      id="nome"
-                      type="text"
-                      value={formData.nome}
-                      onChange={(e) => handleInputChange("nome", e.target.value)}
-                      placeholder="Nome completo"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
-                      placeholder="email@exemplo.com"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="senha">Senha *</Label>
-                    <Input
-                      id="senha"
-                      type="password"
-                      value={formData.senha}
-                      onChange={(e) => handleInputChange("senha", e.target.value)}
-                      placeholder="Digite a senha"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="telefone">Telefone</Label>
-                    <Input
-                      id="telefone"
-                      type="tel"
-                      value={formData.telefone}
-                      onChange={(e) => handleInputChange("telefone", e.target.value)}
-                      placeholder="(11) 99999-9999"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="tipo">Tipo de Usuário</Label>
-                    <Select
-                      value={formData.isAdmin}
-                      onValueChange={(value) => handleInputChange("isAdmin", value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="N">Corretor Opcionista</SelectItem>
-                        <SelectItem value="S">Administrador</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="isAtivo"
-                      checked={formData.isAtivo}
-                      onCheckedChange={(checked) => handleInputChange("isAtivo", checked)}
-                    />
-                    <Label htmlFor="isAtivo">Usuário ativo</Label>
-                  </div>
+              {loadingUsers ? (
+                <div className="text-center py-8">Carregando usuários...</div>
+              ) : users.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  Nenhum usuário encontrado
                 </div>
-
-                <div className="flex gap-4 pt-4">
-                  <Button
-                    type="submit"
-                    disabled={loading}
-                    className="flex items-center gap-2"
-                  >
-                    <Save className="h-4 w-4" />
-                    {loading ? "Cadastrando..." : "Cadastrar Usuário"}
-                  </Button>
-                  
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={resetForm}
-                    disabled={loading}
-                  >
-                    Limpar Formulário
-                  </Button>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-3">Nome</th>
+                        <th className="text-left p-3">Email</th>
+                        <th className="text-left p-3">Telefone</th>
+                        <th className="text-left p-3">Tipo</th>
+                        <th className="text-left p-3">Status</th>
+                        <th className="text-left p-3">Data Cadastro</th>
+                        <th className="text-left p-3">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((user) => (
+                        <tr key={user.id} className="border-b hover:bg-gray-50">
+                          <td className="p-3 font-medium">{user.nome}</td>
+                          <td className="p-3">{user.email}</td>
+                          <td className="p-3">{user.telefone || '-'}</td>
+                          <td className="p-3">
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              user.isAdmin 
+                                ? 'bg-purple-100 text-purple-800' 
+                                : 'bg-blue-100 text-blue-800'
+                            }`}>
+                              {user.isAdmin ? 'Administrador' : 'Corretor'}
+                            </span>
+                          </td>
+                          <td className="p-3">
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              user.ativo 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-red-100 text-red-800'
+                            }`}>
+                              {user.ativo ? 'Ativo' : 'Inativo'}
+                            </span>
+                          </td>
+                          <td className="p-3">
+                            {new Date(user.dataCadastro).toLocaleDateString('pt-BR')}
+                          </td>
+                          <td className="p-3">
+                            <div className="flex gap-2">
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-3 w-3" />
+                              </Button>
+                              <Button size="sm" variant="outline" className="text-red-600">
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-              </form>
+              )}
             </CardContent>
           </Card>
 
@@ -229,6 +155,12 @@ const AdminUsers = () => {
             </ul>
           </div>
         </div>
+
+        <UserCreateModal
+          open={createModalOpen}
+          onOpenChange={setCreateModalOpen}
+          onUserCreated={handleUserCreated}
+        />
       </AdminLayout>
     </ProtectedRoute>
   );
