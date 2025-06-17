@@ -33,8 +33,8 @@ export const useAuth = () => {
         if (token && user) {
           const userData = JSON.parse(user);
           // Verificar se o usuário é admin (isAdmin === 'S')
-          const isAdminUser = userData?.isAdmin === 'S';
-          
+          const isAdminUser = userData?.isAdmin === true;
+        
           setAuthState({
             token,
             user: userData,
@@ -74,8 +74,11 @@ export const useAuth = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
       
+      console.log(token)
+      console.log(userData)
+
       // Verificar se o usuário é admin
-      const isAdminUser = userData?.isAdmin === 'S';
+      const isAdminUser = userData?.isAdmin === true;
       
       setAuthState({
         token,

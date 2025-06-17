@@ -6,20 +6,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { authApi } from "@/utils/apiConfig";
+
+interface Usuario {
+  id: string;
+  nome: string;
+  email: string;
+  dataCadastro: Date;
+  ativo: boolean;
+  telefone: string;
+  isAdmin: boolean;
+}
+
+interface LoginResponse {
+  token: string;
+  usuario: Usuario;
+}
 
 const AdminLogin = () => {
+
+  const [loginResponse, setLoginResponse] = useState<LoginResponse>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
-  // Redirecionar se já estiver logado
-  useEffect(() => {
-    if (isAuthenticated) {
-      window.location.href = '/admin/dashboard';
-    }
-  }, [isAuthenticated]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,15 +40,16 @@ const AdminLogin = () => {
     try {
       // Simular autenticação (substituir pela sua API real)
       if (email && password) {
-        // Simular resposta da API
-        const mockToken = `token_${Date.now()}`;
-        const mockUser = {
-          id: 1,
-          name: "Administrador",
-          email: email
-        };
-        
-        login(mockToken, mockUser);
+       
+        const credenciais = {
+          email: email,
+          senha: password
+        }
+
+        const data = await authApi.login(credenciais);
+        setLoginResponse(data);
+
+        login(data.token, data.usuario);
       } else {
         toast({
           title: "Erro no login",

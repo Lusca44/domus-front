@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
+import { userApi } from "@/utils/apiConfig";
 
 interface Lead {
   id: string;
@@ -63,17 +64,11 @@ export function LeadsEditModal({
       // MOCK DE DADOS - REMOVER QUANDO IMPLEMENTAR A API REAL
       console.log('🔍 Buscando corretores do backend...');
       // Simular delay da API
-      await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Dados mockados - substitua pela sua API
-      const mockCorretores: Corretor[] = [
-        { id: "1", nome: "João Silva", email: "joao@exemplo.com" },
-        { id: "2", nome: "Maria Santos", email: "maria@exemplo.com" },
-        { id: "3", nome: "Pedro Oliveira", email: "pedro@exemplo.com" },
-      ];
+      const data = await userApi.obterUsuarios();
       
-      setCorretores(mockCorretores);
-      console.log('✅ Corretores carregados:', mockCorretores);
+      setCorretores(data);
+      console.log('✅ Corretores carregados:', data);
     } catch (error) {
       console.error('❌ Erro ao buscar corretores:', error);
       // TODO: Adicionar toast de erro se necessário
@@ -127,7 +122,7 @@ export function LeadsEditModal({
                 <SelectValue placeholder={loadingCorretores ? "Carregando corretores..." : "Selecione um corretor"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Nenhum corretor</SelectItem>
+                <SelectItem value="null">Nenhum corretor</SelectItem>
                 {corretores.map((corretor) => (
                   <SelectItem key={corretor.id} value={corretor.id}>
                     {corretor.nome}

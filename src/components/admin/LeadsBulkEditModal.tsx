@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Users, Save } from "lucide-react";
+import { userApi } from "@/utils/apiConfig";
 
 interface Lead {
   id: string;
@@ -46,14 +47,9 @@ export function LeadsBulkEditModal({
         // const response = await fetch('/api/corretores');
         // const data = await response.json();
         // setCorretores(data);
-        
-        // Mock de corretores para demonstração
-        const mockCorretores: Corretor[] = [
-          { id: "1", nome: "João Silva" },
-          { id: "2", nome: "Maria Santos" },
-          { id: "3", nome: "Pedro Oliveira" },
-        ];
-        setCorretores(mockCorretores);
+        const data = await userApi.obterUsuarios();
+        console.log("teste aqui")
+        setCorretores(data);
       } catch (error) {
         console.error('Erro ao buscar corretores:', error);
       }
@@ -82,7 +78,10 @@ export function LeadsBulkEditModal({
 
   const handleSave = () => {
     if (selectedLeads.length > 0 && newCorretorId) {
-      onBulkUpdate(selectedLeads, newCorretorId);
+
+      const finalCorretorId = newCorretorId === "null"  ? "" : newCorretorId;
+
+      onBulkUpdate(selectedLeads, finalCorretorId);
       setSelectedLeads([]);
       setNewCorretorId("");
       onOpenChange(false);
@@ -114,7 +113,7 @@ export function LeadsBulkEditModal({
                 <SelectValue placeholder="Selecione o corretor" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Remover corretor</SelectItem>
+                <SelectItem value="null">Remover corretor</SelectItem>
                 {corretores.map((corretor) => (
                   <SelectItem key={corretor.id} value={corretor.id}>
                     {corretor.nome}

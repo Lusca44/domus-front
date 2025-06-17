@@ -1,4 +1,3 @@
-
 /**
  * CONFIGURAÇÃO CENTRALIZADA DA API COM AXIOS
  * 
@@ -10,16 +9,16 @@ import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 
 /**
  * CONFIGURAÇÃO PRINCIPAL - ALTERE AQUI SUA URL DO BACKEND
- * 
+ *
  * baseUrl: URL base do seu servidor backend
  * - Em desenvolvimento: geralmente 'http://localhost:3001/api' ou 'http://localhost:8000/api'
  * - Em produção: sua URL real como 'https://meubackend.com/api'
- * 
+ *
  * Para usar variável de ambiente, crie um arquivo .env.local na raiz do projeto com:
  * VITE_API_BASE_URL=https://sua-api.com/api
  */
 const API_CONFIG = {
-  baseUrl: 'http://localhost:8080/',
+  baseUrl: "http://localhost:8080/",
   // baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/',
   timeout: 10000, // Tempo limite para requisições (10 segundos)
 };
@@ -120,7 +119,7 @@ export class ApiClient {
 
   /**
    * MÉTODOS PÚBLICOS HTTP
-   * 
+   *
    * Estes são os métodos que você usa nos componentes:
    * - get(): para buscar dados
    * - post(): para criar novos dados
@@ -159,25 +158,32 @@ export const apiClient = new ApiClient();
 
 /**
  * APIS ESPECÍFICAS PARA CADA RECURSO
- * 
+ *
  * Aqui você define os endpoints específicos para cada funcionalidade.
  * ALTERE OS PATHS AQUI CONFORME SUA API:
  */
 
+
+export interface LancamentoQueryParams {
+  nomeLancamento?: string;
+  isSemCorretor?: boolean;
+  nomeCliente?: string;
+  corretorId?: string;
+}
 /**
  * API PARA GERENCIAR LEADS
- * 
+ *
  * IMPORTANTE: Altere os paths abaixo conforme sua API backend:
  * - Se sua API usa '/leads', mantenha assim
  * - Se usa '/api/leads', '/contacts', etc., altere aqui
- * 
+ *
  * Exemplos de uso:
  * - leadsApi.create(dadosDoLead) // POST /api/leads
  * - leadsApi.getAll() // GET /api/leads
  */
 export const leadsApi = {
   // GET /lancamento/obterLeads - Buscar todas as leads
-  getAll: (): Promise<any[]> => apiClient.get('lancamento/obterLeads'),
+  getAll: (params?: any): Promise<any[]> => apiClient.get('lancamento/obterLeads', params),
 
   // GET /lancamento/:id - Buscar lead específica
   getById: (id: string): Promise<any> => apiClient.get(`lancamento/${id}`),
@@ -205,7 +211,7 @@ export const leadsApi = {
 
 /**
  * API PARA AUTENTICAÇÃO
- * 
+ *
  * Endpoints para login, perfil do usuário, etc.
  */
 export const authApi = {
@@ -227,9 +233,11 @@ export const authApi = {
  * 
  * Endpoints para administradores gerenciarem usuários
  */
-export const usersApi = {
+export const userApi = {
   // GET /users - Buscar todos os usuários
   getAll: (): Promise<any[]> => apiClient.get('users'),
+
+  obterUsuarios: (): Promise<any> => apiClient.get("usuario/obterUsuarios"),
 
   // GET /users/:id - Buscar usuário específico
   getById: (id: string): Promise<any> => apiClient.get(`users/${id}`),
