@@ -216,7 +216,7 @@ export const leadsApi = {
  */
 export const authApi = {
   // POST /auth/login - Fazer login
-  login: (credentials: any): Promise<any> => apiClient.post('auth/login', credentials),
+  login: (credentials: any): Promise<any> => apiClient.post('api/auth/login', credentials),
 
   // GET /auth/profile - Buscar perfil do usuário
   profile: (): Promise<any> => apiClient.get('auth/profile'),
@@ -240,10 +240,10 @@ export const userApi = {
   obterUsuarios: (): Promise<any> => apiClient.get("usuario/obterUsuarios"),
 
   // GET /users/:id - Buscar usuário específico
-  getById: (id: string): Promise<any> => apiClient.get(`users/${id}`),
+  getById: (id: string): Promise<any> => apiClient.get(`usuario/obterUsuario/${id}`),
 
   // POST /users - Criar novo usuário
-  create: (data: any): Promise<any> => apiClient.post('users', data),
+  create: (data: any): Promise<any> => apiClient.post('cadastroUsuario', data),
 
   // PUT /users/:id - Atualizar usuário
   update: (id: string, data: any): Promise<any> => apiClient.put(`users/${id}`, data),

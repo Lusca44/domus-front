@@ -2,19 +2,36 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Edit, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { userApi } from "@/utils/apiConfig";
 
 interface UserProfile {
   id: string;
-  name: string;
+  nome: string;
   email: string;
-  phone: string;
+  telefone: string;
+  isAdmin: boolean;
   role: string;
+  ativo: boolean;
+  dataCadastro: string;
   createdAt: string;
 }
 
@@ -24,7 +41,11 @@ const AdminProfile = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({ name: "", email: "", phone: "" });
-  const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -38,10 +59,14 @@ const AdminProfile = () => {
       const token = localStorage.getItem("token");
       const response = await fetch("/api/profile", {
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+
+      const dataUsario = await userApi.getById("");
+
+      setProfile(dataUsario);
 
       if (response.ok) {
         const data = await response.json();
@@ -75,7 +100,7 @@ const AdminProfile = () => {
       const response = await fetch("/api/profile", {
         method: "PUT",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(editForm),
@@ -121,7 +146,7 @@ const AdminProfile = () => {
       const response = await fetch("/api/profile/password", {
         method: "PUT",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -136,7 +161,11 @@ const AdminProfile = () => {
           description: "Sua senha foi alterada com sucesso.",
         });
         setPasswordModalOpen(false);
-        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+        setPasswordForm({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
       } else {
         toast({
           title: "Erro ao alterar senha",
@@ -168,7 +197,9 @@ const AdminProfile = () => {
       <div className="max-w-4xl mx-auto py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Meu Perfil</h1>
-          <p className="text-gray-600">Gerencie suas informações pessoais e configurações de segurança</p>
+          <p className="text-gray-600">
+            Gerencie suas informações pessoais e configurações de segurança
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -186,26 +217,43 @@ const AdminProfile = () => {
               {profile ? (
                 <>
                   <div>
-                    <Label className="text-sm font-medium text-gray-500">Nome</Label>
-                    <p className="text-sm">{profile.name}</p>
+                    <Label className="text-sm font-medium text-gray-500">
+                      Nome
+                    </Label>
+                    <p className="text-sm">{profile.nome}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-500">Email</Label>
+                    <Label className="text-sm font-medium text-gray-500">
+                      Email
+                    </Label>
                     <p className="text-sm">{profile.email}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-500">Telefone</Label>
-                    <p className="text-sm">{profile.phone || "Não informado"}</p>
+                    <Label className="text-sm font-medium text-gray-500">
+                      Telefone
+                    </Label>
+                    <p className="text-sm">
+                      {profile.telefone || "Não informado"}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-500">Função</Label>
+                    <Label className="text-sm font-medium text-gray-500">
+                      Função
+                    </Label>
                     <p className="text-sm">{profile.role}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-500">Membro desde</Label>
-                    <p className="text-sm">{new Date(profile.createdAt).toLocaleDateString()}</p>
+                    <Label className="text-sm font-medium text-gray-500">
+                      Membro desde
+                    </Label>
+                    <p className="text-sm">
+                      {new Date(profile.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
-                  <Button onClick={() => setEditModalOpen(true)} className="w-full">
+                  <Button
+                    onClick={() => setEditModalOpen(true)}
+                    className="w-full"
+                  >
                     <Edit className="h-4 w-4 mr-2" />
                     Editar Informações
                   </Button>
@@ -213,14 +261,21 @@ const AdminProfile = () => {
               ) : (
                 <>
                   <div>
-                    <Label className="text-sm font-medium text-gray-500">Nome</Label>
+                    <Label className="text-sm font-medium text-gray-500">
+                      Nome
+                    </Label>
                     <p className="text-sm">{user?.name || "Não informado"}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-500">Email</Label>
+                    <Label className="text-sm font-medium text-gray-500">
+                      Email
+                    </Label>
                     <p className="text-sm">{user?.email || "Não informado"}</p>
                   </div>
-                  <Button onClick={() => setEditModalOpen(true)} className="w-full">
+                  <Button
+                    onClick={() => setEditModalOpen(true)}
+                    className="w-full"
+                  >
                     <Edit className="h-4 w-4 mr-2" />
                     Editar Informações
                   </Button>
@@ -237,7 +292,11 @@ const AdminProfile = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button onClick={() => setPasswordModalOpen(true)} className="w-full" variant="outline">
+              <Button
+                onClick={() => setPasswordModalOpen(true)}
+                className="w-full"
+                variant="outline"
+              >
                 Alterar Senha
               </Button>
             </CardContent>
@@ -259,7 +318,9 @@ const AdminProfile = () => {
                 <Input
                   id="name"
                   value={editForm.name}
-                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, name: e.target.value })
+                  }
                 />
               </div>
               <div>
@@ -268,7 +329,9 @@ const AdminProfile = () => {
                   id="email"
                   type="email"
                   value={editForm.email}
-                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, email: e.target.value })
+                  }
                 />
               </div>
               <div>
@@ -276,7 +339,9 @@ const AdminProfile = () => {
                 <Input
                   id="phone"
                   value={editForm.phone}
-                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, phone: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -305,7 +370,12 @@ const AdminProfile = () => {
                   id="currentPassword"
                   type="password"
                   value={passwordForm.currentPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                  onChange={(e) =>
+                    setPasswordForm({
+                      ...passwordForm,
+                      currentPassword: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div>
@@ -314,7 +384,12 @@ const AdminProfile = () => {
                   id="newPassword"
                   type="password"
                   value={passwordForm.newPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                  onChange={(e) =>
+                    setPasswordForm({
+                      ...passwordForm,
+                      newPassword: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div>
@@ -323,12 +398,20 @@ const AdminProfile = () => {
                   id="confirmPassword"
                   type="password"
                   value={passwordForm.confirmPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                  onChange={(e) =>
+                    setPasswordForm({
+                      ...passwordForm,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setPasswordModalOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setPasswordModalOpen(false)}
+              >
                 Cancelar
               </Button>
               <Button onClick={handleChangePassword}>Alterar Senha</Button>
