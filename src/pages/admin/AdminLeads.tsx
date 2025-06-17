@@ -28,6 +28,7 @@ interface Lead {
   id: string;
   nomeLancamento: string;
   nomeCliente: string;
+  emailCliente?: string; // Adding the missing emailCliente field
   telefoneCliente: string;
   usuarioOpcionista: string;
 }
@@ -45,9 +46,10 @@ const AdminLeads = () => {
   const [bulkEditModalOpen, setBulkEditModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
-  // ATUALIZADO: Incluindo o campo corretorOpcionistaId no formulário
+  // ATUALIZADO: Incluindo o campo emailCliente no formulário
   const [editForm, setEditForm] = useState({
     nomeCliente: "",
+    emailCliente: "", // Adding emailCliente to the edit form state
     telefoneCliente: "",
     nomeLancamento: "",
     corretorOpcionistaId: "null", // ID do corretor selecionado
@@ -264,6 +266,7 @@ const AdminLeads = () => {
     setSelectedLead(lead);
     setEditForm({
       nomeCliente: lead.nomeCliente,
+      emailCliente: lead.emailCliente || "", // Include emailCliente from lead data
       telefoneCliente: lead.telefoneCliente,
       nomeLancamento: lead.nomeLancamento,
       corretorOpcionistaId: lead.usuarioOpcionista || "null", // Usar o ID atual do corretor
@@ -275,15 +278,6 @@ const AdminLeads = () => {
     if (!selectedLead) return;
 
     try {
-      // TODO: AJUSTAR A ESTRUTURA DE DADOS ENVIADA PARA O BACKEND
-      // O backend provavelmente espera algo como:
-      // {
-      //   nomeCliente: editForm.nomeCliente,
-      //   telefoneCliente: editForm.telefoneCliente,
-      //   nomeLancamento: editForm.nomeLancamento,
-      //   usuarioOpcionista: editForm.corretorOpcionistaId // Enviar o ID do corretor
-      // }
-
       const usuarioOpcionista =
         editForm.corretorOpcionistaId === "null"
           ? ""
@@ -291,6 +285,7 @@ const AdminLeads = () => {
 
       const updateData = {
         nomeCliente: editForm.nomeCliente,
+        emailCliente: editForm.emailCliente, // Include emailCliente in update data
         telefoneCliente: editForm.telefoneCliente,
         nomeLancamento: editForm.nomeLancamento,
         usuarioOpcionista: usuarioOpcionista, // ID do corretor selecionado
