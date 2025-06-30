@@ -8,7 +8,7 @@ import regioesHubs from "./cards-home-page";
 import Footer from "@/components/Footer";
 import LancamentosSection from "@/components/home/LancamentosSection";
 import AluguelSection from "@/components/home/AluguelSection";
-import CompraVendaSection from "@/components/home/CompraVendaSection";
+import ImoveisUsadosSection from "@/components/home/ImoveisUsadosSection";
 
 /**
  * Página Inicial - Hubs de Regiões
@@ -125,7 +125,7 @@ const HomePage = () => {
                   Alugueis
                 </TabsTrigger>
                 <TabsTrigger 
-                  value="compra-venda" 
+                  value="imoveis-usados" 
                   className="text-sm sm:text-base font-medium"
                 >
                   Imóveis Usados
@@ -150,8 +150,8 @@ const HomePage = () => {
               <AluguelSection />
             </TabsContent>
 
-            <TabsContent value="compra-venda" className="mt-8">
-              <CompraVendaSection />
+            <TabsContent value="imoveis-usados" className="mt-8">
+              <ImoveisUsadosSection />
             </TabsContent>
           </Tabs>
         </div>

@@ -2,18 +2,15 @@
 import React, { useState, useMemo } from "react";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
-import { getLancamentos } from "@/data/imoveis";
+import { lancamentos } from "@/data/lancamentos";
 
 const LancamentosSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");
   const [selectedRooms, setSelectedRooms] = useState("todos");
 
-  // Obter todos os lançamentos dos dados centralizados
-  const allLancamentos = getLancamentos();
-
   // Filtrar lançamentos
   const filteredLancamentos = useMemo(() => {
-    return allLancamentos.filter(lancamento => {
+    return lancamentos.filter(lancamento => {
       if (selectedRegion !== "todas") {
         const regionMap: { [key: string]: string } = {
           "porto-maravilha": "Porto Maravilha",
@@ -37,7 +34,7 @@ const LancamentosSection = () => {
       }
       return true;
     });
-  }, [selectedRegion, selectedRooms, allLancamentos]);
+  }, [selectedRegion, selectedRooms]);
 
   // Separar lançamentos em destaque e comuns
   const featuredLancamentos = filteredLancamentos.filter(l => l.destaque);

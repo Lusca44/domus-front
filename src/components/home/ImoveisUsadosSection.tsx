@@ -1,26 +1,25 @@
 
 import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail } from "lucide-react";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
-import { alugueis } from "@/data/alugueis";
+import { imoveisUsados } from "@/data/imoveis-usados";
 
-const AluguelSection = () => {
+const ImoveisUsadosSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");
   const [selectedRooms, setSelectedRooms] = useState("todos");
 
   // Filtrar imóveis
-  const filteredAluguel = useMemo(() => {
-    return alugueis.filter(imovel => {
+  const filteredImoveisUsados = useMemo(() => {
+    return imoveisUsados.filter(imovel => {
       if (selectedRegion !== "todas") {
         const regionMap: { [key: string]: string } = {
-          "copacabana": "Copacabana",
-          "barra-tijuca": "Barra da Tijuca",
-          "ipanema": "Ipanema",
           "leblon": "Leblon",
           "tijuca": "Tijuca",
-          "botafogo": "Botafogo",
+          "recreio": "Recreio dos Bandeirantes",
+          "copacabana": "Copacabana",
+          "ipanema": "Ipanema",
+          "barra-tijuca": "Barra da Tijuca",
         };
         if (imovel.regiao !== regionMap[selectedRegion]) {
           return false;
@@ -39,17 +38,17 @@ const AluguelSection = () => {
   }, [selectedRegion, selectedRooms]);
 
   // Separar imóveis em destaque e comuns
-  const featuredAluguel = filteredAluguel.filter(a => a.destaque);
-  const regularAluguel = filteredAluguel.filter(a => !a.destaque);
+  const featuredImoveisUsados = filteredImoveisUsados.filter(i => i.destaque);
+  const regularImoveisUsados = filteredImoveisUsados.filter(i => !i.destaque);
 
   return (
     <div className="space-y-12">
       <div className="text-center mb-8">
         <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-          Imóveis para Aluguel
+          Imóveis Usados
         </h3>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Encontre o imóvel ideal para locação com as melhores condições e localização.
+          Serviços completos para compra, venda e investimento imobiliário com segurança e agilidade.
         </p>
       </div>
 
@@ -60,27 +59,27 @@ const AluguelSection = () => {
         selectedRooms={selectedRooms}
       />
 
-      {filteredAluguel.length > 0 ? (
+      {filteredImoveisUsados.length > 0 ? (
         <>
           {/* Imóveis em Destaque */}
-          {featuredAluguel.length > 0 && (
+          {featuredImoveisUsados.length > 0 && (
             <div className="mb-16">
               <div className="text-center mb-8">
                 <h4 className="text-2xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Imóveis em Destaque para Aluguel
+                  Oportunidades em Destaque
                 </h4>
                 <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
               {/* Grid otimizado para cards em destaque - máximo 3 por linha, centralizados */}
               <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
-                {featuredAluguel.map((imovel) => (
+                {featuredImoveisUsados.map((imovel) => (
                   <div 
                     key={imovel.id} 
                     className="w-full max-w-sm lg:max-w-md xl:max-w-lg transform hover:scale-105 transition-all duration-500 hover:shadow-2xl flex-shrink-0"
                     style={{ 
-                      flexBasis: featuredAluguel.length === 1 ? '400px' : 
-                                 featuredAluguel.length === 2 ? '400px' : 
+                      flexBasis: featuredImoveisUsados.length === 1 ? '400px' : 
+                                 featuredImoveisUsados.length === 2 ? '400px' : 
                                  'min(400px, calc(33.333% - 2rem))'
                     }}
                   >
@@ -93,19 +92,19 @@ const AluguelSection = () => {
             </div>
           )}
 
-          {/* Outros Imóveis para Aluguel */}
-          {regularAluguel.length > 0 && (
+          {/* Outras Oportunidades */}
+          {regularImoveisUsados.length > 0 && (
             <div className="border-t border-gray-200 pt-12">
               <h4 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                Outros Imóveis para Aluguel
+                Outras Oportunidades
                 <span className="text-lg font-normal text-gray-600 ml-2">
-                  ({regularAluguel.length})
+                  ({regularImoveisUsados.length})
                 </span>
               </h4>
               
               {/* Grid responsivo com centralização automática - máximo 4 por linha */}
               <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
-                {regularAluguel.map((imovel) => (
+                {regularImoveisUsados.map((imovel) => (
                   <div 
                     key={imovel.id}
                     className="w-full max-w-sm transform hover:scale-102 transition-all duration-300 hover:shadow-lg flex-shrink-0"
@@ -126,7 +125,7 @@ const AluguelSection = () => {
           <div className="max-w-md mx-auto">
             <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
             <p className="text-gray-500 text-lg mb-2">
@@ -139,26 +138,37 @@ const AluguelSection = () => {
         </div>
       )}
 
-      <div className="bg-blue-50 rounded-lg p-6 text-center">
-        <h4 className="text-xl font-semibold text-gray-900 mb-2">
-          Não encontrou o que procura?
-        </h4>
-        <p className="text-gray-600 mb-4">
-          Entre em contato conosco e vamos encontrar o imóvel ideal para você.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Phone className="w-4 h-4" />
-            (21) 2222-3333
-          </Button>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Mail className="w-4 h-4" />
-            Enviar WhatsApp
-          </Button>
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-8 text-white">
+        <div className="max-w-4xl mx-auto">
+          <h4 className="text-2xl font-bold mb-4 text-center">
+            Por que escolher a Feitozza Imóveis?
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {[
+              "Mais de 10 anos de experiência no mercado",
+              "Equipe especializada e certificada",
+              "Atendimento personalizado",
+              "Processo 100% transparente",
+            ].map((diferencial, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-white rounded-full flex-shrink-0"></div>
+                <span className="text-white/90">{diferencial}</span>
+              </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <Button 
+              variant="secondary" 
+              size="lg"
+              className="font-semibold"
+            >
+              Agende uma Consultoria Gratuita
+            </Button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default AluguelSection;
+export default ImoveisUsadosSection;
