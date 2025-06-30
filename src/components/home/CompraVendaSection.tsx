@@ -1,8 +1,6 @@
 
 import React, { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Home, TrendingUp, Calculator, Users } from "lucide-react";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
 
@@ -10,46 +8,8 @@ const CompraVendaSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");
   const [selectedRooms, setSelectedRooms] = useState("todos");
 
-  const servicos = [
-    {
-      id: 1,
-      titulo: "Compra de Imóveis",
-      descricao: "Encontre o imóvel dos seus sonhos com nossa consultoria especializada",
-      caracteristicas: ["Avaliação profissional", "Financiamento facilitado", "Documentação completa"],
-      icon: Home,
-    },
-    {
-      id: 2,
-      titulo: "Venda de Imóveis",
-      descricao: "Venda seu imóvel rapidamente com o melhor preço do mercado",
-      caracteristicas: ["Avaliação gratuita", "Marketing digital", "Negociação especializada"],
-      icon: TrendingUp,
-    },
-    {
-      id: 3,
-      titulo: "Consultoria Financeira",
-      descricao: "Orientação completa para financiamento e investimento imobiliário",
-      caracteristicas: ["Simulação de financiamento", "Análise de crédito", "Melhores taxas"],
-      icon: Calculator,
-    },
-    {
-      id: 4,
-      titulo: "Assessoria Jurídica",
-      descricao: "Suporte jurídico completo para sua transação imobiliária",
-      caracteristicas: ["Análise documental", "Suporte legal", "Segurança na compra"],
-      icon: Users,
-    },
-  ];
-
-  const diferenciais = [
-    "Mais de 10 anos de experiência no mercado",
-    "Equipe especializada e certificada",
-    "Atendimento personalizado",
-    "Processo 100% transparente",
-  ];
-
-  // Cards destacados para compra e venda
-  const featuredCompraVenda = [
+  // Todos os imóveis para compra e venda
+  const allCompraVenda = [
     {
       id: "1",
       title: "Cobertura Duplex - Leblon",
@@ -92,16 +52,61 @@ const CompraVendaSection = () => {
       url: "#",
       featured: false,
     },
+    {
+      id: "4",
+      title: "Apartamento Vista Mar - Copacabana",
+      description: "Apartamento reformado com vista para o mar",
+      price: "R$ 1.500.000",
+      image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+      region: "Copacabana",
+      rooms: 3,
+      bathrooms: 2,
+      parking: 1,
+      area: "110m²",
+      url: "#",
+      featured: true,
+    },
+    {
+      id: "5",
+      title: "Studio Investimento - Ipanema",
+      description: "Excelente oportunidade de investimento",
+      price: "R$ 450.000",
+      image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+      region: "Ipanema",
+      rooms: 1,
+      bathrooms: 1,
+      parking: 0,
+      area: "38m²",
+      url: "#",
+      featured: false,
+    },
+    {
+      id: "6",
+      title: "Casa Familiar - Barra da Tijuca",
+      description: "Casa espaçosa para família grande",
+      price: "R$ 2.200.000",
+      image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
+      region: "Barra da Tijuca",
+      rooms: 4,
+      bathrooms: 3,
+      parking: 3,
+      area: "220m²",
+      url: "#",
+      featured: false,
+    },
   ];
 
-  // Filtrar imóveis destacados
-  const filteredFeatured = useMemo(() => {
-    return featuredCompraVenda.filter(imovel => {
+  // Filtrar imóveis
+  const filteredCompraVenda = useMemo(() => {
+    return allCompraVenda.filter(imovel => {
       if (selectedRegion !== "todas") {
         const regionMap: { [key: string]: string } = {
-          "recreio": "Recreio dos Bandeirantes",
-          "tijuca": "Tijuca",
           "leblon": "Leblon",
+          "tijuca": "Tijuca",
+          "recreio": "Recreio dos Bandeirantes",
+          "copacabana": "Copacabana",
+          "ipanema": "Ipanema",
+          "barra-tijuca": "Barra da Tijuca",
         };
         if (imovel.region !== regionMap[selectedRegion]) {
           return false;
@@ -119,8 +124,12 @@ const CompraVendaSection = () => {
     });
   }, [selectedRegion, selectedRooms]);
 
+  // Separar imóveis em destaque e comuns
+  const featuredCompraVenda = filteredCompraVenda.filter(i => i.featured);
+  const regularCompraVenda = filteredCompraVenda.filter(i => !i.featured);
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       <div className="text-center mb-8">
         <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
           Compra e Venda de Imóveis
@@ -137,76 +146,80 @@ const CompraVendaSection = () => {
         selectedRooms={selectedRooms}
       />
 
-      {/* Imóveis Destacados */}
-      {filteredFeatured.length > 0 && (
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <h4 className="text-2xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Oportunidades em Destaque
-            </h4>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
-          </div>
-          
-          {/* Grid otimizado para cards em destaque - máximo 3 por linha, centralizados */}
-          <div className="flex flex-wrap justify-center gap-8 lg:gap-12 mb-8">
-            {filteredFeatured.map((imovel) => (
-              <div 
-                key={imovel.id} 
-                className="w-full max-w-sm lg:max-w-md xl:max-w-lg transform hover:scale-105 transition-all duration-500 hover:shadow-2xl flex-shrink-0"
-                style={{ 
-                  flexBasis: filteredFeatured.length === 1 ? '400px' : 
-                             filteredFeatured.length === 2 ? '400px' : 
-                             'min(400px, calc(33.333% - 2rem))'
-                }}
-              >
-                <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-100 overflow-hidden h-full">
-                  <FeaturedCard {...imovel} />
-                </div>
+      {filteredCompraVenda.length > 0 ? (
+        <>
+          {/* Imóveis em Destaque */}
+          {featuredCompraVenda.length > 0 && (
+            <div className="mb-16">
+              <div className="text-center mb-8">
+                <h4 className="text-2xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Oportunidades em Destaque
+                </h4>
+                <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
-            ))}
+              
+              {/* Grid otimizado para cards em destaque - máximo 3 por linha, centralizados */}
+              <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
+                {featuredCompraVenda.map((imovel) => (
+                  <div 
+                    key={imovel.id} 
+                    className="w-full max-w-sm lg:max-w-md xl:max-w-lg transform hover:scale-105 transition-all duration-500 hover:shadow-2xl flex-shrink-0"
+                    style={{ 
+                      flexBasis: featuredCompraVenda.length === 1 ? '400px' : 
+                                 featuredCompraVenda.length === 2 ? '400px' : 
+                                 'min(400px, calc(33.333% - 2rem))'
+                    }}
+                  >
+                    <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-100 overflow-hidden h-full">
+                      <FeaturedCard {...imovel} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Outras Oportunidades */}
+          {regularCompraVenda.length > 0 && (
+            <div className="border-t border-gray-200 pt-12">
+              <h4 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                Outras Oportunidades
+                <span className="text-lg font-normal text-gray-600 ml-2">
+                  ({regularCompraVenda.length})
+                </span>
+              </h4>
+              
+              {/* Grid responsivo para itens regulares - centralizado */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 lg:gap-8 justify-items-center">
+                {regularCompraVenda.map((imovel) => (
+                  <div 
+                    key={imovel.id}
+                    className="w-full max-w-sm transform hover:scale-102 transition-all duration-300 hover:shadow-lg"
+                  >
+                    <FeaturedCard {...imovel} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="text-center py-16 bg-gray-50 rounded-2xl">
+          <div className="max-w-md mx-auto">
+            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <p className="text-gray-500 text-lg mb-2">
+              Nenhum imóvel encontrado
+            </p>
+            <p className="text-gray-400 text-sm">
+              Tente ajustar os filtros para ver mais opções.
+            </p>
           </div>
         </div>
       )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
-        {servicos.map((servico) => {
-          const IconComponent = servico.icon;
-          return (
-            <Card
-              key={servico.id}
-              className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            >
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="p-3 bg-blue-100 rounded-full">
-                    <IconComponent className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <CardTitle className="text-xl">{servico.titulo}</CardTitle>
-                </div>
-                <p className="text-gray-600">{servico.descricao}</p>
-              </CardHeader>
-
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  {servico.caracteristicas.map((caracteristica, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center text-sm text-gray-600"
-                    >
-                      <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></div>
-                      <span>{caracteristica}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4">
-                  Saiba Mais
-                </Button>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
 
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-8 text-white">
         <div className="max-w-4xl mx-auto">
@@ -214,7 +227,12 @@ const CompraVendaSection = () => {
             Por que escolher a Feitozza Imóveis?
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {diferenciais.map((diferencial, index) => (
+            {[
+              "Mais de 10 anos de experiência no mercado",
+              "Equipe especializada e certificada",
+              "Atendimento personalizado",
+              "Processo 100% transparente",
+            ].map((diferencial, index) => (
               <div key={index} className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-white rounded-full flex-shrink-0"></div>
                 <span className="text-white/90">{diferencial}</span>
