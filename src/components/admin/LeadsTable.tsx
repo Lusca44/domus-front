@@ -31,11 +31,25 @@ interface LeadsTableProps {
   onDelete: (lead: Lead) => void;
 }
 
+/**
+ * COMPONENTE LeadsTable
+ * 
+ * Renderiza uma tabela de leads com busca otimizada de dados dos corretores.
+ * Implementa cache de corretores para evitar requisições duplicadas.
+ */
 export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
+  // Cache de corretores para evitar requisições duplicadas
   const [corretoresMap, setCorretoresMap] = useState<Map<string, Corretor>>(new Map());
+  
+  // Controle de quais corretores estão sendo carregados
   const [loadingCorretores, setLoadingCorretores] = useState<Set<string>>(new Set());
 
-  // Buscar dados dos corretores quando as leads mudarem
+  /**
+   * EFEITO: Buscar dados dos corretores quando as leads mudarem
+   * 
+   * Extrai IDs únicos dos corretores das leads e inicia o carregamento
+   * dos dados que ainda não estão em cache.
+   */
   useEffect(() => {
     const corretorIds = leads
       .map(lead => lead.usuarioOpcionistaId)
@@ -47,34 +61,44 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
     }
   }, [leads]);
 
+  /**
+   * FUNÇÃO: Buscar dados dos corretores de forma otimizada
+   * 
+   * @param ids - Array de IDs dos corretores para buscar
+   * 
+   * Implementação otimizada que:
+   * - Evita requisições duplicadas usando cache
+   * - Controla estado de loading por corretor
+   * - Usa Promise.allSettled para não falhar se uma requisição der erro
+   * - Atualiza cache incrementalmente
+   */
   const fetchCorretoresData = async (ids: string[]) => {
     // Identificar quais corretores ainda não foram carregados
-    const idsToFetch = ids.filter(id => !corretoresMap.has(id) && !loadingCorretores.has(id));
+    const idsToFetch = ids.filter(id => 
+      !corretoresMap.has(id) && !loadingCorretores.has(id)
+    );
     
     if (idsToFetch.length === 0) return;
-
-    console.log('🔍 Buscando dados dos corretores para IDs:', idsToFetch);
     
     // Marcar como carregando para evitar requisições duplicadas
     setLoadingCorretores(prev => new Set([...prev, ...idsToFetch]));
 
-    // Fazer requisições individuais para cada corretor
+    // Criar promises para buscar cada corretor individualmente
     const fetchPromises = idsToFetch.map(async (id) => {
       try {
-        console.log(`📡 Fazendo requisição para corretor ID: ${id}`);
         const corretor = await userApi.getById(id);
-        console.log(`✅ Dados do corretor ${id} recebidos:`, corretor);
         return { id, corretor, success: true };
       } catch (error) {
-        console.error(`❌ Erro ao buscar corretor ${id}:`, error);
+        console.error(`Erro ao buscar corretor ${id}:`, error);
         return { id, corretor: null, success: false };
       }
     });
 
     try {
+      // Usar Promise.allSettled para não falhar se uma requisição der erro
       const results = await Promise.allSettled(fetchPromises);
       
-      // Atualizar o mapa com os dados recebidos
+      // Atualizar o cache com os dados recebidos com sucesso
       setCorretoresMap(prev => {
         const newMap = new Map(prev);
         results.forEach((result) => {
@@ -85,9 +109,8 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
         return newMap;
       });
 
-      console.log('✅ Processamento dos corretores concluído');
     } catch (error) {
-      console.error('❌ Erro geral ao processar corretores:', error);
+      console.error('Erro geral ao processar corretores:', error);
     } finally {
       // Remover da lista de carregamento
       setLoadingCorretores(prev => {
@@ -98,6 +121,18 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
     }
   };
 
+  /**
+   * FUNÇÃO: Obter nome do corretor com tratamento de estados
+   * 
+   * @param corretorId - ID do corretor
+   * @returns Nome do corretor, indicador de loading, ou placeholder
+   * 
+   * Gerencia diferentes estados:
+   * - ID vazio: retorna placeholder "-"
+   * - Carregando: retorna "Carregando..."
+   * - Encontrado no cache: retorna nome do corretor
+   * - Não encontrado: inicia nova busca e retorna ID temporariamente
+   */
   const getCorretorNome = (corretorId: string) => {
     // Se não tem ID ou está vazio, retorna placeholder
     if (!corretorId || corretorId.trim() === '') {
@@ -149,6 +184,7 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
                   variant="outline"
                   size="sm"
                   onClick={() => onEdit(lead)}
+                  title="Editar lead"
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -156,6 +192,7 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
                   variant="outline"
                   size="sm"
                   onClick={() => onDelete(lead)}
+                  title="Excluir lead"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
