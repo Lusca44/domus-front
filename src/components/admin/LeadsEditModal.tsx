@@ -60,7 +60,6 @@ export function LeadsEditModal({
       console.log('🔍 Buscando corretores do backend...');
       
       const data = await userApi.obterUsuarios();
-      
       setCorretores(data);
       console.log('✅ Corretores carregados:', data);
     } catch (error) {
@@ -70,6 +69,10 @@ export function LeadsEditModal({
     }
   };
 
+
+  const handleSalvar = () => {
+    
+  }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">

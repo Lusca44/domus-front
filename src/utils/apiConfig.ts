@@ -195,7 +195,7 @@ export const leadsApi = {
   create: (data: any): Promise<any> => apiClient.post('lancamento/cadastroLead', data),
 
   // PUT /lancamento/:id - Atualizar lead existente
-  update: (id: string, data: any): Promise<any> => apiClient.put(`lancamento/${id}`, data),
+  update: (id: string, data: any): Promise<any> => apiClient.put(`lancamento/atualizarLead/${id}`, data),
 
   // DELETE /lancamento/:id - Excluir lead
   delete: (id: string): Promise<any> => apiClient.delete(`lancamento/${id}`),

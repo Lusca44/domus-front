@@ -33,8 +33,8 @@ interface Lead {
 }
 
 const AdminLeads = () => {
-  const { isAdmin, user, isLoading: authLoading, token} = useAuth(); // Obter informações do usuário logado
-  
+  const { isAdmin, user, isLoading: authLoading, token } = useAuth(); // Obter informações do usuário logado
+
   // Estado para armazenar todas as leads vindas do backend
   const [leads, setLeads] = useState<Lead[]>([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -290,13 +290,16 @@ const AdminLeads = () => {
 
       const updateData = {
         nomeCliente: editForm.nomeCliente,
-        telefoneCliente: editForm.telefoneCliente,
         nomeLancamento: editForm.nomeLancamento,
+        telefoneCliente: editForm.telefoneCliente,
         usuarioOpcionista: usuarioOpcionista, // ID do corretor selecionado
       };
 
       console.log("📤 Enviando dados para atualização:", updateData);
 
+      console.log("LEAD ID ------" + selectedLead.id);
+      console.log("LEAD ------");
+      console.log(updateData);
       await executeUpdateLead(() =>
         leadsApi.update(selectedLead.id, updateData)
       );

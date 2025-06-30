@@ -62,9 +62,13 @@ const AdminProfile = () => {
     try {
       setIsLoading(true);
       
+
+      console.log("--------- USER ID ---------")
+      console.log(user)
+      console.log(user.id)
       // Tentar buscar perfil via API
       try {
-        const profileData = await authApi.profile();
+        const profileData = await userApi.getById(user.id);
         setProfile(profileData);
         setEditForm({
           name: profileData.nome,
