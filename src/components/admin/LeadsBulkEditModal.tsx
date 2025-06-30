@@ -13,7 +13,7 @@ interface Lead {
   nomeLancamento: string;
   nomeCliente: string;
   telefoneCliente: string;
-  usuarioOpcionista: string;
+  usuarioOpcionistaId: string;
 }
 
 interface Corretor {
@@ -161,7 +161,7 @@ export function LeadsBulkEditModal({
                           {lead.nomeLancamento} • {lead.telefoneCliente}
                         </div>
                         <div className="text-xs text-gray-400">
-                          Corretor atual: {lead.usuarioOpcionista || "Nenhum"}
+                          Corretor atual: {lead.usuarioOpcionistaId || "Nenhum"}
                         </div>
                       </div>
                     </div>

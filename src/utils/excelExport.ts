@@ -4,7 +4,7 @@ interface Lead {
   nomeLancamento: string;
   nomeCliente: string;
   telefoneCliente: string;
-  usuarioOpcionista: string;
+  usuarioOpcionistaId: string;
 }
 
 export const exportLeadsToExcel = (leads: Lead[]) => {

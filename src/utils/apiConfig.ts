@@ -241,6 +241,9 @@ export const userApi = {
 
   // GET /users/:id - Buscar usuário específico
   getById: (id: string): Promise<any> => apiClient.get(`usuario/obterUsuario/${id}`),
+  
+  // GET /users/:id - Buscar usuário específico
+  getAllByIds: (id: string[]): Promise<any> => apiClient.get(`usuario/obterUsuariosPorId`),
 
   // POST /users - Criar novo usuário
   create: (data: any): Promise<any> => apiClient.post('cadastroUsuario', data),

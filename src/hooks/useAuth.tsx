@@ -139,6 +139,7 @@ export const useAuth = () => {
 
   return {
     ...authState,
+    authState,
     login,
     logout,
     requireAuth

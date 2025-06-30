@@ -14,7 +14,7 @@ interface Lead {
   nomeLancamento: string;
   nomeCliente: string;
   telefoneCliente: string;
-  usuarioOpcionista: string;
+  usuarioOpcionistaId: string;
 }
 
 interface LeadsDeleteModalProps {

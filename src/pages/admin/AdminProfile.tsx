@@ -49,7 +49,7 @@ const AdminProfile = () => {
     confirmPassword: "",
   });
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { authState } = useAuth();
   
   // Validação de token
   useTokenValidation();
@@ -64,11 +64,11 @@ const AdminProfile = () => {
       
 
       console.log("--------- USER ID ---------")
-      console.log(user)
-      console.log(user.id)
+      console.log(authState.user)
+      console.log(authState.user.id)
       // Tentar buscar perfil via API
       try {
-        const profileData = await userApi.getById(user.id);
+        const profileData = await userApi.getById(authState.user.id);
         setProfile(profileData);
         setEditForm({
           name: profileData.nome,
@@ -77,8 +77,8 @@ const AdminProfile = () => {
         });
       } catch (error) {
         // Se falhar, tentar buscar pelo ID do usuário logado
-        if (user?.id) {
-          const userData = await userApi.getById(user.id);
+        if (authState.user?.id) {
+          const userData = await userApi.getById(authState.user.id);
           setProfile(userData);
           setEditForm({
             name: userData.nome,
@@ -245,13 +245,13 @@ const AdminProfile = () => {
                     <Label className="text-sm font-medium text-gray-500">
                       Nome
                     </Label>
-                    <p className="text-sm">{user?.name || "Não informado"}</p>
+                    <p className="text-sm">{authState.user?.name || "Não informado"}</p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-gray-500">
                       Email
                     </Label>
-                    <p className="text-sm">{user?.email || "Não informado"}</p>
+                    <p className="text-sm">{authState.user?.email || "Não informado"}</p>
                   </div>
                   <Button
                     onClick={() => setEditModalOpen(true)}

@@ -29,7 +29,7 @@ interface Lead {
   nomeCliente: string;
   emailCliente: string;
   telefoneCliente: string;
-  usuarioOpcionista: string;
+  usuarioOpcionistaId: string;
 }
 
 const AdminLeads = () => {
@@ -180,7 +180,7 @@ const AdminLeads = () => {
       // Verifica se usuarioOpcionista é null, undefined ou string vazia/só espaços
       filtered = filtered.filter(
         (lead) =>
-          !lead.usuarioOpcionista || lead.usuarioOpcionista.trim() === ""
+          !lead.usuarioOpcionistaId || lead.usuarioOpcionistaId.trim() === ""
       );
       console.log("Filtro aplicado: SEM corretor (checkbox marcado)");
     }
@@ -265,7 +265,7 @@ const AdminLeads = () => {
       emailCliente: lead.emailCliente,
       telefoneCliente: lead.telefoneCliente,
       nomeLancamento: lead.nomeLancamento,
-      corretorOpcionistaId: lead.usuarioOpcionista || "null", // Usar o ID atual do corretor
+      corretorOpcionistaId: lead.usuarioOpcionistaId || "null", // Usar o ID atual do corretor
     });
     setEditModalOpen(true);
   };
