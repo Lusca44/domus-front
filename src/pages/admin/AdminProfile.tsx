@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -457,8 +456,7 @@ const AdminProfile = () => {
                 Cancelar
               </Button>
               <Button onClick={handleChangePassword}>Alterar Senha</Button>
-            </Dialog
-Footer>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
