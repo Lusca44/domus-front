@@ -1,87 +1,16 @@
+
 import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
+import { getCompraVenda } from "@/data/imoveis";
 
 const CompraVendaSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");
   const [selectedRooms, setSelectedRooms] = useState("todos");
 
-  // Todos os imóveis para compra e venda
-  const allCompraVenda = [
-    {
-      id: "1",
-      titulo: "Cobertura Duplex - Leblon",
-      descricao: "Cobertura exclusiva com vista panorâmica",
-      preco: "R$ 2.800.000",
-      imagem: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
-      regiao: "Leblon",
-      quartos: 4,
-      area: "180m²",
-      url: "#",
-      destaque: true,
-    },
-    {
-      id: "2",
-      titulo: "Apartamento Novo - Tijuca",
-      descricao: "Apartamento pronto para morar em excelente localização",
-      preco: "R$ 580.000",
-      imagem: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
-      regiao: "Tijuca",
-      quartos: 2,
-      area: "75m²",
-      url: "#",
-      destaque: true,
-    },
-    {
-      id: "3",
-      titulo: "Casa Condomínio - Recreio",
-      descricao: "Casa térrea em condomínio de alto padrão",
-      preco: "R$ 1.200.000",
-      imagem: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
-      regiao: "Recreio dos Bandeirantes",
-      quartos: 3,
-      area: "150m²",
-      url: "#",
-      destaque: false,
-    },
-    {
-      id: "4",
-      titulo: "Apartamento Vista Mar - Copacabana",
-      descricao: "Apartamento reformado com vista para o mar",
-      preco: "R$ 1.500.000",
-      imagem: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
-      regiao: "Copacabana",
-      quartos: 3,
-      area: "110m²",
-      url: "#",
-      destaque: true,
-    },
-    {
-      id: "5",
-      titulo: "Studio Investimento - Ipanema",
-      descricao: "Excelente oportunidade de investimento",
-      preco: "R$ 450.000",
-      imagem: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
-      regiao: "Ipanema",
-      quartos: 1,
-      area: "38m²",
-      url: "#",
-      destaque: false,
-    },
-    {
-      id: "6",
-      titulo: "Casa Familiar - Barra da Tijuca",
-      descricao: "Casa espaçosa para família grande",
-      preco: "R$ 2.200.000",
-      imagem: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
-      regiao: "Barra da Tijuca",
-      quartos: 4,
-      area: "220m²",
-      url: "#",
-      destaque: false,
-    },
-  ];
+  // Obter todos os imóveis de compra e venda dos dados centralizados
+  const allCompraVenda = getCompraVenda();
 
   // Filtrar imóveis
   const filteredCompraVenda = useMemo(() => {
@@ -109,7 +38,7 @@ const CompraVendaSection = () => {
       }
       return true;
     });
-  }, [selectedRegion, selectedRooms]);
+  }, [selectedRegion, selectedRooms, allCompraVenda]);
 
   // Separar imóveis em destaque e comuns
   const featuredCompraVenda = filteredCompraVenda.filter(i => i.destaque);
