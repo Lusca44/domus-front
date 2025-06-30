@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { userApi } from "@/utils/apiConfig";
 
 
 interface Lead {
@@ -16,7 +17,12 @@ interface Lead {
 interface Corretor {
   id: string;
   nome: string;
-  email?: string;
+  email: string;
+  dataCadastro: string;
+  isAtivo: boolean;
+  dataDesativacao: string | null;
+  telefone: string;
+  isAdmin: boolean;
 }
 
 interface LeadsTableProps {
@@ -26,10 +32,10 @@ interface LeadsTableProps {
 }
 
 export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
-  const [corretoresMap, setCorretoresMap] = useState<Map<string, string>>(new Map());
-  const [loadingCorretores, setLoadingCorretores] = useState(false);
+  const [corretoresMap, setCorretoresMap] = useState<Map<string, Corretor>>(new Map());
+  const [loadingCorretores, setLoadingCorretores] = useState<Set<string>>(new Set());
 
-  // Buscar nomes dos corretores quando as leads mudarem
+  // Buscar dados dos corretores quando as leads mudarem
   useEffect(() => {
     
     
@@ -39,31 +45,58 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
     .filter((id, index, arr) => arr.indexOf(id) === index); // Remover duplicatas
     
     if (corretorIds.length > 0) {
-      fetchCorretoresNomes(corretorIds);
+      fetchCorretoresData(corretorIds);
     }
   }, [leads]);
 
-  const fetchCorretoresNomes = async (ids: string[]) => {
+  const fetchCorretoresData = async (ids: string[]) => {
+    // Identificar quais corretores ainda não foram carregados
+    const idsToFetch = ids.filter(id => !corretoresMap.has(id));
     
-    setLoadingCorretores(true);
-    try {
-      
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
+    if (idsToFetch.length === 0) return;
 
-      // Dados mockados - substitua pela sua API
-      const mockCorretoresMap = new Map([
-        ["1", "João Silva"],
-        ["2", "Maria Santos"], 
-        ["3", "Pedro Oliveira"],
-      ]);
+    console.log('🔍 Buscando dados dos corretores para IDs:', idsToFetch);
+    
+    // Marcar como carregando
+    setLoadingCorretores(prev => new Set([...prev, ...idsToFetch]));
+
+    // Fazer requisições individuais para cada corretor
+    const fetchPromises = idsToFetch.map(async (id) => {
+      try {
+        console.log(`📡 Fazendo requisição para corretor ID: ${id}`);
+        const corretor = await userApi.getById(id);
+        console.log(`✅ Dados do corretor ${id} recebidos:`, corretor);
+        return { id, corretor };
+      } catch (error) {
+        console.error(`❌ Erro ao buscar corretor ${id}:`, error);
+        return { id, corretor: null };
+      }
+    });
+
+    try {
+      const results = await Promise.all(fetchPromises);
       
-      setCorretoresMap(mockCorretoresMap);
-      console.log('✅ Nomes dos corretores carregados:', Object.fromEntries(mockCorretoresMap));
+      // Atualizar o mapa com os dados recebidos
+      setCorretoresMap(prev => {
+        const newMap = new Map(prev);
+        results.forEach(({ id, corretor }) => {
+          if (corretor) {
+            newMap.set(id, corretor);
+          }
+        });
+        return newMap;
+      });
+
+      console.log('✅ Todos os corretores carregados com sucesso');
     } catch (error) {
-      console.error('❌ Erro ao buscar nomes dos corretores:', error);
+      console.error('❌ Erro geral ao buscar corretores:', error);
     } finally {
-      setLoadingCorretores(false);
+      // Remover da lista de carregamento
+      setLoadingCorretores(prev => {
+        const newSet = new Set(prev);
+        idsToFetch.forEach(id => newSet.delete(id));
+        return newSet;
+      });
     }
   };
 
@@ -72,11 +105,16 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
       return '-';
     }
     
-    if (loadingCorretores) {
+    if (loadingCorretores.has(corretorId)) {
       return 'Carregando...';
     }
     
-    return corretoresMap.get(corretorId) || `ID: ${corretorId}`;
+    const corretor = corretoresMap.get(corretorId);
+    if (corretor) {
+      return corretor.nome;
+    }
+    
+    return `ID: ${corretorId}`;
   };
 
   return (
