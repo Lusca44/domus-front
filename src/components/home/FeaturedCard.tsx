@@ -73,15 +73,7 @@ const FeaturedCard = ({
           <div className="grid grid-cols-3 gap-2 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <Bed className="w-4 h-4 flex-shrink-0" />
-              <span>{rooms}q</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Bath className="w-4 h-4 flex-shrink-0" />
-              <span>{bathrooms}b</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Car className="w-4 h-4 flex-shrink-0" />
-              <span>{parking}v</span>
+              <span>Até {rooms} quartos</span>
             </div>
           </div>
 

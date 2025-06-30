@@ -41,7 +41,7 @@ const HomePage = () => {
                 Feitozza Imóveis
               </h1>
               <p className="text-sm sm:text-base text-gray-600 mt-1">
-                Lançamentos Imobiliários no Rio de Janeiro
+                Lançamentos Imobiliários, vendas e alugueis no Rio de Janeiro
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-gray-600">
@@ -69,12 +69,13 @@ const HomePage = () => {
               </span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-700 mb-8 sm:mb-10 leading-relaxed px-4">
-              Descubra lançamentos exclusivos nas melhores regiões do Rio de
+              Descubra imóveis exclusivos nas melhores regiões do Rio de
               Janeiro. Qualidade, localização privilegiada e o melhor
               custo-benefício.
             </p>
 
             {/* Stats */}
+            {/* TODO Remover isso*/}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl mx-auto">
               <div className="text-center">
                 <div className="text-2xl sm:text-3xl font-bold text-blue-600">
@@ -121,13 +122,13 @@ const HomePage = () => {
                   value="aluguel" 
                   className="text-sm sm:text-base font-medium"
                 >
-                  Aluguel
+                  Alugueis
                 </TabsTrigger>
                 <TabsTrigger 
                   value="compra-venda" 
                   className="text-sm sm:text-base font-medium"
                 >
-                  Compra e Venda
+                  Imóveis Usados
                 </TabsTrigger>
               </TabsList>
             </div>
