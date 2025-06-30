@@ -34,14 +34,7 @@ const FeaturedCard = ({
   featured = false 
 }: FeaturedCardProps) => {
   return (
-    <div className="relative">
-      {featured && (
-        <div className="absolute -top-2 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 z-20 shadow-lg">
-          <Star className="w-3 h-3" />
-          Destaque
-        </div>
-      )}
-      
+    <div className="relative w-full h-full">
       <Card className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
         <div className="relative overflow-hidden rounded-t-lg">
           <img
@@ -49,23 +42,34 @@ const FeaturedCard = ({
             alt={title}
             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          <div className="absolute top-4 right-4">
-            <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-md">
+          
+          {/* Container para os balões alinhados */}
+          <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+            {/* Balão de destaque */}
+            {featured && (
+              <div className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 shadow-lg">
+                <Star className="w-3 h-3" />
+                Destaque
+              </div>
+            )}
+            
+            {/* Balão de preço */}
+            <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-md ml-auto">
               {price}
-            </span>
+            </div>
           </div>
         </div>
 
-        <CardHeader className="pb-3 flex-grow">
-          <CardTitle className="text-lg mb-2 line-clamp-2">{title}</CardTitle>
-          <p className="text-gray-600 text-sm line-clamp-2 mb-2">{description}</p>
+        <CardHeader className="pb-3 flex-grow-0">
+          <CardTitle className="text-lg mb-2 line-clamp-2 min-h-[3.5rem]">{title}</CardTitle>
+          <p className="text-gray-600 text-sm line-clamp-3 mb-2 min-h-[4.5rem]">{description}</p>
           <div className="flex items-center gap-1 text-gray-500 text-sm">
             <MapPin className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">{region}</span>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-4 pt-0">
+        <CardContent className="space-y-4 pt-0 flex-grow flex flex-col justify-end">
           <div className="grid grid-cols-3 gap-2 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <Bed className="w-4 h-4 flex-shrink-0" />
