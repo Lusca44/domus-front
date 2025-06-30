@@ -2,51 +2,47 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, MapPin, Bed, Bath, Car } from "lucide-react";
+import { Star, MapPin, Bed } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface FeaturedCardProps {
   id: string;
-  title: string;
-  description: string;
-  price: string;
-  image: string;
-  region: string;
-  rooms: number;
-  bathrooms: number;
-  parking: number;
+  titulo: string;
+  descricao: string;
+  preco: string;
+  imagem: string;
+  regiao: string;
+  quartos: number;
   area: string;
   url: string;
-  featured?: boolean;
+  destaque?: boolean;
 }
 
 const FeaturedCard = ({ 
-  title, 
-  description, 
-  price, 
-  image, 
-  region, 
-  rooms, 
-  bathrooms, 
-  parking, 
+  titulo, 
+  descricao, 
+  preco, 
+  imagem, 
+  regiao, 
+  quartos, 
   area, 
   url, 
-  featured = false 
+  destaque = false 
 }: FeaturedCardProps) => {
   return (
     <div className="relative w-full h-full">
       <Card className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
         <div className="relative overflow-hidden rounded-t-lg">
           <img
-            src={image}
-            alt={title}
+            src={imagem}
+            alt={titulo}
             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           />
           
           {/* Container para os balões alinhados */}
           <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
             {/* Balão de destaque */}
-            {featured && (
+            {destaque && (
               <div className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 shadow-lg">
                 <Star className="w-3 h-3" />
                 Destaque
@@ -55,25 +51,25 @@ const FeaturedCard = ({
             
             {/* Balão de preço */}
             <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-md ml-auto">
-              {price}
+              {preco}
             </div>
           </div>
         </div>
 
         <CardHeader className="pb-3 flex-grow-0">
-          <CardTitle className="text-lg mb-2 line-clamp-2 min-h-[3.5rem]">{title}</CardTitle>
-          <p className="text-gray-600 text-sm line-clamp-3 mb-2 min-h-[4.5rem]">{description}</p>
+          <CardTitle className="text-lg mb-2 line-clamp-2 min-h-[3.5rem]">{titulo}</CardTitle>
+          <p className="text-gray-600 text-sm line-clamp-3 mb-2 min-h-[4.5rem]">{descricao}</p>
           <div className="flex items-center gap-1 text-gray-500 text-sm">
             <MapPin className="w-4 h-4 flex-shrink-0" />
-            <span className="truncate">{region}</span>
+            <span className="truncate">{regiao}</span>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-4 pt-0 flex-grow flex flex-col justify-end">
-          <div className="grid grid-cols-3 gap-2 text-sm text-gray-600">
+          <div className="grid grid-cols-1 gap-2 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <Bed className="w-4 h-4 flex-shrink-0" />
-              <span>Até {rooms} quartos</span>
+              <span>Até {quartos} quartos</span>
             </div>
           </div>
 

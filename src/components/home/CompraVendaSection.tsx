@@ -11,87 +11,75 @@ const CompraVendaSection = () => {
   const allCompraVenda = [
     {
       id: "1",
-      title: "Cobertura Duplex - Leblon",
-      description: "Cobertura exclusiva com vista panorâmica",
-      price: "R$ 2.800.000",
-      image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
-      region: "Leblon",
-      rooms: 4,
-      bathrooms: 3,
-      parking: 2,
+      titulo: "Cobertura Duplex - Leblon",
+      descricao: "Cobertura exclusiva com vista panorâmica",
+      preco: "R$ 2.800.000",
+      imagem: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
+      regiao: "Leblon",
+      quartos: 4,
       area: "180m²",
       url: "#",
-      featured: true,
+      destaque: true,
     },
     {
       id: "2",
-      title: "Apartamento Novo - Tijuca",
-      description: "Apartamento pronto para morar em excelente localização",
-      price: "R$ 580.000",
-      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
-      region: "Tijuca",
-      rooms: 2,
-      bathrooms: 1,
-      parking: 1,
+      titulo: "Apartamento Novo - Tijuca",
+      descricao: "Apartamento pronto para morar em excelente localização",
+      preco: "R$ 580.000",
+      imagem: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+      regiao: "Tijuca",
+      quartos: 2,
       area: "75m²",
       url: "#",
-      featured: true,
+      destaque: true,
     },
     {
       id: "3",
-      title: "Casa Condomínio - Recreio",
-      description: "Casa térrea em condomínio de alto padrão",
-      price: "R$ 1.200.000",
-      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
-      region: "Recreio dos Bandeirantes",
-      rooms: 3,
-      bathrooms: 2,
-      parking: 2,
+      titulo: "Casa Condomínio - Recreio",
+      descricao: "Casa térrea em condomínio de alto padrão",
+      preco: "R$ 1.200.000",
+      imagem: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+      regiao: "Recreio dos Bandeirantes",
+      quartos: 3,
       area: "150m²",
       url: "#",
-      featured: false,
+      destaque: false,
     },
     {
       id: "4",
-      title: "Apartamento Vista Mar - Copacabana",
-      description: "Apartamento reformado com vista para o mar",
-      price: "R$ 1.500.000",
-      image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
-      region: "Copacabana",
-      rooms: 3,
-      bathrooms: 2,
-      parking: 1,
+      titulo: "Apartamento Vista Mar - Copacabana",
+      descricao: "Apartamento reformado com vista para o mar",
+      preco: "R$ 1.500.000",
+      imagem: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+      regiao: "Copacabana",
+      quartos: 3,
       area: "110m²",
       url: "#",
-      featured: true,
+      destaque: true,
     },
     {
       id: "5",
-      title: "Studio Investimento - Ipanema",
-      description: "Excelente oportunidade de investimento",
-      price: "R$ 450.000",
-      image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
-      region: "Ipanema",
-      rooms: 1,
-      bathrooms: 1,
-      parking: 0,
+      titulo: "Studio Investimento - Ipanema",
+      descricao: "Excelente oportunidade de investimento",
+      preco: "R$ 450.000",
+      imagem: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+      regiao: "Ipanema",
+      quartos: 1,
       area: "38m²",
       url: "#",
-      featured: false,
+      destaque: false,
     },
     {
       id: "6",
-      title: "Casa Familiar - Barra da Tijuca",
-      description: "Casa espaçosa para família grande",
-      price: "R$ 2.200.000",
-      image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
-      region: "Barra da Tijuca",
-      rooms: 4,
-      bathrooms: 3,
-      parking: 3,
+      titulo: "Casa Familiar - Barra da Tijuca",
+      descricao: "Casa espaçosa para família grande",
+      preco: "R$ 2.200.000",
+      imagem: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
+      regiao: "Barra da Tijuca",
+      quartos: 4,
       area: "220m²",
       url: "#",
-      featured: false,
+      destaque: false,
     },
   ];
 
@@ -107,15 +95,15 @@ const CompraVendaSection = () => {
           "ipanema": "Ipanema",
           "barra-tijuca": "Barra da Tijuca",
         };
-        if (imovel.region !== regionMap[selectedRegion]) {
+        if (imovel.regiao !== regionMap[selectedRegion]) {
           return false;
         }
       }
       if (selectedRooms !== "todos") {
         const roomsNumber = parseInt(selectedRooms);
-        if (selectedRooms === "4" && imovel.rooms < 4) {
+        if (selectedRooms === "4" && imovel.quartos < 4) {
           return false;
-        } else if (selectedRooms !== "4" && imovel.rooms !== roomsNumber) {
+        } else if (selectedRooms !== "4" && imovel.quartos !== roomsNumber) {
           return false;
         }
       }
@@ -124,8 +112,8 @@ const CompraVendaSection = () => {
   }, [selectedRegion, selectedRooms]);
 
   // Separar imóveis em destaque e comuns
-  const featuredCompraVenda = filteredCompraVenda.filter(i => i.featured);
-  const regularCompraVenda = filteredCompraVenda.filter(i => !i.featured);
+  const featuredCompraVenda = filteredCompraVenda.filter(i => i.destaque);
+  const regularCompraVenda = filteredCompraVenda.filter(i => !i.destaque);
 
   return (
     <div className="space-y-12">

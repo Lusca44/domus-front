@@ -12,87 +12,75 @@ const AluguelSection = () => {
   const allAluguel = [
     {
       id: "1",
-      title: "Apartamento Moderno - Copacabana",
-      description: "Apartamento totalmente mobiliado com vista para o mar",
-      price: "R$ 3.200/mês",
-      image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
-      region: "Copacabana",
-      rooms: 2,
-      bathrooms: 1,
-      parking: 1,
+      titulo: "Apartamento Moderno - Copacabana",
+      descricao: "Apartamento totalmente mobiliado com vista para o mar",
+      preco: "R$ 3.200/mês",
+      imagem: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+      regiao: "Copacabana",
+      quartos: 2,
       area: "68m²",
       url: "#",
-      featured: true,
+      destaque: true,
     },
     {
       id: "2",
-      title: "Casa Familiar - Barra da Tijuca",
-      description: "Casa espaçosa em condomínio fechado",
-      price: "R$ 4.500/mês",
-      image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
-      region: "Barra da Tijuca",
-      rooms: 3,
-      bathrooms: 2,
-      parking: 2,
+      titulo: "Casa Familiar - Barra da Tijuca",
+      descricao: "Casa espaçosa em condomínio fechado",
+      preco: "R$ 4.500/mês",
+      imagem: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
+      regiao: "Barra da Tijuca",
+      quartos: 3,
       area: "120m²",
       url: "#",
-      featured: true,
+      destaque: true,
     },
     {
       id: "3",
-      title: "Loft Executivo - Ipanema",
-      description: "Loft moderno para executivos",
-      price: "R$ 2.800/mês",
-      image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
-      region: "Ipanema",
-      rooms: 1,
-      bathrooms: 1,
-      parking: 1,
+      titulo: "Loft Executivo - Ipanema",
+      descricao: "Loft moderno para executivos",
+      preco: "R$ 2.800/mês",
+      imagem: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+      regiao: "Ipanema",
+      quartos: 1,
       area: "45m²",
       url: "#",
-      featured: false,
+      destaque: false,
     },
     {
       id: "4",
-      title: "Cobertura Duplex - Leblon",
-      description: "Cobertura com terraço e piscina privativa",
-      price: "R$ 8.500/mês",
-      image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
-      region: "Leblon",
-      rooms: 4,
-      bathrooms: 3,
-      parking: 2,
+      titulo: "Cobertura Duplex - Leblon",
+      descricao: "Cobertura com terraço e piscina privativa",
+      preco: "R$ 8.500/mês",
+      imagem: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
+      regiao: "Leblon",
+      quartos: 4,
       area: "200m²",
       url: "#",
-      featured: true,
+      destaque: true,
     },
     {
       id: "5",
-      title: "Apartamento Novo - Tijuca",
-      description: "Apartamento recém reformado próximo ao metrô",
-      price: "R$ 2.100/mês",
-      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
-      region: "Tijuca",
-      rooms: 2,
-      bathrooms: 1,
-      parking: 1,
+      titulo: "Apartamento Novo - Tijuca",
+      descricao: "Apartamento recém reformado próximo ao metrô",
+      preco: "R$ 2.100/mês",
+      imagem: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+      regiao: "Tijuca",
+      quartos: 2,
       area: "65m²",
       url: "#",
-      featured: false,
+      destaque: false,
     },
     {
       id: "6",
-      title: "Studio Moderno - Botafogo",
-      description: "Studio completo em prédio novo",
-      price: "R$ 1.800/mês",
-      image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
-      region: "Botafogo",
-      rooms: 1,
-      bathrooms: 1,
-      parking: 0,
+      titulo: "Studio Moderno - Botafogo",
+      descricao: "Studio completo em prédio novo",
+      preco: "R$ 1.800/mês",
+      imagem: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+      regiao: "Botafogo",
+      quartos: 1,
       area: "35m²",
       url: "#",
-      featured: false,
+      destaque: false,
     },
   ];
 
@@ -108,15 +96,15 @@ const AluguelSection = () => {
           "tijuca": "Tijuca",
           "botafogo": "Botafogo",
         };
-        if (imovel.region !== regionMap[selectedRegion]) {
+        if (imovel.regiao !== regionMap[selectedRegion]) {
           return false;
         }
       }
       if (selectedRooms !== "todos") {
         const roomsNumber = parseInt(selectedRooms);
-        if (selectedRooms === "4" && imovel.rooms < 4) {
+        if (selectedRooms === "4" && imovel.quartos < 4) {
           return false;
-        } else if (selectedRooms !== "4" && imovel.rooms !== roomsNumber) {
+        } else if (selectedRooms !== "4" && imovel.quartos !== roomsNumber) {
           return false;
         }
       }
@@ -125,8 +113,8 @@ const AluguelSection = () => {
   }, [selectedRegion, selectedRooms]);
 
   // Separar imóveis em destaque e comuns
-  const featuredAluguel = filteredAluguel.filter(a => a.featured);
-  const regularAluguel = filteredAluguel.filter(a => !a.featured);
+  const featuredAluguel = filteredAluguel.filter(a => a.destaque);
+  const regularAluguel = filteredAluguel.filter(a => !a.destaque);
 
   return (
     <div className="space-y-12">
