@@ -1,10 +1,15 @@
 
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Home, TrendingUp, Calculator, Users } from "lucide-react";
+import SubFilters from "./SubFilters";
+import FeaturedCard from "./FeaturedCard";
 
 const CompraVendaSection = () => {
+  const [selectedRegion, setSelectedRegion] = useState("todas");
+  const [selectedRooms, setSelectedRooms] = useState("todos");
+
   const servicos = [
     {
       id: 1,
@@ -43,6 +48,77 @@ const CompraVendaSection = () => {
     "Processo 100% transparente",
   ];
 
+  // Cards destacados para compra e venda
+  const featuredCompraVenda = [
+    {
+      id: "1",
+      title: "Cobertura Duplex - Leblon",
+      description: "Cobertura exclusiva com vista panorâmica",
+      price: "R$ 2.800.000",
+      image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
+      region: "Leblon",
+      rooms: 4,
+      bathrooms: 3,
+      parking: 2,
+      area: "180m²",
+      url: "#",
+      featured: true,
+    },
+    {
+      id: "2",
+      title: "Apartamento Novo - Tijuca",
+      description: "Apartamento pronto para morar em excelente localização",
+      price: "R$ 580.000",
+      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+      region: "Tijuca",
+      rooms: 2,
+      bathrooms: 1,
+      parking: 1,
+      area: "75m²",
+      url: "#",
+      featured: true,
+    },
+    {
+      id: "3",
+      title: "Casa Condomínio - Recreio",
+      description: "Casa térrea em condomínio de alto padrão",
+      price: "R$ 1.200.000",
+      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+      region: "Recreio dos Bandeirantes",
+      rooms: 3,
+      bathrooms: 2,
+      parking: 2,
+      area: "150m²",
+      url: "#",
+      featured: false,
+    },
+  ];
+
+  // Filtrar imóveis destacados
+  const filteredFeatured = useMemo(() => {
+    return featuredCompraVenda.filter(imovel => {
+      if (selectedRegion !== "todas") {
+        const regionMap: { [key: string]: string } = {
+          "recreio": "Recreio dos Bandeirantes",
+          "tijuca": "Tijuca",
+          "leblon": "Leblon",
+        };
+        if (imovel.region !== regionMap[selectedRegion]) {
+          return false;
+        }
+      }
+      if (selectedRooms !== "todos") {
+        const roomsNumber = parseInt(selectedRooms);
+        if (selectedRooms === "4" && imovel.rooms < 4) {
+          return false;
+        } else if (selectedRooms !== "4" && imovel.rooms !== roomsNumber) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }, [selectedRegion, selectedRooms]);
+
   return (
     <div className="space-y-8">
       <div className="text-center mb-8">
@@ -53,6 +129,27 @@ const CompraVendaSection = () => {
           Serviços completos para compra, venda e investimento imobiliário com segurança e agilidade.
         </p>
       </div>
+
+      <SubFilters
+        onRegionChange={setSelectedRegion}
+        onRoomsChange={setSelectedRooms}
+        selectedRegion={selectedRegion}
+        selectedRooms={selectedRooms}
+      />
+
+      {/* Imóveis Destacados */}
+      {filteredFeatured.length > 0 && (
+        <div className="mb-12">
+          <h4 className="text-xl font-bold text-gray-900 mb-6">
+            Oportunidades em Destaque
+          </h4>
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 lg:gap-12">
+            {filteredFeatured.map((imovel) => (
+              <FeaturedCard key={imovel.id} {...imovel} />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
         {servicos.map((servico) => {

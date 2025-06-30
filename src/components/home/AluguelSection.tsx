@@ -1,10 +1,15 @@
 
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Home, MapPin, Phone, Mail } from "lucide-react";
+import SubFilters from "./SubFilters";
+import FeaturedCard from "./FeaturedCard";
 
 const AluguelSection = () => {
+  const [selectedRegion, setSelectedRegion] = useState("todas");
+  const [selectedRooms, setSelectedRooms] = useState("todos");
+
   const aluguelOptions = [
     {
       id: 1,
@@ -32,6 +37,78 @@ const AluguelSection = () => {
     },
   ];
 
+  // Cards destacados para aluguel
+  const featuredAluguel = [
+    {
+      id: "1",
+      title: "Apartamento Moderno - Copacabana",
+      description: "Apartamento totalmente mobiliado com vista para o mar",
+      price: "R$ 3.200/mês",
+      image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+      region: "Copacabana",
+      rooms: 2,
+      bathrooms: 1,
+      parking: 1,
+      area: "68m²",
+      url: "#",
+      featured: true,
+    },
+    {
+      id: "2",
+      title: "Casa Familiar - Barra da Tijuca",
+      description: "Casa espaçosa em condomínio fechado",
+      price: "R$ 4.500/mês",
+      image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
+      region: "Barra da Tijuca",
+      rooms: 3,
+      bathrooms: 2,
+      parking: 2,
+      area: "120m²",
+      url: "#",
+      featured: true,
+    },
+    {
+      id: "3",
+      title: "Loft Executivo - Ipanema",
+      description: "Loft moderno para executivos",
+      price: "R$ 2.800/mês",
+      image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+      region: "Ipanema",
+      rooms: 1,
+      bathrooms: 1,
+      parking: 1,
+      area: "45m²",
+      url: "#",
+      featured: false,
+    },
+  ];
+
+  // Filtrar imóveis destacados
+  const filteredFeatured = useMemo(() => {
+    return featuredAluguel.filter(imovel => {
+      if (selectedRegion !== "todas") {
+        const regionMap: { [key: string]: string } = {
+          "copacabana": "Copacabana",
+          "barra-tijuca": "Barra da Tijuca",
+          "ipanema": "Ipanema",
+          "tijuca": "Tijuca",
+        };
+        if (imovel.region !== regionMap[selectedRegion]) {
+          return false;
+        }
+      }
+      if (selectedRooms !== "todos") {
+        const roomsNumber = parseInt(selectedRooms);
+        if (selectedRooms === "4" && imovel.rooms < 4) {
+          return false;
+        } else if (selectedRooms !== "4" && imovel.rooms !== roomsNumber) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }, [selectedRegion, selectedRooms]);
+
   return (
     <div className="space-y-8">
       <div className="text-center mb-8">
@@ -42,6 +119,27 @@ const AluguelSection = () => {
           Encontre o imóvel ideal para locação com as melhores condições e localização.
         </p>
       </div>
+
+      <SubFilters
+        onRegionChange={setSelectedRegion}
+        onRoomsChange={setSelectedRooms}
+        selectedRegion={selectedRegion}
+        selectedRooms={selectedRooms}
+      />
+
+      {/* Imóveis Destacados */}
+      {filteredFeatured.length > 0 && (
+        <div className="mb-12">
+          <h4 className="text-xl font-bold text-gray-900 mb-6">
+            Imóveis em Destaque para Aluguel
+          </h4>
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 lg:gap-12">
+            {filteredFeatured.map((imovel) => (
+              <FeaturedCard key={imovel.id} {...imovel} />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 lg:gap-12">
         {aluguelOptions.map((opcao) => {
