@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import SubFilters from "./SubFilters";
@@ -189,12 +188,16 @@ const CompraVendaSection = () => {
                 </span>
               </h4>
               
-              {/* Grid responsivo para itens regulares - centralizado */}
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 lg:gap-8 justify-items-center">
+              {/* Grid responsivo com centralização automática - máximo 4 por linha */}
+              <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
                 {regularCompraVenda.map((imovel) => (
                   <div 
                     key={imovel.id}
-                    className="w-full max-w-sm transform hover:scale-102 transition-all duration-300 hover:shadow-lg"
+                    className="w-full max-w-sm transform hover:scale-102 transition-all duration-300 hover:shadow-lg flex-shrink-0"
+                    style={{ 
+                      flexBasis: 'min(320px, calc(25% - 1.5rem))',
+                      minWidth: '280px'
+                    }}
                   >
                     <FeaturedCard {...imovel} />
                   </div>
