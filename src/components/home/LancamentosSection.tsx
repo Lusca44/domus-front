@@ -179,8 +179,12 @@ const LancamentosSection = () => {
     });
   }, [selectedRegion, selectedRooms]);
 
+  // Separar lançamentos em destaque e comuns
+  const featuredLancamentos = filteredLancamentos.filter(l => l.featured);
+  const regularLancamentos = filteredLancamentos.filter(l => !l.featured);
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       <SubFilters
         onRegionChange={setSelectedRegion}
         onRoomsChange={setSelectedRooms}
@@ -188,29 +192,82 @@ const LancamentosSection = () => {
         selectedRooms={selectedRooms}
       />
 
-      {/* Todos os Lançamentos */}
       {filteredLancamentos.length > 0 ? (
-        <div>
-          <h4 className="text-xl font-bold text-gray-900 mb-6">
-            {selectedRegion !== "todas" || selectedRooms !== "todos" 
-              ? "Lançamentos Filtrados" 
-              : "Todos os Lançamentos"} 
-            ({filteredLancamentos.length})
-          </h4>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 lg:gap-12">
-            {filteredLancamentos.map((lancamento) => (
-              <FeaturedCard key={lancamento.id} {...lancamento} />
-            ))}
-          </div>
-        </div>
+        <>
+          {/* Lançamentos em Destaque */}
+          {featuredLancamentos.length > 0 && (
+            <div className="mb-16">
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Lançamentos em Destaque
+                </h3>
+                <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
+              </div>
+              
+              {/* Grid responsivo para itens em destaque - cards maiores */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mb-8">
+                {featuredLancamentos.map((lancamento) => (
+                  <div 
+                    key={lancamento.id} 
+                    className="transform hover:scale-105 transition-all duration-500 hover:shadow-2xl"
+                  >
+                    <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-100 overflow-hidden">
+                      <FeaturedCard {...lancamento} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Outros Lançamentos */}
+          {regularLancamentos.length > 0 && (
+            <div className="border-t border-gray-200 pt-12">
+              <h4 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                Outros Lançamentos 
+                <span className="text-lg font-normal text-gray-600 ml-2">
+                  ({regularLancamentos.length})
+                </span>
+              </h4>
+              
+              {/* Grid responsivo para itens regulares - cards menores */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+                {regularLancamentos.map((lancamento) => (
+                  <div 
+                    key={lancamento.id}
+                    className="transform hover:scale-102 transition-all duration-300 hover:shadow-lg"
+                  >
+                    <FeaturedCard {...lancamento} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Caso só tenha itens em destaque */}
+          {featuredLancamentos.length > 0 && regularLancamentos.length === 0 && featuredLancamentos.length === filteredLancamentos.length && (
+            <div className="text-center py-6">
+              <p className="text-gray-600 text-lg">
+                Exibindo apenas lançamentos em destaque para os filtros selecionados.
+              </p>
+            </div>
+          )}
+        </>
       ) : (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">
-            Nenhum lançamento encontrado com os filtros selecionados.
-          </p>
-          <p className="text-gray-400 text-sm mt-2">
-            Tente ajustar os filtros para ver mais opções.
-          </p>
+        <div className="text-center py-16 bg-gray-50 rounded-2xl">
+          <div className="max-w-md mx-auto">
+            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <p className="text-gray-500 text-lg mb-2">
+              Nenhum lançamento encontrado
+            </p>
+            <p className="text-gray-400 text-sm">
+              Tente ajustar os filtros para ver mais opções.
+            </p>
+          </div>
         </div>
       )}
     </div>
