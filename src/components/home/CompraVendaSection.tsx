@@ -140,12 +140,29 @@ const CompraVendaSection = () => {
       {/* Imóveis Destacados */}
       {filteredFeatured.length > 0 && (
         <div className="mb-12">
-          <h4 className="text-xl font-bold text-gray-900 mb-6">
-            Oportunidades em Destaque
-          </h4>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 lg:gap-12">
+          <div className="text-center mb-8">
+            <h4 className="text-2xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Oportunidades em Destaque
+            </h4>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
+          </div>
+          
+          {/* Grid otimizado para cards em destaque - máximo 3 por linha, centralizados */}
+          <div className="flex flex-wrap justify-center gap-8 lg:gap-12 mb-8">
             {filteredFeatured.map((imovel) => (
-              <FeaturedCard key={imovel.id} {...imovel} />
+              <div 
+                key={imovel.id} 
+                className="w-full max-w-sm lg:max-w-md xl:max-w-lg transform hover:scale-105 transition-all duration-500 hover:shadow-2xl flex-shrink-0"
+                style={{ 
+                  flexBasis: filteredFeatured.length === 1 ? '400px' : 
+                             filteredFeatured.length === 2 ? '400px' : 
+                             'min(400px, calc(33.333% - 2rem))'
+                }}
+              >
+                <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-100 overflow-hidden h-full">
+                  <FeaturedCard {...imovel} />
+                </div>
+              </div>
             ))}
           </div>
         </div>

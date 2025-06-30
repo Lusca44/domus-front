@@ -203,12 +203,17 @@ const LancamentosSection = () => {
                 <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
-              {/* Grid otimizado para cards em destaque - máximo que couber na tela */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 lg:gap-8 justify-items-center">
+              {/* Grid otimizado para cards em destaque - máximo 3 por linha, centralizados */}
+              <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
                 {featuredLancamentos.map((lancamento) => (
                   <div 
                     key={lancamento.id} 
-                    className="w-full max-w-sm transform hover:scale-105 transition-all duration-500 hover:shadow-2xl"
+                    className="w-full max-w-sm lg:max-w-md xl:max-w-lg transform hover:scale-105 transition-all duration-500 hover:shadow-2xl flex-shrink-0"
+                    style={{ 
+                      flexBasis: featuredLancamentos.length === 1 ? '400px' : 
+                                 featuredLancamentos.length === 2 ? '400px' : 
+                                 'min(400px, calc(33.333% - 2rem))'
+                    }}
                   >
                     <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-100 overflow-hidden h-full">
                       <FeaturedCard {...lancamento} />
