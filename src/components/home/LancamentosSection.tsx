@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
@@ -204,14 +203,14 @@ const LancamentosSection = () => {
                 <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
-              {/* Grid responsivo para itens em destaque - cards maiores */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mb-8">
+              {/* Grid otimizado para cards em destaque - máximo que couber na tela */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 lg:gap-8 justify-items-center">
                 {featuredLancamentos.map((lancamento) => (
                   <div 
                     key={lancamento.id} 
-                    className="transform hover:scale-105 transition-all duration-500 hover:shadow-2xl"
+                    className="w-full max-w-sm transform hover:scale-105 transition-all duration-500 hover:shadow-2xl"
                   >
-                    <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-100 overflow-hidden">
+                    <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-100 overflow-hidden h-full">
                       <FeaturedCard {...lancamento} />
                     </div>
                   </div>
@@ -230,12 +229,12 @@ const LancamentosSection = () => {
                 </span>
               </h4>
               
-              {/* Grid responsivo para itens regulares - cards menores */}
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+              {/* Grid responsivo para itens regulares - centralizado */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 lg:gap-8 justify-items-center">
                 {regularLancamentos.map((lancamento) => (
                   <div 
                     key={lancamento.id}
-                    className="transform hover:scale-102 transition-all duration-300 hover:shadow-lg"
+                    className="w-full max-w-sm transform hover:scale-102 transition-all duration-300 hover:shadow-lg"
                   >
                     <FeaturedCard {...lancamento} />
                   </div>
