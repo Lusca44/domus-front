@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { leadsApi } from "@/utils/apiConfig";
+
 
 interface Lead {
   id: string;
@@ -50,7 +50,6 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
       
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      const corretores = await u
 
       // Dados mockados - substitua pela sua API
       const mockCorretoresMap = new Map([
