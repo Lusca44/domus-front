@@ -252,7 +252,7 @@ const LandingPixinguinha = () => {
             </div>
           </div>
 
-          {/* Seção de Vídeos - Usando thumbnails dos vídeos locais */}
+          {/* Seção de Vídeos - Centralizados */}
           <div className="mt-16">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold mb-4">
@@ -262,72 +262,76 @@ const LandingPixinguinha = () => {
                 Faça um tour virtual e conheça cada detalhe
               </p>
             </div>
-            <Carousel className="w-full max-w-4xl mx-auto">
-              <CarouselContent className="-ml-4">
-                {empreendimento.videos.map((video, index) => (
-                  <CarouselItem
-                    key={index}
-                    className="pl-4 md:basis-1/2 lg:basis-1/3"
-                  >
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                          <div className="relative">
-                            <AspectRatio ratio={16 / 9}>
-                              {video.thumbnailLocal ? (
-                                <video
-                                  className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                                  muted
-                                  playsInline
-                                >
-                                  <source src={video.thumbnailLocal} type="video/mp4" />
-                                </video>
-                              ) : (
-                                <img
-                                  src={getYouTubeThumbnail(video.url)}
-                                  alt={video.titulo}
-                                  className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                                />
-                              )}
-                              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
-                                <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                                  <Play className="w-8 h-8 text-blue-600 ml-1" />
+            <div className="flex justify-center">
+              <Carousel className="w-full max-w-4xl">
+                <CarouselContent className="flex justify-center items-center">
+                  {empreendimento.videos.map((video, index) => (
+                    <CarouselItem
+                      key={index}
+                      className="flex justify-center md:basis-1/2 lg:basis-1/3"
+                    >
+                      <div className="w-full max-w-sm">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                              <div className="relative">
+                                <AspectRatio ratio={16 / 9}>
+                                  {video.thumbnailLocal ? (
+                                    <video
+                                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                                      muted
+                                      playsInline
+                                    >
+                                      <source src={video.thumbnailLocal} type="video/mp4" />
+                                    </video>
+                                  ) : (
+                                    <img
+                                      src={getYouTubeThumbnail(video.url)}
+                                      alt={video.titulo}
+                                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                                    />
+                                  )}
+                                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                    <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                                      <Play className="w-8 h-8 text-blue-600 ml-1" />
+                                    </div>
+                                  </div>
+                                </AspectRatio>
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
+                                  <p className="font-semibold text-sm">
+                                    {video.titulo}
+                                  </p>
                                 </div>
                               </div>
-                            </AspectRatio>
-                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
-                              <p className="font-semibold text-sm">
-                                {video.titulo}
-                              </p>
+                            </Card>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-4xl">
+                            <div className="aspect-video">
+                              <iframe
+                                width="100%"
+                                height="100%"
+                                src={video.url}
+                                title={video.titulo}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                className="rounded"
+                              ></iframe>
                             </div>
-                          </div>
-                        </Card>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-4xl">
-                        <div className="aspect-video">
-                          <iframe
-                            width="100%"
-                            height="100%"
-                            src={video.url}
-                            title={video.titulo}
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            className="rounded"
-                          ></iframe>
-                        </div>
-                        <div className="mt-4">
-                          <h4 className="text-lg font-semibold">
-                            {video.titulo}
-                          </h4>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
-              <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
-            </Carousel>
+                            <div className="mt-4">
+                              <h4 className="text-lg font-semibold">
+                                {video.titulo}
+                              </h4>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
+                <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
+              </Carousel>
+            </div>
           </div>
         </div>
       </section>
