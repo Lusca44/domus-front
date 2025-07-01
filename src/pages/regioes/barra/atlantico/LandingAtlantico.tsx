@@ -30,6 +30,19 @@ import imgBackGround from '@/assets/images/imagem-barra-da-tijuca.webp' // tirar
 const LandingAtlantico = () => {
   const [imagemAtual, setImagemAtual] = useState(0);
 
+  /**
+   * Função para extrair ID do vídeo do YouTube e gerar thumbnail natural
+   */
+  const getYouTubeVideoId = (url: string) => {
+    const match = url.match(/embed\/([^?]+)/);
+    return match ? match[1] : null;
+  };
+
+  const getYouTubeThumbnail = (url: string) => {
+    const videoId = getYouTubeVideoId(url);
+    return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '';
+  };
+
   const empreendimento = {
     nome: "Residencial Atlântico",
     slogan: "O luxo encontra o mar na Barra da Tijuca.",
@@ -75,18 +88,15 @@ const LandingAtlantico = () => {
     videos: [
       {
         titulo: "Tour Virtual do Empreendimento",
-        url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        thumbnail: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop"
+        url: "https://www.youtube.com/embed/dQw4w9WgXcQ"
       },
       {
         titulo: "Vista Aérea da Região",
-        url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        thumbnail: "https://images.unsplash.com/photo-1431576901776-e539bd916ba2?w=800&h=600&fit=crop"
+        url: "https://www.youtube.com/embed/dQw4w9WgXcQ"
       },
       {
         titulo: "Apartamento Decorado",
-        url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        thumbnail: "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=800&h=600&fit=crop"
+        url: "https://www.youtube.com/embed/dQw4w9WgXcQ"
       }
     ],
     mapa: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3673.6962439934426!2d-43.3618!3d-23.0184!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9bdb2654c0fffd%3A0x80d7f8b7a4b8b5dd!2sAv.%20das%20Am%C3%A9ricas%2C%20Barra%20da%20Tijuca%2C%20Rio%20de%20Janeiro%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1640000000000!5m2!1spt-BR!2sbr",
@@ -233,7 +243,7 @@ const LandingAtlantico = () => {
             </div>
           </div>
 
-          {/* Seção de Vídeos - Adicionada */}
+          {/* Seção de Vídeos - Usando thumbnails naturais do YouTube */}
           <div className="mt-16">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold mb-4">
@@ -256,7 +266,7 @@ const LandingAtlantico = () => {
                           <div className="relative">
                             <AspectRatio ratio={16 / 9}>
                               <img
-                                src={video.thumbnail}
+                                src={getYouTubeThumbnail(video.url)}
                                 alt={video.titulo}
                                 className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
                               />

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -44,6 +43,19 @@ import ImgBackground from "./assets/back-ground-pixinguinha.jpeg";
 const LandingPixinguinha = () => {
   // Estado para galeria de imagens
   const [imagemAtual, setImagemAtual] = useState(0);
+
+  /**
+   * Função para extrair ID do vídeo do YouTube e gerar thumbnail natural
+   */
+  const getYouTubeVideoId = (url: string) => {
+    const match = url.match(/embed\/([^?]+)/);
+    return match ? match[1] : null;
+  };
+
+  const getYouTubeThumbnail = (url: string) => {
+    const videoId = getYouTubeVideoId(url);
+    return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '';
+  };
 
   /**
    * Dados do empreendimento
@@ -229,7 +241,7 @@ const LandingPixinguinha = () => {
             </div>
           </div>
 
-          {/* Seção de Vídeos - Corrigida para mostrar thumbnails */}
+          {/* Seção de Vídeos - Usando thumbnails naturais do YouTube */}
           <div className="mt-16">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold mb-4">
@@ -252,7 +264,7 @@ const LandingPixinguinha = () => {
                           <div className="relative">
                             <AspectRatio ratio={16 / 9}>
                               <img
-                                src={video.thumbnail}
+                                src={getYouTubeThumbnail(video.url)}
                                 alt={video.titulo}
                                 className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
                               />
