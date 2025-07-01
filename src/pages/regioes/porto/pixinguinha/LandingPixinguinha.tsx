@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -228,7 +229,7 @@ const LandingPixinguinha = () => {
             </div>
           </div>
 
-          {/* Seção de Vídeos Melhorada */}
+          {/* Seção de Vídeos - Corrigida para mostrar thumbnails */}
           <div className="mt-16">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold mb-4">

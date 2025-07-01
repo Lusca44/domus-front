@@ -78,6 +78,16 @@ const LandingAtlantico = () => {
         url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         thumbnail: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop"
       },
+      {
+        titulo: "Vista Aérea da Região",
+        url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        thumbnail: "https://images.unsplash.com/photo-1431576901776-e539bd916ba2?w=800&h=600&fit=crop"
+      },
+      {
+        titulo: "Apartamento Decorado",
+        url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        thumbnail: "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=800&h=600&fit=crop"
+      }
     ],
     mapa: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3673.6962439934426!2d-43.3618!3d-23.0184!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9bdb2654c0fffd%3A0x80d7f8b7a4b8b5dd!2sAv.%20das%20Am%C3%A9ricas%2C%20Barra%20da%20Tijuca%2C%20Rio%20de%20Janeiro%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1640000000000!5m2!1spt-BR!2sbr",
   };
@@ -221,6 +231,74 @@ const LandingAtlantico = () => {
                 </div>
               </AspectRatio>
             </div>
+          </div>
+
+          {/* Seção de Vídeos - Adicionada */}
+          <div className="mt-16">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold mb-4">
+                Vídeos do Empreendimento
+              </h3>
+              <p className="text-gray-600">
+                Faça um tour virtual e conheça cada detalhe
+              </p>
+            </div>
+            <Carousel className="w-full max-w-4xl mx-auto">
+              <CarouselContent className="-ml-4">
+                {empreendimento.videos.map((video, index) => (
+                  <CarouselItem
+                    key={index}
+                    className="pl-4 md:basis-1/2 lg:basis-1/3"
+                  >
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                          <div className="relative">
+                            <AspectRatio ratio={16 / 9}>
+                              <img
+                                src={video.thumbnail}
+                                alt={video.titulo}
+                                className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                              />
+                              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                                  <Play className="w-8 h-8 text-cyan-600 ml-1" />
+                                </div>
+                              </div>
+                            </AspectRatio>
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
+                              <p className="font-semibold text-sm">
+                                {video.titulo}
+                              </p>
+                            </div>
+                          </div>
+                        </Card>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl">
+                        <div className="aspect-video">
+                          <iframe
+                            width="100%"
+                            height="100%"
+                            src={video.url}
+                            title={video.titulo}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="rounded"
+                          ></iframe>
+                        </div>
+                        <div className="mt-4">
+                          <h4 className="text-lg font-semibold">
+                            {video.titulo}
+                          </h4>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
+              <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
+            </Carousel>
           </div>
         </div>
       </section>
