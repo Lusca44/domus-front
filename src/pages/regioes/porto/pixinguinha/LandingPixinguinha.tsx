@@ -46,6 +46,7 @@ const LandingPixinguinha = () => {
 
   /**
    * Função para extrair ID do vídeo do YouTube e gerar thumbnail natural
+   * Mantida para uso futuro caso necessário
    */
   const getYouTubeVideoId = (url: string) => {
     const match = url.match(/embed\/([^?]+)/);
@@ -55,6 +56,16 @@ const LandingPixinguinha = () => {
   const getYouTubeThumbnail = (url: string) => {
     const videoId = getYouTubeVideoId(url);
     return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '';
+  };
+
+  /**
+   * Função para obter thumbnail - prioriza vídeo local, fallback para YouTube
+   */
+  const getVideoThumbnail = (video: any) => {
+    if (video.thumbnailLocal) {
+      return video.thumbnailLocal;
+    }
+    return getYouTubeThumbnail(video.url);
   };
 
   /**
@@ -241,7 +252,7 @@ const LandingPixinguinha = () => {
             </div>
           </div>
 
-          {/* Seção de Vídeos - Usando thumbnails naturais do YouTube */}
+          {/* Seção de Vídeos - Usando thumbnails dos vídeos locais */}
           <div className="mt-16">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold mb-4">
@@ -263,11 +274,21 @@ const LandingPixinguinha = () => {
                         <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                           <div className="relative">
                             <AspectRatio ratio={16 / 9}>
-                              <img
-                                src={getYouTubeThumbnail(video.url)}
-                                alt={video.titulo}
-                                className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                              />
+                              {video.thumbnailLocal ? (
+                                <video
+                                  className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                                  muted
+                                  playsInline
+                                >
+                                  <source src={video.thumbnailLocal} type="video/mp4" />
+                                </video>
+                              ) : (
+                                <img
+                                  src={getYouTubeThumbnail(video.url)}
+                                  alt={video.titulo}
+                                  className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                                />
+                              )}
                               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
                                 <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
                                   <Play className="w-8 h-8 text-blue-600 ml-1" />
