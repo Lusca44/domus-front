@@ -348,31 +348,33 @@ const LandingPixinguinha = () => {
                               </div>
                             </Card>
                           </DialogTrigger>
-                          <DialogContent className="max-w-4xl">
-                            <div className="aspect-video">
-                              {video.url.includes('youtube') || video.url.includes('embed') ? (
-                                <iframe
-                                  width="100%"
-                                  height="100%"
-                                  src={video.url}
-                                  title={video.titulo}
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                  allowFullScreen
-                                  className="rounded"
-                                ></iframe>
-                              ) : (
-                                <video
-                                  width="100%"
-                                  height="100%"
-                                  controls
-                                  className="rounded"
-                                >
-                                  <source src={video.url} type="video/mp4" />
-                                  Seu navegador não suporta vídeos HTML5.
-                                </video>
-                              )}
+                          <DialogContent className="max-w-4xl w-[90vw] max-h-[80vh] p-4">
+                            <div className="w-full max-w-3xl mx-auto">
+                              <AspectRatio ratio={16 / 9}>
+                                {video.url.includes('youtube') || video.url.includes('embed') ? (
+                                  <iframe
+                                    width="100%"
+                                    height="100%"
+                                    src={video.url}
+                                    title={video.titulo}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="rounded"
+                                  ></iframe>
+                                ) : (
+                                  <video
+                                    width="100%"
+                                    height="100%"
+                                    controls
+                                    className="rounded object-contain"
+                                  >
+                                    <source src={video.url} type="video/mp4" />
+                                    Seu navegador não suporta vídeos HTML5.
+                                  </video>
+                                )}
+                              </AspectRatio>
                             </div>
-                            <div className="mt-4">
+                            <div className="mt-4 text-center">
                               <h4 className="text-lg font-semibold">
                                 {video.titulo}
                               </h4>
