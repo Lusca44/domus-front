@@ -1,5 +1,5 @@
 
-import { Imovel } from './imoveis';
+import { Imovel } from '../imoveis';
 
 export const alugueis: Imovel[] = [
   {
