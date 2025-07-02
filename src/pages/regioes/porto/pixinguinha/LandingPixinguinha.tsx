@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
+import PhotoCarousel from "@/components/PhotoCarousel";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import fotos from "./assets/fotos";
 import videos from "./assets/videos";
@@ -42,7 +43,6 @@ import ImgBackground from "./assets/img/back-ground-pixinguinha.jpeg"
  */
 const LandingPixinguinha = () => {
   // Estado para galeria de imagens
-  const [imagemAtual, setImagemAtual] = useState(0);
   const [videoThumbnails, setVideoThumbnails] = useState<{[key: number]: string}>({});
 
   /**
@@ -238,68 +238,11 @@ const LandingPixinguinha = () => {
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white p-4">
-              <AspectRatio ratio={16 / 10}>
-                <img
-                  src={empreendimento.imagens[imagemAtual].url}
-                  alt={empreendimento.imagens[imagemAtual].titulo}
-                  className="object-cover w-full h-full rounded-xl"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 rounded-b-xl">
-                  <h3 className="text-white text-xl font-semibold mb-2">
-                    {empreendimento.imagens[imagemAtual].titulo}
-                  </h3>
-                  <div className="flex items-center justify-between">
-                    <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      {imagemAtual + 1} de {empreendimento.imagens.length}
-                    </span>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                        onClick={() => setImagemAtual(imagemAtual > 0 ? imagemAtual - 1 : empreendimento.imagens.length - 1)}
-                      >
-                        Anterior
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                        onClick={() => setImagemAtual(imagemAtual < empreendimento.imagens.length - 1 ? imagemAtual + 1 : 0)}
-                      >
-                        Próxima
-                      </Button>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                          >
-                            <Maximize className="w-4 h-4 mr-2" />
-                            Ver em tela cheia
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-6xl max-h-[90vh] p-0">
-                          <DialogTitle className="sr-only">Visualização em tela cheia</DialogTitle>
-                          <DialogDescription className="sr-only">Imagem do empreendimento em tamanho ampliado</DialogDescription>
-                          <div className="relative">
-                            <img
-                              src={empreendimento.imagens[imagemAtual].url}
-                              alt={empreendimento.imagens[imagemAtual].titulo}
-                              className="w-full h-auto object-contain"
-                            />
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </div>
-                </div>
-              </AspectRatio>
-            </div>
-          </div>
+          {/* Novo Carrossel de Fotos */}
+          <PhotoCarousel 
+            photos={empreendimento.imagens}
+            className="mb-16"
+          />
 
           {/* Seção de Vídeos - Centralizados */}
           <div className="mt-16">
