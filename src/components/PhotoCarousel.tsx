@@ -8,7 +8,6 @@ import { cn } from '@/lib/utils';
 interface Photo {
   url: string;
   titulo: string;
-  tipo: string;
 }
 
 interface PhotoCarouselProps {
@@ -59,9 +58,6 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
                 <div className="flex items-center gap-2">
                   <span className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
                     {currentIndex + 1} de {photos.length}
-                  </span>
-                  <span className="bg-blue-600/80 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium capitalize">
-                    {photos[currentIndex].tipo.replace('-', ' ')}
                   </span>
                 </div>
                 <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
