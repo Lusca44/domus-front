@@ -10,7 +10,7 @@ export const lancamentos: Imovel[] = [
     preco: "A partir de R$ 294.900",
     imagem: cardPixinguinhaImg,
     regiao: "Porto Maravilha",
-    quartos: 2,
+    quartos: 3,
     area: "45m²",
     url: "/porto-maravilha/lancamento/pixinguinha",
     destaque: true,
