@@ -350,38 +350,40 @@ const LandingPixinguinha = () => {
                               </div>
                             </Card>
                           </DialogTrigger>
-                          <DialogContent className="max-w-2xl w-[85vw] max-h-[70vh] p-3">
+                          <DialogContent className="max-w-2xl w-[85vw] max-h-[70vh] p-3 overflow-hidden">
                             <DialogTitle className="sr-only">{video.titulo}</DialogTitle>
                             <DialogDescription className="sr-only">Reprodução do vídeo: {video.titulo}</DialogDescription>
-                            <div className="w-full mx-auto">
-                              <AspectRatio ratio={16 / 9}>
-                                {video.url.includes('youtube') || video.url.includes('embed') ? (
-                                  <iframe
-                                    width="100%"
-                                    height="100%"
-                                    src={video.url}
-                                    title={video.titulo}
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    className="rounded object-contain"
-                                  ></iframe>
-                                ) : (
-                                  <video
-                                    width="100%"
-                                    height="100%"
-                                    controls
-                                    className="rounded object-contain"
-                                  >
-                                    <source src={video.url} type="video/mp4" />
-                                    Seu navegador não suporta vídeos HTML5.
-                                  </video>
-                                )}
-                              </AspectRatio>
-                            </div>
-                            <div className="mt-2 text-center">
-                              <h4 className="text-sm font-semibold">
-                                {video.titulo}
-                              </h4>
+                            <div className="w-full mx-auto h-full flex flex-col">
+                              <div className="flex-1 min-h-0">
+                                <AspectRatio ratio={16 / 9} className="w-full h-full max-h-[calc(70vh-80px)]">
+                                  {video.url.includes('youtube') || video.url.includes('embed') ? (
+                                    <iframe
+                                      width="100%"
+                                      height="100%"
+                                      src={video.url}
+                                      title={video.titulo}
+                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                      allowFullScreen
+                                      className="rounded object-contain"
+                                    ></iframe>
+                                  ) : (
+                                    <video
+                                      width="100%"
+                                      height="100%"
+                                      controls
+                                      className="rounded object-contain max-h-full"
+                                    >
+                                      <source src={video.url} type="video/mp4" />
+                                      Seu navegador não suporta vídeos HTML5.
+                                    </video>
+                                  )}
+                                </AspectRatio>
+                              </div>
+                              <div className="mt-2 text-center flex-shrink-0">
+                                <h4 className="text-sm font-semibold truncate">
+                                  {video.titulo}
+                                </h4>
+                              </div>
                             </div>
                           </DialogContent>
                         </Dialog>
