@@ -26,7 +26,7 @@ import Footer from "@/components/Footer";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import fotos from "./assets/fotos";
 import videos from "./assets/videos";
-import ImgBackground from "./assets/back-ground-pixinguinha.jpeg";
+import ImgBackground from "./assets/img/back-ground-pixinguinha.jpeg"
 
 /**
  * Landing Page - Residencial Pixinguinha
@@ -125,7 +125,7 @@ const LandingPixinguinha = () => {
     nome: "Residencial Pixinguinha",
     slogan: "A junção do passado e o presente moldando o futuro.",
     descricao:
-      "O Pixinguinha oferece estúdios e apartamentos com 1 à 3 quartos com acabamento de alto padrão. Condominio com lazer completo e um SkyBar com uma vista incrível. Localizado no coração do Porto Maravilha, próximo a museus, restaurantes e do futuro estadio do Flamengo.",
+      "O Residencial Pixinguinha oferece estúdios e apartamentos com 1 à 3 quartos com acabamento de alto padrão. Condominio com lazer completo e um SkyBar com uma vista incrível. Localizado no coração do Porto Maravilha, próximo a museus, restaurantes e do futuro estadio do Flamengo.",
     entrega: "Previsão de entrega: Maio/2027",
     caracteristicas: [
       // { titulo: "Tipos", valor: "com vaga e suíte"},
@@ -308,7 +308,7 @@ const LandingPixinguinha = () => {
                 Vídeos do Empreendimento
               </h3>
               <p className="text-gray-600">
-                Faça um tour virtual e conheça cada detalhe
+                Conheça cada detalhe do seu futuro lar!
               </p>
             </div>
             <div className="flex justify-center">
@@ -409,8 +409,8 @@ const LandingPixinguinha = () => {
                 {empreendimento.descricao}
               </p>
               <p className="text-gray-700">
-                Projeto arquitetônico moderno com fachada imponente, o Vista
-                Baía Residencial foi elaborado para proporcionar o máximo de
+                Projeto arquitetônico moderno com fachada imponente, o Residencial 
+                Pixinguinha foi elaborado para proporcionar o máximo de
                 conforto e bem-estar aos moradores. Com áreas comuns amplas e
                 bem equipadas, o empreendimento é ideal para quem busca
                 qualidade de vida em uma das áreas mais promissoras do Rio de
