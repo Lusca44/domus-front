@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import fotos from "./assets/fotos";
 import videos from "./assets/videos";
 import ImgBackground from "./assets/back-ground-pixinguinha.jpeg";
@@ -283,6 +283,8 @@ const LandingPixinguinha = () => {
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-6xl max-h-[90vh] p-0">
+                          <DialogTitle className="sr-only">Visualização em tela cheia</DialogTitle>
+                          <DialogDescription className="sr-only">Imagem do empreendimento em tamanho ampliado</DialogDescription>
                           <div className="relative">
                             <img
                               src={empreendimento.imagens[imagemAtual].url}
@@ -348,8 +350,10 @@ const LandingPixinguinha = () => {
                               </div>
                             </Card>
                           </DialogTrigger>
-                          <DialogContent className="max-w-4xl w-[90vw] max-h-[80vh] p-4">
-                            <div className="w-full max-w-3xl mx-auto">
+                          <DialogContent className="max-w-2xl w-[85vw] max-h-[70vh] p-3">
+                            <DialogTitle className="sr-only">{video.titulo}</DialogTitle>
+                            <DialogDescription className="sr-only">Reprodução do vídeo: {video.titulo}</DialogDescription>
+                            <div className="w-full mx-auto">
                               <AspectRatio ratio={16 / 9}>
                                 {video.url.includes('youtube') || video.url.includes('embed') ? (
                                   <iframe
@@ -359,7 +363,7 @@ const LandingPixinguinha = () => {
                                     title={video.titulo}
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
-                                    className="rounded"
+                                    className="rounded object-contain"
                                   ></iframe>
                                 ) : (
                                   <video
@@ -374,8 +378,8 @@ const LandingPixinguinha = () => {
                                 )}
                               </AspectRatio>
                             </div>
-                            <div className="mt-4 text-center">
-                              <h4 className="text-lg font-semibold">
+                            <div className="mt-2 text-center">
+                              <h4 className="text-sm font-semibold">
                                 {video.titulo}
                               </h4>
                             </div>
