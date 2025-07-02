@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
@@ -43,6 +43,45 @@ import ImgBackground from "./assets/back-ground-pixinguinha.jpeg";
 const LandingPixinguinha = () => {
   // Estado para galeria de imagens
   const [imagemAtual, setImagemAtual] = useState(0);
+  const [videoThumbnails, setVideoThumbnails] = useState<{[key: number]: string}>({});
+
+  /**
+   * Função para gerar thumbnail do vídeo local
+   */
+  const generateVideoThumbnail = (videoSrc: string, videoIndex: number) => {
+    const video = document.createElement('video');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    video.addEventListener('loadedmetadata', () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      video.currentTime = 1; // Pega o frame de 1 segundo
+    });
+
+    video.addEventListener('seeked', () => {
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const thumbnailDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        setVideoThumbnails(prev => ({
+          ...prev,
+          [videoIndex]: thumbnailDataUrl
+        }));
+      }
+    });
+
+    video.src = videoSrc;
+    video.load();
+  };
+
+  useEffect(() => {
+    // Gerar thumbnails para vídeos locais
+    empreendimento.videos.forEach((video, index) => {
+      if (video.url && !video.url.includes('youtube') && !video.url.includes('embed')) {
+        generateVideoThumbnail(video.url, index);
+      }
+    });
+  }, []);
 
   /**
    * Função para extrair ID do vídeo do YouTube e gerar thumbnail natural
@@ -59,13 +98,21 @@ const LandingPixinguinha = () => {
   };
 
   /**
-   * Função para obter thumbnail - prioriza vídeo local, fallback para YouTube
+   * Função para obter thumbnail - prioriza vídeo local gerado, fallback para YouTube
    */
-  const getVideoThumbnail = (video: any) => {
-    if (video.thumbnailLocal) {
-      return video.thumbnailLocal;
+  const getVideoThumbnail = (video: any, index: number) => {
+    // Se temos uma thumbnail gerada para este vídeo local
+    if (videoThumbnails[index]) {
+      return videoThumbnails[index];
     }
-    return getYouTubeThumbnail(video.url);
+    
+    // Se é um vídeo do YouTube
+    if (video.url.includes('youtube') || video.url.includes('embed')) {
+      return getYouTubeThumbnail(video.url);
+    }
+    
+    // Fallback para uma imagem padrão enquanto gera a thumbnail
+    return '';
   };
 
   /**
@@ -276,20 +323,16 @@ const LandingPixinguinha = () => {
                             <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                               <div className="relative">
                                 <AspectRatio ratio={16 / 9}>
-                                  {video.thumbnailLocal ? (
-                                    <video
-                                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                                      muted
-                                      playsInline
-                                    >
-                                      <source src={video.thumbnailLocal} type="video/mp4" />
-                                    </video>
-                                  ) : (
+                                  {getVideoThumbnail(video, index) ? (
                                     <img
-                                      src={getYouTubeThumbnail(video.url)}
+                                      src={getVideoThumbnail(video, index)}
                                       alt={video.titulo}
                                       className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
                                     />
+                                  ) : (
+                                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                      <div className="text-gray-500">Carregando...</div>
+                                    </div>
                                   )}
                                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
                                     <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
@@ -307,15 +350,27 @@ const LandingPixinguinha = () => {
                           </DialogTrigger>
                           <DialogContent className="max-w-4xl">
                             <div className="aspect-video">
-                              <iframe
-                                width="100%"
-                                height="100%"
-                                src={video.url}
-                                title={video.titulo}
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                className="rounded"
-                              ></iframe>
+                              {video.url.includes('youtube') || video.url.includes('embed') ? (
+                                <iframe
+                                  width="100%"
+                                  height="100%"
+                                  src={video.url}
+                                  title={video.titulo}
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                  className="rounded"
+                                ></iframe>
+                              ) : (
+                                <video
+                                  width="100%"
+                                  height="100%"
+                                  controls
+                                  className="rounded"
+                                >
+                                  <source src={video.url} type="video/mp4" />
+                                  Seu navegador não suporta vídeos HTML5.
+                                </video>
+                              )}
                             </div>
                             <div className="mt-4">
                               <h4 className="text-lg font-semibold">
