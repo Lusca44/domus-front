@@ -246,13 +246,13 @@ export const userApi = {
   getAllByIds: (id: string[]): Promise<any> => apiClient.get(`usuario/obterUsuariosPorId`),
 
   // POST /users - Criar novo usuário
-  create: (data: any): Promise<any> => apiClient.post('cadastroUsuario', data),
+  create: (data: any): Promise<any> => apiClient.post('usuario/cadastroUsuario', data),
 
   // PUT /users/:id - Atualizar usuário
   update: (id: string, data: any): Promise<any> => apiClient.put(`users/${id}`, data),
 
   // DELETE /users/:id - Excluir usuário
-  delete: (id: string): Promise<any> => apiClient.delete(`users/${id}`),
+  delete: (id: string): Promise<any> => apiClient.delete(`usuario/deleteUsuario/${id}`),
 };
 
 export default apiClient;

@@ -2,6 +2,7 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
+import { userApi } from "@/utils/apiConfig";
 
 interface User {
   id: string;
@@ -32,7 +33,7 @@ export function UserDeleteModal({ open, onOpenChange, user, onUserDeleted }: Use
 
     try {
       await execute(async () => {
-        console.log('Excluindo usuário:', user.id);
+        userApi.delete(user.id)
         return { success: true };
       });
 

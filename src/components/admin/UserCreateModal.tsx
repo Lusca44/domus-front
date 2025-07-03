@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
 import { Save } from "lucide-react";
+import { userApi } from "@/utils/apiConfig";
 
 interface UserFormData {
   nome: string;
@@ -69,7 +70,7 @@ export function UserCreateModal({ open, onOpenChange, onUserCreated }: UserCreat
 
     try {
       await execute(async () => {
-        console.log('Dados a serem enviados:', formData);
+        userApi.create(formData);
         return { success: true };
       });
 

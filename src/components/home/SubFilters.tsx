@@ -15,15 +15,11 @@ const SubFilters = ({ onRegionChange, onRoomsChange, selectedRegion, selectedRoo
   const regioes = [
     { value: "todas", label: "Todas as Regiões" },
     { value: "porto-maravilha", label: "Porto Maravilha" },
-    { value: "barra-tijuca", label: "Barra da Tijuca" },
     { value: "recreio", label: "Recreio dos Bandeirantes" },
-    { value: "copacabana", label: "Copacabana" },
-    { value: "ipanema", label: "Ipanema" },
-    { value: "tijuca", label: "Tijuca" },
   ];
 
   const quartos = [
-    { value: "todos", label: "Todos os Quartos" },
+    { value: "todos", label: "Todos as Quantidades" },
     { value: "1", label: "1 Quarto" },
     { value: "2", label: "2 Quartos" },
     { value: "3", label: "3 Quartos" },

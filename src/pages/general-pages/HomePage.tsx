@@ -106,7 +106,7 @@ const HomePage = () => {
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="text-center sm:text-left">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  Feitozza Imóveis
+                  Feitoza Imóveis
                 </h1>
                 <p className="text-sm sm:text-base text-gray-600 mt-1">
                   Lançamentos Imobiliários, vendas e alugueis no Rio de Janeiro
@@ -119,7 +119,7 @@ const HomePage = () => {
                 </div>
                 <div className="flex items-center gap-1">
                   <Mail className="w-4 h-4" />
-                  <span>contato@feitozza.com.br</span>
+                  <span>Feitozaimoveis@yahoo.com</span>
                 </div>
               </div>
             </div>
@@ -221,7 +221,7 @@ const HomePage = () => {
                   className="border-white text-white hover:bg-white hover:text-blue-600"
                   asChild
                 >
-                  <a href="mailto:contato@feitozza.com.br">
+                  <a href="mailto:Feitozaimoveis@yahoo.com">
                     <Mail className="w-4 h-4 mr-2" />
                     Enviar Email
                   </a>
@@ -244,7 +244,7 @@ const HomePage = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-center sm:text-left">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                Feitozza Imóveis
+                Feitoza Imóveis
               </h1>
               <p className="text-sm sm:text-base text-gray-600 mt-1">
                 Lançamentos Imobiliários, vendas e alugueis no Rio de Janeiro
@@ -257,7 +257,7 @@ const HomePage = () => {
               </div>
               <div className="flex items-center gap-1">
                 <Mail className="w-4 h-4" />
-                <span>contato@feitozza.com.br</span>
+                <span>Feitozaimoveis@yahoo.com</span>
               </div>
             </div>
           </div>
@@ -394,7 +394,7 @@ const HomePage = () => {
                 className="border-white text-white hover:bg-white hover:text-blue-600"
                 asChild
               >
-                <a href="mailto:contato@feitozza.com.br">
+                <a href="mailto:Feitozaimoveis@yahoo.com">
                   <Mail className="w-4 h-4 mr-2" />
                   Enviar Email
                 </a>

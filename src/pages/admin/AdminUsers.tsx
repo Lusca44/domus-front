@@ -16,7 +16,7 @@ interface User {
   nome: string;
   email: string;
   telefone?: string;
-  isAdmin: boolean;
+  admin: boolean;
   ativo: boolean;
   dataCadastro: string;
 }
@@ -39,10 +39,12 @@ const AdminUsers = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
-
+  
   const fetchUsers = async () => {
     try {
       const data = await executeGetUsers(() => userApi.obterUsuarios());
+      console.log("----")
+      console.log(data)
       setUsers(data || []);
     } catch (error) {
       console.error("Erro ao buscar usuários:", error);
@@ -129,11 +131,11 @@ const AdminUsers = () => {
                           <td className="p-3">{user.telefone || '-'}</td>
                           <td className="p-3">
                             <span className={`px-2 py-1 rounded-full text-xs ${
-                              user.isAdmin 
+                              user.admin 
                                 ? 'bg-purple-100 text-purple-800' 
                                 : 'bg-blue-100 text-blue-800'
                             }`}>
-                              {user.isAdmin ? 'Administrador' : 'Corretor'}
+                              {user.admin ? 'Administrador' : 'Corretor'}
                             </span>
                           </td>
                           <td className="p-3">
