@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -96,6 +95,31 @@ const LandingPixinguinha = () => {
     
     // Fallback para uma imagem padrão enquanto gera a thumbnail
     return '';
+  };
+
+  /**
+   * Função para detectar se é um vídeo do YouTube
+   */
+  const isYouTubeVideo = (url: string) => {
+    return url.includes('youtube.com') || url.includes('youtu.be') || url.includes('embed');
+  };
+
+  /**
+   * Função para converter URL do YouTube para embed
+   */
+  const getYouTubeEmbedUrl = (url: string) => {
+    if (url.includes('embed')) {
+      return url;
+    }
+    
+    let videoId = '';
+    if (url.includes('youtu.be/')) {
+      videoId = url.split('youtu.be/')[1].split('?')[0];
+    } else if (url.includes('youtube.com/watch?v=')) {
+      videoId = url.split('v=')[1].split('&')[0];
+    }
+    
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
   };
 
   /**
@@ -376,21 +400,39 @@ const LandingPixinguinha = () => {
                             <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                               <div className="relative">
                                 <AspectRatio ratio={16 / 9}>
-                                  {getVideoThumbnail(video, index) ? (
-                                    <img
-                                      src={getVideoThumbnail(video, index)}
-                                      alt={video.titulo}
-                                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                                    />
-                                  ) : (
-                                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                      <div className="text-gray-500">Carregando...</div>
-                                    </div>
-                                  )}
-                                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
-                                    <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                                      <Play className="w-8 h-8 text-blue-600 ml-1" />
-                                    </div>
+                                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    {isYouTubeVideo(video.url) ? (
+                                      // Thumbnail do YouTube
+                                      <div className="relative w-full h-full">
+                                        <iframe
+                                          src={video.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'embed/').split('?')[0]}
+                                          title={video.titulo}
+                                          className="w-full h-full pointer-events-none"
+                                          style={{ pointerEvents: 'none' }}
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                          <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                                            <Play className="w-8 h-8 text-blue-600 ml-1" />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      // Thumbnail do vídeo local
+                                      <div className="relative w-full h-full">
+                                        <video
+                                          className="w-full h-full object-cover"
+                                          muted
+                                          playsInline
+                                        >
+                                          <source src={video.url} type="video/mp4" />
+                                        </video>
+                                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                          <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                                            <Play className="w-8 h-8 text-blue-600 ml-1" />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
                                 </AspectRatio>
                                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
@@ -407,11 +449,11 @@ const LandingPixinguinha = () => {
                             <div className="w-full mx-auto h-full flex flex-col">
                               <div className="flex-1 min-h-0">
                                 <AspectRatio ratio={16 / 9} className="w-full h-full max-h-[calc(80vh-80px)]">
-                                  {video.url.includes('youtube') || video.url.includes('embed') ? (
+                                  {isYouTubeVideo(video.url) ? (
                                     <iframe
                                       width="100%"
                                       height="100%"
-                                      src={video.url}
+                                      src={getYouTubeEmbedUrl(video.url)}
                                       title={video.titulo}
                                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                       allowFullScreen
@@ -422,6 +464,7 @@ const LandingPixinguinha = () => {
                                       width="100%"
                                       height="100%"
                                       controls
+                                      autoPlay
                                       className="rounded object-contain max-h-full"
                                     >
                                       <source src={video.url} type="video/mp4" />
