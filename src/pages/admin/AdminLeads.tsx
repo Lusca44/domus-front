@@ -97,6 +97,14 @@ const AdminLeads = () => {
     }
   }, [authLoading, isAdmin]);
 
+  // NOVO: Efeito para desmarcar o filtro de corretor quando "Apenas minhas leads" for selecionado
+  useEffect(() => {
+    if (myLeadsFilter && correctorFilter) {
+      setCorrectorFilter(false);
+      console.log("🔄 Filtro 'Sem corretor vinculado' desmarcado automaticamente ao selecionar 'Apenas minhas leads'");
+    }
+  }, [myLeadsFilter]);
+
   const fetchLeads = async () => {
     try {
       if (authLoading) return;
