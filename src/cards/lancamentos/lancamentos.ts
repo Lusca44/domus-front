@@ -33,5 +33,18 @@ export const lancamentos: Imovel[] = [
     destaque: true,
     tipo: "lancamento",
   },
+  {
+    id: "3",
+    titulo: "Caminhos da Guanabara",
+    descricao: "Apartamentos modernos com vista para a Baía de Guanabara",
+    preco: "A partir de R$ 320.000",
+    imagem: cardCaminhosDaGuanabara,
+    regiao: "Niterói",
+    quartos: 2,
+    area: "55m²",
+    url: "/niteroi/lancamento/caminhos-guanabara",
+    destaque: true,
+    tipo: "lancamento",
+  },
   // **FINAL DA ÁREA DE ADIÇÃO - quando adicionar novos cards, coloque-os aqui seguindo este padrão**
 ];

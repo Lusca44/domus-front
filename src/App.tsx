@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/general-pages/HomePage";
 import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
@@ -15,6 +14,8 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
+import LandingCaminhosGuanabara from "./pages/regioes/niteroi/caminhos-guanabara/LandingCaminhosGuanabara";
+import AdminLandingPages from "./pages/admin/AdminLandingPages";
 
 function App() {
   return (
@@ -44,6 +45,11 @@ function App() {
             element={<LandingParadise />}
           />
 
+          <Route
+            path="/niteroi/lancamento/caminhos-guanabara"
+            element={<LandingCaminhosGuanabara />}
+          />
+
           <Route path="/obrigado" element={<PaginaAgradecimento />} />
 
           {/* Rota de login - não protegida */}
@@ -63,6 +69,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminLeads />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/landing-pages" 
+            element={
+              <ProtectedRoute>
+                <AdminLandingPages />
               </ProtectedRoute>
             } 
           />
