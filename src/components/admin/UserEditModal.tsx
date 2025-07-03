@@ -1,67 +1,73 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
 import { Save } from "lucide-react";
 
-interface UserFormData {
+interface User {
+  id: string;
   nome: string;
   email: string;
-  senha: string;
-  telefone: string;
-  isAdmin: string;
+  telefone?: string;
+  isAdmin: boolean;
+  ativo: boolean;
+  dataCadastro: string;
 }
 
-interface UserCreateModalProps {
+interface UserEditModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onUserCreated: () => void;
+  user: User | null;
+  onUserUpdated: () => void;
 }
 
-export function UserCreateModal({ open, onOpenChange, onUserCreated }: UserCreateModalProps) {
+export function UserEditModal({ open, onOpenChange, user, onUserUpdated }: UserEditModalProps) {
   const { toast } = useToast();
   const { loading, execute } = useApi({
     showSuccessToast: true,
-    successMessage: "Usuário cadastrado com sucesso!",
+    successMessage: "Usuário atualizado com sucesso!",
   });
 
-  const [formData, setFormData] = useState<UserFormData>({
+  const [formData, setFormData] = useState({
     nome: "",
     email: "",
-    senha: "",
     telefone: "",
     isAdmin: "N",
+    ativo: true,
   });
 
-  const handleInputChange = (field: keyof UserFormData, value: string) => {
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        nome: user.nome,
+        email: user.email,
+        telefone: user.telefone || "",
+        isAdmin: user.isAdmin ? "S" : "N",
+        ativo: user.ativo,
+      });
+    }
+  }, [user]);
+
+  const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const resetForm = () => {
-    setFormData({
-      nome: "",
-      email: "",
-      senha: "",
-      telefone: "",
-      isAdmin: "N",
-    });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.nome || !formData.email || !formData.senha) {
+    if (!formData.nome || !formData.email) {
       toast({
         title: "Erro de validação",
-        description: "Nome, email e senha são obrigatórios.",
+        description: "Nome e email são obrigatórios.",
         variant: "destructive",
       });
       return;
@@ -69,25 +75,26 @@ export function UserCreateModal({ open, onOpenChange, onUserCreated }: UserCreat
 
     try {
       await execute(async () => {
-        console.log('Dados a serem enviados:', formData);
+        console.log('Dados a serem atualizados:', { ...formData, id: user?.id });
         return { success: true };
       });
 
-      resetForm();
-      onUserCreated();
+      onUserUpdated();
       onOpenChange(false);
     } catch (error) {
-      console.error('Erro ao cadastrar usuário:', error);
+      console.error('Erro ao atualizar usuário:', error);
     }
   };
+
+  if (!user) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Novo Usuário</DialogTitle>
+          <DialogTitle>Editar Usuário</DialogTitle>
           <DialogDescription>
-            Cadastre um novo corretor ou administrador no sistema.
+            Altere as informações do usuário {user.nome}.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -112,18 +119,6 @@ export function UserCreateModal({ open, onOpenChange, onUserCreated }: UserCreat
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 placeholder="email@exemplo.com"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="senha">Senha *</Label>
-              <Input
-                id="senha"
-                type="password"
-                value={formData.senha}
-                onChange={(e) => handleInputChange("senha", e.target.value)}
-                placeholder="Digite a senha"
                 required
               />
             </div>
@@ -154,6 +149,15 @@ export function UserCreateModal({ open, onOpenChange, onUserCreated }: UserCreat
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="ativo"
+                checked={formData.ativo}
+                onCheckedChange={(checked) => handleInputChange("ativo", checked)}
+              />
+              <Label htmlFor="ativo">Usuário ativo</Label>
+            </div>
           </div>
 
           <DialogFooter>
@@ -171,7 +175,7 @@ export function UserCreateModal({ open, onOpenChange, onUserCreated }: UserCreat
               className="flex items-center gap-2"
             >
               <Save className="h-4 w-4" />
-              {loading ? "Cadastrando..." : "Cadastrar Usuário"}
+              {loading ? "Atualizando..." : "Atualizar Usuário"}
             </Button>
           </DialogFooter>
         </form>

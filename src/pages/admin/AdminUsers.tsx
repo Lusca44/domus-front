@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
@@ -8,6 +7,8 @@ import { UserPlus, Users, Edit, Trash2 } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
 import { userApi } from "@/utils/apiConfig";
 import { UserCreateModal } from "@/components/admin/UserCreateModal";
+import { UserEditModal } from "@/components/admin/UserEditModal";
+import { UserDeleteModal } from "@/components/admin/UserDeleteModal";
 import { useTokenValidation } from "@/hooks/useTokenValidation";
 
 interface User {
@@ -26,6 +27,9 @@ const AdminUsers = () => {
 
   const [users, setUsers] = useState<User[]>([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const { loading: loadingUsers, execute: executeGetUsers } = useApi<User[]>({
     showErrorToast: true,
@@ -47,6 +51,24 @@ const AdminUsers = () => {
 
   const handleUserCreated = () => {
     fetchUsers(); // Recarregar a lista após criar usuário
+  };
+
+  const handleUserUpdated = () => {
+    fetchUsers(); // Recarregar a lista após atualizar usuário
+  };
+
+  const handleUserDeleted = () => {
+    fetchUsers(); // Recarregar a lista após excluir usuário
+  };
+
+  const handleEdit = (user: User) => {
+    setSelectedUser(user);
+    setEditModalOpen(true);
+  };
+
+  const handleDelete = (user: User) => {
+    setSelectedUser(user);
+    setDeleteModalOpen(true);
   };
 
   return (
@@ -128,10 +150,19 @@ const AdminUsers = () => {
                           </td>
                           <td className="p-3">
                             <div className="flex gap-2">
-                              <Button size="sm" variant="outline">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleEdit(user)}
+                              >
                                 <Edit className="h-3 w-3" />
                               </Button>
-                              <Button size="sm" variant="outline" className="text-red-600">
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="text-red-600"
+                                onClick={() => handleDelete(user)}
+                              >
                                 <Trash2 className="h-3 w-3" />
                               </Button>
                             </div>
@@ -160,6 +191,20 @@ const AdminUsers = () => {
           open={createModalOpen}
           onOpenChange={setCreateModalOpen}
           onUserCreated={handleUserCreated}
+        />
+
+        <UserEditModal
+          open={editModalOpen}
+          onOpenChange={setEditModalOpen}
+          user={selectedUser}
+          onUserUpdated={handleUserUpdated}
+        />
+
+        <UserDeleteModal
+          open={deleteModalOpen}
+          onOpenChange={setDeleteModalOpen}
+          user={selectedUser}
+          onUserDeleted={handleUserDeleted}
         />
       </AdminLayout>
     </ProtectedRoute>
