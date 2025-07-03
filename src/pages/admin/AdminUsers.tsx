@@ -1,13 +1,14 @@
+
 import { useState, useEffect } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserPlus, Users, Edit, Trash2 } from "lucide-react";
+import { UserPlus, Users, UserX, Trash2 } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
 import { userApi } from "@/utils/apiConfig";
 import { UserCreateModal } from "@/components/admin/UserCreateModal";
-import { UserEditModal } from "@/components/admin/UserEditModal";
+import { UserDeactivateModal } from "@/components/admin/UserDeactivateModal";
 import { UserDeleteModal } from "@/components/admin/UserDeleteModal";
 import { useTokenValidation } from "@/hooks/useTokenValidation";
 
@@ -27,7 +28,7 @@ const AdminUsers = () => {
 
   const [users, setUsers] = useState<User[]>([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deactivateModalOpen, setDeactivateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
@@ -63,9 +64,9 @@ const AdminUsers = () => {
     fetchUsers(); // Recarregar a lista após excluir usuário
   };
 
-  const handleEdit = (user: User) => {
+  const handleDeactivate = (user: User) => {
     setSelectedUser(user);
-    setEditModalOpen(true);
+    setDeactivateModalOpen(true);
   };
 
   const handleDelete = (user: User) => {
@@ -155,9 +156,10 @@ const AdminUsers = () => {
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                onClick={() => handleEdit(user)}
+                                className={user.ativo ? "text-orange-600" : "text-green-600"}
+                                onClick={() => handleDeactivate(user)}
                               >
-                                <Edit className="h-3 w-3" />
+                                <UserX className="h-3 w-3" />
                               </Button>
                               <Button 
                                 size="sm" 
@@ -195,9 +197,9 @@ const AdminUsers = () => {
           onUserCreated={handleUserCreated}
         />
 
-        <UserEditModal
-          open={editModalOpen}
-          onOpenChange={setEditModalOpen}
+        <UserDeactivateModal
+          open={deactivateModalOpen}
+          onOpenChange={setDeactivateModalOpen}
           user={selectedUser}
           onUserUpdated={handleUserUpdated}
         />
