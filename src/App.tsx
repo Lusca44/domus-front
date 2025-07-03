@@ -13,6 +13,7 @@ import AdminLeads from "./pages/admin/AdminLeads";
 import AdminProfile from "./pages/admin/AdminProfile";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminLandingPages from "./pages/admin/AdminLandingPages";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -63,6 +64,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminLeads />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/landing-pages" 
+            element={
+              <ProtectedRoute>
+                <AdminLandingPages />
               </ProtectedRoute>
             } 
           />
