@@ -1,6 +1,5 @@
-
 import cardPixinguinhaImg from "./images/card-pixinguinha.jpeg";
-import { Imovel } from './imoveis';
+import { Imovel } from '../cards/imoveis';
 
 export const lancamentos: Imovel[] = [
   {
