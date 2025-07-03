@@ -33,18 +33,5 @@ export const lancamentos: Imovel[] = [
     destaque: true,
     tipo: "lancamento",
   },
-  {
-    id: "3", 
-    titulo: "Caminhos da Guanabara",
-    descricao: "Um manifesto em forma de arte e arquitetura que preenche Niterói",
-    preco: "A partir de R$ 294.900",
-    imagem: cardCaminhosDaGuanabara,
-    regiao: "Niterói",
-    quartos: 2, 
-    area: "51,30 m²",
-    url: "/niteroi/lancamento/caminhos-guanabara",
-    destaque: false,
-    tipo: "lancamento",
-  }
   // **FINAL DA ÁREA DE ADIÇÃO - quando adicionar novos cards, coloque-os aqui seguindo este padrão**
 ];

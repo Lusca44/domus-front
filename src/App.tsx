@@ -5,7 +5,6 @@ import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixingu
 import LandingPortoCarioca from "./pages/regioes/porto/porto-carioca/LandingPortoCarioca";
 import LandingAtlantico from "./pages/regioes/barra/atlantico/LandingAtlantico";
 import LandingParadise from "./pages/regioes/recreio/paradise/LandingParadise";
-import LandingCaminhosGuanabara from "./pages/regioes/niteroi/caminhos-guanabara/LandingCaminhosGuanabara";
 import NotFound from "./pages/general-pages/NotFound";
 import PaginaAgradecimento from "./pages/general-pages/PaginaAgradecimento";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -43,11 +42,6 @@ function App() {
           <Route
             path="/recreio/lancamento/paradise"
             element={<LandingParadise />}
-          />
-
-          <Route
-            path="/niteroi/lancamento/caminhos-guanabara"
-            element={<LandingCaminhosGuanabara />}
           />
 
           <Route path="/obrigado" element={<PaginaAgradecimento />} />
