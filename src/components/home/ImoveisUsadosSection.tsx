@@ -1,9 +1,8 @@
-
 import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
-import { imoveisUsados } from "@/data/imoveis-usados";
+import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
 
 const ImoveisUsadosSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");

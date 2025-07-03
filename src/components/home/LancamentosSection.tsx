@@ -1,8 +1,7 @@
-
 import React, { useState, useMemo } from "react";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
-import { lancamentos } from "@/data/lancamentos";
+import { lancamentos } from "@/cards/lancamentos/lancamentos";
 
 const LancamentosSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");

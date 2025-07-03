@@ -1,10 +1,9 @@
-
 import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail } from "lucide-react";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
-import { alugueis } from "@/data/alugueis";
+import { alugueis } from "@/cards/alugueis/alugueis";
 
 const AluguelSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");
