@@ -1,6 +1,7 @@
 
 import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -8,6 +9,9 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated, isLoading, requireAuth } = useAuth();
+  
+  // Inicializar controle de timeout da sessão
+  useSessionTimeout();
 
   useEffect(() => {
     // Só executa a verificação quando não estiver carregando

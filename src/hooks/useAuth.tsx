@@ -8,7 +8,7 @@ interface AuthState {
   user: any | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  isAdmin: boolean; // Nova flag para identificar administradores
+  isAdmin: boolean;
 }
 
 export const useAuth = () => {
@@ -29,10 +29,39 @@ export const useAuth = () => {
       try {
         const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');
+        const loginTime = localStorage.getItem('loginTime');
         
-        if (token && user) {
+        if (token && user && loginTime) {
           const userData = JSON.parse(user);
-          // Verificar se o usuário é admin (isAdmin === 'S')
+          const loginTimestamp = parseInt(loginTime);
+          const currentTime = Date.now();
+          const sessionDuration = 30 * 60 * 1000; // 30 minutos
+          
+          // Verificar se a sessão expirou
+          if (currentTime - loginTimestamp > sessionDuration) {
+            // Sessão expirada
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('loginTime');
+            
+            setAuthState({
+              token: null,
+              user: null,
+              isAuthenticated: false,
+              isLoading: false,
+              isAdmin: false
+            });
+            
+            toast({
+              title: "Sessão expirada",
+              description: "Sua sessão expirou. Faça login novamente.",
+              variant: "destructive",
+            });
+            
+            return;
+          }
+          
+          // Verificar se o usuário é admin
           const isAdminUser = userData?.isAdmin === true;
         
           setAuthState({
@@ -56,6 +85,7 @@ export const useAuth = () => {
         // Se houver erro ao parsear dados, limpar localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('loginTime');
         setAuthState({
           token: null,
           user: null,
@@ -67,12 +97,15 @@ export const useAuth = () => {
     };
 
     checkAuth();
-  }, []);
+  }, [toast]);
 
   const login = (token: string, userData: any) => {
     try {
+      const loginTime = Date.now().toString();
+      
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('loginTime', loginTime);
       
       console.log(token)
       console.log(userData)
@@ -107,6 +140,7 @@ export const useAuth = () => {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('loginTime');
     
     setAuthState({
       token: null,
