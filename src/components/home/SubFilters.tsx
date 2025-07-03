@@ -10,8 +10,8 @@ interface SubFiltersProps {
   onRoomsChange: (rooms: string) => void;
   selectedRegion: string;
   selectedRooms: string;
-  availableRegions: RegiaoFilter[]; // **AUTOMATICAMENTE GERADO** pelos dados
-  availableRooms: QuartosFilter[];  // **AUTOMATICAMENTE GERADO** pelos dados
+  availableRegions: RegiaoFilter[];
+  availableRooms: QuartosFilter[];
 }
 
 const SubFilters = ({ 
@@ -22,6 +22,11 @@ const SubFilters = ({
   availableRegions,
   availableRooms
 }: SubFiltersProps) => {
+  const handleClearFilters = () => {
+    onRegionChange("todas");
+    onRoomsChange("todos");
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border mb-8">
       <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -37,7 +42,6 @@ const SubFilters = ({
                 <SelectValue placeholder="Selecione a região" />
               </SelectTrigger>
               <SelectContent>
-                {/* **FILTROS GERADOS AUTOMATICAMENTE** baseado nos cards existentes */}
                 {availableRegions.map((regiao) => (
                   <SelectItem key={regiao.value} value={regiao.value}>
                     {regiao.label}
@@ -53,7 +57,6 @@ const SubFilters = ({
                 <SelectValue placeholder="Quantidade de quartos" />
               </SelectTrigger>
               <SelectContent>
-                {/* **FILTROS GERADOS AUTOMATICAMENTE** baseado nos cards existentes */}
                 {availableRooms.map((quarto) => (
                   <SelectItem key={quarto.value} value={quarto.value}>
                     {quarto.label}
@@ -66,10 +69,7 @@ const SubFilters = ({
 
         <Button 
           variant="outline" 
-          onClick={() => {
-            onRegionChange("todas");
-            onRoomsChange("todos");
-          }}
+          onClick={handleClearFilters}
           className="whitespace-nowrap"
         >
           Limpar Filtros

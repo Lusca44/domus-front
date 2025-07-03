@@ -16,6 +16,8 @@ export interface QuartosFilter {
 // **FUNÇÃO PRINCIPAL**: Gera filtros de região automaticamente baseado nos dados
 // Esta função percorre todos os itens e extrai as regiões únicas
 export const getAvailableRegions = (items: any[]): RegiaoFilter[] => {
+  if (!items?.length) return [{ value: "todas", label: "Todas as Regiões" }];
+  
   // Extrai regiões únicas dos dados
   const uniqueRegions = [...new Set(items.map(item => item.regiao))];
   
@@ -34,6 +36,8 @@ export const getAvailableRegions = (items: any[]): RegiaoFilter[] => {
 
 // **FUNÇÃO PRINCIPAL**: Gera filtros de quartos automaticamente baseado nos dados
 export const getAvailableRooms = (items: any[]): QuartosFilter[] => {
+  if (!items?.length) return [{ value: "todos", label: "Todas as Quantidades" }];
+  
   // Extrai quantidades de quartos únicas
   const uniqueRooms = [...new Set(items.map(item => {
     if (item.quartos >= 4) return "4";
