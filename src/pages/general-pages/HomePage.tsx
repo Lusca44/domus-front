@@ -42,6 +42,9 @@ const HomePage = () => {
 
   // Definir a aba padrão como a primeira disponível
   const defaultTab = availableTabs[0]?.value || "lancamentos";
+  
+  // Estado para controlar a aba ativa
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
   const qtdLancamentosAtivos = () => {
     let quantidade = 0;
@@ -54,6 +57,45 @@ const HomePage = () => {
   const qtdRegioes = () => {
     return regioesHubs.length;
   };
+
+  // Função para obter estatísticas baseadas na aba ativa
+  const getStats = (tab: string) => {
+    switch (tab) {
+      case "lancamentos":
+        const regioesLancamentos = [...new Set(lancamentos.map(item => item.regiao))].length;
+        return {
+          regioes: regioesLancamentos,
+          quantidade: lancamentos.length,
+          tipoLabel: "Lançamentos",
+          quantidadeLabel: "Lançamentos Disponíveis"
+        };
+      case "aluguel":
+        const regioesAlugueis = [...new Set(alugueis.map(item => item.regiao))].length;
+        return {
+          regioes: regioesAlugueis,
+          quantidade: alugueis.length,
+          tipoLabel: "Aluguéis",
+          quantidadeLabel: "Aluguéis Disponíveis"
+        };
+      case "imoveis-usados":
+        const regioesUsados = [...new Set(imoveisUsados.map(item => item.regiao))].length;
+        return {
+          regioes: regioesUsados,
+          quantidade: imoveisUsados.length,
+          tipoLabel: "Imóveis Usados",
+          quantidadeLabel: "Imóveis Disponíveis"
+        };
+      default:
+        return {
+          regioes: qtdRegioes(),
+          quantidade: qtdLancamentosAtivos(),
+          tipoLabel: "Lançamentos",
+          quantidadeLabel: "Lançamentos Ativos"
+        };
+    }
+  };
+
+  const currentStats = getStats(activeTab);
 
   // Se não há nenhuma categoria disponível, não renderizar as abas
   if (availableTabs.length === 0) {
@@ -239,11 +281,11 @@ const HomePage = () => {
               custo-benefício.
             </p>
 
-            {/* Stats */}
+            {/* Stats dinâmicas baseadas na aba ativa */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl mx-auto">
               <div className="text-center">
                 <div className="text-2xl sm:text-3xl font-bold text-blue-600">
-                  {qtdRegioes()}
+                  {currentStats.regioes}
                 </div>
                 <div className="text-sm sm:text-base text-gray-600">
                   Regiões Atendidas
@@ -251,10 +293,10 @@ const HomePage = () => {
               </div>
               <div className="text-center">
                 <div className="text-2xl sm:text-3xl font-bold text-blue-600">
-                  {qtdLancamentosAtivos()}
+                  {currentStats.quantidade}
                 </div>
                 <div className="text-sm sm:text-base text-gray-600">
-                  Lançamento Ativo
+                  {currentStats.quantidadeLabel}
                 </div>
               </div>
               <div className="text-center">
@@ -273,7 +315,7 @@ const HomePage = () => {
       {/* Navigation Tabs Section */}
       <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4">
-          <Tabs defaultValue={defaultTab} className="w-full">
+          <Tabs defaultValue={defaultTab} onValueChange={setActiveTab} className="w-full">
             <div className="flex justify-center mb-8">
               <TabsList 
                 className={`grid h-12 ${
