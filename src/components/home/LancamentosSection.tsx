@@ -3,35 +3,21 @@ import React, { useState, useMemo } from "react";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
 import { lancamentos } from "@/cards/lancamentos/lancamentos";
-import { mapRegiaoToFilter, mapFilterToRegiao, getAvailableRegions, getAvailableRooms } from "@/config/filterConfig";
+import { getAvailableRegions, getAvailableRooms, itemMatchesFilters } from "@/config/filterConfig";
 
 const LancamentosSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");
   const [selectedRooms, setSelectedRooms] = useState("todos");
 
-  // Obter filtros disponíveis dinamicamente baseado nos lançamentos
+  // **FILTROS GERADOS AUTOMATICAMENTE** - baseado nos cards de lançamentos existentes
   const availableRegions = useMemo(() => getAvailableRegions(lancamentos), []);
   const availableRooms = useMemo(() => getAvailableRooms(lancamentos), []);
 
-  // Filtrar lançamentos usando o sistema centralizado
+  // **FILTRAGEM AUTOMÁTICA** - usando a função centralizada de validação
   const filteredLancamentos = useMemo(() => {
-    return lancamentos.filter(lancamento => {
-      if (selectedRegion !== "todas") {
-        const expectedRegion = mapFilterToRegiao(selectedRegion);
-        if (lancamento.regiao !== expectedRegion) {
-          return false;
-        }
-      }
-      if (selectedRooms !== "todos") {
-        const roomsNumber = parseInt(selectedRooms);
-        if (selectedRooms === "4" && lancamento.quartos < 4) {
-          return false;
-        } else if (selectedRooms !== "4" && lancamento.quartos !== roomsNumber) {
-          return false;
-        }
-      }
-      return true;
-    });
+    return lancamentos.filter(lancamento => 
+      itemMatchesFilters(lancamento, selectedRegion, selectedRooms, lancamentos)
+    );
   }, [selectedRegion, selectedRooms]);
 
   // Separar lançamentos em destaque e comuns
@@ -40,6 +26,7 @@ const LancamentosSection = () => {
 
   return (
     <div className="space-y-12">
+      {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados dos cards */}
       <SubFilters
         onRegionChange={setSelectedRegion}
         onRoomsChange={setSelectedRooms}
@@ -61,7 +48,6 @@ const LancamentosSection = () => {
                 <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
-              {/* Grid otimizado para cards em destaque - máximo 3 por linha, centralizados */}
               <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
                 {featuredLancamentos.map((lancamento) => (
                   <div 
@@ -92,7 +78,6 @@ const LancamentosSection = () => {
                 </span>
               </h4>
               
-              {/* Grid responsivo com centralização automática - máximo 4 por linha */}
               <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
                 {regularLancamentos.map((lancamento) => (
                   <div 
@@ -110,7 +95,6 @@ const LancamentosSection = () => {
             </div>
           )}
 
-          {/* Caso só tenha itens em destaque */}
           {featuredLancamentos.length > 0 && regularLancamentos.length === 0 && featuredLancamentos.length === filteredLancamentos.length && (
             <div className="text-center py-6">
               <p className="text-gray-600 text-lg">

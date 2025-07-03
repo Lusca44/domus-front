@@ -1,76 +1,52 @@
 import React, { useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
 import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
+import { getAvailableRegions, getAvailableRooms, itemMatchesFilters } from "@/config/filterConfig";
 
 const ImoveisUsadosSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");
   const [selectedRooms, setSelectedRooms] = useState("todos");
 
-  // Filtrar imóveis
+  // **FILTROS GERADOS AUTOMATICAMENTE** - baseado nos cards de imóveis usados existentes
+  const availableRegions = useMemo(() => getAvailableRegions(imoveisUsados), []);
+  const availableRooms = useMemo(() => getAvailableRooms(imoveisUsados), []);
+
+  // **FILTRAGEM AUTOMÁTICA** - usando a função centralizada de validação
   const filteredImoveisUsados = useMemo(() => {
-    return imoveisUsados.filter(imovel => {
-      if (selectedRegion !== "todas") {
-        const regionMap: { [key: string]: string } = {
-          "leblon": "Leblon",
-          "tijuca": "Tijuca",
-          "recreio": "Recreio dos Bandeirantes",
-          "copacabana": "Copacabana",
-          "ipanema": "Ipanema",
-          "barra-tijuca": "Barra da Tijuca",
-        };
-        if (imovel.regiao !== regionMap[selectedRegion]) {
-          return false;
-        }
-      }
-      if (selectedRooms !== "todos") {
-        const roomsNumber = parseInt(selectedRooms);
-        if (selectedRooms === "4" && imovel.quartos < 4) {
-          return false;
-        } else if (selectedRooms !== "4" && imovel.quartos !== roomsNumber) {
-          return false;
-        }
-      }
-      return true;
-    });
+    return imoveisUsados.filter(imovel => 
+      itemMatchesFilters(imovel, selectedRegion, selectedRooms, imoveisUsados)
+    );
   }, [selectedRegion, selectedRooms]);
 
-  // Separar imóveis em destaque e comuns
-  const featuredImoveisUsados = filteredImoveisUsados.filter(i => i.destaque);
-  const regularImoveisUsados = filteredImoveisUsados.filter(i => !i.destaque);
+  // Separar imóveis usados em destaque e comuns
+  const featuredImoveisUsados = filteredImoveisUsados.filter(l => l.destaque);
+  const regularImoveisUsados = filteredImoveisUsados.filter(l => !l.destaque);
 
   return (
     <div className="space-y-12">
-      <div className="text-center mb-8">
-        <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-          Imóveis Usados
-        </h3>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Serviços completos para compra, venda e investimento imobiliário com segurança e agilidade.
-        </p>
-      </div>
-
+      {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados dos cards */}
       <SubFilters
         onRegionChange={setSelectedRegion}
         onRoomsChange={setSelectedRooms}
         selectedRegion={selectedRegion}
         selectedRooms={selectedRooms}
+        availableRegions={availableRegions}
+        availableRooms={availableRooms}
       />
 
       {filteredImoveisUsados.length > 0 ? (
         <>
-          {/* Imóveis em Destaque */}
+          {/* Imóveis Usados em Destaque */}
           {featuredImoveisUsados.length > 0 && (
             <div className="mb-16">
               <div className="text-center mb-8">
-                <h4 className="text-2xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Oportunidades em Destaque
-                </h4>
+                <h3 className="text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Imóveis Usados em Destaque
+                </h3>
                 <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
-              {/* Grid otimizado para cards em destaque - máximo 3 por linha, centralizados */}
               <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
                 {featuredImoveisUsados.map((imovel) => (
                   <div 
@@ -91,17 +67,16 @@ const ImoveisUsadosSection = () => {
             </div>
           )}
 
-          {/* Outras Oportunidades */}
+          {/* Outros Imóveis Usados */}
           {regularImoveisUsados.length > 0 && (
             <div className="border-t border-gray-200 pt-12">
               <h4 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                Outras Oportunidades
+                Outros Imóveis Usados
                 <span className="text-lg font-normal text-gray-600 ml-2">
                   ({regularImoveisUsados.length})
                 </span>
               </h4>
               
-              {/* Grid responsivo com centralização automática - máximo 4 por linha */}
               <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
                 {regularImoveisUsados.map((imovel) => (
                   <div 
@@ -118,6 +93,14 @@ const ImoveisUsadosSection = () => {
               </div>
             </div>
           )}
+
+          {featuredImoveisUsados.length > 0 && regularImoveisUsados.length === 0 && featuredImoveisUsados.length === filteredImoveisUsados.length && (
+            <div className="text-center py-6">
+              <p className="text-gray-600 text-lg">
+                Exibindo apenas imóveis usados em destaque para os filtros selecionados.
+              </p>
+            </div>
+          )}
         </>
       ) : (
         <div className="text-center py-16 bg-gray-50 rounded-2xl">
@@ -128,7 +111,7 @@ const ImoveisUsadosSection = () => {
               </svg>
             </div>
             <p className="text-gray-500 text-lg mb-2">
-              Nenhum imóvel encontrado
+              Nenhum imóvel usado encontrado
             </p>
             <p className="text-gray-400 text-sm">
               Tente ajustar os filtros para ver mais opções.
@@ -136,36 +119,6 @@ const ImoveisUsadosSection = () => {
           </div>
         </div>
       )}
-
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-8 text-white">
-        <div className="max-w-4xl mx-auto">
-          <h4 className="text-2xl font-bold mb-4 text-center">
-            Por que escolher a Feitozza Imóveis?
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {[
-              "Mais de 10 anos de experiência no mercado",
-              "Equipe especializada e certificada",
-              "Atendimento personalizado",
-              "Processo 100% transparente",
-            ].map((diferencial, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-white rounded-full flex-shrink-0"></div>
-                <span className="text-white/90">{diferencial}</span>
-              </div>
-            ))}
-          </div>
-          <div className="text-center">
-            <Button 
-              variant="secondary" 
-              size="lg"
-              className="font-semibold"
-            >
-              Agende uma Consultoria Gratuita
-            </Button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

@@ -3,15 +3,15 @@ import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
-import { regioesFilters, quartosFilters, RegiaoFilter, QuartosFilter } from "@/config/filterConfig";
+import { RegiaoFilter, QuartosFilter } from "@/config/filterConfig";
 
 interface SubFiltersProps {
   onRegionChange: (region: string) => void;
   onRoomsChange: (rooms: string) => void;
   selectedRegion: string;
   selectedRooms: string;
-  availableRegions?: RegiaoFilter[];
-  availableRooms?: QuartosFilter[];
+  availableRegions: RegiaoFilter[]; // **AUTOMATICAMENTE GERADO** pelos dados
+  availableRooms: QuartosFilter[];  // **AUTOMATICAMENTE GERADO** pelos dados
 }
 
 const SubFilters = ({ 
@@ -19,8 +19,8 @@ const SubFilters = ({
   onRoomsChange, 
   selectedRegion, 
   selectedRooms,
-  availableRegions = regioesFilters,
-  availableRooms = quartosFilters
+  availableRegions,
+  availableRooms
 }: SubFiltersProps) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border mb-8">
@@ -37,6 +37,7 @@ const SubFilters = ({
                 <SelectValue placeholder="Selecione a região" />
               </SelectTrigger>
               <SelectContent>
+                {/* **FILTROS GERADOS AUTOMATICAMENTE** baseado nos cards existentes */}
                 {availableRegions.map((regiao) => (
                   <SelectItem key={regiao.value} value={regiao.value}>
                     {regiao.label}
@@ -52,6 +53,7 @@ const SubFilters = ({
                 <SelectValue placeholder="Quantidade de quartos" />
               </SelectTrigger>
               <SelectContent>
+                {/* **FILTROS GERADOS AUTOMATICAMENTE** baseado nos cards existentes */}
                 {availableRooms.map((quarto) => (
                   <SelectItem key={quarto.value} value={quarto.value}>
                     {quarto.label}
