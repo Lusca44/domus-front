@@ -1,6 +1,5 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HomePage from "./pages/general-pages/HomePage";
 import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
 import LandingPortoCarioca from "./pages/regioes/porto/porto-carioca/LandingPortoCarioca";
@@ -14,111 +13,90 @@ import AdminLeads from "./pages/admin/AdminLeads";
 import AdminProfile from "./pages/admin/AdminProfile";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
-import AdminLandingPages from "./pages/admin/AdminLandingPages";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
 
-// Criar instância do QueryClient
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutos
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <div className="App">
-          <Routes>
-            {/* Página inicial com hubs de regiões */}
-            <Route path="/" element={<HomePage />} />
+    <Router>
+      <div className="App">
+        <Routes>
+          {/* Página inicial com hubs de regiões */}
+          <Route path="/" element={<HomePage />} />
 
-            <Route
-              path="/porto-maravilha/lancamento/pixinguinha"
-              element={<LandingPixinguinha />}
-            />
+          <Route
+            path="/porto-maravilha/lancamento/pixinguinha"
+            element={<LandingPixinguinha />}
+          />
 
-            <Route
-              path="/porto-maravilha/lancamento/porto-carioca"
-              element={<LandingPortoCarioca />}
-            />
+          <Route
+            path="/porto-maravilha/lancamento/porto-carioca"
+            element={<LandingPortoCarioca />}
+          />
 
-            <Route
-              path="/barra-tijuca/lancamento/atlantico"
-              element={<LandingAtlantico />}
-            />
+          <Route
+            path="/barra-tijuca/lancamento/atlantico"
+            element={<LandingAtlantico />}
+          />
 
-            <Route
-              path="/recreio/lancamento/paradise"
-              element={<LandingParadise />}
-            />
+          <Route
+            path="/recreio/lancamento/paradise"
+            element={<LandingParadise />}
+          />
 
-            <Route path="/obrigado" element={<PaginaAgradecimento />} />
+          <Route path="/obrigado" element={<PaginaAgradecimento />} />
 
-            {/* Rota de login - não protegida */}
-            <Route path="/admin/login" element={<AdminLogin />} />
+          {/* Rota de login - não protegida */}
+          <Route path="/admin/login" element={<AdminLogin />} />
 
-            {/* Rotas administrativas protegidas */}
-            <Route 
-              path="/admin/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/leads" 
-              element={
-                <ProtectedRoute>
-                  <AdminLeads />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/landing-pages" 
-              element={
-                <ProtectedRoute>
-                  <AdminLandingPages />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/users" 
-              element={
-                <ProtectedRoute>
-                  <AdminUsers />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/profile" 
-              element={
-                <ProtectedRoute>
-                  <AdminProfile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/settings" 
-              element={
-                <ProtectedRoute>
-                  <AdminSettings />
-                </ProtectedRoute>
-              } 
-            />
+          {/* Rotas administrativas protegidas */}
+          <Route 
+            path="/admin/dashboard" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/leads" 
+            element={
+              <ProtectedRoute>
+                <AdminLeads />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/users" 
+            element={
+              <ProtectedRoute>
+                <AdminUsers />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/profile" 
+            element={
+              <ProtectedRoute>
+                <AdminProfile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/settings" 
+            element={
+              <ProtectedRoute>
+                <AdminSettings />
+              </ProtectedRoute>
+            } 
+          />
 
-            {/* Rota 404 */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Toaster />
-        </div>
-      </Router>
-    </QueryClientProvider>
+          {/* Rota 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster />
+      </div>
+    </Router>
   );
 }
 

@@ -1,7 +1,7 @@
 
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Users, FileText, LogOut, Home, UserPlus, Globe } from "lucide-react";
+import { Users, FileText, LogOut, Home, UserPlus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
   Sidebar,
@@ -21,7 +21,7 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ onLogout }: AdminSidebarProps) {
   const location = useLocation();
-  const { isAdmin } = useAuth();
+  const { isAdmin } = useAuth(); // Usar a nova flag de admin
 
   // Menu base que todos os usuários autenticados podem ver
   const baseMenuItems = [
@@ -34,11 +34,6 @@ export function AdminSidebar({ onLogout }: AdminSidebarProps) {
       title: "Gerenciar Leads",
       url: "/admin/leads",
       icon: Users,
-    },
-    {
-      title: "Landing Pages",
-      url: "/admin/landing-pages", 
-      icon: Globe,
     },
     {
       title: "Meu Perfil",
@@ -58,7 +53,7 @@ export function AdminSidebar({ onLogout }: AdminSidebarProps) {
 
   // Combinar menus baseado no tipo de usuário
   const menuItems = isAdmin 
-    ? [...baseMenuItems.slice(0, 3), ...adminOnlyItems, ...baseMenuItems.slice(3)]
+    ? [...baseMenuItems.slice(0, 2), ...adminOnlyItems, ...baseMenuItems.slice(2)]
     : baseMenuItems;
 
   return (
