@@ -32,9 +32,18 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') prevPhoto();
-    if (e.key === 'ArrowRight') nextPhoto();
-    if (e.key === 'Escape') setIsFullscreen(false);
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevPhoto();
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextPhoto();
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsFullscreen(false);
+    }
   };
 
   return (
@@ -45,7 +54,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
           <img
             src={photos[currentIndex].url}
             alt={photos[currentIndex].titulo}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-contain bg-gray-50 transition-transform duration-300 group-hover:scale-105"
           />
           
           {/* Overlay com informações */}
@@ -71,39 +80,58 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
                       Ampliar
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 bg-black/95" onKeyDown={handleKeyDown}>
+                  <DialogContent 
+                    className="max-w-[95vw] max-h-[95vh] w-full h-full p-0 bg-black/95 border-0" 
+                    onKeyDown={handleKeyDown}
+                  >
                     <DialogTitle className="sr-only">Visualização em tela cheia</DialogTitle>
                     <DialogDescription className="sr-only">Imagem do empreendimento em tamanho ampliado</DialogDescription>
-                    <div className="relative w-full h-full flex items-center justify-center">
+                    <div className="relative w-full h-full flex items-center justify-center p-4">
                       <img
                         src={photos[currentIndex].url}
                         alt={photos[currentIndex].titulo}
                         className="max-w-full max-h-full object-contain"
                       />
+                      
+                      {/* Botão Fechar */}
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-4 right-4 text-white hover:bg-white/20"
+                        className="absolute top-4 right-4 text-white hover:bg-white/20 z-10"
                         onClick={() => setIsFullscreen(false)}
                       >
                         <X className="w-6 h-6" />
                       </Button>
+                      
+                      {/* Navegação no Fullscreen */}
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 disabled:opacity-30 z-10"
                         onClick={prevPhoto}
+                        disabled={photos.length <= 1}
                       >
                         <ChevronLeft className="w-8 h-8" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 disabled:opacity-30 z-10"
                         onClick={nextPhoto}
+                        disabled={photos.length <= 1}
                       >
                         <ChevronRight className="w-8 h-8" />
                       </Button>
+                      
+                      {/* Informações da foto no fullscreen */}
+                      <div className="absolute bottom-4 left-4 right-4 text-center">
+                        <p className="text-white text-lg font-medium mb-2">
+                          {photos[currentIndex].titulo}
+                        </p>
+                        <p className="text-white/70 text-sm">
+                          {currentIndex + 1} de {photos.length}
+                        </p>
+                      </div>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -118,6 +146,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
           size="icon"
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           onClick={prevPhoto}
+          disabled={photos.length <= 1}
         >
           <ChevronLeft className="w-6 h-6" />
         </Button>
@@ -126,6 +155,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
           size="icon"
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           onClick={nextPhoto}
+          disabled={photos.length <= 1}
         >
           <ChevronRight className="w-6 h-6" />
         </Button>
