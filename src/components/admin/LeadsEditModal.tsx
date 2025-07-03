@@ -6,15 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import { userApi } from "@/utils/apiConfig";
-
-interface Lead {
-  id: string;
-  nomeLancamento: string;
-  nomeCliente: string;
-  emailCliente?: string;
-  telefoneCliente: string;
-  usuarioOpcionista: string;
-}
+import { useApi } from "@/hooks/useApi";
 
 interface EditForm {
   nomeCliente: string;
@@ -36,6 +28,7 @@ interface LeadsEditModalProps {
   editForm: EditForm;
   onEditFormChange: (form: EditForm) => void;
   onSave: () => void;
+  loading?: boolean;
 }
 
 export function LeadsEditModal({ 
@@ -43,10 +36,15 @@ export function LeadsEditModal({
   onOpenChange, 
   editForm, 
   onEditFormChange, 
-  onSave 
+  onSave,
+  loading = false
 }: LeadsEditModalProps) {
   const [corretores, setCorretores] = useState<Corretor[]>([]);
-  const [loadingCorretores, setLoadingCorretores] = useState(false);
+
+  const { loading: loadingCorretores, execute: executeGetCorretores } = useApi<Corretor[]>({
+    showErrorToast: true,
+    errorMessage: "Erro ao carregar corretores",
+  });
 
   useEffect(() => {
     if (open) {
@@ -55,24 +53,16 @@ export function LeadsEditModal({
   }, [open]);
 
   const fetchCorretores = async () => {
-    setLoadingCorretores(true);
     try {
       console.log('🔍 Buscando corretores do backend...');
-      
-      const data = await userApi.obterUsuarios();
-      setCorretores(data);
+      const data = await executeGetCorretores(() => userApi.obterUsuarios());
+      setCorretores(data || []);
       console.log('✅ Corretores carregados:', data);
     } catch (error) {
       console.error('❌ Erro ao buscar corretores:', error);
-    } finally {
-      setLoadingCorretores(false);
     }
   };
 
-
-  const handleSalvar = () => {
-    
-  }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
@@ -89,6 +79,7 @@ export function LeadsEditModal({
               id="name"
               value={editForm.nomeCliente}
               onChange={(e) => onEditFormChange({ ...editForm, nomeCliente: e.target.value })}
+              disabled={loading}
             />
           </div>
           <div>
@@ -98,6 +89,7 @@ export function LeadsEditModal({
               type="email"
               value={editForm.emailCliente}
               onChange={(e) => onEditFormChange({ ...editForm, emailCliente: e.target.value })}
+              disabled={loading}
             />
           </div>
           <div>
@@ -106,6 +98,7 @@ export function LeadsEditModal({
               id="phone"
               value={editForm.telefoneCliente}
               onChange={(e) => onEditFormChange({ ...editForm, telefoneCliente: e.target.value })}
+              disabled={loading}
             />
           </div>
           <div>
@@ -114,6 +107,7 @@ export function LeadsEditModal({
               id="interest"
               value={editForm.nomeLancamento}
               onChange={(e) => onEditFormChange({ ...editForm, nomeLancamento: e.target.value })}
+              disabled={loading}
             />
           </div>
           <div>
@@ -121,7 +115,7 @@ export function LeadsEditModal({
             <Select
               value={editForm.corretorOpcionistaId}
               onValueChange={(value) => onEditFormChange({ ...editForm, corretorOpcionistaId: value })}
-              disabled={loadingCorretores}
+              disabled={loadingCorretores || loading}
             >
               <SelectTrigger>
                 <SelectValue placeholder={loadingCorretores ? "Carregando corretores..." : "Selecione um corretor"} />
@@ -138,10 +132,12 @@ export function LeadsEditModal({
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
             Cancelar
           </Button>
-          <Button onClick={onSave}>Salvar</Button>
+          <Button onClick={onSave} disabled={loading}>
+            {loading ? "Salvando..." : "Salvar"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

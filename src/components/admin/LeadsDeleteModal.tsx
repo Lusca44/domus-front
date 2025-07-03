@@ -1,3 +1,4 @@
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,6 +14,7 @@ interface Lead {
   id: string;
   nomeLancamento: string;
   nomeCliente: string;
+  emailCliente?: string;
   telefoneCliente: string;
   usuarioOpcionistaId: string;
 }
@@ -22,6 +24,7 @@ interface LeadsDeleteModalProps {
   onOpenChange: (open: boolean) => void;
   selectedLead: Lead | null;
   onConfirm: () => void;
+  loading?: boolean;
 }
 
 export function LeadsDeleteModal({
@@ -29,6 +32,7 @@ export function LeadsDeleteModal({
   onOpenChange,
   selectedLead,
   onConfirm,
+  loading = false,
 }: LeadsDeleteModalProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -41,8 +45,10 @@ export function LeadsDeleteModal({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Excluir</AlertDialogAction>
+          <AlertDialogCancel disabled={loading}>Cancelar</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm} disabled={loading}>
+            {loading ? "Excluindo..." : "Excluir"}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

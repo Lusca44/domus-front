@@ -73,17 +73,17 @@ const AdminLeads = () => {
     errorMessage: "Erro ao carregar leads",
   });
 
-  const { execute: executeUpdateLead } = useApi({
+  const { loading: loadingUpdateLead, execute: executeUpdateLead } = useApi({
     showSuccessToast: true,
     successMessage: "Lead atualizada com sucesso",
   });
 
-  const { execute: executeDeleteLead } = useApi({
+  const { loading: loadingDeleteLead, execute: executeDeleteLead } = useApi({
     showSuccessToast: true,
     successMessage: "Lead excluída com sucesso",
   });
 
-  const { execute: executeBulkUpdateLeads } = useApi({
+  const { loading: loadingBulkUpdate, execute: executeBulkUpdateLeads } = useApi({
     showSuccessToast: true,
     successMessage: "Leads atualizadas em lote com sucesso",
   });
@@ -194,7 +194,7 @@ const AdminLeads = () => {
 
     // === FILTRO 2: POR NOME DO LANÇAMENTO ===
     if (nomeLancamentoFilter.trim() !== "") {
-      // Busca parcial, case-insensitive no nome do lançamento
+      // Busca parcial, case-insensitive no nome do nome do lançamento
       // Converte tanto o filtro quanto o campo para lowercase para comparação
       filtered = filtered.filter((lead) =>
         lead.nomeLancamento
@@ -274,15 +274,6 @@ const AdminLeads = () => {
     if (!selectedLead) return;
 
     try {
-      // TODO: AJUSTAR A ESTRUTURA DE DADOS ENVIADA PARA O BACKEND
-      // O backend provavelmente espera algo como:
-      // {
-      //   nomeCliente: editForm.nomeCliente,
-      //   telefoneCliente: editForm.telefoneCliente,
-      //   nomeLancamento: editForm.nomeLancamento,
-      //   usuarioOpcionista: editForm.corretorOpcionistaId // Enviar o ID do corretor
-      // }
-
       const usuarioOpcionista =
         editForm.corretorOpcionistaId === "null"
           ? ""
@@ -290,16 +281,14 @@ const AdminLeads = () => {
 
       const updateData = {
         nomeCliente: editForm.nomeCliente,
+        emailCliente: editForm.emailCliente,
         nomeLancamento: editForm.nomeLancamento,
         telefoneCliente: editForm.telefoneCliente,
-        usuarioOpcionista: usuarioOpcionista, // ID do corretor selecionado
+        usuarioOpcionista: usuarioOpcionista,
       };
 
       console.log("📤 Enviando dados para atualização:", updateData);
 
-      console.log("LEAD ID ------" + selectedLead.id);
-      console.log("LEAD ------");
-      console.log(updateData);
       await executeUpdateLead(() =>
         leadsApi.update(selectedLead.id, updateData)
       );
@@ -327,25 +316,20 @@ const AdminLeads = () => {
     }
   };
 
-  // NOVA FUNÇÃO: Atualização em lote de corretores
   const handleBulkUpdate = async (leadIds: string[], newCorretorId: string) => {
     try {
-      // TODO: IMPLEMENTAR CHAMADA PARA ATUALIZAÇÃO EM LOTE NO BACKEND
-      // const updateData = {
-      //   leadIds: leadIds,
-      //   newCorretorId: newCorretorId || null // null para remover corretor
-      // };
-      // await executeBulkUpdateLeads(() => leadsApi.bulkUpdateCorretor(updateData));
-
       console.log("📤 Atualizando leads em lote:", {
         leadIds,
         newCorretorId: newCorretorId || "Remover corretor",
       });
 
-      // Simular sucesso
-      await executeBulkUpdateLeads(() => Promise.resolve({ success: true }));
+      const updateData = {
+        leadIds: leadIds,
+        newCorretorId: newCorretorId || null
+      };
 
-      fetchLeads(); // Recarregar a lista após atualização
+      await executeBulkUpdateLeads(() => leadsApi.bulkUpdateCorretor(updateData));
+      fetchLeads();
     } catch (error) {
       console.error("Erro ao atualizar leads em lote:", error);
     }
@@ -502,6 +486,7 @@ const AdminLeads = () => {
           editForm={editForm}
           onEditFormChange={setEditForm}
           onSave={handleSaveEdit}
+          loading={loadingUpdateLead}
         />
 
         <LeadsDeleteModal
@@ -509,15 +494,16 @@ const AdminLeads = () => {
           onOpenChange={setDeleteModalOpen}
           selectedLead={selectedLead}
           onConfirm={confirmDelete}
+          loading={loadingDeleteLead}
         />
 
-        {/* Modal para edição em lote - apenas para administradores */}
         {isAdmin && (
           <LeadsBulkEditModal
             open={bulkEditModalOpen}
             onOpenChange={setBulkEditModalOpen}
             leads={filteredLeads}
             onBulkUpdate={handleBulkUpdate}
+            loading={loadingBulkUpdate}
           />
         )}
       </AdminLayout>
