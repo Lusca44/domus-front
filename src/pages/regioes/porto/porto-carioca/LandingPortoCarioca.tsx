@@ -1,8 +1,16 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import {
   CheckCircle,
   MapPin,
@@ -17,8 +25,10 @@ import {
   TreePine,
   Menu,
   Phone,
+  Play,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
 import PhotoCarousel from "@/components/PhotoCarousel";
@@ -295,6 +305,93 @@ const LandingPortoCarioca = () => {
             photos={empreendimento.imagens}
             className="mb-8 md:mb-12 lg:mb-16"
           />
+
+          {/* Seção de Vídeos */}
+          <div className="mt-16">
+            <div className="text-center mb-8">
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-gray-900">
+                Vídeos do Empreendimento
+              </h3>
+              <p className="text-sm md:text-base lg:text-lg text-gray-600">
+                Conheça cada detalhe do seu futuro lar!
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <Carousel className="w-full max-w-4xl">
+                <CarouselContent className="flex justify-center items-center">
+                  {empreendimento.videos.map((video, index) => (
+                    <CarouselItem
+                      key={index}
+                      className="flex justify-center md:basis-1/2 lg:basis-1/3"
+                    >
+                      <div className="w-full max-w-sm">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                              <div className="relative">
+                                <AspectRatio ratio={16 / 9}>
+                                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                      <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                                        <Play className="w-8 h-8 text-blue-600 ml-1" />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </AspectRatio>
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
+                                  <p className="font-semibold text-sm">
+                                    {video.titulo}
+                                  </p>
+                                </div>
+                              </div>
+                            </Card>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-4xl w-[90vw] max-h-[80vh] p-4 overflow-hidden">
+                            <DialogTitle className="sr-only">{video.titulo}</DialogTitle>
+                            <DialogDescription className="sr-only">Reprodução do vídeo: {video.titulo}</DialogDescription>
+                            <div className="w-full mx-auto h-full flex flex-col">
+                              <div className="flex-1 min-h-0">
+                                <AspectRatio ratio={16 / 9} className="w-full h-full max-h-[calc(80vh-80px)]">
+                                  {video.url.includes('youtube') || video.url.includes('embed') ? (
+                                    <iframe
+                                      width="100%"
+                                      height="100%"
+                                      src={video.url}
+                                      title={video.titulo}
+                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                      allowFullScreen
+                                      className="rounded object-contain"
+                                    ></iframe>
+                                  ) : (
+                                    <video
+                                      width="100%"
+                                      height="100%"
+                                      controls
+                                      className="rounded object-contain max-h-full"
+                                    >
+                                      <source src={video.url} type="video/mp4" />
+                                      Seu navegador não suporta vídeos HTML5.
+                                    </video>
+                                  )}
+                                </AspectRatio>
+                              </div>
+                              <div className="mt-2 text-center flex-shrink-0">
+                                <h4 className="text-sm font-semibold truncate">
+                                  {video.titulo}
+                                </h4>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
+                <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
+              </Carousel>
+            </div>
+          </div>
         </div>
       </section>
 

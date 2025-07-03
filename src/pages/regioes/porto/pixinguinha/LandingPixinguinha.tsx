@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -11,20 +12,26 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import {
-  BedDouble,
-  Bath,
-  ExternalLink,
   CheckCircle,
   MapPin,
   ArrowLeft,
   Play,
-  Eye,
-  Maximize,
+  Home,
+  Car,
+  Waves,
+  Shield,
+  Building,
+  TreePine,
+  Users,
+  Menu,
+  Phone,
 } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 import fotos from "./assets/fotos";
 import videos from "./assets/videos";
 import ImgBackground from "./assets/img/back-ground-pixinguinha.jpeg"
@@ -34,14 +41,9 @@ import ImgBackground from "./assets/img/back-ground-pixinguinha.jpeg"
  *
  * Esta página apresenta informações detalhadas sobre o empreendimento
  * Residencial Pixinguinha e captura leads interessados neste lançamento específico.
- *
- * Características:
- * - Apresentação do empreendimento com imagens e vídeos
- * - Detalhes do projeto (plantas, acabamentos, localização)
- * - Formulário de captação de leads
- * - Elementos de confiança (depoimentos, parceiros)
  */
 const LandingPixinguinha = () => {
+  const isMobile = useIsMobile();
   // Estado para galeria de imagens
   const [videoThumbnails, setVideoThumbnails] = useState<{[key: number]: string}>({});
 
@@ -84,20 +86,6 @@ const LandingPixinguinha = () => {
   }, []);
 
   /**
-   * Função para extrair ID do vídeo do YouTube e gerar thumbnail natural
-   * Mantida para uso futuro caso necessário
-   */
-  const getYouTubeVideoId = (url: string) => {
-    const match = url.match(/embed\/([^?]+)/);
-    return match ? match[1] : null;
-  };
-
-  const getYouTubeThumbnail = (url: string) => {
-    const videoId = getYouTubeVideoId(url);
-    return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '';
-  };
-
-  /**
    * Função para obter thumbnail - prioriza vídeo local gerado, fallback para YouTube
    */
   const getVideoThumbnail = (video: any, index: number) => {
@@ -106,20 +94,12 @@ const LandingPixinguinha = () => {
       return videoThumbnails[index];
     }
     
-    // Se é um vídeo do YouTube
-    if (video.url.includes('youtube') || video.url.includes('embed')) {
-      return getYouTubeThumbnail(video.url);
-    }
-    
     // Fallback para uma imagem padrão enquanto gera a thumbnail
     return '';
   };
 
   /**
    * Dados do empreendimento
-   * Em um ambiente de produção, esses dados poderiam vir de uma API
-   *
-   * IMPORTANTE: Substitua todas as URLs de imagens por suas imagens reais
    */
   const empreendimento = {
     nome: "Residencial Pixinguinha",
@@ -128,9 +108,10 @@ const LandingPixinguinha = () => {
       "O Residencial Pixinguinha oferece estúdios e apartamentos com 1 à 3 quartos com acabamento de alto padrão. Condominio com lazer completo e um SkyBar com uma vista incrível. Localizado no coração do Porto Maravilha, próximo a museus, restaurantes e do futuro estadio do Flamengo.",
     entrega: "Previsão de entrega: Maio/2027",
     caracteristicas: [
-      // { titulo: "Tipos", valor: "com vaga e suíte"},
-      // { titulo: "Quartos", valor: "1 a 3" },
-      // { titulo: "Metragem", valor: "31 a 70 m²" },
+      { titulo: "Tipos", valor: "1 a 3 quartos", icone: Home },
+      { titulo: "Vagas", valor: "Opcionais", icone: Car },
+      { titulo: "Lazer", valor: "Completo", icone: Waves },
+      { titulo: "Segurança", valor: "24h", icone: Shield },
     ],
     diferenciais: [
       "Lazer diferenciado com SkyBar rooftop",
@@ -145,112 +126,239 @@ const LandingPixinguinha = () => {
       "Próximo aos principais pontos turísticos da região",
     ],
     endereco: "Rua General Luís Mendes de Morais, S/N, Santo Cristo. Rio de Janeiro - RJ",
-    // IMAGENS: Array expandido com mais imagens
-
     imagens: fotos,
-    // VÍDEOS: Array com múltiplos vídeos
     videos: videos,
-    // URL do mapa: Substitua pelo link no Google Maps
     mapa: "https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d14431.125032052134!2d-43.211162307681796!3d-22.904241560534498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e6!4m0!4m3!3m2!1d-22.9044362!2d-43.208009499999996!5e0!3m2!1spt-BR!2sbr!4v1749758760039!5m2!1spt-BR!2sbr",
   };
 
-  return (
-    <div className="min-h-screen bg-white">
-      {/* Cabeçalho */}
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+  const MobileMenu = () => (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          <Menu className="w-5 h-5" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-80">
+        <div className="flex flex-col space-y-6 mt-6">
           <Link
             to="/porto-maravilha"
-            className="flex items-center text-blue-600 hover:text-blue-700"
+            className="flex items-center text-blue-600 hover:text-blue-700 transition-colors text-lg"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar para todos os lançamentos no Porto Maravilha
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Voltar para Porto Maravilha
           </Link>
-          <Button variant="ghost" asChild>
-            <a href="tel:+552122223333">Contato: (21) 2222-3333</a>
-          </Button>
+          <div className="border-t pt-4">
+            <a 
+              href="tel:+552122223333" 
+              className="flex items-center text-gray-900 hover:text-blue-600 transition-colors text-lg font-semibold"
+            >
+              <Phone className="w-5 h-5 mr-3" />
+              (21) 2222-3333
+            </a>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Cabeçalho - adaptado para mobile */}
+      <header className="border-b bg-white/95 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 md:py-4 flex justify-between items-center">
+          {!isMobile ? (
+            <>
+              <Link
+                to="/porto-maravilha"
+                className="flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Voltar para todos os lançamentos no Porto Maravilha
+              </Link>
+              <Button variant="ghost" asChild>
+                <a href="tel:+552122223333" className="font-semibold">
+                  Contato: (21) 2222-3333
+                </a>
+              </Button>
+            </>
+          ) : (
+            <>
+              <div className="text-lg font-bold text-gray-900">Pixinguinha</div>
+              <MobileMenu />
+            </>
+          )}
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 to-blue-700 text-white">
-        <div className="container mx-auto px-4 py-16 md:py-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 z-10">
+      {/* Hero Section - adaptado para mobile */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${ImgBackground})`,
+          }}
+        >
+          {/* Overlay Gradiente */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-blue-900/70 to-blue-900/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-blue-900/60"></div>
+        </div>
+
+        {/* Background Pattern Adicional */}
+        <div className="absolute inset-0 opacity-20 z-10">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="container mx-auto px-4 py-8 md:py-16 relative z-20">
+          <div className={`grid grid-cols-1 ${isMobile ? 'gap-8' : 'lg:grid-cols-12 gap-8 lg:gap-12'} items-center min-h-[80vh]`}>
             {/* Coluna de Conteúdo */}
-            <div className="space-y-6 z-10 ">
-              <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-                {empreendimento.nome}
-              </h1>
-              <p className="text-xl md:text-2xl font-light">
-                {empreendimento.slogan}
-              </p>
-              <div className="flex items-center text-white-900">
-                <MapPin className="w-5 h-5 mr-2" />
-                <p>{empreendimento.endereco}</p>
+            <div className={`${isMobile ? '' : 'lg:col-span-7'} space-y-4 md:space-y-6 lg:space-y-8`}>
+              <div className="space-y-3 md:space-y-4">
+                <div className="inline-flex items-center px-3 md:px-4 py-2 bg-blue-500/30 backdrop-blur-sm rounded-full text-blue-200 text-xs md:text-sm font-medium border border-blue-400/30">
+                  <Building className="w-3 h-3 md:w-4 md:h-4 mr-2" />
+                  Lançamento Exclusivo
+                </div>
+                <h1 className={`font-bold text-white leading-tight ${
+                  isMobile 
+                    ? 'text-2xl sm:text-3xl' 
+                    : 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl'
+                }`}>
+                  {empreendimento.nome}
+                </h1>
+                <p className={`text-blue-200 font-light ${
+                  isMobile 
+                    ? 'text-base sm:text-lg' 
+                    : 'text-lg sm:text-xl md:text-2xl'
+                }`}>
+                  {empreendimento.slogan}
+                </p>
               </div>
-              <p className="text-2xl font-semibold text-white-900 ">
-                {empreendimento.entrega}
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                {empreendimento.caracteristicas.map((item, index) => (
-                  <div
-                    key={index}
-                    className="bg-blue-800 bg-opacity-50 rounded-lg p-3 text-center"
-                  >
-                    <p className="text-sm text-blue-200">{item.titulo}</p>
-                    <p className="font-semibold text-lg">{item.valor}</p>
-                  </div>
-                ))}
+
+              <div className="flex items-start text-blue-100">
+                <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3 mt-1 text-blue-400 flex-shrink-0" />
+                <p className="text-sm md:text-base lg:text-lg">{empreendimento.endereco}</p>
+              </div>
+
+              <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-white/20 shadow-xl">
+                <p className={`font-bold text-white mb-3 md:mb-4 ${
+                  isMobile ? 'text-lg' : 'text-xl lg:text-2xl'
+                }`}>
+                  {empreendimento.entrega}
+                </p>
+                <div className={`grid gap-3 md:gap-4 ${
+                  isMobile 
+                    ? 'grid-cols-2' 
+                    : 'grid-cols-2 md:grid-cols-4'
+                }`}>
+                  {empreendimento.caracteristicas.map((item, index) => {
+                    const IconComponent = item.icone;
+                    return (
+                      <div key={index} className="text-center">
+                        <div className="bg-blue-500/25 backdrop-blur-sm rounded-lg p-2 md:p-3 mb-2 mx-auto w-fit border border-blue-400/30">
+                          <IconComponent className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-blue-300" />
+                        </div>
+                        <p className="text-xs text-blue-200">{item.titulo}</p>
+                        <p className="font-semibold text-white text-xs md:text-sm">{item.valor}</p>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
             {/* Coluna do Formulário */}
-            <div className="relative z-20">
-              <LeadCaptureForm
-                nomeLancamento="Pixinguinha"
-                redirectTo="/obrigado"
-                title="Garanta sua unidade no lançamento!"
-                description="Preencha o formulário e nossa equipe entrará em contato com condições especiais"
-              />
+            <div className={`${isMobile ? '' : 'lg:col-span-5'}`}>
+              <div className="bg-white/98 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/30 overflow-hidden">
+                <LeadCaptureForm
+                  nomeLancamento="Pixinguinha"
+                  redirectTo="/obrigado"
+                  title="Garanta sua unidade no lançamento!"
+                  description="Preencha o formulário e nossa equipe entrará em contato com condições especiais"
+                />
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Decoração de fundo - reduzindo opacidade para melhor contraste do texto */}
-        <div
-          className="absolute inset-0 opacity-40 bg-center bg-cover z-0"
-          style={{
-            backgroundImage: `url(${ImgBackground})`,
-          }}
-        ></div>
       </section>
 
-      {/* Seção de Galeria Renovada */}
-      <section className="py-16 bg-gray-50">
+      {/* Seção Sobre o Empreendimento - adaptada para mobile */}
+      <section className="py-12 md:py-16 lg:py-20 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Galeria de Fotos
+          <div className="max-w-4xl mx-auto text-center mb-8 md:mb-12 lg:mb-16">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 lg:mb-6 text-gray-900">
+              Um novo conceito de morar no Rio
             </h2>
-            <p className="text-gray-600 text-lg">
-              Conheça todos os detalhes do empreendimento através de nossas
-              imagens
+            <p className="text-sm md:text-base lg:text-lg text-gray-700 leading-relaxed">
+              {empreendimento.descricao}
             </p>
           </div>
 
-          {/* Novo Carrossel de Fotos */}
+          {/* Cards de Destaques - adaptados para mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-12 lg:mb-16">
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <CardContent className="p-4 md:p-6 lg:p-8 text-center">
+                <div className="bg-blue-100 rounded-full p-3 md:p-4 w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 flex items-center justify-center">
+                  <Waves className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
+                </div>
+                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">Lazer Completo</h3>
+                <p className="text-xs md:text-sm lg:text-base text-gray-600">
+                  SkyBar rooftop, piscina, academia e muito mais para sua diversão
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <CardContent className="p-4 md:p-6 lg:p-8 text-center">
+                <div className="bg-green-100 rounded-full p-3 md:p-4 w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 flex items-center justify-center">
+                  <TreePine className="w-6 h-6 md:w-8 md:h-8 text-green-600" />
+                </div>
+                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">Localização Premium</h3>
+                <p className="text-xs md:text-sm lg:text-base text-gray-600">
+                  No coração da revitalização do Porto Maravilha
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <CardContent className="p-4 md:p-6 lg:p-8 text-center">
+                <div className="bg-purple-100 rounded-full p-3 md:p-4 w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 flex items-center justify-center">
+                  <Users className="w-6 h-6 md:w-8 md:h-8 text-purple-600" />
+                </div>
+                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">Conveniência</h3>
+                <p className="text-xs md:text-sm lg:text-base text-gray-600">
+                  Vista panorâmica e acabamentos de alto padrão
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Seção de Galeria - adaptada para mobile */}
+      <section className="py-12 md:py-16 lg:py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8 md:mb-12 lg:mb-16">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-gray-900">
+              Conheça cada detalhe
+            </h2>
+            <p className="text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
+              Explore todas as áreas e ambientes que farão parte do seu novo estilo de vida
+            </p>
+          </div>
+
           <PhotoCarousel 
             photos={empreendimento.imagens}
-            className="mb-16"
+            className="mb-8 md:mb-12 lg:mb-16"
           />
 
-          {/* Seção de Vídeos - Centralizados */}
+          {/* Seção de Vídeos */}
           <div className="mt-16">
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold mb-4">
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-gray-900">
                 Vídeos do Empreendimento
               </h3>
-              <p className="text-gray-600">
+              <p className="text-sm md:text-base lg:text-lg text-gray-600">
                 Conheça cada detalhe do seu futuro lar!
               </p>
             </div>
@@ -293,12 +401,12 @@ const LandingPixinguinha = () => {
                               </div>
                             </Card>
                           </DialogTrigger>
-                          <DialogContent className="max-w-2xl w-[85vw] max-h-[70vh] p-3 overflow-hidden">
+                          <DialogContent className="max-w-4xl w-[90vw] max-h-[80vh] p-4 overflow-hidden">
                             <DialogTitle className="sr-only">{video.titulo}</DialogTitle>
                             <DialogDescription className="sr-only">Reprodução do vídeo: {video.titulo}</DialogDescription>
                             <div className="w-full mx-auto h-full flex flex-col">
                               <div className="flex-1 min-h-0">
-                                <AspectRatio ratio={16 / 9} className="w-full h-full max-h-[calc(70vh-80px)]">
+                                <AspectRatio ratio={16 / 9} className="w-full h-full max-h-[calc(80vh-80px)]">
                                   {video.url.includes('youtube') || video.url.includes('embed') ? (
                                     <iframe
                                       width="100%"
@@ -342,90 +450,93 @@ const LandingPixinguinha = () => {
         </div>
       </section>
 
-      {/* Seção de Descrição */}
-      <section className="py-16">
+      {/* Seção de Diferenciais - adaptada para mobile */}
+      <section className="py-12 md:py-16 lg:py-20 bg-slate-50">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="space-y-6">
-              <h2 className="text-3xl font-bold">Sobre o Empreendimento</h2>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                {empreendimento.descricao}
-              </p>
-              <p className="text-gray-700">
-                Projeto arquitetônico moderno com fachada imponente, o Residencial 
-                Pixinguinha foi elaborado para proporcionar o máximo de
-                conforto e bem-estar aos moradores. Com áreas comuns amplas e
-                bem equipadas, o empreendimento é ideal para quem busca
-                qualidade de vida em uma das áreas mais promissoras do Rio de
-                Janeiro.
-              </p>
+          <div className={`grid grid-cols-1 gap-8 md:gap-12 lg:grid-cols-2 lg:gap-16 items-center`}>
+            <div>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 lg:mb-8 text-gray-900">
+                Diferenciais únicos
+              </h2>
+              <div className={`grid grid-cols-1 gap-2 md:gap-3 lg:gap-4 ${isMobile ? '' : 'md:grid-cols-2'}`}>
+                {empreendimento.diferenciais.map((item, index) => (
+                  <div key={index} className="flex items-start group">
+                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700 group-hover:text-gray-900 transition-colors">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div>
-              <h3 className="text-2xl font-bold mb-6">Diferenciais</h3>
-              <ul className="space-y-3">
-                {empreendimento.diferenciais.map((item, index) => (
-                  <li key={index} className="flex items-start">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">{item}</span>
-                  </li>
-                ))}
+            <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-4 md:p-6 lg:p-8 text-white">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4 lg:mb-6">Por que escolher o Pixinguinha?</h3>
+              <ul className="space-y-2 md:space-y-3 lg:space-y-4">
+                <li className="flex items-center">
+                  <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
+                  <span className="text-xs md:text-sm lg:text-base">Região em plena valorização imobiliária</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
+                  <span className="text-xs md:text-sm lg:text-base">Proximidade com principais pontos turísticos</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
+                  <span className="text-xs md:text-sm lg:text-base">Excelente conectividade urbana</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
+                  <span className="text-xs md:text-sm lg:text-base">Projeto arquitetônico diferenciado</span>
+                </li>
               </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Localização */}
-      <section className="py-16">
+      {/* Localização - adaptada para mobile */}
+      <section className="py-12 md:py-16 lg:py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-10 text-center">
-            Localização Privilegiada
-          </h2>
+          <div className="text-center mb-8 md:mb-12 lg:mb-16">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-gray-900">
+              Localização Privilegiada
+            </h2>
+            <p className="text-sm md:text-base lg:text-lg text-gray-600 max-w-3xl mx-auto">
+              Estrategicamente localizado no coração do Porto Maravilha
+            </p>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <p className="text-gray-700 text-lg">
-                O Vista Baía Residencial está estrategicamente localizado no
-                coração do Porto Maravilha, área que vem se valorizando
-                constantemente nos últimos anos devido aos investimentos em
-                infraestrutura e cultura.
-              </p>
-
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">
-                    15 min do Museu do Amanhã e MAR
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">
-                    10 min do Centro da cidade
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">30 min da Zona Sul</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">
-                    Próximo às principais vias de acesso
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">
-                    Fácil acesso a transporte público (VLT e metrô)
-                  </span>
-                </li>
-              </ul>
+          <div className={`grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 lg:gap-12 items-center`}>
+            <div className="space-y-4 md:space-y-6">
+              <div className="bg-blue-50 rounded-xl p-3 md:p-4 lg:p-6">
+                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-3 md:mb-4 text-blue-900">Facilidades da Localização:</h3>
+                <ul className="space-y-2 md:space-y-3">
+                  <li className="flex items-start">
+                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">15 min do Museu do Amanhã e MAR</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">10 min do Centro da cidade</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">30 min da Zona Sul</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Próximo às principais vias de acesso</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Fácil acesso a transporte público (VLT e metrô)</span>
+                  </li>
+                </ul>
+              </div>
             </div>
 
-            <div className="rounded-lg overflow-hidden shadow-lg">
-              {/* MAPA: Substitua o src pelo link correto do Google Maps */}
+            <div className="rounded-2xl overflow-hidden shadow-2xl">
               <iframe
                 src={empreendimento.mapa}
                 width="100%"
@@ -434,38 +545,52 @@ const LandingPixinguinha = () => {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Localização do Vista Baía Residencial"
+                title="Localização do Residencial Pixinguinha"
+                className={`w-full ${isMobile ? 'h-64' : 'h-80 lg:h-96'}`}
               ></iframe>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Final */}
-      <section className="py-16 bg-blue-700 text-white">
+      {/* CTA Final - adaptado para mobile */}
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-3 md:mb-4 lg:mb-6">
               Não Perca Esta Oportunidade!
             </h2>
-            <p className="text-lg md:text-xl mb-8">
-              Garanta já sua unidade no Residencial Pixinguinha com condições
-              especiais de lançamento.
+            <p className="text-base md:text-lg lg:text-xl mb-6 md:mb-8 lg:mb-12 text-blue-100">
+              Garanta já sua unidade no Residencial Pixinguinha com condições especiais de lançamento
             </p>
 
-            <div className="max-w-md mx-auto">
-              <LeadCaptureForm
-                nomeLancamento="Pixinguinha"
-                redirectTo="/obrigado"
-                title="Quero garantir minha unidade"
-                description="Preencha seus dados para receber mais informações"
-              />
+            <div className={`grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 lg:gap-12 items-center`}>
+              <div className="space-y-3 md:space-y-4 lg:space-y-6">
+                <div className="text-left">
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4">Condições Especiais de Lançamento:</h3>
+                  <ul className="space-y-1 md:space-y-2 text-blue-100">
+                    <li className="text-sm md:text-base">• Entrada facilitada</li>
+                    <li className="text-sm md:text-base">• Financiamento direto com a construtora</li>
+                    <li className="text-sm md:text-base">• Desconto especial para pagamento à vista</li>
+                    <li className="text-sm md:text-base">• Parcelas durante a obra</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-3 md:p-4 lg:p-6 border border-white/20">
+                <LeadCaptureForm
+                  nomeLancamento="Pixinguinha"
+                  redirectTo="/obrigado"
+                  title="Quero garantir minha unidade"
+                  description="Preencha seus dados para receber mais informações"
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer usando o novo componente */}
+      {/* Footer */}
       <Footer
         empreendimentoNome={empreendimento.nome}
         empreendimentoEndereco={empreendimento.endereco}
