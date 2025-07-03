@@ -1,3 +1,4 @@
+
 import ImgCardPorto from '../../assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg'
 import ImgCardBarra from '../../assets/images/imagem-barra-da-tijuca.webp'
 
@@ -64,6 +65,23 @@ const cardsRegioes: RegiaoCard[] = [
     imagem:
       "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop",
     url: "/recreio",
+    status: "Disponível",
+    destaque: false,
+  },
+  {
+    id: "niteroi",
+    nome: "Niterói",
+    descricao: "Arte, cultura e vista panorâmica da Baía de Guanabara",
+    caracteristicas: [
+      "Patrimônio arquitetônico único",
+      "Museus e centros culturais",
+      "Vista privilegiada do Rio",
+      "Conexão com o centro via barcas",
+    ],
+    lancamentosAtivos: 1,
+    precoPartir: "A partir de R$ 294.900",
+    imagem: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=800&h=600&fit=crop",
+    url: "/niteroi",
     status: "Disponível",
     destaque: false,
   },

@@ -1,25 +1,24 @@
+
 import React, { useState, useMemo } from "react";
 import SubFilters from "./SubFilters";
 import FeaturedCard from "./FeaturedCard";
 import { lancamentos } from "@/cards/lancamentos/lancamentos";
+import { mapRegiaoToFilter, mapFilterToRegiao, getAvailableRegions, getAvailableRooms } from "@/config/filterConfig";
 
 const LancamentosSection = () => {
   const [selectedRegion, setSelectedRegion] = useState("todas");
   const [selectedRooms, setSelectedRooms] = useState("todos");
 
-  // Filtrar lançamentos
+  // Obter filtros disponíveis dinamicamente baseado nos lançamentos
+  const availableRegions = useMemo(() => getAvailableRegions(lancamentos), []);
+  const availableRooms = useMemo(() => getAvailableRooms(lancamentos), []);
+
+  // Filtrar lançamentos usando o sistema centralizado
   const filteredLancamentos = useMemo(() => {
     return lancamentos.filter(lancamento => {
       if (selectedRegion !== "todas") {
-        const regionMap: { [key: string]: string } = {
-          "porto-maravilha": "Porto Maravilha",
-          "barra-tijuca": "Barra da Tijuca",
-          "recreio": "Recreio dos Bandeirantes",
-          "copacabana": "Copacabana",
-          "ipanema": "Ipanema",
-          "tijuca": "Tijuca",
-        };
-        if (lancamento.regiao !== regionMap[selectedRegion]) {
+        const expectedRegion = mapFilterToRegiao(selectedRegion);
+        if (lancamento.regiao !== expectedRegion) {
           return false;
         }
       }
@@ -46,6 +45,8 @@ const LancamentosSection = () => {
         onRoomsChange={setSelectedRooms}
         selectedRegion={selectedRegion}
         selectedRooms={selectedRooms}
+        availableRegions={availableRegions}
+        availableRooms={availableRooms}
       />
 
       {filteredLancamentos.length > 0 ? (

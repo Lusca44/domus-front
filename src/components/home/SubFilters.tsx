@@ -3,29 +3,25 @@ import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
+import { regioesFilters, quartosFilters, RegiaoFilter, QuartosFilter } from "@/config/filterConfig";
 
 interface SubFiltersProps {
   onRegionChange: (region: string) => void;
   onRoomsChange: (rooms: string) => void;
   selectedRegion: string;
   selectedRooms: string;
+  availableRegions?: RegiaoFilter[];
+  availableRooms?: QuartosFilter[];
 }
 
-const SubFilters = ({ onRegionChange, onRoomsChange, selectedRegion, selectedRooms }: SubFiltersProps) => {
-  const regioes = [
-    { value: "todas", label: "Todas as Regiões" },
-    { value: "porto-maravilha", label: "Porto Maravilha" },
-    { value: "recreio", label: "Recreio dos Bandeirantes" },
-  ];
-
-  const quartos = [
-    { value: "todos", label: "Todos as Quantidades" },
-    { value: "1", label: "1 Quarto" },
-    { value: "2", label: "2 Quartos" },
-    { value: "3", label: "3 Quartos" },
-    { value: "4", label: "4+ Quartos" },
-  ];
-
+const SubFilters = ({ 
+  onRegionChange, 
+  onRoomsChange, 
+  selectedRegion, 
+  selectedRooms,
+  availableRegions = regioesFilters,
+  availableRooms = quartosFilters
+}: SubFiltersProps) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border mb-8">
       <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -41,7 +37,7 @@ const SubFilters = ({ onRegionChange, onRoomsChange, selectedRegion, selectedRoo
                 <SelectValue placeholder="Selecione a região" />
               </SelectTrigger>
               <SelectContent>
-                {regioes.map((regiao) => (
+                {availableRegions.map((regiao) => (
                   <SelectItem key={regiao.value} value={regiao.value}>
                     {regiao.label}
                   </SelectItem>
@@ -56,7 +52,7 @@ const SubFilters = ({ onRegionChange, onRoomsChange, selectedRegion, selectedRoo
                 <SelectValue placeholder="Quantidade de quartos" />
               </SelectTrigger>
               <SelectContent>
-                {quartos.map((quarto) => (
+                {availableRooms.map((quarto) => (
                   <SelectItem key={quarto.value} value={quarto.value}>
                     {quarto.label}
                   </SelectItem>
