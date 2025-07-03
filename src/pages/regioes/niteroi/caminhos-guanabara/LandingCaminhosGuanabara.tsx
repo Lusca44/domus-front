@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LeadCaptureForm } from "@/components/LeadCaptureForm";
+import LeadCaptureForm from "@/components/LeadCaptureForm";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
