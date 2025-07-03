@@ -53,7 +53,8 @@ const AdminLeads = () => {
 
   // ===== ESTADOS DOS FILTROS =====
   // FILTRO 1: Corretor - agora é um boolean (true = mostrar apenas sem corretor, false = mostrar todos)
-  const [correctorFilter, setCorrectorFilter] = useState(false);
+  // ATUALIZADO: Inicia como true para administradores (filtro ativado por padrão)
+  const [correctorFilter, setCorrectorFilter] = useState(isAdmin);
 
   // FILTRO 2: Nome do Lançamento - string de busca (busca parcial, case-insensitive)
   const [nomeLancamentoFilter, setNomeLancamentoFilter] = useState("");
@@ -88,11 +89,13 @@ const AdminLeads = () => {
     successMessage: "Leads atualizadas em lote com sucesso",
   });
 
+  // ATUALIZADO: Atualiza o filtro de corretor quando isAdmin muda
   useEffect(() => {
     if (!authLoading) {
+      setCorrectorFilter(isAdmin);
       fetchLeads();
     }
-  }, [authLoading]);
+  }, [authLoading, isAdmin]);
 
   const fetchLeads = async () => {
     try {
