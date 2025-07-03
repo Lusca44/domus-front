@@ -24,6 +24,7 @@ import Footer from "@/components/Footer";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import fotos from "./assets/fotos";
+import videos from "./assets/videos";
 import fotomontagem from './assets/img/emccamp - porto - fotomontagem a.jpg';
 
 /**
@@ -70,6 +71,7 @@ const LandingPortoCarioca = () => {
     ],
     endereco: "Rua General Luís Mendes de Morais, Santo Cristo, Rio de Janeiro - RJ",
     imagens: fotos,
+    videos: videos,
     mapa: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7350.69197335138!2d-43.208164!3d-22.900606000000003!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f36dc8775b9%3A0xca5025e6d4a2a39a!2sPorto%20Carioca%20-%20Emccamp!5e0!3m2!1spt-BR!2sbr!4v1751558926239!5m2!1spt-BR!2sbr%22"
   };
 
