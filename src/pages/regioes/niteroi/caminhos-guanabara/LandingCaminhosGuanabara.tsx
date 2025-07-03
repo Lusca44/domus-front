@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -33,7 +32,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
-import PhotoCarousel from "@/components/PhotoCarousel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import fotos from "./assets/fotos";
 import videos from "./assets/videos";
@@ -345,7 +343,7 @@ const LandingCaminhosGuanabara = () => {
         </div>
       </section>
 
-      {/* Seção de Galeria - adaptada para mobile */}
+      {/* Seção de Galeria - reformulada com carrossel padrão */}
       <section className="py-12 md:py-16 lg:py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-12 lg:mb-16">
@@ -357,10 +355,35 @@ const LandingCaminhosGuanabara = () => {
             </p>
           </div>
 
-          <PhotoCarousel 
-            photos={empreendimento.imagens}
-            className="mb-8 md:mb-12 lg:mb-16"
-          />
+          {/* Carrossel de Fotos */}
+          <div className="mb-16">
+            <Carousel className="w-full max-w-6xl mx-auto">
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {empreendimento.imagens.map((foto, index) => (
+                  <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+                    <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                      <AspectRatio ratio={4/3}>
+                        <img
+                          src={foto.url}
+                          alt={foto.titulo}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute bottom-4 left-4 right-4">
+                            <h3 className="text-white font-semibold text-sm md:text-base mb-1">
+                              {foto.titulo}
+                            </h3>
+                          </div>
+                        </div>
+                      </AspectRatio>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
+              <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
+            </Carousel>
+          </div>
 
           {/* Seção de Vídeos */}
           <div className="mt-16">
