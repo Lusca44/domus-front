@@ -9,7 +9,7 @@ interface User {
   nome: string;
   email: string;
   telefone?: string;
-  admin: boolean;
+  isAdmin: boolean;
   ativo: boolean;
   dataCadastro: string;
 }

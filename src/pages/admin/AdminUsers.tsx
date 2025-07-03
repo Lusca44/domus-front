@@ -17,7 +17,7 @@ interface User {
   nome: string;
   email: string;
   telefone?: string;
-  admin: boolean;
+  isAdmin: boolean;
   ativo: boolean;
   dataCadastro: string;
 }
@@ -132,11 +132,11 @@ const AdminUsers = () => {
                           <td className="p-3">{user.telefone || '-'}</td>
                           <td className="p-3">
                             <span className={`px-2 py-1 rounded-full text-xs ${
-                              user.admin 
+                              user.isAdmin 
                                 ? 'bg-purple-100 text-purple-800' 
                                 : 'bg-blue-100 text-blue-800'
                             }`}>
-                              {user.admin ? 'Administrador' : 'Corretor'}
+                              {user.isAdmin ? 'Administrador' : 'Corretor'}
                             </span>
                           </td>
                           <td className="p-3">
