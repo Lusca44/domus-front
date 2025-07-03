@@ -1,4 +1,3 @@
-
 import React from 'react';
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import PhotoCarousel from "@/components/PhotoCarousel";
@@ -182,7 +181,7 @@ const LandingCaminhosGuanabara = () => {
             <p className="text-xl text-center text-blue-100 mb-12">
               {empreendimento.preco}
             </p>
-            <LeadCaptureForm />
+            <LeadCaptureForm nomeLancamento={empreendimento.nome} />
           </div>
         </div>
       </section>
