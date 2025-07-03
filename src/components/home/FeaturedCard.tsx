@@ -16,6 +16,7 @@ interface FeaturedCardProps {
   area: string;
   url: string;
   destaque?: boolean;
+  tipo: string;
 }
 
 const FeaturedCard = ({ 
@@ -27,7 +28,8 @@ const FeaturedCard = ({
   quartos, 
   area, 
   url, 
-  destaque = false 
+  destaque = false,
+  tipo
 }: FeaturedCardProps) => {
   return (
     <div className="relative w-full h-full">
@@ -38,7 +40,7 @@ const FeaturedCard = ({
             alt={titulo}
             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          
+
           {/* Container para os balões alinhados */}
           <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
             {/* Balão de destaque */}
@@ -48,7 +50,7 @@ const FeaturedCard = ({
                 Destaque
               </div>
             )}
-            
+
             {/* Balão de preço */}
             <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-md ml-auto">
               {preco}
@@ -57,8 +59,12 @@ const FeaturedCard = ({
         </div>
 
         <CardHeader className="pb-3 flex-grow-0">
-          <CardTitle className="text-lg mb-2 line-clamp-2 min-h-[3.5rem]">{titulo}</CardTitle>
-          <p className="text-gray-600 text-sm line-clamp-3 mb-2 min-h-[4.5rem]">{descricao}</p>
+          <CardTitle className="text-lg mb-2 line-clamp-2 min-h-[3.5rem]">
+            {titulo}
+          </CardTitle>
+          <p className="text-gray-600 text-sm line-clamp-3 mb-2 min-h-[4.5rem]">
+            {descricao}
+          </p>
           <div className="flex items-center gap-1 text-gray-500 text-sm">
             <MapPin className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">{regiao}</span>
@@ -74,10 +80,16 @@ const FeaturedCard = ({
           </div>
 
           <div className="text-sm text-gray-600">
-            <span className="font-medium">Área:</span> {area}
+            <span className="font-medium">
+              Área: {tipo == "lancamento" && <> Até </>}
+            </span>{" "}
+            {area}
           </div>
 
-          <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 mt-auto">
+          <Button
+            asChild
+            className="w-full bg-blue-600 hover:bg-blue-700 mt-auto"
+          >
             <Link to={url} onClick={() => window.scrollTo(0, 0)}>
               Ver Detalhes
             </Link>

@@ -165,11 +165,11 @@ const LandingPixinguinha = () => {
       <SheetContent side="right" className="w-80">
         <div className="flex flex-col space-y-6 mt-6">
           <Link
-            to="/porto-maravilha"
+            to="/"
             className="flex items-center text-blue-600 hover:text-blue-700 transition-colors text-lg"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
-            Voltar para Porto Maravilha
+            Voltar para Início
           </Link>
           <div className="border-t pt-4">
             <a 
@@ -193,11 +193,11 @@ const LandingPixinguinha = () => {
           {!isMobile ? (
             <>
               <Link
-                to="/porto-maravilha"
+                to="/"
                 className="flex items-center text-blue-600 hover:text-blue-700 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar para todos os lançamentos no Porto Maravilha
+                Voltar para Início
               </Link>
               <Button variant="ghost" asChild>
                 <a href="tel:+552122223333" className="font-semibold">

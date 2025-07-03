@@ -1,8 +1,11 @@
 
 import cardPixinguinhaImg from "./images/card-pixinguinha.jpeg";
 import cardPortoCariocaImg from "./images/card-porto-carioca.jpg";
+import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
 import { Imovel } from "../imoveis";
 
+// **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
+// Para adicionar um novo lançamento, copie este padrão:
 export const lancamentos: Imovel[] = [
   {
     id: "1",
@@ -30,20 +33,18 @@ export const lancamentos: Imovel[] = [
     destaque: true,
     tipo: "lancamento",
   },
-  // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
-  // Para adicionar um novo lançamento, copie este padrão:
   {
-    id: "3", // Incremente o ID
-    titulo: "Caminhos da Guanabara", // Nome do empreendimento
+    id: "3", 
+    titulo: "Caminhos da Guanabara",
     descricao: "Um manifesto em forma de arte e arquitetura que preenche Niterói",
-    preco: "A partir de R$ 294.900", // Preço inicial
-    imagem: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80", // URL da imagem
-    regiao: "Niterói", // **IMPORTANTE**: Esta região aparecerá automaticamente no filtro
-    quartos: 2, // Número de quartos - também aparece automaticamente no filtro
-    area: "45m²", // Área do apartamento
-    url: "/niteroi/lancamento/caminhos-guanabara", // Link para a landing page
-    destaque: false, // Se é destaque ou não
-    tipo: "lancamento", // Sempre "lancamento" para este arquivo
+    preco: "A partir de R$ 294.900",
+    imagem: cardCaminhosDaGuanabara,
+    regiao: "Niterói",
+    quartos: 2, 
+    area: "51,30 m²",
+    url: "/niteroi/lancamento/caminhos-guanabara",
+    destaque: false,
+    tipo: "lancamento",
   }
   // **FINAL DA ÁREA DE ADIÇÃO - quando adicionar novos cards, coloque-os aqui seguindo este padrão**
 ];
