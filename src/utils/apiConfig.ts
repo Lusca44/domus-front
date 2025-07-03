@@ -253,6 +253,9 @@ export const userApi = {
 
   // DELETE /users/:id - Excluir usuário
   delete: (id: string): Promise<any> => apiClient.delete(`usuario/deleteUsuario/${id}`),
+  
+  // PUT /users/:id - Desativa ou Ativa usuário
+  alterarStatusUsuario: (id: string): Promise<any> => apiClient.put(`usuario/alterarStatusUsuarios/${id}`),
 };
 
 export default apiClient;

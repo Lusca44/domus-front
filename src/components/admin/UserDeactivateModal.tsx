@@ -33,9 +33,7 @@ export function UserDeactivateModal({ open, onOpenChange, user, onUserUpdated }:
 
     try {
       await execute(async () => {
-        console.log('Alterando status do usuário:', { id: user.id, novoStatus: !user.ativo });
-        // Aqui você implementará a chamada real para a API
-        // userApi.toggleStatus(user.id, !user.ativo)
+        userApi.alterarStatusUsuario(user.id);
         return { success: true };
       });
 
