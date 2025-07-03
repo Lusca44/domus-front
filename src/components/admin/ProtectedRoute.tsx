@@ -10,6 +10,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated, isLoading, requireAuth } = useAuth();
 
   useEffect(() => {
+    // Só executa a verificação quando não estiver carregando
     if (!isLoading) {
       requireAuth();
     }
@@ -27,9 +28,17 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  // Só renderizar o conteúdo se estiver autenticado
+  // Se não estiver autenticado após o carregamento, não renderizar nada
+  // O hook useAuth já redirecionará para o login
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecionando para login...</p>
+        </div>
+      </div>
+    );
   }
 
   return <>{children}</>;

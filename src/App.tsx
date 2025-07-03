@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/general-pages/HomePage";
 import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
@@ -11,6 +12,7 @@ import AdminLeads from "./pages/admin/AdminLeads";
 import AdminProfile from "./pages/admin/AdminProfile";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
+import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
 
 function App() {
@@ -38,13 +40,50 @@ function App() {
 
           <Route path="/obrigado" element={<PaginaAgradecimento />} />
 
-          {/* Rotas administrativas */}
+          {/* Rota de login - não protegida */}
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/leads" element={<AdminLeads />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/profile" element={<AdminProfile />} />
-          <Route path="/admin/settings" element={<AdminSettings />} />
+
+          {/* Rotas administrativas protegidas */}
+          <Route 
+            path="/admin/dashboard" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/leads" 
+            element={
+              <ProtectedRoute>
+                <AdminLeads />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/users" 
+            element={
+              <ProtectedRoute>
+                <AdminUsers />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/profile" 
+            element={
+              <ProtectedRoute>
+                <AdminProfile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/settings" 
+            element={
+              <ProtectedRoute>
+                <AdminSettings />
+              </ProtectedRoute>
+            } 
+          />
 
           {/* Rota 404 */}
           <Route path="*" element={<NotFound />} />
