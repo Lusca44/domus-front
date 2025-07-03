@@ -201,8 +201,8 @@ export const leadsApi = {
   delete: (id: string): Promise<any> => apiClient.delete(`lancamento/${id}`),
 
   // PATCH /lancamento/bulk-update - Atualização em lote de corretores
-  bulkUpdateCorretor: (data: { leadIds: string[], newCorretorId: string | null }): Promise<any> => 
-    apiClient.patch('lancamento/bulk-update-corretor', data),
+  bulkUpdateCorretor: (data: { leadIds: string[], corretorId: string | null }): Promise<any> => 
+    apiClient.patch('lancamento/inserirCorretorLote', data),
 
   // GET /lancamento/obterLeads com filtros - Buscar leads com filtros
   getAllWithFilters: (filters: any): Promise<any[]> => 

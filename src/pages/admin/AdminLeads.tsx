@@ -325,7 +325,7 @@ const AdminLeads = () => {
 
       const updateData = {
         leadIds: leadIds,
-        newCorretorId: newCorretorId || null
+        corretorId: newCorretorId || null
       };
 
       await executeBulkUpdateLeads(() => leadsApi.bulkUpdateCorretor(updateData));
