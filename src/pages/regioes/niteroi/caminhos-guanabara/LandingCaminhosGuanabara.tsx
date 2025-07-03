@@ -182,10 +182,7 @@ const LandingCaminhosGuanabara = () => {
             <p className="text-xl text-center text-blue-100 mb-12">
               {empreendimento.preco}
             </p>
-            <LeadCaptureForm 
-              projeto={empreendimento.nome}
-              regiao={empreendimento.regiao}
-            />
+            <LeadCaptureForm />
           </div>
         </div>
       </section>
