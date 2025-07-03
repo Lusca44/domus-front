@@ -15,7 +15,8 @@ import portaria from './img/emccamp - porto - portaria.jpg'
 import loja from './img/emccamp - porto - loja.jpg'
 import varanda from './img/emccamp - porto - varanda salao de festas.jpg'
 import guarita from './img/emccamp - porto  - geral guarita com prédio.jpg'
-import garden from './img/GARDEN-3-QUARTOS.jpg'
+import vistaAereaLocalizacao from './img/porto-carioca-vista-aerea-localizacao.png'
+import vistaAerea from './img/porto-carioca-vista-aerea.png'
 
 export interface Foto {
   url: string;
@@ -30,6 +31,14 @@ const fotos: Foto[] = [
   {
     url: fachada2,
     titulo: "Vista da fachada principal",
+  },
+  {
+    url: vistaAereaLocalizacao,
+    titulo: "Vista aerea da localização",
+  },
+  {
+    url: vistaAerea,
+    titulo: "Vista aerea",
   },
   {
     url: guarita,
@@ -86,10 +95,6 @@ const fotos: Foto[] = [
   {
     url: loja,
     titulo: "Área comercial",
-  },
-  {
-    url: garden,
-    titulo: "Apartamento Garden 3 quartos",
   },
 ];
 

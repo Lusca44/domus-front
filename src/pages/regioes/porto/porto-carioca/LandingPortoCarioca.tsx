@@ -48,6 +48,7 @@ const LandingPortoCarioca = () => {
     ],
     diferenciais: [
       "Rooftop com vista panorâmica da Baía de Guanabara",
+      "Ponto de recarga de carro elético",
       "Piscina adulto e infantil",
       "Academia completamente equipada",
       "Quadra poliesportiva no rooftop",
@@ -64,7 +65,7 @@ const LandingPortoCarioca = () => {
     ],
     endereco: "Rua General Luís Mendes de Morais, Santo Cristo, Rio de Janeiro - RJ",
     imagens: fotos,
-    mapa: "https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d14431.125032052134!2d-43.211162307681796!3d-22.904241560534498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e6!4m0!4m3!3m2!1d-22.9044362!2d-43.208009499999996!5e0!3m2!1spt-BR!2sbr!4v1749758760039!5m2!1spt-BR!2sbr",
+    mapa: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7350.69197335138!2d-43.208164!3d-22.900606000000003!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f36dc8775b9%3A0xca5025e6d4a2a39a!2sPorto%20Carioca%20-%20Emccamp!5e0!3m2!1spt-BR!2sbr!4v1751558926239!5m2!1spt-BR!2sbr%22"
   };
 
   return (
@@ -297,19 +298,23 @@ const LandingPortoCarioca = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="space-y-6">
               <div className="bg-blue-50 rounded-xl p-4 lg:p-6">
-                <h3 className="text-lg lg:text-xl font-bold mb-4 text-blue-900">Principais Atrações Próximas:</h3>
+                <h3 className="text-lg lg:text-xl font-bold mb-4 text-blue-900">Facilidades da Localização:</h3>
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm lg:text-base text-gray-700">5 min do Museu do Amanhã</span>
+                    <span className="text-sm lg:text-base text-gray-700">Em frente ao futuro estádio do Flamengo</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm lg:text-base text-gray-700">10 min do MAR (Museu de Arte do Rio)</span>
+                    <span className="text-sm lg:text-base text-gray-700">Hospital da Gamboa - 1,2 km</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm lg:text-base text-gray-700">15 min do Centro Histórico</span>
+                    <span className="text-sm lg:text-base text-gray-700">Supermercado Supermarket - 850 m</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" />
+                    <span className="text-sm lg:text-base text-gray-700">Escolas</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" />
@@ -317,7 +322,15 @@ const LandingPortoCarioca = () => {
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm lg:text-base text-gray-700">Acesso rápido à Zona Sul</span>
+                    <span className="text-sm lg:text-base text-gray-700">Academias</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" />
+                    <span className="text-sm lg:text-base text-gray-700">Farmácias</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" />
+                    <span className="text-sm lg:text-base text-gray-700">Hortifruti</span>
                   </li>
                 </ul>
               </div>
