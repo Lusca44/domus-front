@@ -97,13 +97,21 @@ const AdminLeads = () => {
     }
   }, [authLoading, isAdmin]);
 
-  // NOVO: Efeito para desmarcar o filtro de corretor quando "Apenas minhas leads" for selecionado
+  // ATUALIZADO: Efeito bidirecional para desmarcar filtros mutuamente excludentes
   useEffect(() => {
     if (myLeadsFilter && correctorFilter) {
       setCorrectorFilter(false);
       console.log("🔄 Filtro 'Sem corretor vinculado' desmarcado automaticamente ao selecionar 'Apenas minhas leads'");
     }
   }, [myLeadsFilter]);
+
+  // NOVO: Efeito para desmarcar "Apenas minhas leads" quando "Sem corretor vinculado" for selecionado
+  useEffect(() => {
+    if (correctorFilter && myLeadsFilter) {
+      setMyLeadsFilter(false);
+      console.log("🔄 Filtro 'Apenas minhas leads' desmarcado automaticamente ao selecionar 'Sem corretor vinculado'");
+    }
+  }, [correctorFilter]);
 
   const fetchLeads = async () => {
     try {
