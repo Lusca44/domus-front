@@ -343,7 +343,7 @@ const LandingCaminhosGuanabara = () => {
         </div>
       </section>
 
-      {/* Seção de Galeria - reformulada com carrossel padrão */}
+      {/* Seção de Galeria - idêntica ao Porto Carioca */}
       <section className="py-12 md:py-16 lg:py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-12 lg:mb-16">
@@ -355,28 +355,32 @@ const LandingCaminhosGuanabara = () => {
             </p>
           </div>
 
-          {/* Carrossel de Fotos */}
+          {/* Carrossel de Fotos - idêntico ao Porto Carioca */}
           <div className="mb-16">
             <Carousel className="w-full max-w-6xl mx-auto">
               <CarouselContent className="-ml-2 md:-ml-4">
                 {empreendimento.imagens.map((foto, index) => (
-                  <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                    <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                      <AspectRatio ratio={4/3}>
-                        <img
-                          src={foto.url}
-                          alt={foto.titulo}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="absolute bottom-4 left-4 right-4">
-                            <h3 className="text-white font-semibold text-sm md:text-base mb-1">
-                              {foto.titulo}
-                            </h3>
+                  <CarouselItem key={index} className="pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/3">
+                    <div className="p-1">
+                      <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                        <div className="relative">
+                          <AspectRatio ratio={4/3}>
+                            <img
+                              src={foto.url}
+                              alt={foto.titulo}
+                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                          </AspectRatio>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute bottom-0 left-0 right-0 p-4">
+                              <h3 className="text-white font-semibold text-sm md:text-base">
+                                {foto.titulo}
+                              </h3>
+                            </div>
                           </div>
                         </div>
-                      </AspectRatio>
-                    </Card>
+                      </Card>
+                    </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -385,7 +389,7 @@ const LandingCaminhosGuanabara = () => {
             </Carousel>
           </div>
 
-          {/* Seção de Vídeos */}
+          {/* Seção de Vídeos - idêntica ao Porto Carioca */}
           <div className="mt-16">
             <div className="text-center mb-8">
               <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-gray-900">
@@ -395,84 +399,66 @@ const LandingCaminhosGuanabara = () => {
                 Viva uma experiência única em Niterói
               </p>
             </div>
-            <div className="flex justify-center">
-              <Carousel className="w-full max-w-4xl">
-                <CarouselContent className="flex justify-center items-center">
-                  {empreendimento.videos.map((video, index) => (
-                    <CarouselItem
-                      key={index}
-                      className="flex justify-center md:basis-1/2 lg:basis-1/3"
-                    >
-                      <div className="w-full max-w-sm">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                              <div className="relative">
-                                <AspectRatio ratio={16 / 9}>
-                                  <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center">
-                                    <div className="relative w-full h-full flex items-center justify-center">
-                                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 group-hover:from-emerald-500/30 group-hover:to-teal-500/30 transition-all duration-300 flex items-center justify-center">
-                                        <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                                          <Play className="w-8 h-8 text-emerald-600 ml-1" />
-                                        </div>
-                                      </div>
+            <Carousel className="w-full max-w-4xl mx-auto">
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {empreendimento.videos.map((video, index) => (
+                  <CarouselItem key={index} className="pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/3">
+                    <div className="p-1">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group">
+                            <div className="relative">
+                              <AspectRatio ratio={16/9}>
+                                <div className="w-full h-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                                  <div className="text-center">
+                                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-4 mb-4 group-hover:bg-white/30 transition-colors duration-300">
+                                      <Play className="w-8 h-8 text-white" />
                                     </div>
+                                    <h3 className="text-white font-semibold text-sm md:text-base px-4">
+                                      {video.titulo}
+                                    </h3>
                                   </div>
-                                </AspectRatio>
-                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
-                                  <p className="font-semibold text-sm">
-                                    {video.titulo}
-                                  </p>
                                 </div>
-                              </div>
-                            </Card>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-4xl w-[90vw] max-h-[80vh] p-4 overflow-hidden">
-                            <DialogTitle className="sr-only">{video.titulo}</DialogTitle>
-                            <DialogDescription className="sr-only">Reprodução do vídeo: {video.titulo}</DialogDescription>
-                            <div className="w-full mx-auto h-full flex flex-col">
-                              <div className="flex-1 min-h-0">
-                                <AspectRatio ratio={16 / 9} className="w-full h-full max-h-[calc(80vh-80px)]">
-                                  {isYouTubeVideo(video.url) ? (
-                                    <iframe
-                                      width="100%"
-                                      height="100%"
-                                      src={getYouTubeEmbedUrl(video.url)}
-                                      title={video.titulo}
-                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                      allowFullScreen
-                                      className="rounded object-contain"
-                                    ></iframe>
-                                  ) : (
-                                    <video
-                                      width="100%"
-                                      height="100%"
-                                      controls
-                                      autoPlay
-                                      className="rounded object-contain max-h-full"
-                                    >
-                                      <source src={video.url} type="video/mp4" />
-                                      Seu navegador não suporta vídeos HTML5.
-                                    </video>
-                                  )}
-                                </AspectRatio>
-                              </div>
-                              <div className="mt-2 text-center flex-shrink-0">
-                                <h4 className="text-sm font-semibold truncate">
-                                  {video.titulo}
-                                </h4>
-                              </div>
+                              </AspectRatio>
                             </div>
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
-                <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
-              </Carousel>
-            </div>
+                          </Card>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl w-[90vw] p-0">
+                          <DialogTitle className="sr-only">{video.titulo}</DialogTitle>
+                          <DialogDescription className="sr-only">
+                            Vídeo: {video.titulo}
+                          </DialogDescription>
+                          <div className="relative">
+                            <AspectRatio ratio={16/9}>
+                              {isYouTubeVideo(video.url) ? (
+                                <iframe
+                                  src={getYouTubeEmbedUrl(video.url)}
+                                  title={video.titulo}
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                  className="w-full h-full rounded-lg"
+                                />
+                              ) : (
+                                <video
+                                  controls
+                                  autoPlay
+                                  className="w-full h-full rounded-lg"
+                                >
+                                  <source src={video.url} type="video/mp4" />
+                                  Seu navegador não suporta vídeos HTML5.
+                                </video>
+                              )}
+                            </AspectRatio>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
+              <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
+            </Carousel>
           </div>
         </div>
       </section>
