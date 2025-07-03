@@ -54,7 +54,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
 
   return (
     <div className={cn("w-full max-w-4xl mx-auto", className)}>
-      {/* Foto Principal */}
+      {/* Main Photo */}
       <div className="relative group">
         <div className="aspect-[16/10] overflow-hidden rounded-xl bg-gray-100 shadow-lg cursor-pointer" onClick={handleImageClick}>
           <img
@@ -63,7 +63,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
             className="w-full h-full object-contain bg-gray-50 transition-transform duration-300 group-hover:scale-105"
           />
           
-          {/* Overlay com informações - simplificado para mobile */}
+          {/* Overlay with information - simplified for mobile */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
               <h3 className="text-white text-lg md:text-xl font-semibold mb-2">
@@ -81,7 +81,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
           </div>
         </div>
 
-        {/* Botões de navegação - adaptados para mobile */}
+        {/* Navigation buttons - adapted for mobile */}
         {!isMobile && (
           <>
             <Button
@@ -106,37 +106,39 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
         )}
       </div>
 
-      {/* Modal Fullscreen */}
+      {/* Fullscreen Modal */}
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
         <DialogContent 
-          className="max-w-[95vw] max-h-[95vh] w-full h-full p-0 bg-black/95 border-0" 
+          className="max-w-[100vw] max-h-[100vh] w-screen h-screen p-0 bg-black/95 border-0 [&>button]:hidden" 
           onKeyDown={handleKeyDown}
         >
           <DialogTitle className="sr-only">Visualização em tela cheia</DialogTitle>
           <DialogDescription className="sr-only">Imagem do empreendimento em tamanho ampliado</DialogDescription>
           <div className="relative w-full h-full flex items-center justify-center p-4">
-            <img
-              src={photos[currentIndex].url}
-              alt={photos[currentIndex].titulo}
-              className="max-w-full max-h-full object-contain"
-            />
+            <div className="relative max-w-full max-h-full flex items-center justify-center">
+              <img
+                src={photos[currentIndex].url}
+                alt={photos[currentIndex].titulo}
+                className="max-w-[90vw] max-h-[80vh] object-contain"
+              />
+            </div>
             
-            {/* Botão Fechar */}
+            {/* Close Button */}
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-4 right-4 text-white hover:bg-white/20 z-10"
+              className="absolute top-4 right-4 text-white hover:bg-white/20 z-20 bg-black/50"
               onClick={() => setIsFullscreen(false)}
             >
               <X className="w-6 h-6" />
             </Button>
             
-            {/* Navegação no Fullscreen - adaptada para mobile */}
+            {/* Navigation in Fullscreen - adapted for mobile */}
             <Button
               variant="ghost"
               size="icon"
               className={cn(
-                "absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 disabled:opacity-30 z-10",
+                "absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 disabled:opacity-30 z-10 bg-black/50",
                 isMobile ? "w-12 h-12" : "w-10 h-10"
               )}
               onClick={prevPhoto}
@@ -148,7 +150,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
               variant="ghost"
               size="icon"
               className={cn(
-                "absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 disabled:opacity-30 z-10",
+                "absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 disabled:opacity-30 z-10 bg-black/50",
                 isMobile ? "w-12 h-12" : "w-10 h-10"
               )}
               onClick={nextPhoto}
@@ -157,9 +159,9 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
               <ChevronRight className={cn(isMobile ? "w-8 h-8" : "w-6 h-6")} />
             </Button>
             
-            {/* Informações da foto no fullscreen - adaptadas para mobile */}
+            {/* Photo information in fullscreen - adapted for mobile */}
             <div className={cn(
-              "absolute bottom-4 left-4 right-4 text-center",
+              "absolute bottom-4 left-4 right-4 text-center z-10",
               isMobile && "bottom-6"
             )}>
               <p className={cn(
@@ -176,7 +178,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
         </DialogContent>
       </Dialog>
 
-      {/* Miniaturas - adaptadas para mobile */}
+      {/* Thumbnails - adapted for mobile */}
       <div className={cn("mt-4", isMobile ? "px-1" : "px-2")}>
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
           {photos.map((photo, index) => (
@@ -201,7 +203,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
         </div>
       </div>
 
-      {/* Indicadores de pontos para mobile */}
+      {/* Dot indicators for mobile */}
       {isMobile && (
         <div className="flex justify-center mt-4 gap-2">
           {photos.map((_, index) => (
