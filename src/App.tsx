@@ -11,6 +11,7 @@ import LandingNovaOlaria from "./pages/regioes/olaria/nova-olaria/LandingNovaOla
 import LandingOrlaMaua from "./pages/regioes/porto/orla-maua/LandingOrlaMaua";
 import LandingMetropolitanDreamBarra from "./pages/regioes/barra/metropolitan-dream-barra/LandingMetropolitanDreamBarra";
 import LandingAmericas19 from "./pages/regioes/recreio/americas19/LandingAmericas19";
+import LandingOrlaRecreioPontal from "./pages/regioes/recreio/orla-recreio-pontal/LandingOrlaRecreioPontal";
 import NotFound from "./pages/general-pages/NotFound";
 import PaginaAgradecimento from "./pages/general-pages/PaginaAgradecimento";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -77,6 +78,11 @@ function App() {
             <Route
               path="/lancamentos/americas19"
               element={<LandingAmericas19 />}
+            />
+
+            <Route
+              path="/lancamentos/orla-recreio-pontal"
+              element={<LandingOrlaRecreioPontal />}
             />
 
             <Route path="/obrigado" element={<PaginaAgradecimento />} />

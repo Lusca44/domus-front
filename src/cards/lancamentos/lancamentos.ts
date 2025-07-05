@@ -1,3 +1,4 @@
+
 import cardPixinguinhaImg from "./images/card-pixinguinha.jpeg";
 import cardPortoCariocaImg from "./images/card-porto-carioca.jpg";
 import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
@@ -7,6 +8,7 @@ import cardNovaOlariaImg from "./images/card-nova-olaria.jpeg";
 import cardOrlaMauaImg from "./images/card-orla-maua.jpeg";
 import cardMetropolitanDreamBarraImg from "./images/card-metropolitan-dream-barra.jpeg";
 import cardAmericas19Img from "./images/card-americas19.jpeg";
+import cardOrlaRecreioPontalImg from "./images/card-orla-recreio-pontal.jpeg";
 import { Imovel } from "../imoveis";
 
 // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
@@ -126,6 +128,19 @@ export const lancamentos: Imovel[] = [
     quartos: 2, // 2 a 4 quartos (começando com 2)
     area: "58m²",
     url: "/lancamentos/americas19",
+    destaque: true,
+    tipo: "lancamento",
+  },
+  {
+    id: "10",
+    titulo: "Orla Recreio",
+    descricao: "Vista para o mar + Lazer completo. Viva o ano inteiro como em férias na Praia do Pontal, Recreio dos Bandeirantes.",
+    preco: "A partir de R$ 350.000",
+    imagem: cardOrlaRecreioPontalImg,
+    regiao: "Recreio dos Bandeirantes",
+    quartos: 1, // 1 a 3 quartos (começando com 1)
+    area: "42m²",
+    url: "/lancamentos/orla-recreio-pontal",
     destaque: true,
     tipo: "lancamento",
   },
