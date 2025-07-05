@@ -2,6 +2,7 @@
 import cardPixinguinhaImg from "./images/card-pixinguinha.jpeg";
 import cardPortoCariocaImg from "./images/card-porto-carioca.jpg";
 import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
+import cardArcosPortoImg from "./images/card-arcos-porto.jpeg";
 import { Imovel } from "../imoveis";
 
 // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
@@ -43,6 +44,19 @@ export const lancamentos: Imovel[] = [
     quartos: 2,
     area: "38m²",
     url: "/lancamentos/caminhos-da-guanabara",
+    destaque: true,
+    tipo: "lancamento",
+  },
+  {
+    id: "4",
+    titulo: "Arcos do Porto",
+    descricao: "A melhor forma de viver o Rio. Lazer completo no coração do Porto Maravilha com opções de Studio a Garden.",
+    preco: "A partir de R$ 280.000",
+    imagem: cardArcosPortoImg,
+    regiao: "Porto Maravilha",
+    quartos: 2,
+    area: "59m²",
+    url: "/lancamentos/arcos-do-porto",
     destaque: true,
     tipo: "lancamento",
   },
