@@ -42,10 +42,11 @@ const LandingAmericas19 = () => {
     }
   };
 
-  const allMedia = [
-    ...fotosCarrossel.map(foto => ({ ...foto, type: 'image' as const })),
-    ...videosCarrossel.map(video => ({ ...video, type: 'video' as const, src: video.src, alt: video.description }))
-  ];
+  // Convert photos for PhotoCarousel component
+  const photosForCarousel = fotosCarrossel.map(foto => ({
+    url: foto.src,
+    titulo: foto.title
+  }));
 
   const plantas = [
     {
@@ -187,8 +188,7 @@ const LandingAmericas19 = () => {
             {/* Formulário Lateral */}
             <div className="lg:max-w-md">
               <LeadCaptureForm
-                empreendimento="Américas19"
-                localizacao="Recreio dos Bandeirantes"
+                nomeLancamento="Américas19"
               />
             </div>
           </div>
@@ -207,7 +207,7 @@ const LandingAmericas19 = () => {
             </p>
           </div>
 
-          <PhotoCarousel media={allMedia} />
+          <PhotoCarousel photos={photosForCarousel} />
         </div>
       </section>
 
@@ -411,8 +411,7 @@ const LandingAmericas19 = () => {
             </div>
             
             <LeadCaptureForm
-              empreendimento="Américas19"
-              localizacao="Recreio dos Bandeirantes"
+              nomeLancamento="Américas19"
             />
           </div>
         </div>
