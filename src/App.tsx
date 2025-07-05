@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HomePage from "./pages/general-pages/HomePage";
@@ -19,6 +18,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
+import LandingMetropolitanDreamBarra from "./pages/regioes/barra/metropolitan-dream-barra/LandingMetropolitanDreamBarra";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -65,6 +65,11 @@ function App() {
             <Route
               path="/lancamentos/orla-maua"
               element={<LandingOrlaMaua />}
+            />
+
+            <Route
+              path="/lancamentos/metropolitan-dream-barra"
+              element={<LandingMetropolitanDreamBarra />}
             />
 
             <Route path="/obrigado" element={<PaginaAgradecimento />} />

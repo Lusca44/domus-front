@@ -1,4 +1,3 @@
-
 import cardPixinguinhaImg from "./images/card-pixinguinha.jpeg";
 import cardPortoCariocaImg from "./images/card-porto-carioca.jpg";
 import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
@@ -6,6 +5,7 @@ import cardArcosPortoImg from "./images/card-arcos-porto.jpeg";
 import cardCiataResidencialImg from "./images/card-ciata-residencial.jpeg";
 import cardNovaOlariaImg from "./images/card-nova-olaria.jpeg";
 import cardOrlaMauaImg from "./images/card-orla-maua.jpeg";
+import cardMetropolitanDreamBarraImg from "./images/card-metropolitan-dream-barra.jpeg";
 import { Imovel } from "../imoveis";
 
 // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
@@ -99,6 +99,19 @@ export const lancamentos: Imovel[] = [
     quartos: 0, // Studio (tem várias opções, mas começando com Studio)
     area: "75m²",
     url: "/lancamentos/orla-maua",
+    destaque: true,
+    tipo: "lancamento",
+  },
+  {
+    id: "8",
+    titulo: "Metropolitan Dream Barra",
+    descricao: "Mega complexo com 5 torres e lazer completo na Barra da Tijuca. Viva o seu dream living com bar da piscina, rooftop e localização premium.",
+    preco: "A partir de R$ 380.000",
+    imagem: cardMetropolitanDreamBarraImg,
+    regiao: "Barra da Tijuca",
+    quartos: 0, // Studio (tem várias opções: Studio, 1, 2, 3 quartos e Garden)
+    area: "28m²",
+    url: "/lancamentos/metropolitan-dream-barra",
     destaque: true,
     tipo: "lancamento",
   },
