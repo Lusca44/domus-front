@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/general-pages/HomePage";
 import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
 import LandingPortoCarioca from "./pages/regioes/porto/porto-carioca/LandingPortoCarioca";
-import LandingAtlantico from "./pages/regioes/barra/atlantico/LandingAtlantico";
-import LandingParadise from "./pages/regioes/recreio/paradise/LandingParadise";
 import NotFound from "./pages/general-pages/NotFound";
 import PaginaAgradecimento from "./pages/general-pages/PaginaAgradecimento";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -32,16 +30,6 @@ function App() {
           <Route
             path="/porto-maravilha/lancamento/porto-carioca"
             element={<LandingPortoCarioca />}
-          />
-
-          <Route
-            path="/barra-tijuca/lancamento/atlantico"
-            element={<LandingAtlantico />}
-          />
-
-          <Route
-            path="/recreio/lancamento/paradise"
-            element={<LandingParadise />}
           />
 
           <Route path="/obrigado" element={<PaginaAgradecimento />} />
