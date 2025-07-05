@@ -8,6 +8,7 @@ import LandingCaminhosGuanabara from "./pages/regioes/niteroi/caminhos-da-guanab
 import LandingArcosPorto from "./pages/regioes/porto/arcos-do-porto/LandingArcosPorto";
 import LandingCiataResidencial from "./pages/regioes/porto/ciata-residencial/LandingCiataResidencial";
 import LandingNovaOlaria from "./pages/regioes/olaria/nova-olaria/LandingNovaOlaria";
+import LandingOrlaMaua from "./pages/regioes/porto/orla-maua/LandingOrlaMaua";
 import NotFound from "./pages/general-pages/NotFound";
 import PaginaAgradecimento from "./pages/general-pages/PaginaAgradecimento";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -59,6 +60,11 @@ function App() {
             <Route
               path="/lancamentos/nova-olaria"
               element={<LandingNovaOlaria />}
+            />
+
+            <Route
+              path="/lancamentos/orla-maua"
+              element={<LandingOrlaMaua />}
             />
 
             <Route path="/obrigado" element={<PaginaAgradecimento />} />

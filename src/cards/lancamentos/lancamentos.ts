@@ -5,6 +5,7 @@ import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
 import cardArcosPortoImg from "./images/card-arcos-porto.jpeg";
 import cardCiataResidencialImg from "./images/card-ciata-residencial.jpeg";
 import cardNovaOlariaImg from "./images/card-nova-olaria.jpeg";
+import cardOrlaMauaImg from "./images/card-orla-maua.jpeg";
 import { Imovel } from "../imoveis";
 
 // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
@@ -85,6 +86,19 @@ export const lancamentos: Imovel[] = [
     quartos: 2,
     area: "41m²",
     url: "/lancamentos/nova-olaria",
+    destaque: true,
+    tipo: "lancamento",
+  },
+  {
+    id: "7",
+    titulo: "Orla Mauá",
+    descricao: "O coração pulsante da vida urbana carioca. Viva no Boulevard Olímpico com vista para o Museu do Amanhã.",
+    preco: "A partir de R$ 380.000",
+    imagem: cardOrlaMauaImg,
+    regiao: "Porto Maravilha",
+    quartos: 3,
+    area: "75m²",
+    url: "/lancamentos/orla-maua",
     destaque: true,
     tipo: "lancamento",
   },
