@@ -4,6 +4,7 @@ import cardPortoCariocaImg from "./images/card-porto-carioca.jpg";
 import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
 import cardArcosPortoImg from "./images/card-arcos-porto.jpeg";
 import cardCiataResidencialImg from "./images/card-ciata-residencial.jpeg";
+import cardNovaOlariaImg from "./images/card-nova-olaria.jpeg";
 import { Imovel } from "../imoveis";
 
 // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
@@ -71,6 +72,19 @@ export const lancamentos: Imovel[] = [
     quartos: 2,
     area: "39m²",
     url: "/lancamentos/ciata-residencial",
+    destaque: true,
+    tipo: "lancamento",
+  },
+  {
+    id: "6",
+    titulo: "Nova Olaria",
+    descricao: "Tradição e modernidade se encontram. Uma nova forma de viver, morar e pertencer no coração de Olaria.",
+    preco: "A partir de R$ 245.000",
+    imagem: cardNovaOlariaImg,
+    regiao: "Olaria",
+    quartos: 2,
+    area: "41m²",
+    url: "/lancamentos/nova-olaria",
     destaque: true,
     tipo: "lancamento",
   },
