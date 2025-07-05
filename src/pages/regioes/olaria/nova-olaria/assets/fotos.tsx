@@ -1,6 +1,11 @@
 
+export interface Photo {
+  url: string;
+  titulo: string;
+}
+
 // TODO: Substituir por fotos reais do empreendimento Nova Olaria
-export const fotos = [
+export const fotos: Photo[] = [
   {
     url: "/assets/lancamentos/nova-olaria/fachada-principal.jpg",
     titulo: "Fachada principal do Nova Olaria",
