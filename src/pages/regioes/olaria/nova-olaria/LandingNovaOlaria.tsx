@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -199,8 +198,7 @@ const LandingNovaOlaria = () => {
           
           <div className="max-w-6xl mx-auto">
             <PhotoCarousel 
-              images={fotos} 
-              videos={videos}
+              photos={fotos}
               className="rounded-2xl overflow-hidden shadow-2xl"
             />
           </div>
@@ -428,7 +426,7 @@ const LandingNovaOlaria = () => {
             
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
               <LeadCaptureForm 
-                empreendimento="Nova Olaria"
+                nomeLancamento="Nova Olaria"
                 className="space-y-4"
               />
             </div>
