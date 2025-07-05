@@ -3,6 +3,7 @@ import cardPixinguinhaImg from "./images/card-pixinguinha.jpeg";
 import cardPortoCariocaImg from "./images/card-porto-carioca.jpg";
 import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
 import cardArcosPortoImg from "./images/card-arcos-porto.jpeg";
+import cardCiataResidencialImg from "./images/card-ciata-residencial.jpeg";
 import { Imovel } from "../imoveis";
 
 // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
@@ -57,6 +58,19 @@ export const lancamentos: Imovel[] = [
     quartos: 2,
     area: "59m²",
     url: "/lancamentos/arcos-do-porto",
+    destaque: true,
+    tipo: "lancamento",
+  },
+  {
+    id: "5",
+    titulo: "Ciata Residencial",
+    descricao: "Cultura • Conexão • Legado. Uma homenagem a Tia Ciata no coração do Porto Maravilha, onde nasceu o samba.",
+    preco: "A partir de R$ 320.000",
+    imagem: cardCiataResidencialImg,
+    regiao: "Porto Maravilha",
+    quartos: 2,
+    area: "39m²",
+    url: "/lancamentos/ciata-residencial",
     destaque: true,
     tipo: "lancamento",
   },
