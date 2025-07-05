@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HomePage from "./pages/general-pages/HomePage";
@@ -8,6 +9,8 @@ import LandingArcosPorto from "./pages/regioes/porto/arcos-do-porto/LandingArcos
 import LandingCiataResidencial from "./pages/regioes/porto/ciata-residencial/LandingCiataResidencial";
 import LandingNovaOlaria from "./pages/regioes/olaria/nova-olaria/LandingNovaOlaria";
 import LandingOrlaMaua from "./pages/regioes/porto/orla-maua/LandingOrlaMaua";
+import LandingMetropolitanDreamBarra from "./pages/regioes/barra/metropolitan-dream-barra/LandingMetropolitanDreamBarra";
+import LandingAmericas19 from "./pages/regioes/recreio/americas19/LandingAmericas19";
 import NotFound from "./pages/general-pages/NotFound";
 import PaginaAgradecimento from "./pages/general-pages/PaginaAgradecimento";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -18,7 +21,6 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
-import LandingMetropolitanDreamBarra from "./pages/regioes/barra/metropolitan-dream-barra/LandingMetropolitanDreamBarra";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -70,6 +72,11 @@ function App() {
             <Route
               path="/lancamentos/metropolitan-dream-barra"
               element={<LandingMetropolitanDreamBarra />}
+            />
+
+            <Route
+              path="/lancamentos/americas19"
+              element={<LandingAmericas19 />}
             />
 
             <Route path="/obrigado" element={<PaginaAgradecimento />} />

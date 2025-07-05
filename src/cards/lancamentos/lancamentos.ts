@@ -6,6 +6,7 @@ import cardCiataResidencialImg from "./images/card-ciata-residencial.jpeg";
 import cardNovaOlariaImg from "./images/card-nova-olaria.jpeg";
 import cardOrlaMauaImg from "./images/card-orla-maua.jpeg";
 import cardMetropolitanDreamBarraImg from "./images/card-metropolitan-dream-barra.jpeg";
+import cardAmericas19Img from "./images/card-americas19.jpeg";
 import { Imovel } from "../imoveis";
 
 // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
@@ -112,6 +113,19 @@ export const lancamentos: Imovel[] = [
     quartos: 0, // Studio (tem várias opções: Studio, 1, 2, 3 quartos e Garden)
     area: "28m²",
     url: "/lancamentos/metropolitan-dream-barra",
+    destaque: true,
+    tipo: "lancamento",
+  },
+  {
+    id: "9",
+    titulo: "Américas19",
+    descricao: "Bem-vindo ao melhor jeito de viver no Recreio. Localização premium no melhor quilômetro da Av. das Américas.",
+    preco: "A partir de R$ 320.000",
+    imagem: cardAmericas19Img,
+    regiao: "Recreio dos Bandeirantes",
+    quartos: 2, // 2 a 4 quartos (começando com 2)
+    area: "58m²",
+    url: "/lancamentos/americas19",
     destaque: true,
     tipo: "lancamento",
   },
