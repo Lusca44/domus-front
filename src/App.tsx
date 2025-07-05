@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HomePage from "./pages/general-pages/HomePage";
@@ -12,6 +11,7 @@ import LandingOrlaMaua from "./pages/regioes/porto/orla-maua/LandingOrlaMaua";
 import LandingMetropolitanDreamBarra from "./pages/regioes/barra/metropolitan-dream-barra/LandingMetropolitanDreamBarra";
 import LandingAmericas19 from "./pages/regioes/recreio/americas19/LandingAmericas19";
 import LandingOrlaRecreioPontal from "./pages/regioes/recreio/orla-recreio-pontal/LandingOrlaRecreioPontal";
+import LandingThePierResidencial from "./pages/regioes/niteroi/the-pier-residencial/LandingThePierResidencial";
 import NotFound from "./pages/general-pages/NotFound";
 import PaginaAgradecimento from "./pages/general-pages/PaginaAgradecimento";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -83,6 +83,11 @@ function App() {
             <Route
               path="/lancamentos/orla-recreio-pontal"
               element={<LandingOrlaRecreioPontal />}
+            />
+
+            <Route
+              path="/lancamentos/the-pier-residencial"
+              element={<LandingThePierResidencial />}
             />
 
             <Route path="/obrigado" element={<PaginaAgradecimento />} />

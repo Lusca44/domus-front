@@ -1,4 +1,3 @@
-
 import cardPixinguinhaImg from "./images/card-pixinguinha.jpeg";
 import cardPortoCariocaImg from "./images/card-porto-carioca.jpg";
 import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
@@ -9,6 +8,7 @@ import cardOrlaMauaImg from "./images/card-orla-maua.jpeg";
 import cardMetropolitanDreamBarraImg from "./images/card-metropolitan-dream-barra.jpeg";
 import cardAmericas19Img from "./images/card-americas19.jpeg";
 import cardOrlaRecreioPontalImg from "./images/card-orla-recreio-pontal.jpeg";
+import cardThePierImg from "./images/card-the-pier-residencial.jpeg";
 import { Imovel } from "../imoveis";
 
 // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**
@@ -141,6 +141,19 @@ export const lancamentos: Imovel[] = [
     quartos: 1, // 1 a 3 quartos (começando com 1)
     area: "42m²",
     url: "/lancamentos/orla-recreio-pontal",
+    destaque: true,
+    tipo: "lancamento",
+  },
+  {
+    id: "11",
+    titulo: "The Pier Residencial",
+    descricao: "Vista eterna para a Baía de Guanabara no coração de Niterói. Rooftop premium com 5 áreas distintas.",
+    preco: "A partir de R$ 420.000",
+    imagem: cardThePierImg,
+    regiao: "Centro, Niterói",
+    quartos: 1, // 1 a 3 quartos (começando com 1)
+    area: "35m²",
+    url: "/lancamentos/the-pier-residencial",
     destaque: true,
     tipo: "lancamento",
   },
