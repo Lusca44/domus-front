@@ -57,7 +57,7 @@ export const lancamentos: Imovel[] = [
     preco: "A partir de R$ 280.000",
     imagem: cardArcosPortoImg,
     regiao: "Porto Maravilha",
-    quartos: 2,
+    quartos: 0, // Studio
     area: "59m²",
     url: "/lancamentos/arcos-do-porto",
     destaque: true,
@@ -70,7 +70,7 @@ export const lancamentos: Imovel[] = [
     preco: "A partir de R$ 320.000",
     imagem: cardCiataResidencialImg,
     regiao: "Porto Maravilha",
-    quartos: 2,
+    quartos: 1, // 1 Quarto
     area: "39m²",
     url: "/lancamentos/ciata-residencial",
     destaque: true,
@@ -96,7 +96,7 @@ export const lancamentos: Imovel[] = [
     preco: "A partir de R$ 380.000",
     imagem: cardOrlaMauaImg,
     regiao: "Porto Maravilha",
-    quartos: 3,
+    quartos: 0, // Studio (tem várias opções, mas começando com Studio)
     area: "75m²",
     url: "/lancamentos/orla-maua",
     destaque: true,

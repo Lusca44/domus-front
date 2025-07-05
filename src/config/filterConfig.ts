@@ -38,22 +38,45 @@ export const getAvailableRegions = (items: any[]): RegiaoFilter[] => {
 export const getAvailableRooms = (items: any[]): QuartosFilter[] => {
   if (!items?.length) return [{ value: "todos", label: "Todas as Quantidades" }];
   
-  // Extrai quantidades de quartos únicas
+  // Extrai quantidades de quartos únicas e mapeia valores especiais
   const uniqueRooms = [...new Set(items.map(item => {
+    // Mapear valores especiais primeiro
+    if (item.quartos === 0) return "studio";
+    if (item.quartos === 1) return "1";
     if (item.quartos >= 4) return "4";
     return item.quartos.toString();
   }))];
 
-  // Converte para o formato do filtro
+  // Converte para o formato do filtro com ordem específica
   const roomFilters = uniqueRooms.map(room => {
-    if (room === "4") return { value: "4", label: "4+ Quartos" };
-    return { value: room, label: `${room} ${room === "1" ? "Quarto" : "Quartos"}` };
+    switch (room) {
+      case "studio":
+        return { value: "studio", label: "Studio" };
+      case "1":
+        return { value: "1", label: "1 Quarto" };
+      case "2":
+        return { value: "2", label: "2 Quartos" };
+      case "3":
+        return { value: "3", label: "3 Quartos" };
+      case "4":
+        return { value: "4", label: "4+ Quartos" };
+      default:
+        return { value: room, label: `${room} Quartos` };
+    }
+  });
+
+  // Ordem específica para os filtros
+  const orderMap = { "studio": 0, "1": 1, "2": 2, "3": 3, "4": 4 };
+  roomFilters.sort((a, b) => {
+    const orderA = orderMap[a.value as keyof typeof orderMap] ?? 999;
+    const orderB = orderMap[b.value as keyof typeof orderMap] ?? 999;
+    return orderA - orderB;
   });
 
   // Sempre adiciona "Todos" no início
   return [
     { value: "todos", label: "Todas as Quantidades" },
-    ...roomFilters.sort((a, b) => parseInt(a.value) - parseInt(b.value))
+    ...roomFilters
   ];
 };
 
@@ -89,11 +112,26 @@ export const itemMatchesFilters = (
 
   // Filtro de quartos
   if (selectedRooms !== "todos") {
-    const roomsNumber = parseInt(selectedRooms);
-    if (selectedRooms === "4" && item.quartos < 4) {
-      return false;
-    } else if (selectedRooms !== "4" && item.quartos !== roomsNumber) {
-      return false;
+    switch (selectedRooms) {
+      case "studio":
+        if (item.quartos !== 0) return false;
+        break;
+      case "1":
+        if (item.quartos !== 1) return false;
+        break;
+      case "2":
+        if (item.quartos !== 2) return false;
+        break;
+      case "3":
+        if (item.quartos !== 3) return false;
+        break;
+      case "4":
+        if (item.quartos < 4) return false;
+        break;
+      default:
+        const roomsNumber = parseInt(selectedRooms);
+        if (item.quartos !== roomsNumber) return false;
+        break;
     }
   }
 
