@@ -56,11 +56,11 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
     <div className={cn("w-full max-w-4xl mx-auto", className)}>
       {/* Main Photo */}
       <div className="relative group">
-        <div className="aspect-[16/10] overflow-hidden rounded-xl bg-gray-100 shadow-lg cursor-pointer" onClick={handleImageClick}>
+        <div className="aspect-[16/10] overflow-hidden rounded-xl bg-gray-900 shadow-lg cursor-pointer" onClick={handleImageClick}>
           <img
             src={photos[currentIndex].url}
             alt={photos[currentIndex].titulo}
-            className="w-full h-full object-contain bg-gray-50 transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           
           {/* Overlay with information - simplified for mobile */}
