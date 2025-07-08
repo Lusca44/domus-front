@@ -224,20 +224,6 @@ const LandingCaminhosGuanabara = () => {
               </div>
             </div>
 
-            <div className="space-y-8">
-              {/* TODO: Replace with actual architectural renders */}
-              <div className="bg-gray-200 rounded-2xl h-80 flex items-center justify-center">
-                <p className="text-gray-500">Render Arquitetônico - Fachada Principal</p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-200 rounded-xl h-40 flex items-center justify-center">
-                  <p className="text-gray-500 text-sm text-center">Planta Tipo<br/>2 Quartos</p>
-                </div>
-                <div className="bg-gray-200 rounded-xl h-40 flex items-center justify-center">
-                  <p className="text-gray-500 text-sm text-center">Vista<br/>Rooftop</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>

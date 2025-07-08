@@ -12,22 +12,6 @@ import { videosThePier } from './assets/videos';
 
 const LandingThePierResidencial = () => {
   // Preparar dados para o PhotoCarousel
-  const mediaData = [
-    ...fotosThePier.map(foto => ({
-      type: 'image' as const,
-      src: foto.url,
-      alt: foto.titulo,
-      title: foto.titulo
-    })),
-    ...videosThePier.map(video => ({
-      type: 'video' as const,
-      src: video.url,
-      alt: video.titulo,
-      title: video.titulo,
-      description: video.descricao
-    }))
-  ];
-
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -133,7 +117,7 @@ const LandingThePierResidencial = () => {
             </p>
           </div>
 
-          <PhotoCarousel photos={mediaData} />
+          <PhotoCarousel photos={fotosThePier} />
         </div>
       </section>
 
