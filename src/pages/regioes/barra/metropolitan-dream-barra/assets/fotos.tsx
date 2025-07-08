@@ -1,3 +1,27 @@
+import fachadaPortaria from './img/metropolitan-dream-fachada-portaria.png'
+import fachadaLojas from './img/metropolitan-dream-fachada-lojas.png'
+import fachadaPredio from './img/metropolitan-dream-fachada-predio.png'
+import vistaAerea from './img/metropolitan-dream-vista-aerea.png'
+import vistaAereaLocalizacao from './img/metropolitan-dream-vista-aerea-localizacao.png'
+import churrasqueira from './img/metropolitan-dream-churrasqueira.png'
+import apoioChurrasqueira  from './img/metropolitan-dream-apoio-churrasqueira.png'
+import areaFitness from './img/metropolitan-dream-area-fitness.png'
+import areaPetCare from './img/metropolitan-dream-area-pet-care.png'
+import barDaPiscina from './img/metropolitan-dream-bar-da-piscina.png'
+import brinquedoteca from './img/metropolitan-dream-brinquedoteca.png'
+import campoSociety from './img/metropolitan-dream-campo-society.png'
+import areaCoworking from './img/metropolitan-dream-coworking.png'
+import easyMarket from './img/metropolitan-dream-easy-market.png'
+import lavanderia from './img/metropolitan-dream-lavanderia.png'
+import lounge from './img/metropolitan-dream-lounge.png'
+import oficina from './img/metropolitan-dream-oficina.png'
+import petPlace from './img/metropolitan-dream-pet-place.png'
+import piscinaAdultoInfantil from './img/metropolitan-dream-piscina-adulto-e-infantil.png'
+import playground from './img/metropolitan-dream-playground.png'
+import rooftop from './img/metropolitan-dream-rooftop.png'
+import salaoDeFestas from './img/metropolitan-dream-salao-de-festas.png'
+import salaoDeJogos from './img/metropolitan-dream-salao-de-jogos.png'
+
 
 export interface Photo {
   url: string;
@@ -6,77 +30,97 @@ export interface Photo {
 
 const fotos: Photo[] = [
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/fachada-principal.jpg",
-    titulo: "Fachada Principal - 5 Torres Modernas"
+    url: fachadaPortaria,
+    titulo: "Fachada Portaria"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/vista-aerea-empreendimento.jpg", 
-    titulo: "Vista Aérea do Complexo Metropolitan Dream"
+    url: fachadaLojas, 
+    titulo: "Fachada Lojas"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/rooftop-premium.jpg",
-    titulo: "Rooftop Premium com Vista Panorâmica"
+    url: fachadaPredio,
+    titulo: "Fachada predio"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/bar-piscina.jpg",
-    titulo: "Bar da Piscina - Área de Lazer Exclusiva"
+    url: vistaAerea,
+    titulo: "Vista aerea"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/piscina-adulto-infantil.jpg",
-    titulo: "Piscinas Adulto e Infantil"
+    url: vistaAereaLocalizacao,
+    titulo: "Vista aerea com a localização"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/campo-society.jpg",
-    titulo: "Campo Society Profissional"
+    url: churrasqueira,
+    titulo: "Churrasqueira"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/coworking-moderno.jpg",
-    titulo: "Coworking Moderno e Equipado"
+    url: apoioChurrasqueira,
+    titulo: "Apoio churrasqueira"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/pet-care.jpg",
-    titulo: "Pet Care - Espaço dedicado aos pets"
+    url: areaFitness,
+    titulo: "Area fitness"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/apartamento-decorado-studio.jpg",
-    titulo: "Apartamento Decorado - Studio"
+    url: areaPetCare,
+    titulo: "Aerea Pet Care"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/apartamento-decorado-1quarto.jpg",
-    titulo: "Apartamento Decorado - 1 Quarto"
+    url: barDaPiscina,
+    titulo: "Bar da piscina"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/apartamento-decorado-2quartos.jpg",
-    titulo: "Apartamento Decorado - 2 Quartos"
+    url: brinquedoteca,
+    titulo: "Brinquedoteca"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/apartamento-decorado-3quartos.jpg",
-    titulo: "Apartamento Decorado - 3 Quartos"
+    url: campoSociety,
+    titulo: "Campo society"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/apartamento-garden.jpg",
-    titulo: "Apartamento Garden com Área Externa"
+    url: areaCoworking,
+    titulo: "Area coworking"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/sala-massagem.jpg",
-    titulo: "Sala de Massagem - Bem-estar"
+    url: easyMarket,
+    titulo: "Easy Market"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/easy-market.jpg",
-    titulo: "Easy Market - Conveniência"
+    url: lavanderia,
+    titulo: "Lavanderia"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/lavanderia.jpg",
-    titulo: "Lavanderia Comunitária"
+    url: lounge,
+    titulo: "Lounge"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/vista-avenidas.jpg",
-    titulo: "Vista das Principais Avenidas da Barra"
+    url: oficina,
+    titulo: "Oficina"
   },
   {
-    url: "/assets/lancamentos/metropolitan-dream-barra/parque-olimpico.jpg",
-    titulo: "Proximidade ao Parque Olímpico"
-  }
+    url: petPlace,
+    titulo: "Pet Place"
+  },
+  {
+    url: piscinaAdultoInfantil,
+    titulo: "Piscina adulto e infantil"
+  },
+  {
+    url: playground,
+    titulo: "Playground"
+  },
+  {
+    url: rooftop,
+    titulo: "Rooftop"
+  },
+  {
+    url: salaoDeFestas,
+    titulo: "Salão de festas"
+  },
+  {
+    url: salaoDeJogos,
+    titulo: "Salão de jogos"
+  },
 ];
 
 export default fotos;

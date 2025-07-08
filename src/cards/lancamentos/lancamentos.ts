@@ -5,7 +5,7 @@ import cardArcosPortoImg from "./images/card-arcos-do-porto.jpeg.webp";
 import cardCiataResidencialImg from "./images/card-ciata.png";
 import cardNovaOlariaImg from "./images/card-nova-olaria.jpeg";
 import cardOrlaMauaImg from "./images/cad-orla-maua-piscina-roof-top.png";
-import cardMetropolitanDreamBarraImg from "./images/card-metropolitan-dream-barra.jpeg";
+import cardMetropolitanDreamBarraImg from "./images/card-metropolitan-dream-vista-aerea.png";
 import cardAmericas19Img from "./images/card-americas19.jpeg";
 import cardOrlaRecreioPontalImg from "./images/card-orla-recreio-pontal.jpeg";
 import cardThePierImg from "./images/card-the-pier-residencial.jpeg";
