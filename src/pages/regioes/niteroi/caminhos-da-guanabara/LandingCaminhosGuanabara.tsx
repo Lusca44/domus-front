@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ArrowRight, MapPin, Users, Car, Dumbbell, Waves, TreePine, Shield, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -190,21 +191,21 @@ const LandingCaminhosGuanabara = () => {
             </h2>
             <div className="space-y-8">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-3xl mx-auto">
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.unidades}</div>
-                  <div className="text-gray-600">Total de unidades</div>
+                <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
+                  <div className="text-2xl font-bold text-blue-600 mb-1">{empreendimento.unidades}</div>
+                  <div className="text-sm text-gray-600 leading-tight">Total de unidades</div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.blocos}</div>
-                  <div className="text-gray-600">Blocos residenciais</div>
+                <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
+                  <div className="text-2xl font-bold text-blue-600 mb-1">{empreendimento.blocos}</div>
+                  <div className="text-sm text-gray-600 leading-tight">Blocos residenciais</div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.pavimentos}</div>
-                  <div className="text-gray-600">Pavimentos</div>
+                <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
+                  <div className="text-2xl font-bold text-blue-600 mb-1">22</div>
+                  <div className="text-sm text-gray-600 leading-tight">Pavimentos</div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.quartos}</div>
-                  <div className="text-gray-600">Opções disponíveis</div>
+                <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
+                  <div className="text-2xl font-bold text-blue-600 mb-1">{empreendimento.quartos}</div>
+                  <div className="text-sm text-gray-600 leading-tight">Opções disponíveis</div>
                 </div>
               </div>
               
