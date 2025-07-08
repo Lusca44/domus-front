@@ -16,7 +16,7 @@ import {
 import PhotoCarousel from "@/components/PhotoCarousel";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
-import { fotosOrlaRecreioPontal } from "./assets/fotos";
+import { fotosCarrossel } from "./assets/fotos";
 
 const LandingOrlaRecreioPontal = () => {
   // TODO: Substituir por imagem real do empreendimento
@@ -207,7 +207,7 @@ const LandingOrlaRecreioPontal = () => {
             </p>
           </div>
 
-          <PhotoCarousel photos={[...fotosOrlaRecreioPontal]} />
+          <PhotoCarousel photos={fotosCarrossel} />
         </div>
       </section>
 

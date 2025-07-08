@@ -41,83 +41,67 @@ export const fotosAmericas19 = {
 // Array de fotos para o carrossel
 export const fotosCarrossel = [
   {
-    src: fotosAmericas19.fachada,
-    alt: "Fachada principal do Américas19",
-    title: "Fachada Moderna"
+    url: fotosAmericas19.fachada,
+    titulo: "Fachada Moderna"
   },
   {
-    src: fotosAmericas19.vistaAerea,
-    alt: "Vista aérea do empreendimento",
-    title: "Vista Aérea"
+    url: fotosAmericas19.vistaAerea,
+    titulo: "Vista Aérea"
   },
   {
-    src: fotosAmericas19.piscina,
-    alt: "Área da piscina com deck",
-    title: "Área da Piscina"
+    url: fotosAmericas19.piscina,
+    titulo: "Área da Piscina"
   },
   {
-    src: fotosAmericas19.campoSociety,
-    alt: "Campo society",
-    title: "Campo Society"
+    url: fotosAmericas19.campoSociety,
+    titulo: "Campo Society"
   },
   {
-    src: fotosAmericas19.espacoGourmet,
-    alt: "Espaço gourmet com churrasqueira",
-    title: "Espaço Gourmet"
+    url: fotosAmericas19.espacoGourmet,
+    titulo: "Espaço Gourmet"
   },
   {
-    src: fotosAmericas19.petPlace,
-    alt: "Pet place",
-    title: "Pet Place"
+    url: fotosAmericas19.petPlace,
+    titulo: "Pet Place"
   },
   {
-    src: fotosAmericas19.coworking,
-    alt: "Coworking space moderno",
-    title: "Coworking"
+    url: fotosAmericas19.coworking,
+    titulo: "Coworking"
   },
   {
-    src: fotosAmericas19.spa,
-    alt: "Spa para relaxamento",
-    title: "Spa"
+    url: fotosAmericas19.spa,
+    titulo: "Spa"
   },
   {
-    src: fotosAmericas19.apartamento2Quartos,
-    alt: "Apartamento decorado 2 quartos",
-    title: "Apartamento 2 Quartos"
+    url: fotosAmericas19.apartamento2Quartos,
+    titulo: "Apartamento 2 Quartos"
   },
   {
-    src: fotosAmericas19.apartamento3Quartos,
-    alt: "Apartamento decorado 3 quartos",
-    title: "Apartamento 3 Quartos"
+    url: fotosAmericas19.apartamento3Quartos,
+    titulo: "Apartamento 3 Quartos"
   },
   {
-    src: fotosAmericas19.garden,
-    alt: "Apartamento garden",
-    title: "Garden"
+    url: fotosAmericas19.garden,
+    titulo: "Garden"
   },
   {
-    src: fotosAmericas19.cobertura,
-    alt: "Cobertura duplex",
-    title: "Cobertura Duplex"
+    url: fotosAmericas19.cobertura,
+    titulo: "Cobertura Duplex"
   },
   {
-    src: fotosAmericas19.praiaPontal,
-    alt: "Vista da Praia do Pontal",
-    title: "Praia do Pontal"
+    url: fotosAmericas19.praiaPontal,
+    titulo: "Praia do Pontal"
   },
   {
-    src: fotosAmericas19.ciclovia,
-    alt: "Ciclovia do Recreio",
-    title: "Ciclovia"
+    url: fotosAmericas19.ciclovia,
+    titulo: "Ciclovia"
   },
   {
-    src: fotosAmericas19.recreioShopping,
-    alt: "Recreio Shopping",
-    title: "Recreio Shopping"
+    url: fotosAmericas19.recreioShopping,
+    titulo: "Recreio Shopping"
   },
   {
-    src: fotosAmericas19.lavanderia,
-    alt: "Lavanderia compartilhada",
-    title: "Lavanderia"
+    url: fotosAmericas19.lavanderia,
+    titulo: "Lavanderia"
   },
 ];

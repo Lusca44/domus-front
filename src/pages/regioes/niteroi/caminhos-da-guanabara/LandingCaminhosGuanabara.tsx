@@ -16,7 +16,7 @@ import {
 import PhotoCarousel from "@/components/PhotoCarousel";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
-import { fotosCaminhosGuanabara } from "./assets/fotos";
+import fotos from "./assets/fotos";
 
 const LandingCaminhosGuanabara = () => {
   // TODO: Substituir por imagem real do empreendimento
@@ -192,7 +192,7 @@ const LandingCaminhosGuanabara = () => {
             </p>
           </div>
 
-          <PhotoCarousel photos={[...fotosCaminhosGuanabara]} />
+          <PhotoCarousel photos={fotos} />
         </div>
       </section>
 
