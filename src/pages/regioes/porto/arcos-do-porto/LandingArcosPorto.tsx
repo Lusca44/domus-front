@@ -301,23 +301,19 @@ const LandingArcosPorto = () => {
               </div>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-              {/* TODO: Substituir por mapa real da localização */}
-              <div className="aspect-square bg-slate-700/50 rounded-xl flex items-center justify-center">
-                <div className="text-center text-slate-300">
-                  <MapPin className="w-12 h-12 mx-auto mb-4" />
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.4001935584133!2d-43.208369724690016!3d-22.898605479260908!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f18561d1145%3A0x78e46e204ae2e58b!2sR.%20Cordeiro%20da%20Gra%C3%A7a%2C%20156%20-%20Santo%20Cristo%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2020220-400!5e0!3m2!1spt-BR!2sbr!4v1751971376326!5m2!1spt-BR!2sbr"
-                    width="100%"
-                    height="600"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Localização do Residencial Pixinguinha"
-                    className={`w-full 'h-80 lg:h-96'}`}
-                  ></iframe>
-                </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+              <div className="w-full h-96 rounded-xl overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.4001935584133!2d-43.208369724690016!3d-22.898605479260908!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f18561d1145%3A0x78e46e204ae2e58b!2sR.%20Cordeiro%20da%20Gra%C3%A7a%2C%20156%20-%20Santo%20Cristo%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2020220-400!5e0!3m2!1spt-BR!2sbr!4v1751971376326!5m2!1spt-BR!2sbr"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Localização do Arcos do Porto"
+                  className="w-full h-full rounded-xl"
+                ></iframe>
               </div>
             </div>
           </div>
