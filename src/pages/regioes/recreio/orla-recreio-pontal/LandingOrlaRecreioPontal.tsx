@@ -290,8 +290,9 @@ const LandingOrlaRecreioPontal = () => {
                   Localização Estratégica
                 </h2>
                 <p className="text-lg text-blue-100 leading-relaxed">
-                  No coração do Recreio dos Bandeirantes, conectado aos principais pontos
-                  do Rio de Janeiro com mobilidade urbana excepcional.
+                  No coração do Recreio dos Bandeirantes, conectado aos
+                  principais pontos do Rio de Janeiro com mobilidade urbana
+                  excepcional.
                 </p>
               </div>
 
@@ -320,7 +321,7 @@ const LandingOrlaRecreioPontal = () => {
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
               <div className="w-full h-96 rounded-xl overflow-hidden">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3673.4495749931896!2d-43.4620297246886!3d-23.03215087917805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9bdb1d38fff003%3A0x396a39037c99c091!2sAv.%20Gla%C3%BAcio%20Gil%2C%201450%20-%20Recreio%20dos%20Bandeirantes%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2022795-071!5e0!3m2!1spt-BR!2sbr!4v1715043498998!5m2!1spt-BR!2sbr"
+                  src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d3671.8443804853187!2d-43.48421922468586!3d-23.029485429168957!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sR.%20Z%C3%A9lio%20Valverde%2C%20s%2Fn%C2%BA%2C%20Recreio.%20Rio%20de%20Janeiro%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1751989579777!5m2!1spt-BR!2sbr"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

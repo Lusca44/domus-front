@@ -6,9 +6,9 @@ import cardCiataResidencialImg from "./images/card-ciata.png";
 import cardNovaOlariaImg from "./images/card-nova-olaria-fachada.png";
 import cardOrlaMauaImg from "./images/cad-orla-maua-piscina-roof-top.png";
 import cardMetropolitanDreamBarraImg from "./images/card-metropolitan-dream-vista-aerea.png";
-import cardAmericas19Img from "./images/card-americas19.jpeg";
-import cardOrlaRecreioPontalImg from "./images/card-orla-recreio-pontal.jpeg";
-import cardThePierImg from "./images/card-the-pier-residencial.jpeg";
+import cardAmericas19Img from "./images/card-americas-19-fachada.jpeg.webp";
+import cardOrlaRecreioPontalImg from "./images/card-orla-praia-pontal-psicina.png";
+import cardThePierImg from "./images/card-the-pier-vista-eterna-baia.png";
 import { Imovel } from "../imoveis";
 
 // **AQUI É ONDE VOCÊ DEVE ADICIONAR NOVOS CARDS DE LANÇAMENTOS**

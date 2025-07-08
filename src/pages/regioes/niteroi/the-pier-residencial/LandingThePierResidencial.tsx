@@ -117,16 +117,12 @@ const LandingThePierResidencial = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 text-blue-200">
                     <MapPin className="w-5 h-5 flex-shrink-0" />
-                    <span className="text-lg">
-                      Centro, Niterói
-                    </span>
+                    <span className="text-lg">Centro, Niterói</span>
                   </div>
 
                   <div className="flex items-center gap-3 text-blue-200">
                     <Building2 className="w-5 h-5 flex-shrink-0" />
-                    <span className="text-lg">
-                      Projeto de Leonardo Conde
-                    </span>
+                    <span className="text-lg">Projeto de Leonardo Conde</span>
                   </div>
                 </div>
 
@@ -249,8 +245,8 @@ const LandingThePierResidencial = () => {
               Lazer e Conforto
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Desfrute de momentos inesquecíveis com as diversas opções de
-              lazer e bem-estar
+              Desfrute de momentos inesquecíveis com as diversas opções de lazer
+              e bem-estar
             </p>
           </div>
 
@@ -309,7 +305,7 @@ const LandingThePierResidencial = () => {
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
               <div className="w-full h-96 rounded-xl overflow-hidden">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3679.544448824219!2d-43.12444832469397!3d-22.819554276819156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f627c4b47dd%3A0x6aa9eb299f7997c5!2sR.%20Visc.%20de%20Sepetiba%2C%20100%20-%20Centro%2C%20Niter%C3%B3i%20-%20RJ%2C%2024020-200!5e0!3m2!1spt-BR!2sbr!4v1751972004489!5m2!1spt-BR!2sbr"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.8941189700754!2d-43.08543252468944!3d-22.91727587924781!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x99841dda25f63b%3A0x186a6d8d1e177e62!2sR.%20Marco%20Aur%C3%A9lio%20dos%20Santos%2C%201%20-%2091%20-%20S%C3%A3o%20Francisco%2C%20Niter%C3%B3i%20-%20RJ%2C%2024360-490!5e0!3m2!1spt-BR!2sbr!4v1751989660306!5m2!1spt-BR!2sbr"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -408,9 +404,7 @@ const LandingThePierResidencial = () => {
                   <div className="flex items-center gap-4">
                     <Users className="w-8 h-8" />
                     <div>
-                      <h4 className="font-semibold">
-                        Atendimento Exclusivo
-                      </h4>
+                      <h4 className="font-semibold">Atendimento Exclusivo</h4>
                       <p className="text-blue-100">
                         Nossa equipe está pronta para atendê-lo
                       </p>

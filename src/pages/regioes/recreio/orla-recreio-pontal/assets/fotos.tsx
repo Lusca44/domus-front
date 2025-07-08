@@ -1,60 +1,74 @@
 
-// Assets de fotos para Orla Recreio - Praia do Pontal
+import fachada from './img/orla-praia-pontal-fachada.png'
+import facahdaPredio from './img/orla-praia-pontal-fachada-predio.png'
+import vistaAereaLocalizacao from './img/orla-praia-pontal-vista-aerea-localizacao.png'
+import pisicna from './img/card-orla-praia-pontal-psicina.png'
+import academia from './img/orla-praia-pontal-academia.png'
+import areaLimpezaPrancha from './img/orla-praia-pontal-area-limpeza-prancha.png'
+import bicicletario from './img/orla-praia-pontal-bicicletario.png'
+import brinquedoteca from './img/orla-praia-pontal-brinquedoteca.png'
+import churrasqueira from './img/orla-praia-pontal-churrasqueira.png'
+import coworking from './img/orla-praia-pontal-coworking.png'
+import petPlace from './img/orla-praia-pontal-pet-place.png'
+import playground from './img/orla-praia-pontal-playground.png'
+import salaoDeFestas from './img/orla-praia-pontal-salao-de-festas.png'
+import salaoDeJogos from './img/orla-praia-pontal-salao-de-jogos.png'
 
 export const fotosCarrossel = [
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/fachada-principal.jpg",
-    titulo: "Fachada Principal - Orla Recreio"
+    url: fachada,
+    titulo: "Fachada"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/vista-aerea-empreendimento.jpg",
-    titulo: "Vista Aérea do Complexo"
+    url: facahdaPredio,
+    titulo: "Fachada predio"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/vista-mar-praia-pontal.jpg",
-    titulo: "Vista para o Mar - Praia do Pontal"
+    url: vistaAereaLocalizacao,
+    titulo: "Vista aérea da localização"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/piscinas-area-lazer.jpg",
-    titulo: "Piscinas Adulto e Infantil"
+    url: pisicna,
+    titulo: "Piscina"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/espaco-zen-relaxamento.jpg",
-    titulo: "Espaço Zen"
+    url: academia,
+    titulo: "Academia"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/coworking-vista-mar.jpg",
-    titulo: "Coworking com Vista Mar"
+    url: areaLimpezaPrancha,
+    titulo: "Area de limpeza de pranchas"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/apartamento-decorado-1quarto.jpg",
-    titulo: "Apartamento 1 Quarto Decorado"
+    url: bicicletario,
+    titulo: "Bicicletário"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/apartamento-decorado-2quartos.jpg",
-    titulo: "Apartamento 2 Quartos Decorado"
+    url: brinquedoteca,
+    titulo: "Brinquedoteca"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/apartamento-decorado-3quartos.jpg",
-    titulo: "Apartamento 3 Quartos Decorado"
+    url: churrasqueira,
+    titulo: "Churrasqueira"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/sala-massagem-spa.jpg",
-    titulo: "Sala de Massagem"
+    url: coworking,
+    titulo: "Coworking"
   },
   {
-    url: "/assets/lancamentos/orla-recreio-pontal/bicicletario-sustentavel.jpg",
-    titulo: "Bicicletário Sustentável"
-  },
-  {
-    url: "/assets/lancamentos/orla-recreio-pontal/pet-place-recreativo.jpg",
+    url: petPlace,
     titulo: "Pet Place"
-  }
+  },
+  {
+    url: playground,
+    titulo: "Playground"
+  },
+  {
+    url: salaoDeFestas,
+    titulo: "Salão de festas"
+  },
+  {
+    url: salaoDeJogos,
+    titulo: "Salão de jogos"
+  },
 ];
-
-export const fotosOrlaRecreioPontal = {
-  background: "/assets/lancamentos/orla-recreio-pontal/background-orla-recreio.jpg",
-  praiapontal: "/assets/lancamentos/orla-recreio-pontal/vista-mar-praia-pontal.jpg",
-  ciclovia: "/assets/lancamentos/orla-recreio-pontal/ciclovia-pontal.jpg",
-  natureza: "/assets/lancamentos/orla-recreio-pontal/integracao-natureza.jpg"
-};
