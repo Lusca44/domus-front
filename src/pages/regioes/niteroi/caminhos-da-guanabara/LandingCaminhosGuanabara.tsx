@@ -23,7 +23,8 @@ const LandingCaminhosGuanabara = () => {
     metragem: "A partir de 38m²",
     preco: "A partir de R$ 294.900",
     tags: ["2 quartos", "Suíte", "Vaga"],
-    destaque: "Lazer completo + Rooftop"
+    destaque: "Lazer completo + Rooftop",
+    mapa: "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d3176.2216999494863!2d-43.125754533324844!3d-22.889005291873712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sRua%20Coronel%20PM%20Francisco%20Spargoli%20Rocha%2C%20Lote%201%20a%204%2C%20Centro.%20Niter%C3%B3i%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1751970283068!5m2!1spt-BR!2sbr"
   };
 
   const diferenciais = [
@@ -130,7 +131,7 @@ const LandingCaminhosGuanabara = () => {
                   <Sparkles className="w-5 h-5 mr-2" />
                   Tenho Interesse
                 </Button>
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg font-semibold">
+                <Button size="lg" variant="outline" className="border-white text-blue-600 px-8 py-4 text-lg font-semibold">
                   Ver Galeria <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </div>
@@ -313,7 +314,17 @@ const LandingCaminhosGuanabara = () => {
             <div className="space-y-6">
               {/* TODO: Replace with actual map */}
               <div className="bg-gray-200 rounded-2xl h-96 flex items-center justify-center">
-                <p className="text-gray-500">Mapa de Localização - Niterói</p>
+                <iframe
+                src={empreendimento.mapa}
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Localização do Residencial Pixinguinha"
+                className={`w-full 'h-80 lg:h-96'}`}
+              ></iframe>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
