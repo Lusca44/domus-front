@@ -18,53 +18,32 @@ import {
   Heart,
   Bike,
   Home,
+  ArrowLeft,
 } from "lucide-react";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import Footer from "@/components/Footer";
 import { fotos } from "./assets/fotos";
-import { videos } from "./assets/videos";
+import { Link } from 'react-router-dom';
 
 const LandingNovaOlaria = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-      {/* Header fixo */}
-      <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-50 border-b border-orange-100">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-orange-600 to-red-600 rounded-lg flex items-center justify-center">
-                <Home className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <h1 className="font-bold text-lg text-gray-900">Nova Olaria</h1>
-                <p className="text-sm text-gray-600">
-                  Tradição • Modernidade • Pertencimento
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600">
-                <div className="flex items-center space-x-1">
-                  <Phone className="w-4 h-4" />
-                  <span>(21) 2222-3333</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Mail className="w-4 h-4" />
-                  <span>contato@feitozaimoveis.com</span>
-                </div>
-              </div>
-              <Button
-                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white"
-                onClick={() =>
-                  document
-                    .getElementById("form-interesse")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                Tenho Interesse
-              </Button>
-            </div>
+      {/* Header com botão voltar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Voltar para o início
+              </Link>
+            </Button>
           </div>
         </div>
       </header>
@@ -132,7 +111,7 @@ const LandingNovaOlaria = () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-orange-800 px-8 py-3 text-lg"
+              className="border-white text-orange-600 hover:bg-white hover:text-orange-800 px-8 py-3 text-lg"
               onClick={() =>
                 document
                   .getElementById("carrossel")
@@ -314,49 +293,38 @@ const LandingNovaOlaria = () => {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-2xl shadow-xl p-8 border border-orange-100">
               <div className="grid md:grid-cols-2 gap-8 items-center">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    Apartamento 2 Quartos
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
-                      <span className="text-gray-700">
-                        Área: 38,50m² a 41,34m²
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
-                      <span className="text-gray-700">
-                        2 quartos com possibilidade de suíte
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
-                      <span className="text-gray-700">
-                        Sala de estar integrada
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
-                      <span className="text-gray-700">
-                        Cozinha e área de serviço
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
-                      <span className="text-gray-700">Varanda com vista</span>
-                    </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  Apartamento 2 Quartos
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
+                    <span className="text-gray-700">
+                      Área: 38,50m² a 41,34m²
+                    </span>
                   </div>
-                </div>
-
-                <div className="relative">
-                  <img
-                    src="/assets/lancamentos/nova-olaria/apartamento-decorado-2quartos.jpg"
-                    alt="Apartamento 2 quartos decorado"
-                    className="w-full h-64 object-cover rounded-xl shadow-lg"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-orange-900/20 to-transparent rounded-xl"></div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
+                    <span className="text-gray-700">
+                      2 quartos com possibilidade de suíte
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
+                    <span className="text-gray-700">
+                      Sala de estar integrada
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
+                    <span className="text-gray-700">
+                      Cozinha e área de serviço
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
+                    <span className="text-gray-700">Varanda com vista</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -445,21 +413,18 @@ const LandingNovaOlaria = () => {
               </div>
 
               <div className="relative">
-                <img
-                  src="/assets/lancamentos/nova-olaria/vista-aerea-empreendimento.jpg"
-                  alt="Vista aérea da localização"
-                  className="w-full h-96 object-cover rounded-2xl shadow-xl"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-orange-900/30 to-transparent rounded-2xl"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
-                    <div className="flex items-center space-x-2">
-                      <MapPin className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium text-gray-900">
-                        Olaria, Rio de Janeiro
-                      </span>
-                    </div>
-                  </div>
+                <div className="mt-12 bg-slate-100 h-96 rounded-2xl flex items-center justify-center">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3676.8715886506156!2d-43.25713749999999!3d-22.8442399!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997be6d343636b%3A0xab1d05194f180794!2sRua%20Luis%20C%C3%A2mara%2C%20688%20-%20Ramos%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2021031-175!5e0!3m2!1spt-BR!2sbr!4v1751986713092!5m2!1spt-BR!2sbr"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Localização do Residencial Pixinguinha"
+                    className={`w-full "h-80 lg:h-96"}`}
+                  ></iframe>
                 </div>
               </div>
             </div>

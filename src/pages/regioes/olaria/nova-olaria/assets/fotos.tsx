@@ -1,3 +1,19 @@
+import fachada from './img/card-nova-olaria-fachada.png'
+import vistaAereaLocalziacao from './img/nova-olaria-vista-aerea-localizacao.png'
+import academia from './img/nova-olaria-academia.png'
+import areaDeJogos from './img/nova-olaria-area-de-jogos.png'
+import bicicletario from './img/nova-olaria-bicicletario.png'
+import brinquedoteca from './img/nova-olaria-brinquedoteca.png'
+import campoSociety from './img/nova-olaria-campo-socienty.png'
+import coworking from './img/nova-olaria-coworking.png'
+import areaFitnessExterna from './img/nova-olaria-fitnes-externa.png'
+import oficina from './img/nova-olaria-oficina.png'
+import petPlace from './img/nova-olaria-pet-place.png'
+import piscina from './img/nova-olaria-piscinia.png'
+import playground from './img/nova-olaria-playground.png'
+import salaoDeJogosComPub from './img/nova-olaria-salao-de-jogos-com-pub.png'
+import salaoDeFestas from './img/nova-olaria-salao-festas.png'
+
 
 export interface Photo {
   url: string;
@@ -7,55 +23,63 @@ export interface Photo {
 // TODO: Substituir por fotos reais do empreendimento Nova Olaria
 export const fotos: Photo[] = [
   {
-    url: "/assets/lancamentos/nova-olaria/fachada-principal.jpg",
-    titulo: "Fachada principal do Nova Olaria",
+    url: fachada,
+    titulo: "Fachada",
   },
   {
-    url: "/assets/lancamentos/nova-olaria/vista-aerea-empreendimento.jpg", 
-    titulo: "Vista aérea do empreendimento",
+    url: vistaAereaLocalziacao, 
+    titulo: "Vista aérea com localização",
   },
   {
-    url: "/assets/lancamentos/nova-olaria/piscina-area-lazer.jpg",
-    titulo: "Piscina e área de lazer",
+    url: academia,
+    titulo: "Academia",
   },
   {
-    url: "/assets/lancamentos/nova-olaria/campo-society.jpg",
-    titulo: "Campo society",
+    url: areaDeJogos,
+    titulo: "Area de jogos",
   },
   {
-    url: "/assets/lancamentos/nova-olaria/fitness-externo.jpg",
-    titulo: "Academia fitness externa",
-  },
-  {
-    url: "/assets/lancamentos/nova-olaria/lounge-jogos.jpg",
-    titulo: "Lounge de jogos",
-  },
-  {
-    url: "/assets/lancamentos/nova-olaria/salao-festas.jpg",
-    titulo: "Salão de festas",
-  },
-  {
-    url: "/assets/lancamentos/nova-olaria/brinquedoteca.jpg",
-    titulo: "Brinquedoteca",
-  },
-  {
-    url: "/assets/lancamentos/nova-olaria/coworking-space.jpg",
-    titulo: "Espaço de coworking",
-  },
-  {
-    url: "/assets/lancamentos/nova-olaria/apartamento-decorado-2quartos.jpg",
-    titulo: "Apartamento 2 quartos decorado",
-  },
-  {
-    url: "/assets/lancamentos/nova-olaria/pet-place.jpg",
-    titulo: "Pet place",
-  },
-  {
-    url: "/assets/lancamentos/nova-olaria/bicicletario.jpg",
+    url: bicicletario,
     titulo: "Bicicletário",
   },
   {
-    url: "/assets/lancamentos/nova-olaria/vista-brt-fiscal-ramos.jpg",
-    titulo: "Vista do BRT Fiscal de Ramos",
-  }
+    url: brinquedoteca,
+    titulo: "Brinquedoteca",
+  },
+  {
+    url: campoSociety,
+    titulo: "Campo Society",
+  },
+  {
+    url: coworking,
+    titulo: "Coworking",
+  },
+  {
+    url: areaFitnessExterna,
+    titulo: "Espaço fitness externo",
+  },
+  {
+    url: oficina,
+    titulo: "Oficina",
+  },
+  {
+    url: petPlace,
+    titulo: "Pet place",
+  },
+  {
+    url: piscina,
+    titulo: "Piscina",
+  },
+  {
+    url: playground,
+    titulo: "Playground",
+  },
+  {
+    url: salaoDeJogosComPub,
+    titulo: "Salão de jogos com Pub",
+  },
+  {
+    url: salaoDeFestas,
+    titulo: "Salão de festas",
+  },
 ];

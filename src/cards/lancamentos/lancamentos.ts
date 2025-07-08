@@ -3,7 +3,7 @@ import cardPortoCariocaImg from "./images/card-porto-carioca.jpg";
 import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
 import cardArcosPortoImg from "./images/card-arcos-do-porto.jpeg.webp";
 import cardCiataResidencialImg from "./images/card-ciata.png";
-import cardNovaOlariaImg from "./images/card-nova-olaria.jpeg";
+import cardNovaOlariaImg from "./images/card-nova-olaria-fachada.png";
 import cardOrlaMauaImg from "./images/cad-orla-maua-piscina-roof-top.png";
 import cardMetropolitanDreamBarraImg from "./images/card-metropolitan-dream-vista-aerea.png";
 import cardAmericas19Img from "./images/card-americas19.jpeg";
@@ -63,7 +63,7 @@ export const lancamentos: Imovel[] = [
     quartos: 0, // Studio
     area: "59m²",
     url: "/lancamentos/arcos-do-porto",
-    destaque: true,
+    destaque: false,
     tipo: "lancamento",
   },
   {
@@ -76,7 +76,7 @@ export const lancamentos: Imovel[] = [
     quartos: 1, // 1 Quarto
     area: "39m²",
     url: "/lancamentos/ciata-residencial",
-    destaque: true,
+    destaque: false,
     tipo: "lancamento",
   },
   {
@@ -89,7 +89,7 @@ export const lancamentos: Imovel[] = [
     quartos: 2,
     area: "41m²",
     url: "/lancamentos/nova-olaria",
-    destaque: true,
+    destaque: false,
     tipo: "lancamento",
   },
   {
@@ -102,7 +102,7 @@ export const lancamentos: Imovel[] = [
     quartos: 0, // Studio (tem várias opções, mas começando com Studio)
     area: "75m²",
     url: "/lancamentos/orla-maua",
-    destaque: true,
+    destaque: false,
     tipo: "lancamento",
   },
   {
@@ -128,7 +128,7 @@ export const lancamentos: Imovel[] = [
     quartos: 2, // 2 a 4 quartos (começando com 2)
     area: "58m²",
     url: "/lancamentos/americas19",
-    destaque: true,
+    destaque: false,
     tipo: "lancamento",
   },
   {
@@ -141,7 +141,7 @@ export const lancamentos: Imovel[] = [
     quartos: 1, // 1 a 3 quartos (começando com 1)
     area: "42m²",
     url: "/lancamentos/orla-recreio-pontal",
-    destaque: true,
+    destaque: false,
     tipo: "lancamento",
   },
   {
@@ -154,7 +154,7 @@ export const lancamentos: Imovel[] = [
     quartos: 1, // 1 a 3 quartos (começando com 1)
     area: "35m²",
     url: "/lancamentos/the-pier-residencial",
-    destaque: true,
+    destaque: false,
     tipo: "lancamento",
   },
   // **FINAL DA ÁREA DE ADIÇÃO - quando adicionar novos cards, coloque-os aqui seguindo este padrão**
