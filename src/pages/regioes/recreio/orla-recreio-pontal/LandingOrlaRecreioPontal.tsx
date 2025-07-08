@@ -1,422 +1,441 @@
-
 import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  MapPin,
-  Home,
-  Car,
-  Waves,
-  Trees,
-  Dumbbell,
-  Wifi,
-  Car as CarIcon,
-  Phone,
-  Mail,
-  Star,
-  Building,
-  Bed,
-  Bath,
-  Maximize,
-  Users,
-  Camera,
-  Play,
-  Heart,
+import { 
+  MapPin, 
+  Home, 
+  Users, 
+  Car, 
+  Waves, 
+  Building2, 
+  Ship, 
+  Anchor,
+  ArrowLeft
 } from "lucide-react";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
-import { fotosCarrossel, fotosOrlaRecreioPontal } from "./assets/fotos";
-import { videosCarrossel } from "./assets/videos";
+import { fotosOrlaRecreioPontal } from "./assets/fotos";
 
-/**
- * Landing Page - Orla Recreio - Praia do Pontal
- * Lançamento imobiliário no Recreio dos Bandeirantes
- */
 const LandingOrlaRecreioPontal = () => {
-  const handleScrollToForm = () => {
-    const formElement = document.getElementById("lead-form");
-    if (formElement) {
-      formElement.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  // TODO: Substituir por imagem real do empreendimento
+  const backgroundImage = "/assets/lancamentos/orla-recreio-pontal/background-orla-recreio-pontal.jpg";
 
-  // Convert photos for PhotoCarousel component
-  const photosForCarousel = fotosCarrossel.map(foto => ({
-    url: foto.src,
-    titulo: foto.title
-  }));
+  const amenidades = [
+    { nome: "Churrasqueira", icone: "🔥" },
+    { nome: "Salão de Festas", icone: "🎉" },
+    { nome: "Playground", icone: "🎪" },
+    { nome: "Coworking", icone: "💻" },
+    { nome: "Lavanderia", icone: "🧺" },
+    { nome: "Piscina", icone: "🏊" },
+  ];
 
   const plantas = [
     {
+      tipo: "Studio",
+      area: "32.44m²",
+      descricao: "Ambiente integrado e funcional",
+    },
+    {
       tipo: "1 Quarto",
-      area: "42m²",
-      quartos: 1,
-      banheiros: 1,
-      vagas: 1,
-      preco: "A partir de R$ 350.000",
-      destaque: false,
+      area: "38.99m²",
+      descricao: "Conforto e praticidade",
     },
     {
       tipo: "2 Quartos",
-      area: "58m²",
-      quartos: 2,
-      banheiros: 1,
-      vagas: 1,
-      preco: "A partir de R$ 420.000",
-      destaque: true,
+      area: "38.58m²",
+      descricao: "Ideal para famílias",
     },
     {
-      tipo: "3 Quartos",
-      area: "75m²",
-      quartos: 3,
-      banheiros: 2,
-      vagas: 1,
-      preco: "A partir de R$ 520.000",
-      destaque: true,
-    },
+      tipo: "Garden",
+      area: "59.08m²",
+      descricao: "Espaço exclusivo com jardim",
+    }
   ];
 
-  const amenities = [
-    { nome: "Piscina Adulto e Infantil", icone: <Waves className="w-6 h-6" /> },
-    { nome: "Espaço Zen", icone: <Heart className="w-6 h-6" /> },
-    { nome: "Sala de Massagem", icone: <Dumbbell className="w-6 h-6" /> },
-    { nome: "Pet Place", icone: <Trees className="w-6 h-6" /> },
-    { nome: "Coworking Vista Mar", icone: <Wifi className="w-6 h-6" /> },
-    { nome: "Bicicletário (224 vagas)", icone: <Car className="w-6 h-6" /> },
-    { nome: "Salão de Festas", icone: <Users className="w-6 h-6" /> },
-    { nome: "Playground Infantil", icone: <Home className="w-6 h-6" /> },
-  ];
-
-  const diferenciais = [
-    "Vista privilegiada para a Praia do Pontal",
-    "Viver o ano inteiro como em férias",
-    "3 blocos com 4 pavimentos cada",
-    "201 unidades com vista para o mar",
-    "224 vagas para bicicletas",
-    "Integração total com a natureza",
-    "Acesso direto à praia",
-    "Arquitetura sustentável e moderna",
+  const referenciasMapa = [
+    "Praia do Pontal",
+    "Avenida das Américas",
+    "Recreio Shopping",
+    "Barra da Tijuca",
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section
-        className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${fotosOrlaRecreioPontal.background})`,
-        }}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Header com botão voltar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Voltar para o início
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Background Hero Section */}
+      <div
+        className="relative h-screen bg-cover bg-center bg-no-repeat pt-16"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
       >
-        <div className="container mx-auto px-4 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Conteúdo Principal */}
-            <div className="text-white space-y-6">
-              <div className="space-y-4">
-                <Badge variant="secondary" className="bg-blue-600 text-white px-4 py-2">
-                  <Star className="w-4 h-4 mr-2" />
-                  Lançamento Exclusivo
-                </Badge>
-                <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                  Orla Recreio
-                </h1>
-                <p className="text-xl md:text-2xl text-blue-100">
-                  Praia do Pontal • Vista para o Mar
-                </p>
-              </div>
+        {/* Overlay com gradiente marinho */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-blue-900/70 to-slate-800/60"></div>
 
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-lg">
-                  <MapPin className="w-5 h-5 text-blue-300" />
-                  <span>Praia do Pontal, Recreio dos Bandeirantes - RJ</span>
-                </div>
-                <div className="flex flex-wrap gap-4 text-sm">
-                  <div className="flex items-center gap-1">
-                    <Building className="w-4 h-4" />
-                    <span>1 a 3 quartos</span>
+        {/* Conteúdo Hero */}
+        <div className="relative z-10 flex items-center justify-center h-full">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Coluna Esquerda - Informações */}
+              <div className="text-white space-y-8">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-blue-300">
+                    <Waves className="w-5 h-5" />
+                    <span className="text-sm font-medium tracking-wide">
+                      RECREIO DOS BANDEIRANTES
+                    </span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Maximize className="w-4 h-4" />
-                    <span>42m² a 75m²</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <CarIcon className="w-4 h-4" />
-                    <span>1 vaga</span>
-                  </div>
-                </div>
-              </div>
 
-              <div className="space-y-4">
-                <p className="text-lg leading-relaxed">
-                  Viva o ano inteiro como em férias. Desperte todos os dias com vista para o mar 
-                  na Praia do Pontal, onde a natureza e o conforto urbano se encontram em perfeita harmonia.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button
-                    size="lg"
-                    onClick={() => handleScrollToForm()}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
-                  >
-                    Quero Saber Mais
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-white text-white hover:bg-white hover:text-gray-900"
-                    asChild
-                  >
-                    <a href="tel:+552122223333">
-                      <Phone className="w-4 h-4 mr-2" />
-                      (21) 2222-3333
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            </div>
+                  <h1 className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                    Orla Recreio Pontal
+                  </h1>
 
-            {/* Formulário Lateral */}
-            <div className="lg:max-w-md">
-              <LeadCaptureForm
-                nomeLancamento="Orla Recreio - Praia do Pontal"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Galeria de Mídia */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Conheça o Orla Recreio
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Desperte para o mar todos os dias e viva uma experiência única à beira da Praia do Pontal
-            </p>
-          </div>
-
-          <PhotoCarousel photos={photosForCarousel} />
-        </div>
-      </section>
-
-      {/* Plantas e Preços */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Plantas e Preços
-            </h2>
-            <p className="text-lg text-gray-600">
-              Opções de 1 a 3 quartos com vista privilegiada para o mar
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {plantas.map((planta, index) => (
-              <Card 
-                key={index} 
-                className={`relative ${planta.destaque ? 'ring-2 ring-blue-500' : ''} hover:shadow-lg transition-shadow`}
-              >
-                {planta.destaque && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-blue-600 text-white">
-                      Destaque
-                    </Badge>
-                  </div>
-                )}
-                
-                <CardHeader className="text-center">
-                  <CardTitle className="text-xl text-blue-600">
-                    {planta.tipo}
-                  </CardTitle>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {planta.preco}
+                  <p className="text-xl lg:text-2xl text-blue-100 font-light">
+                    Viva o ano inteiro como em férias
                   </p>
-                </CardHeader>
-                
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Maximize className="w-4 h-4 text-gray-500" />
-                      <span>{planta.area}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bed className="w-4 h-4 text-gray-500" />
-                      <span>{planta.quartos} quarto{planta.quartos > 1 ? 's' : ''}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath className="w-4 h-4 text-gray-500" />
-                      <span>{planta.banheiros} banheiro{planta.banheiros > 1 ? 's' : ''}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Car className="w-4 h-4 text-gray-500" />
-                      <span>{planta.vagas} vaga</span>
-                    </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 text-blue-200">
+                    <MapPin className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-lg">
+                      Recreio dos Bandeirantes, Rio de Janeiro
+                    </span>
                   </div>
-                  
-                  <Button 
-                    onClick={() => handleScrollToForm()}
-                    className="w-full bg-blue-600 hover:bg-blue-700"
+
+                  <div className="flex items-center gap-3 text-blue-200">
+                    <Building2 className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-lg">
+                      Projeto de Érico Franco Guimarães
+                    </span>
+                  </div>
+                </div>
+
+                {/* Tags de destaque */}
+                <div className="flex flex-wrap gap-3">
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-600/80 text-white border-blue-400 text-sm py-2 px-4"
                   >
-                    Tenho Interesse
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                    <Anchor className="w-4 h-4 mr-2" />
+                    Lazer Completo
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-700/80 text-white border-slate-400 text-sm py-2 px-4"
+                  >
+                    <Home className="w-4 h-4 mr-2" />
+                    Garden
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-700/80 text-white border-blue-500 text-sm py-2 px-4"
+                  >
+                    <Waves className="w-4 h-4 mr-2" />
+                    Vista Mar
+                  </Badge>
+                </div>
+
+                {/* Botão CTA */}
+                <Button
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 text-lg shadow-2xl hover:shadow-blue-500/25 transition-all duration-300"
+                  onClick={() =>
+                    document
+                      .getElementById("interesse")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  <Ship className="w-5 h-5 mr-2" />
+                  Quero Conhecer o Orla Recreio
+                </Button>
+              </div>
+
+              {/* Coluna Direita - Form de Interesse */}
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20">
+                <LeadCaptureForm
+                  nomeLancamento="Orla Recreio Pontal"
+                  title="Garanta sua unidade"
+                  description="Preencha seus dados e receba informações exclusivas sobre o Orla Recreio Pontal"
+                />
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Botão voltar ao topo */}
+        <div className="absolute top-6 left-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="text-white hover:bg-white/20"
+          >
+            <Link to="/">← Voltar à Home</Link>
+          </Button>
+        </div>
+      </div>
+
+      {/* Seção Galeria de Fotos e Vídeos */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+              Conheça o Orla Recreio Pontal
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Arquitetura contemporânea no coração do Recreio dos Bandeirantes,
+              conectando você ao melhor do Rio de Janeiro.
+            </p>
+          </div>
+
+          <PhotoCarousel photos={[...fotosOrlaRecreioPontal]} />
         </div>
       </section>
 
-      {/* Lazer e Amenities */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 to-cyan-100">
+      {/* Seção Plantas e Tipologias */}
+      <section className="py-16 lg:py-24 bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Lazer à Beira-Mar
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+              Plantas Exclusivas
             </h2>
-            <p className="text-lg text-gray-600">
-              Amenidades pensadas para uma vida em harmonia com o mar e a natureza
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Do Studio ao Garden, encontre a opção perfeita para o seu estilo
+              de vida
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {amenities.map((amenity, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow bg-white">
-                <CardContent className="p-6">
-                  <div className="text-blue-600 mb-4 flex justify-center">
-                    {amenity.icone}
+            {plantas.map((planta, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-100"
+              >
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-slate-600 rounded-full flex items-center justify-center mx-auto">
+                    <Home className="w-8 h-8 text-white" />
                   </div>
-                  <p className="font-medium text-gray-800">{amenity.nome}</p>
-                </CardContent>
-              </Card>
+
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-800">
+                      {planta.tipo}
+                    </h3>
+                    <p className="text-2xl font-bold text-blue-600 mt-1">
+                      {planta.area}
+                    </p>
+                  </div>
+
+                  <p className="text-slate-600 text-sm">{planta.descricao}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Localização e Diferenciais */}
-      <section className="py-16 bg-white">
+      {/* Seção Amenidades */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+              Lazer Completo
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Amenidades pensadas para proporcionar qualidade de vida e
+              bem-estar
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {amenidades.map((amenidade, index) => (
+              <div key={index} className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 border-2 border-blue-200/50">
+                  <span className="text-3xl">{amenidade.icone}</span>
+                </div>
+                <h3 className="font-semibold text-slate-800">
+                  {amenidade.nome}
+                </h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Seção Localização */}
+      <section className="py-16 lg:py-24 bg-gradient-to-br from-slate-800 to-blue-900 text-white">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Viva em Férias o Ano Todo
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Na Praia do Pontal, no coração do Recreio dos Bandeirantes, 
-                o Orla Recreio oferece a experiência única de viver à beira-mar 
-                com toda a infraestrutura urbana que você precisa.
-              </p>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                {diferenciais.map((diferencial, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div>
-                    <span className="text-gray-700">{diferencial}</span>
-                  </div>
-                ))}
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                  Localização Estratégica
+                </h2>
+                <p className="text-lg text-blue-100 leading-relaxed">
+                  No coração do Recreio dos Bandeirantes, conectado aos principais pontos
+                  do Rio de Janeiro com mobilidade urbana excepcional.
+                </p>
               </div>
 
-              <div className="mt-8">
-                <Button
-                  size="lg"
-                  onClick={() => handleScrollToForm()}
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
-                  Agendar Visita
-                </Button>
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-blue-200">
+                  Pontos de Referência:
+                </h3>
+                <div className="grid grid-cols-1 gap-3">
+                  {referenciasMapa.map((referencia, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                      <span className="text-blue-100">{referencia}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 text-blue-200">
+                <Car className="w-5 h-5" />
+                <span>
+                  Acesso facilitado via transporte público e particular
+                </span>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <img
-                  src={fotosOrlaRecreioPontal.praiapontal}
-                  alt="Praia do Pontal"
-                  className="rounded-lg shadow-lg h-40 w-full object-cover"
-                />
-                <img
-                  src={fotosOrlaRecreioPontal.ciclovia}
-                  alt="Ciclovia do Pontal"
-                  className="rounded-lg shadow-lg h-40 w-full object-cover"
-                />
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+              <div className="w-full h-96 rounded-xl overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3673.4495749931896!2d-43.4620297246886!3d-23.03215087917805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9bdb1d38fff003%3A0x396a39037c99c091!2sAv.%20Gla%C3%BAcio%20Gil%2C%201450%20-%20Recreio%20dos%20Bandeirantes%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2022795-071!5e0!3m2!1spt-BR!2sbr!4v1715043498998!5m2!1spt-BR!2sbr"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Localização do Orla Recreio Pontal"
+                  className="w-full h-full rounded-xl"
+                ></iframe>
               </div>
-              <img
-                src={fotosOrlaRecreioPontal.natureza}
-                alt="Integração com a Natureza"
-                className="rounded-lg shadow-lg h-48 w-full object-cover"
-              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Final */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Sua Nova Vida à Beira-Mar Te Espera
-          </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Desperte todos os dias com vista para o mar na Praia do Pontal. 
-            Condições especiais de lançamento por tempo limitado.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              onClick={() => handleScrollToForm()}
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3"
-            >
-              Quero Viver à Beira-Mar
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-blue-600"
-              asChild
-            >
-              <a href="tel:+552122223333">
-                <Phone className="w-4 h-4 mr-2" />
-                Ligar Agora
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Formulário de Contato */}
-      <section id="lead-form" className="py-16 bg-gray-50">
+      {/* Seção Formulário de Interesse */}
+      <section
+        id="interesse"
+        className="py-16 lg:py-24 bg-gradient-to-br from-blue-50 to-slate-50"
+      >
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Fale Conosco
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+                Tenho Interesse no Orla Recreio Pontal
               </h2>
-              <p className="text-lg text-gray-600">
-                Deixe seus dados e nossa equipe entrará em contato
+              <p className="text-lg text-slate-600">
+                Preencha o formulário e nossa equipe entrará em contato com
+                informações exclusivas
               </p>
             </div>
-            
-            <LeadCaptureForm
-              nomeLancamento="Orla Recreio - Praia do Pontal"
-            />
+
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="bg-white rounded-2xl p-8 shadow-lg">
+                  <LeadCaptureForm
+                    nomeLancamento="Orla Recreio Pontal"
+                    title="Receba informações exclusivas"
+                    description="Nossa equipe especializada entrará em contato em breve"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold text-slate-800">
+                    Por que escolher o Orla Recreio Pontal?
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-800">
+                          Localização Premium
+                        </h4>
+                        <p className="text-slate-600">
+                          No coração do Recreio, próximo a tudo
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-800">
+                          Construtora CURY
+                        </h4>
+                        <p className="text-slate-600">
+                          Tradição e qualidade comprovadas
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-800">
+                          Opções Flexíveis
+                        </h4>
+                        <p className="text-slate-600">
+                          Do Studio ao Garden, para todos os perfis
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-blue-600 to-slate-600 rounded-2xl p-6 text-white">
+                  <div className="flex items-center gap-4">
+                    <Users className="w-8 h-8" />
+                    <div>
+                      <h4 className="font-semibold">
+                        Atendimento Especializado
+                      </h4>
+                      <p className="text-blue-100">
+                        Nossa equipe está pronta para atendê-lo
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <Footer
-        empreendimentoNome="Orla Recreio - Praia do Pontal"
-        empreendimentoEndereco="Praia do Pontal - Recreio dos Bandeirantes, Rio de Janeiro"
-        regiao={{
-          nome: "no Recreio dos Bandeirantes",
-          path: "/"
-        }}
-      />
+      <Footer isHomePage={false} />
     </div>
   );
 };

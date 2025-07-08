@@ -1,431 +1,437 @@
-
 import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  MapPin,
-  Home,
-  Car,
-  Waves,
-  Trees,
-  Dumbbell,
-  Wifi,
-  Car as CarIcon,
-  Phone,
-  Mail,
-  Star,
-  Building,
-  Bed,
-  Bath,
-  Maximize,
-  Users,
-  Camera,
-  Play,
+import { 
+  MapPin, 
+  Home, 
+  Users, 
+  Car, 
+  Waves, 
+  Building2, 
+  Ship, 
+  Anchor,
+  ArrowLeft
 } from "lucide-react";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
-import { fotosCarrossel, fotosAmericas19 } from "./assets/fotos";
-import { videosCarrossel } from "./assets/videos";
+import { fotosAmericas19 } from "./assets/fotos";
 
-/**
- * Landing Page - Américas19
- * Lançamento imobiliário no Recreio dos Bandeirantes
- */
 const LandingAmericas19 = () => {
-  const handleScrollToForm = () => {
-    const formElement = document.getElementById("lead-form");
-    if (formElement) {
-      formElement.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  // TODO: Substituir por imagem real do empreendimento
+  const backgroundImage = "/assets/lancamentos/americas19/background-americas19.jpg";
 
-  // Convert photos for PhotoCarousel component
-  const photosForCarousel = fotosCarrossel.map(foto => ({
-    url: foto.src,
-    titulo: foto.title
-  }));
+  const diferenciais = [
+    { nome: "Piscina Adulto e Infantil", icone: "🏊" },
+    { nome: "Espaço Gourmet", icone: "🍽️" },
+    { nome: "Academia", icone: "🏋️" },
+    { nome: "Brinquedoteca", icone: "🧸" },
+    { nome: "Salão de Festas", icone: "🎉" },
+    { nome: "Espaço Coworking", icone: "💻" },
+  ];
 
   const plantas = [
     {
       tipo: "2 Quartos",
-      area: "58m²",
-      quartos: 2,
-      banheiros: 1,
-      vagas: 1,
-      preco: "A partir de R$ 320.000",
-      destaque: false,
+      area: "58m² a 62m²",
+      descricao: "Conforto e espaço para toda a família",
     },
     {
       tipo: "3 Quartos",
-      area: "75m²",
-      quartos: 3,
-      banheiros: 2,
-      vagas: 1,
-      preco: "A partir de R$ 420.000",
-      destaque: true,
+      area: "72m² a 78m²",
+      descricao: "Ideal para quem busca mais espaço",
     },
     {
-      tipo: "Garden",
-      area: "103m²",
-      quartos: 3,
-      banheiros: 2,
-      vagas: 1,
-      preco: "A partir de R$ 580.000",
-      destaque: true,
-    },
-    {
-      tipo: "Cobertura Duplex",
-      area: "138m²",
-      quartos: 4,
-      banheiros: 3,
-      vagas: 2,
-      preco: "A partir de R$ 750.000",
-      destaque: true,
+      tipo: "4 Quartos",
+      area: "90m² a 95m²",
+      descricao: "Luxo e exclusividade em cada detalhe",
     },
   ];
 
-  const amenities = [
-    { nome: "Piscina Adulto e Infantil", icone: <Waves className="w-6 h-6" /> },
-    { nome: "Campo Society", icone: <Users className="w-6 h-6" /> },
-    { nome: "Espaço Gourmet", icone: <Home className="w-6 h-6" /> },
-    { nome: "Pet Place", icone: <Trees className="w-6 h-6" /> },
-    { nome: "Coworking Space", icone: <Wifi className="w-6 h-6" /> },
-    { nome: "Spa Relaxamento", icone: <Dumbbell className="w-6 h-6" /> },
-    { nome: "Lavanderia Compartilhada", icone: <Home className="w-6 h-6" /> },
-    { nome: "Área de Tênis de Mesa", icone: <Users className="w-6 h-6" /> },
-  ];
-
-  const diferenciais = [
-    "Melhor quilômetro da Av. das Américas",
-    "Acesso fácil à praia de bike",
-    "Próximo ao Recreio Shopping",
-    "Ciclovia na porta",
-    "Conexão com natureza e praia",
-    "Área de tênis de mesa e futmesa",
-    "Espaço gourmet com churrasqueira",
-    "Opções garden e cobertura duplex",
+  const referenciasMapa = [
+    "Shopping centers",
+    "Restaurantes renomados",
+    "Escolas e universidades",
+    "Hospitais e clínicas",
+    "Parques e áreas de lazer",
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section
-        className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${fotosAmericas19.background})`,
-        }}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Header com botão voltar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Voltar para o início
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Background Hero Section */}
+      <div
+        className="relative h-screen bg-cover bg-center bg-no-repeat pt-16"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
       >
-        <div className="container mx-auto px-4 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Conteúdo Principal */}
-            <div className="text-white space-y-6">
-              <div className="space-y-4">
-                <Badge variant="secondary" className="bg-blue-600 text-white px-4 py-2">
-                  <Star className="w-4 h-4 mr-2" />
-                  Lançamento Exclusivo
-                </Badge>
-                <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                  Américas19
-                </h1>
-                <p className="text-xl md:text-2xl text-blue-100">
-                  Melhor quilômetro da Av. das Américas
-                </p>
-              </div>
+        {/* Overlay com gradiente marinho */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-blue-900/70 to-slate-800/60"></div>
 
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-lg">
-                  <MapPin className="w-5 h-5 text-blue-300" />
-                  <span>Recreio dos Bandeirantes, Rio de Janeiro</span>
-                </div>
-                <div className="flex flex-wrap gap-4 text-sm">
-                  <div className="flex items-center gap-1">
-                    <Building className="w-4 h-4" />
-                    <span>2 a 4 quartos</span>
+        {/* Conteúdo Hero */}
+        <div className="relative z-10 flex items-center justify-center h-full">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Coluna Esquerda - Informações */}
+              <div className="text-white space-y-8">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-blue-300">
+                    <Ship className="w-5 h-5" />
+                    <span className="text-sm font-medium tracking-wide">
+                      RECREIO DOS BANDEIRANTES
+                    </span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Maximize className="w-4 h-4" />
-                    <span>58m² a 138m²</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <CarIcon className="w-4 h-4" />
-                    <span>1 a 2 vagas</span>
-                  </div>
-                </div>
-              </div>
 
-              <div className="space-y-4">
-                <p className="text-lg leading-relaxed">
-                  Bem-vindo ao melhor jeito de viver no Recreio. 
-                  Conectado com a natureza, próximo às praias e com lazer completo 
-                  para toda a família.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button
-                    size="lg"
-                    onClick={() => handleScrollToForm()}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
-                  >
-                    Quero Saber Mais
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-white text-white hover:bg-white hover:text-gray-900"
-                    asChild
-                  >
-                    <a href="tel:+552122223333">
-                      <Phone className="w-4 h-4 mr-2" />
-                      (21) 2222-3333
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            </div>
+                  <h1 className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                    Américas 19
+                  </h1>
 
-            {/* Formulário Lateral */}
-            <div className="lg:max-w-md">
-              <LeadCaptureForm
-                nomeLancamento="Américas19"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Galeria de Mídia */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Conheça o Américas19
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Explore cada detalhe do seu futuro lar através de nossa galeria completa
-            </p>
-          </div>
-
-          <PhotoCarousel photos={photosForCarousel} />
-        </div>
-      </section>
-
-      {/* Plantas e Preços */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Plantas e Preços
-            </h2>
-            <p className="text-lg text-gray-600">
-              Opções de 2 a 4 quartos, incluindo garden e cobertura duplex
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {plantas.map((planta, index) => (
-              <Card 
-                key={index} 
-                className={`relative ${planta.destaque ? 'ring-2 ring-blue-500' : ''} hover:shadow-lg transition-shadow`}
-              >
-                {planta.destaque && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-blue-600 text-white">
-                      Destaque
-                    </Badge>
-                  </div>
-                )}
-                
-                <CardHeader className="text-center">
-                  <CardTitle className="text-xl text-blue-600">
-                    {planta.tipo}
-                  </CardTitle>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {planta.preco}
+                  <p className="text-xl lg:text-2xl text-blue-100 font-light">
+                    O melhor jeito de viver no Recreio
                   </p>
-                </CardHeader>
-                
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Maximize className="w-4 h-4 text-gray-500" />
-                      <span>{planta.area}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bed className="w-4 h-4 text-gray-500" />
-                      <span>{planta.quartos} quartos</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath className="w-4 h-4 text-gray-500" />
-                      <span>{planta.banheiros} banheiros</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Car className="w-4 h-4 text-gray-500" />
-                      <span>{planta.vagas} vaga{planta.vagas > 1 ? 's' : ''}</span>
-                    </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 text-blue-200">
+                    <MapPin className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-lg">
+                      Avenida das Américas, Recreio dos Bandeirantes
+                    </span>
                   </div>
-                  
-                  <Button 
-                    onClick={() => handleScrollToForm()}
-                    className="w-full bg-blue-600 hover:bg-blue-700"
+
+                  <div className="flex items-center gap-3 text-blue-200">
+                    <Building2 className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-lg">
+                      Projeto de Arquitetura Contemporânea
+                    </span>
+                  </div>
+                </div>
+
+                {/* Tags de destaque */}
+                <div className="flex flex-wrap gap-3">
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-600/80 text-white border-blue-400 text-sm py-2 px-4"
                   >
-                    Tenho Interesse
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+                    <Anchor className="w-4 h-4 mr-2" />
+                    Lazer Completo
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-700/80 text-white border-slate-400 text-sm py-2 px-4"
+                  >
+                    <Home className="w-4 h-4 mr-2" />
+                    Varanda Gourmet
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-700/80 text-white border-blue-500 text-sm py-2 px-4"
+                  >
+                    <Waves className="w-4 h-4 mr-2" />
+                    Vista Mar
+                  </Badge>
+                </div>
 
-      {/* Lazer e Amenities */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 to-blue-100">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Lazer Completo
-            </h2>
-            <p className="text-lg text-gray-600">
-              Infraestrutura pensada para o seu bem-estar e diversão
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {amenities.map((amenity, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow bg-white">
-                <CardContent className="p-6">
-                  <div className="text-blue-600 mb-4 flex justify-center">
-                    {amenity.icone}
-                  </div>
-                  <p className="font-medium text-gray-800">{amenity.nome}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Localização e Diferenciais */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Localização Privilegiada
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                No melhor quilômetro da Av. das Américas, o Américas19 oferece 
-                acesso fácil às praias, centros comerciais e toda infraestrutura 
-                do Recreio dos Bandeirantes.
-              </p>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                {diferenciais.map((diferencial, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div>
-                    <span className="text-gray-700">{diferencial}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8">
+                {/* Botão CTA */}
                 <Button
                   size="lg"
-                  onClick={() => handleScrollToForm()}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 text-lg shadow-2xl hover:shadow-blue-500/25 transition-all duration-300"
+                  onClick={() =>
+                    document
+                      .getElementById("interesse")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
                 >
-                  Agendar Visita
+                  <Ship className="w-5 h-5 mr-2" />
+                  Quero Conhecer o Américas 19
                 </Button>
               </div>
-            </div>
 
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <img
-                  src={fotosAmericas19.praiaPontal}
-                  alt="Praia do Pontal"
-                  className="rounded-lg shadow-lg h-40 w-full object-cover"
-                />
-                <img
-                  src={fotosAmericas19.ciclovia}
-                  alt="Ciclovia do Recreio"
-                  className="rounded-lg shadow-lg h-40 w-full object-cover"
+              {/* Coluna Direita - Form de Interesse */}
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20">
+                <LeadCaptureForm
+                  nomeLancamento="Américas 19"
+                  title="Garanta sua unidade"
+                  description="Preencha seus dados e receba informações exclusivas sobre o Américas 19"
                 />
               </div>
-              <img
-                src={fotosAmericas19.recreioShopping}
-                alt="Recreio Shopping"
-                className="rounded-lg shadow-lg h-48 w-full object-cover"
-              />
+            </div>
+          </div>
+        </div>
+
+        {/* Botão voltar ao topo */}
+        <div className="absolute top-6 left-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="text-white hover:bg-white/20"
+          >
+            <Link to="/">← Voltar à Home</Link>
+          </Button>
+        </div>
+      </div>
+
+      {/* Seção Galeria de Fotos e Vídeos */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+              Conheça o Américas 19
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Viva em um dos endereços mais desejados do Recreio, com
+              infraestrutura completa e design inovador.
+            </p>
+          </div>
+
+          <PhotoCarousel photos={[...fotosAmericas19]} />
+        </div>
+      </section>
+
+      {/* Seção Plantas e Tipologias */}
+      <section className="py-16 lg:py-24 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+              Plantas Inteligentes
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Escolha a planta que se adapta ao seu estilo de vida, com opções
+              de 2, 3 e 4 quartos.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {plantas.map((planta, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-100"
+              >
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-slate-600 rounded-full flex items-center justify-center mx-auto">
+                    <Home className="w-8 h-8 text-white" />
+                  </div>
+
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-800">
+                      {planta.tipo}
+                    </h3>
+                    <p className="text-2xl font-bold text-blue-600 mt-1">
+                      {planta.area}
+                    </p>
+                  </div>
+
+                  <p className="text-slate-600 text-sm">{planta.descricao}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Seção Amenidades */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+              Lazer e Conforto
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Desfrute de momentos inesquecíveis com a família e amigos em
+              espaços pensados para o seu bem-estar.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {diferenciais.map((diferencial, index) => (
+              <div key={index} className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 border-2 border-blue-200/50">
+                  <span className="text-3xl">{diferencial.icone}</span>
+                </div>
+                <h3 className="font-semibold text-slate-800">
+                  {diferencial.nome}
+                </h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Seção Localização */}
+      <section className="py-16 lg:py-24 bg-gradient-to-br from-slate-800 to-blue-900 text-white">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                  Localização Privilegiada
+                </h2>
+                <p className="text-lg text-blue-100 leading-relaxed">
+                  More no melhor ponto do Recreio, próximo a tudo que você
+                  precisa para viver com praticidade e conforto.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-blue-200">
+                  Próximo a:
+                </h3>
+                <div className="grid grid-cols-1 gap-3">
+                  {referenciasMapa.map((referencia, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                      <span className="text-blue-100">{referencia}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 text-blue-200">
+                <Car className="w-5 h-5" />
+                <span>
+                  Fácil acesso a transporte público e principais vias da região
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+              <div className="w-full h-96 rounded-xl overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3673.449447424948!2d-43.47180272468866!3d-23.00494427917334!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9bdb1d38fff333%3A0x4635b53979a9a9a7!2sAv.%20das%20Am%C3%A9ricas%2C%2019%20-%20Recreio%20dos%20Bandeirantes%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2022790-701!5e0!3m2!1spt-BR!2sbr!4v1751972099394!5m2!1spt-BR!2sbr"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Localização do Américas 19"
+                  className="w-full h-full rounded-xl"
+                ></iframe>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Final */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Não Perca Esta Oportunidade
-          </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Garante já o seu apartamento no melhor empreendimento do Recreio. 
-            Condições especiais de lançamento por tempo limitado.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              onClick={() => handleScrollToForm()}
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3"
-            >
-              Quero Meu Apartamento
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-blue-600"
-              asChild
-            >
-              <a href="tel:+552122223333">
-                <Phone className="w-4 h-4 mr-2" />
-                Ligar Agora
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Formulário de Contato */}
-      <section id="lead-form" className="py-16 bg-gray-50">
+      {/* Seção Formulário de Interesse */}
+      <section
+        id="interesse"
+        className="py-16 lg:py-24 bg-gradient-to-br from-blue-50 to-slate-50"
+      >
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Fale Conosco
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+                Tenho Interesse no Américas 19
               </h2>
-              <p className="text-lg text-gray-600">
-                Deixe seus dados e nossa equipe entrará em contato
+              <p className="text-lg text-slate-600">
+                Preencha o formulário e nossa equipe entrará em contato com
+                informações exclusivas
               </p>
             </div>
-            
-            <LeadCaptureForm
-              nomeLancamento="Américas19"
-            />
+
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="bg-white rounded-2xl p-8 shadow-lg">
+                  <LeadCaptureForm
+                    nomeLancamento="Américas 19"
+                    title="Receba informações exclusivas"
+                    description="Nossa equipe especializada entrará em contato em breve"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold text-slate-800">
+                    Por que escolher o Américas 19?
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-800">
+                          Localização Estratégica
+                        </h4>
+                        <p className="text-slate-600">
+                          No coração do Recreio, próximo a tudo
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-800">
+                          Infraestrutura Completa
+                        </h4>
+                        <p className="text-slate-600">
+                          Lazer e comodidade para toda a família
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-800">
+                          Acabamentos de Alto Padrão
+                        </h4>
+                        <p className="text-slate-600">
+                          Qualidade e sofisticação em cada detalhe
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-blue-600 to-slate-600 rounded-2xl p-6 text-white">
+                  <div className="flex items-center gap-4">
+                    <Users className="w-8 h-8" />
+                    <div>
+                      <h4 className="font-semibold">
+                        Atendimento Personalizado
+                      </h4>
+                      <p className="text-blue-100">
+                        Nossa equipe está pronta para atendê-lo
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <Footer
-        empreendimentoNome="Américas19"
-        empreendimentoEndereco="Av. das Américas - Recreio dos Bandeirantes, Rio de Janeiro"
-        regiao={{
-          nome: "no Recreio dos Bandeirantes",
-          path: "/"
-        }}
-      />
+      <Footer isHomePage={false} />
     </div>
   );
 };

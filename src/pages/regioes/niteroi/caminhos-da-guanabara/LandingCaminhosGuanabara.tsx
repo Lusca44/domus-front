@@ -1,395 +1,424 @@
-
-import React from 'react';
-import { ArrowRight, MapPin, Users, Car, Dumbbell, Waves, TreePine, Shield, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import LeadCaptureForm from '@/components/LeadCaptureForm';
-import PhotoCarousel from '@/components/PhotoCarousel';
-import fotos from './assets/fotos';
-import videos from './assets/videos';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  MapPin, 
+  Home, 
+  Users, 
+  Car, 
+  Waves, 
+  Building2, 
+  Ship, 
+  Anchor,
+  ArrowLeft
+} from "lucide-react";
+import PhotoCarousel from "@/components/PhotoCarousel";
+import LeadCaptureForm from "@/components/LeadCaptureForm";
+import Footer from "@/components/Footer";
+import { fotosCaminhosGuanabara } from "./assets/fotos";
 
 const LandingCaminhosGuanabara = () => {
-  // Dados do empreendimento
-  const empreendimento = {
-    nome: "Caminhos da Guanabara",
-    localizacao: "Niterói, RJ",
-    construtora: "Incorporadora",
-    arquiteto: "Joaquim Andrade Neto",
-    entrega: "Dezembro/2026",
-    unidades: "1068 unidades",
-    blocos: "2 blocos",
-    pavimentos: "22 pavimentos",
-    quartos: "1, 2 e 3 quartos",
-    metragem: "A partir de 38m²",
-    preco: "A partir de R$ 294.900",
-    tags: ["2 quartos", "Suíte", "Vaga"],
-    destaque: "Lazer completo + Rooftop",
-    mapa: "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d3176.2216999494863!2d-43.125754533324844!3d-22.889005291873712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sRua%20Coronel%20PM%20Francisco%20Spargoli%20Rocha%2C%20Lote%201%20a%204%2C%20Centro.%20Niter%C3%B3i%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1751970283068!5m2!1spt-BR!2sbr"
-  };
+  // TODO: Substituir por imagem real do empreendimento
+  const backgroundImage = "/assets/lancamentos/caminhos-da-guanabara/background-caminhos-da-guanabara.jpg";
 
-  const diferenciais = [
+  const amenidades = [
+    { nome: "Bicicletário", icone: "🚲" },
+    { nome: "Churrasqueira", icone: "🔥" },
+    { nome: "Coworking", icone: "💻" },
+    { nome: "Espaço Gourmet", icone: "🍽️" },
+    { nome: "Fitness", icone: "💪" },
+    { nome: "Lavanderia", icone: "🧺" },
+    { nome: "Pet Care", icone: "🐾" },
+    { nome: "Piscina", icone: "🏊" },
+    { nome: "Playground", icone: "🎪" },
+    { nome: "Salão de Festas", icone: "🎉" },
+    { nome: "Salão de Jogos", icone: "🎮" },
+    { nome: "Sauna", icone: "🧖" },
+  ];
+
+  const plantas = [
     {
-      icon: <Waves className="w-6 h-6" />,
-      titulo: "Vista da Baía de Guanabara",
-      descricao: "Apartamentos com vista privilegiada da baía mais famosa do Brasil"
+      tipo: "Studio",
+      area: "38m²",
+      descricao: "Aconchego e praticidade em um só lugar"
     },
     {
-      icon: <TreePine className="w-6 h-6" />,
-      titulo: "Próximo ao Caminho Niemeyer",
-      descricao: "A poucos minutos do complexo arquitetônico mais icônico de Niterói"
-    },
-    {
-      icon: <Dumbbell className="w-6 h-6" />,
-      titulo: "Lazer Completo + Rooftop",
-      descricao: "Área de lazer ampla com rooftop para contemplar a vista única"
-    },
-    {
-      icon: <Shield className="w-6 h-6" />,
-      titulo: "Projeto Exclusivo",
-      descricao: "Assinado por Joaquim Andrade Neto, referência em arquitetura residencial"
+      tipo: "2 Quartos",
+      area: "58m²",
+      descricao: "Conforto e espaço para toda a família"
     }
   ];
 
-  const lazerCompleto = [
-    "Piscina adulto e infantil",
-    "Rooftop com vista panorâmica", 
-    "Academia completa",
-    "Salão de festas",
-    "Espaço gourmet",
-    "Playground",
-    "Quadra esportiva",
-    "Sauna",
-    "Spa relaxante",
-    "Coworking",
-    "Pet place",
-    "Bicicletário"
+  const referenciasMapa = [
+    "A 5 minutos do Centro de Niterói",
+    "Próximo à estação das Barcas",
+    "Fácil acesso ao Rio de Janeiro",
+    "Perto de supermercados e shoppings",
+    "Região com diversas opções de lazer",
   ];
-
-  const localizacao = [
-    { nome: "MAC - Museu de Arte Contemporânea", distancia: "5 min" },
-    { nome: "Plaza Shopping Niterói", distancia: "8 min" },
-    { nome: "Estação das Barcas", distancia: "10 min" },
-    { nome: "Teatro Popular Oscar Niemeyer", distancia: "12 min" },
-    { nome: "Praia de Icaraí", distancia: "15 min" },
-    { nome: "Centro do Rio (via barcas)", distancia: "20 min" }
-  ];
-
-  // TODO: Replace with actual background image
-  const backgroundStyle = {
-    backgroundImage: `linear-gradient(rgba(0, 40, 85, 0.7), rgba(0, 60, 120, 0.8)), url('/assets/lancamentos/caminhos-da-guanabara/background-caminhos-guanabara.jpg')`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundAttachment: 'fixed'
-  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden" style={backgroundStyle}>
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 via-transparent to-blue-900/40"></div>
-        
-        <div className="container mx-auto px-6 py-20 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {empreendimento.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-200">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                
-                <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-                  {empreendimento.nome}
-                </h1>
-                
-                <div className="flex items-center gap-3 text-xl">
-                  <MapPin className="w-6 h-6 text-blue-300" />
-                  <span className="text-blue-100">{empreendimento.localizacao}</span>
-                </div>
-                
-                <p className="text-xl lg:text-2xl text-blue-100 font-light leading-relaxed">
-                  Um manifesto em forma de arte e arquitetura que preenche Niterói. 
-                  Onde todos seus caminhos se encontram.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                  <div className="text-3xl font-bold text-white mb-2">{empreendimento.preco}</div>
-                  <div className="text-blue-200">{empreendimento.metragem}</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                  <div className="text-3xl font-bold text-white mb-2">{empreendimento.entrega}</div>
-                  <div className="text-blue-200">Previsão de entrega</div>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-xl">
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  Tenho Interesse
-                </Button>
-                <Button size="lg" variant="outline" className="border-white text-blue-600 px-8 py-4 text-lg font-semibold">
-                  Ver Galeria <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="lg:pl-8">
-              <LeadCaptureForm 
-                nomeLancamento={empreendimento.nome}
-                title="Tenho Interesse"
-                description="Preencha seus dados e receba informações exclusivas sobre o Caminhos da Guanabara"
-              />
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Header com botão voltar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Voltar para o início
+              </Link>
+            </Button>
           </div>
         </div>
+      </header>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
-      </section>
+      {/* Background Hero Section */}
+      <div
+        className="relative h-screen bg-cover bg-center bg-no-repeat pt-16"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
+        {/* Overlay com gradiente marinho */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-blue-900/70 to-slate-800/60"></div>
 
-      {/* Destaques do Empreendimento */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              O Seu Novo Lar em Niterói
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-blue-800 mx-auto rounded-full mb-6"></div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Arquitetura de vanguarda, localização privilegiada e qualidade incomparável se encontram 
-              no Caminhos da Guanabara
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {diferenciais.map((diferencial, index) => (
-              <div key={index} className="group text-center p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                  {diferencial.icon}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{diferencial.titulo}</h3>
-                <p className="text-gray-600 leading-relaxed">{diferencial.descricao}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Especificações Técnicas */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
-              Especificações do Projeto
-            </h2>
-            <div className="space-y-8">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-3xl mx-auto">
-                <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
-                  <div className="text-2xl font-bold text-blue-600 mb-1">{empreendimento.unidades}</div>
-                  <div className="text-sm text-gray-600 leading-tight">Total de unidades</div>
-                </div>
-                <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
-                  <div className="text-2xl font-bold text-blue-600 mb-1">{empreendimento.blocos}</div>
-                  <div className="text-sm text-gray-600 leading-tight">Blocos residenciais</div>
-                </div>
-                <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
-                  <div className="text-2xl font-bold text-blue-600 mb-1">22 Pavimentos</div>
-                  <div className="text-sm text-gray-600 leading-tight">Pavimentos</div>
-                </div>
-                <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
-                  <div className="text-2xl font-bold text-blue-600 mb-1">{empreendimento.quartos}</div>
-                  <div className="text-sm text-gray-600 leading-tight">Opções disponíveis</div>
-                </div>
-              </div>
-              
-              <div className="bg-white p-8 rounded-xl shadow-lg border border-blue-100 max-w-2xl mx-auto">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Projeto Arquitetônico</h3>
-                <p className="text-gray-600 mb-4">
-                  Assinado por <strong>{empreendimento.arquiteto}</strong>, referência nacional em 
-                  arquitetura residencial contemporânea.
-                </p>
-                <p className="text-gray-600">
-                  Design moderno que valoriza a integração com a paisagem natural de Niterói, 
-                  priorizando iluminação natural e ventilação cruzada.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Galeria de Fotos */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Conheça o Empreendimento
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-blue-800 mx-auto rounded-full mb-6"></div>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Explore cada detalhe do seu futuro lar através de nossa galeria completa
-            </p>
-          </div>
-
-          <PhotoCarousel photos={fotos} className="max-w-6xl mx-auto" />
-        </div>
-      </section>
-
-      {/* Lazer Completo */}
-      <section className="py-20 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-              Lazer Completo + Rooftop
-            </h2>
-            <div className="w-24 h-1 bg-white mx-auto rounded-full mb-6"></div>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Uma estrutura de lazer pensada para proporcionar momentos únicos para toda a família
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {lazerCompleto.map((item, index) => (
-              <div key={index} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-white" />
+        {/* Conteúdo Hero */}
+        <div className="relative z-10 flex items-center justify-center h-full">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Coluna Esquerda - Informações */}
+              <div className="text-white space-y-8">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-blue-300">
+                    <Ship className="w-5 h-5" />
+                    <span className="text-sm font-medium tracking-wide">
+                      NITERÓI
+                    </span>
                   </div>
-                  <span className="text-lg font-medium">{item}</span>
+
+                  <h1 className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                    Caminhos da Guanabara
+                  </h1>
+
+                  <p className="text-xl lg:text-2xl text-blue-100 font-light">
+                    Um novo jeito de viver Niterói
+                  </p>
                 </div>
-              </div>
-            ))}
-          </div>
 
-          <div className="text-center mt-12">
-            <p className="text-2xl text-blue-100 font-light">
-              + Rooftop com vista panorâmica da Baía de Guanabara
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Localização */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
-                Localização Privilegiada
-              </h2>
-              <p className="text-xl text-gray-600 mb-12">
-                No coração de Niterói, próximo aos principais pontos de interesse da cidade 
-                e com fácil acesso ao Centro do Rio de Janeiro.
-              </p>
-
-              <div className="space-y-4">
-                {localizacao.map((local, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-white rounded-xl shadow-md border border-gray-100">
-                    <div className="flex items-center gap-4">
-                      <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
-                      <span className="font-medium text-gray-900">{local.nome}</span>
-                    </div>
-                    <span className="text-blue-600 font-semibold">{local.distancia}</span>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 text-blue-200">
+                    <MapPin className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-lg">
+                      Rua Visconde do Rio Branco, Niterói
+                    </span>
                   </div>
-                ))}
-              </div>
 
-              <div className="mt-8 p-6 bg-blue-50 rounded-xl border-l-4 border-blue-600">
-                <h3 className="font-bold text-gray-900 mb-2">Conectividade Total</h3>
-                <p className="text-gray-600">
-                  Acesso rápido ao Centro do Rio via barcas, facilitando o deslocamento para trabalho 
-                  e lazer na capital fluminense.
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              {/* TODO: Replace with actual map */}
-              <div className="bg-gray-200 rounded-2xl h-96 flex items-center justify-center">
-                <iframe
-                src={empreendimento.mapa}
-                width="100%"
-                height="400"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Localização do Residencial Pixinguinha"
-                className={`w-full 'h-80 lg:h-96'}`}
-              ></iframe>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-blue-100 p-6 rounded-xl text-center">
-                  <div className="text-2xl font-bold text-blue-600 mb-2">10 min</div>
-                  <div className="text-gray-600">Centro de Niterói</div>
+                  <div className="flex items-center gap-3 text-blue-200">
+                    <Building2 className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-lg">
+                      Projeto de João Niemeyer
+                    </span>
+                  </div>
                 </div>
-                <div className="bg-blue-100 p-6 rounded-xl text-center">
-                  <div className="text-2xl font-bold text-blue-600 mb-2">20 min</div>
-                  <div className="text-gray-600">Centro do Rio</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* CTA Final */}
-      <section className="py-20 bg-gradient-to-br from-gray-900 to-blue-900 text-white">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-8">
-              Seu Novo Caminho Começa Aqui
-            </h2>
-            <p className="text-xl text-gray-300 mb-12 leading-relaxed">
-              Não perca a oportunidade de fazer parte deste empreendimento único em Niterói. 
-              Garante já sua unidade no Caminhos da Guanabara.
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-12 items-start">
-              <div className="space-y-6">
-                <div className="text-left">
-                  <h3 className="text-2xl font-bold mb-4">Por que escolher agora?</h3>
-                  <ul className="space-y-3 text-gray-300">
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      Condições especiais de lançamento
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      Localização em valorização constante
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      Projeto arquitetônico exclusivo
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      Estrutura de lazer completa
-                    </li>
-                  </ul>
+                {/* Tags de destaque */}
+                <div className="flex flex-wrap gap-3">
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-600/80 text-white border-blue-400 text-sm py-2 px-4"
+                  >
+                    <Anchor className="w-4 h-4 mr-2" />
+                    Lazer Completo
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-700/80 text-white border-slate-400 text-sm py-2 px-4"
+                  >
+                    <Home className="w-4 h-4 mr-2" />
+                    Studios e 2 Quartos
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-700/80 text-white border-blue-500 text-sm py-2 px-4"
+                  >
+                    <Waves className="w-4 h-4 mr-2" />
+                    Vista Baía de Guanabara
+                  </Badge>
                 </div>
+
+                {/* Botão CTA */}
+                <Button
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 text-lg shadow-2xl hover:shadow-blue-500/25 transition-all duration-300"
+                  onClick={() =>
+                    document
+                      .getElementById("interesse")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  <Ship className="w-5 h-5 mr-2" />
+                  Quero Conhecer Caminhos da Guanabara
+                </Button>
               </div>
 
-              <div>
-                <LeadCaptureForm 
-                  nomeLancamento={empreendimento.nome}
-                  title="Receba Informações Exclusivas"
-                  description="Fale com nossos especialistas e conheça as condições especiais"
+              {/* Coluna Direita - Form de Interesse */}
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20">
+                <LeadCaptureForm
+                  nomeLancamento="Caminhos da Guanabara"
+                  title="Garanta sua unidade"
+                  description="Preencha seus dados e receba informações exclusivas sobre o Caminhos da Guanabara"
                 />
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Seção Galeria de Fotos e Vídeos */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+              Conheça Caminhos da Guanabara
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Arquitetura contemporânea que se integra à paisagem de Niterói,
+              conectando você ao melhor da cidade.
+            </p>
+          </div>
+
+          <PhotoCarousel photos={[...fotosCaminhosGuanabara]} />
+        </div>
       </section>
+
+      {/* Seção Plantas e Tipologias */}
+      <section className="py-16 lg:py-24 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+              Plantas Inteligentes
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Studios e 2 Quartos, pensados para o seu estilo de vida
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {plantas.map((planta, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-100"
+              >
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-slate-600 rounded-full flex items-center justify-center mx-auto">
+                    <Home className="w-8 h-8 text-white" />
+                  </div>
+
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-800">
+                      {planta.tipo}
+                    </h3>
+                    <p className="text-2xl font-bold text-blue-600 mt-1">
+                      {planta.area}
+                    </p>
+                  </div>
+
+                  <p className="text-slate-600 text-sm">{planta.descricao}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Seção Amenidades */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+              Lazer e Conforto
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Desfrute de momentos únicos com a sua família e amigos
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {amenidades.map((amenidade, index) => (
+              <div key={index} className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 border-2 border-blue-200/50">
+                  <span className="text-3xl">{amenidade.icone}</span>
+                </div>
+                <h3 className="font-semibold text-slate-800">
+                  {amenidade.nome}
+                </h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Seção Localização */}
+      <section className="py-16 lg:py-24 bg-gradient-to-br from-slate-800 to-blue-900 text-white">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                  Localização Privilegiada
+                </h2>
+                <p className="text-lg text-blue-100 leading-relaxed">
+                  More perto de tudo que Niterói tem de melhor, com fácil
+                  acesso ao Rio de Janeiro.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-blue-200">
+                  Referenciais Próximos:
+                </h3>
+                <div className="grid grid-cols-1 gap-3">
+                  {referenciasMapa.map((referencia, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                      <span className="text-blue-100">{referencia}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 text-blue-200">
+                <Car className="w-5 h-5" />
+                <span>
+                  Acesso facilitado via transporte público e particular
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+              <div className="w-full h-96 rounded-xl overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3679.5684547593776!2d-43.12444892469393!3d-22.81044737918346!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f747343997f%3A0x4b9e62965044f51b!2sR.%20Visc.%20do%20Rio%20Branco%2C%20451%20-%20Centro%2C%20Niter%C3%B3i%20-%20RJ%2C%2024020-007!5e0!3m2!1spt-BR!2sbr!4v1715053484978!5m2!1spt-BR!2sbr"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Localização do Caminhos da Guanabara"
+                  className="w-full h-full rounded-xl"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Seção Formulário de Interesse */}
+      <section
+        id="interesse"
+        className="py-16 lg:py-24 bg-gradient-to-br from-blue-50 to-slate-50"
+      >
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+                Tenho Interesse no Caminhos da Guanabara
+              </h2>
+              <p className="text-lg text-slate-600">
+                Preencha o formulário e nossa equipe entrará em contato com
+                informações exclusivas
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="bg-white rounded-2xl p-8 shadow-lg">
+                  <LeadCaptureForm
+                    nomeLancamento="Caminhos da Guanabara"
+                    title="Receba informações exclusivas"
+                    description="Nossa equipe especializada entrará em contato em breve"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold text-slate-800">
+                    Por que escolher Caminhos da Guanabara?
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-800">
+                          Localização Estratégica
+                        </h4>
+                        <p className="text-slate-600">
+                          No coração de Niterói, próximo a tudo
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-800">
+                          Design Moderno
+                        </h4>
+                        <p className="text-slate-600">
+                          Arquitetura que valoriza o seu estilo
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-slate-800">
+                          Lazer Completo
+                        </h4>
+                        <p className="text-slate-600">
+                          Diversão garantida para toda a família
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-blue-600 to-slate-600 rounded-2xl p-6 text-white">
+                  <div className="flex items-center gap-4">
+                    <Users className="w-8 h-8" />
+                    <div>
+                      <h4 className="font-semibold">
+                        Atendimento Personalizado
+                      </h4>
+                      <p className="text-blue-100">
+                        Nossa equipe está pronta para atendê-lo
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <Footer isHomePage={false} />
     </div>
   );
 };

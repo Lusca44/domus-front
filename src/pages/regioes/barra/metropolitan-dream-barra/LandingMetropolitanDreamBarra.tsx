@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -14,7 +14,8 @@ import {
   Shield,
   Star,
   Camera,
-  Play
+  Play,
+  ArrowLeft
 } from 'lucide-react';
 import PhotoCarousel from '@/components/PhotoCarousel';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
@@ -81,9 +82,28 @@ const LandingMetropolitanDreamBarra = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Header com botão voltar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Voltar para o início
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <section 
-        className="relative min-h-screen flex items-center justify-center text-white bg-cover bg-center bg-no-repeat"
+        className="relative min-h-screen flex items-center justify-center text-white bg-cover bg-center bg-no-repeat pt-16"
         style={{
           backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.8), rgba(30, 58, 138, 0.6)), url('/assets/lancamentos/metropolitan-dream-barra/background-metropolitan-dream.jpg')`
         }}
