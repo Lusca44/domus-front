@@ -3,10 +3,23 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Building2, Users, Car, Wifi, Utensils, Dumbbell, TreePine, Music, Heart, Star } from 'lucide-react';
+import {
+  MapPin,
+  Building2,
+  Users,
+  Car,
+  ArrowLeft,
+  Utensils,
+  Dumbbell,
+  TreePine,
+  Music,
+  Heart,
+  Star,
+} from "lucide-react";
 import PhotoCarousel from '@/components/PhotoCarousel';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 import Footer from '@/components/Footer';
+import { Link } from "react-router-dom";
 import { fotos } from './assets/fotos';
 import { videos } from './assets/videos';
 
@@ -30,6 +43,25 @@ const LandingCiataResidencial = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-red-50">
+      {/* Header com botão voltar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Voltar para o início
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </header>
+
       {/* Hero Section com Background Cultural */}
       <section 
         className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
@@ -83,7 +115,7 @@ const LandingCiataResidencial = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-white text-white hover:bg-white hover:text-amber-800 px-8 py-4 text-lg font-semibold backdrop-blur-sm"
+                className="border-white text-amber-600 hover:bg-white hover:text-amber-800 px-8 py-4 text-lg font-semibold backdrop-blur-sm"
                 onClick={() => document.getElementById('galeria')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Ver Galeria

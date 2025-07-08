@@ -1,53 +1,74 @@
+import fachada from './img/card-ciata.png'
+import academia from './img/ciata-academia.png'
+import areaGourmet from './img/ciata-aerea-gourmet.png'
+import bicicletario from './img/ciata-bicicletario.png'
+import easyMarket from './img/ciata-easy-market.png'
+import fachadaCalcada from './img/ciata-fachada,passagem.png'
+import fachadaPredio from './img/ciata-fachada-completa.png'
+import lavanderia from './img/ciata-lavanderia.png'
+import loungeBar from './img/ciata-lounge-bar.png'
+import playground from './img/ciata-playground.png'
+import redario from './img/ciata-redario.png'
+import solario from './img/ciata-solario.png'
+import sportBar from './img/ciata-sport-bar.png'
+import vistaAereaLocalizacao from './img/ciata-vista-aerea-localizacao.png'
 
 // TODO: Substituir placeholders pelas imagens reais do Ciata Residencial
-
 export const fotos = [
   {
-    url: "/assets/lancamentos/ciata-residencial/fachada-principal.jpg",
-    titulo: "Fachada Principal - Ciata Residencial"
+    url: fachada,
+    titulo: "Fachada"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/vista-aerea-empreendimento.jpg", 
-    titulo: "Vista Aérea do Empreendimento"
+    url: fachadaCalcada, 
+    titulo: "Fachada calçada"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/lounge-bar-cultural.jpg",
-    titulo: "Lounge Bar - Espaço Cultural"
+    url: fachadaPredio,
+    titulo: "Fachada predio"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/fitness-academia.jpg",
-    titulo: "Academia Fitness Completa"
+    url: vistaAereaLocalizacao,
+    titulo: "Vista aerea da localização"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/playground-kids.jpg",
-    titulo: "Playground Infantil"
+    url: academia,
+    titulo: "Academia"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/redario-relaxamento.jpg",
-    titulo: "Redário - Área de Relaxamento"
+    url: areaGourmet,
+    titulo: "Area gourmet/churrasqueira"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/apartamento-decorado-studio.jpg",
-    titulo: "Apartamento Studio Decorado"
+    url: bicicletario,
+    titulo: "Bicicletario"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/apartamento-decorado-1quarto.jpg",
-    titulo: "Apartamento 1 Quarto Decorado"
+    url: easyMarket,
+    titulo: "Easy Market"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/apartamento-decorado-2quartos.jpg",
-    titulo: "Apartamento 2 Quartos Decorado"
+    url: lavanderia,
+    titulo: "Lavanderia"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/easy-market-conveniencia.jpg",
-    titulo: "Easy Market - Área de Conveniência"
+    url: loungeBar,
+    titulo: "Lounge bar"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/bicicletario-sustentavel.jpg",
-    titulo: "Bicicletário Sustentável"
+    url: playground,
+    titulo: "Playground"
   },
   {
-    url: "/assets/lancamentos/ciata-residencial/vista-porto-maravilha.jpg",
-    titulo: "Vista do Porto Maravilha"
-  }
+    url: redario,
+    titulo: "Redario"
+  },
+  {
+    url: solario,
+    titulo: "Solario"
+  },
+  {
+    url: sportBar,
+    titulo: "Sport Bar"
+  },
 ];

@@ -2,7 +2,7 @@ import cardPixinguinhaImg from "./images/card-pixinguinha.jpeg";
 import cardPortoCariocaImg from "./images/card-porto-carioca.jpg";
 import cardCaminhosDaGuanabara from "./images/card-caminhos-da-guanabara.jpeg";
 import cardArcosPortoImg from "./images/card-arcos-do-porto.jpeg.webp";
-import cardCiataResidencialImg from "./images/card-ciata-residencial.jpeg";
+import cardCiataResidencialImg from "./images/card-ciata.png";
 import cardNovaOlariaImg from "./images/card-nova-olaria.jpeg";
 import cardOrlaMauaImg from "./images/card-orla-maua.jpeg";
 import cardMetropolitanDreamBarraImg from "./images/card-metropolitan-dream-barra.jpeg";
