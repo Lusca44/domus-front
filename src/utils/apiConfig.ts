@@ -7,31 +7,11 @@
 
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 
-/**
- * CONFIGURAÇÃO PRINCIPAL - ALTERE AQUI SUA URL DO BACKEND
- *
- * baseUrl: URL base do seu servidor backend
- * - Em desenvolvimento: geralmente 'http://localhost:3001/api' ou 'http://localhost:8000/api'
- * - Em produção: sua URL real como 'https://meubackend.com/api'
- *
- * Para usar variável de ambiente, crie um arquivo .env.local na raiz do projeto com:
- * VITE_API_BASE_URL=https://sua-api.com/api
- */
 const API_CONFIG = {
-  baseUrl: "http://localhost:8080/",
-  // baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/',
+  baseUrl:  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/",
   timeout: 10000, // Tempo limite para requisições (10 segundos)
 };
 
-/**
- * CLASSE PRINCIPAL PARA REQUISIÇÕES HTTP COM AXIOS
- * 
- * Esta classe encapsula toda a lógica de comunicação com o backend:
- * - Adiciona automaticamente o token de autenticação via interceptors
- * - Trata erros de forma consistente
- * - Aplica timeout nas requisições
- * - Centraliza a configuração de headers
- */
 export class ApiClient {
   private axiosInstance: AxiosInstance;
 
