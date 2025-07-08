@@ -27,25 +27,21 @@ const LandingArcosPorto = () => {
       tipo: "Studio",
       area: "32.44m²",
       descricao: "Ambiente integrado e funcional",
-      preco: "A partir de R$ 280.000"
     },
     {
       tipo: "1 Quarto",
       area: "38.99m²",
       descricao: "Conforto e praticidade",
-      preco: "A partir de R$ 320.000"
     },
     {
       tipo: "2 Quartos",
       area: "38.58m²",
       descricao: "Ideal para famílias",
-      preco: "A partir de R$ 380.000"
     },
     {
       tipo: "Garden",
       area: "59.08m²",
       descricao: "Espaço exclusivo com jardim",
-      preco: "A partir de R$ 450.000"
     }
   ];
 
@@ -118,7 +114,7 @@ const LandingArcosPorto = () => {
                   </Badge>
                   <Badge
                     variant="secondary"
-                    className="bg-slate-600/80 text-white border-slate-400 text-sm py-2 px-4"
+                    className="bg-blue-700/80 text-white border-slate-400 text-sm py-2 px-4"
                   >
                     <Home className="w-4 h-4 mr-2" />
                     Garden
@@ -223,12 +219,6 @@ const LandingArcosPorto = () => {
                   </div>
 
                   <p className="text-slate-600 text-sm">{planta.descricao}</p>
-
-                  <div className="pt-4 border-t border-slate-100">
-                    <p className="text-lg font-semibold text-slate-800">
-                      {planta.preco}
-                    </p>
-                  </div>
                 </div>
               </div>
             ))}
