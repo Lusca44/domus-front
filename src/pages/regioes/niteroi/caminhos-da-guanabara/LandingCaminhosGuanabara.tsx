@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight, MapPin, Users, Car, Dumbbell, Waves, TreePine, Shield, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -185,45 +184,42 @@ const LandingCaminhosGuanabara = () => {
       {/* Especificações Técnicas */}
       <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
-                Especificações do Projeto
-              </h2>
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.unidades}</div>
-                    <div className="text-gray-600">Total de unidades</div>
-                  </div>
-                  <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.blocos}</div>
-                    <div className="text-gray-600">Blocos residenciais</div>
-                  </div>
-                  <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.pavimentos}</div>
-                    <div className="text-gray-600">Pavimentos</div>
-                  </div>
-                  <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.quartos}</div>
-                    <div className="text-gray-600">Opções disponíveis</div>
-                  </div>
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
+              Especificações do Projeto
+            </h2>
+            <div className="space-y-8">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-3xl mx-auto">
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.unidades}</div>
+                  <div className="text-gray-600">Total de unidades</div>
                 </div>
-                
-                <div className="bg-white p-8 rounded-xl shadow-lg border border-blue-100">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">Projeto Arquitetônico</h3>
-                  <p className="text-gray-600 mb-4">
-                    Assinado por <strong>{empreendimento.arquiteto}</strong>, referência nacional em 
-                    arquitetura residencial contemporânea.
-                  </p>
-                  <p className="text-gray-600">
-                    Design moderno que valoriza a integração com a paisagem natural de Niterói, 
-                    priorizando iluminação natural e ventilação cruzada.
-                  </p>
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.blocos}</div>
+                  <div className="text-gray-600">Blocos residenciais</div>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.pavimentos}</div>
+                  <div className="text-gray-600">Pavimentos</div>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-blue-100">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">{empreendimento.quartos}</div>
+                  <div className="text-gray-600">Opções disponíveis</div>
                 </div>
               </div>
+              
+              <div className="bg-white p-8 rounded-xl shadow-lg border border-blue-100 max-w-2xl mx-auto">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Projeto Arquitetônico</h3>
+                <p className="text-gray-600 mb-4">
+                  Assinado por <strong>{empreendimento.arquiteto}</strong>, referência nacional em 
+                  arquitetura residencial contemporânea.
+                </p>
+                <p className="text-gray-600">
+                  Design moderno que valoriza a integração com a paisagem natural de Niterói, 
+                  priorizando iluminação natural e ventilação cruzada.
+                </p>
+              </div>
             </div>
-
           </div>
         </div>
       </section>
