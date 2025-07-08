@@ -8,7 +8,6 @@ import PhotoCarousel from "@/components/PhotoCarousel";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import Footer from "@/components/Footer";
 import { fotosArcosPorto } from "./assets/fotos";
-import { videosArcosPorto } from "./assets/videos";
 
 const LandingArcosPorto = () => {
   // TODO: Substituir por imagem real do empreendimento
@@ -164,7 +163,7 @@ const LandingArcosPorto = () => {
             </p>
           </div>
           
-          <PhotoCarousel photos={[...fotosArcosPorto, ...videosArcosPorto]} />
+          <PhotoCarousel photos={[...fotosArcosPorto]} />
         </div>
       </section>
 

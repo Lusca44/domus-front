@@ -1,51 +1,49 @@
+import visaoAereaLocalizacao from './img/arcos-do-porto-visao-aerea-localizacao.png'
+import academia from './img/arcos-do-porto-academia.jpeg'
+import areaGourmet from './img/arcos-do-porto-area-gourmet.jpeg'
+import areaKidsExterna from './img/arcos-do-porto-area-kids-externa.jpeg'
+import brinquedoteca from './img/arcos-do-porto-brinquedoteca.jpeg'
+import lavanderia from './img/arcos-do-porto-lavanderia.jpeg'
+import piscina from './img/arcos-do-porto-piscina.jpeg'
+import visaoAerea from './img/arcos-do-porto-visao-aerea.jpeg'
+import fachada from './img/card-arcos-do-porto.jpeg.webp'
+
 
 export const fotosArcosPorto = [
   {
-    url: "/assets/lancamentos/arcos-do-porto/fachada-principal.jpg",
+    url: fachada,
     titulo: "Fachada Principal do Arcos do Porto"
   },
   {
-    url: "/assets/lancamentos/arcos-do-porto/vista-aerea-empreendimento.jpg", 
+    url: visaoAerea, 
     titulo: "Vista Aérea do Empreendimento"
   },
   {
-    url: "/assets/lancamentos/arcos-do-porto/piscina-area-lazer.jpg",
-    titulo: "Piscina e Área de Lazer"
+    url: visaoAereaLocalizacao,
+    titulo: "Localização"
   },
   {
-    url: "/assets/lancamentos/arcos-do-porto/churrasqueira-gourmet.jpg",
+    url: areaGourmet,
     titulo: "Churrasqueira Gourmet"
   },
   {
-    url: "/assets/lancamentos/arcos-do-porto/salao-festas.jpg",
-    titulo: "Salão de Festas"
+    url: academia,
+    titulo: "Academia"
   },
   {
-    url: "/assets/lancamentos/arcos-do-porto/coworking-space.jpg",
-    titulo: "Espaço Coworking"
+    url: areaKidsExterna,
+    titulo: "Area kids externa"
   },
   {
-    url: "/assets/lancamentos/arcos-do-porto/playground-kids.jpg",
-    titulo: "Playground Infantil"
+    url: brinquedoteca,
+    titulo: "Brinquedoteca"
   },
   {
-    url: "/assets/lancamentos/arcos-do-porto/apartamento-decorado-studio.jpg",
-    titulo: "Apartamento Decorado - Studio"
+    url: lavanderia,
+    titulo: "Lavanderia"
   },
   {
-    url: "/assets/lancamentos/arcos-do-porto/apartamento-decorado-1quarto.jpg", 
-    titulo: "Apartamento Decorado - 1 Quarto"
+    url: piscina, 
+    titulo: "Piscina"
   },
-  {
-    url: "/assets/lancamentos/arcos-do-porto/apartamento-decorado-2quartos.jpg",
-    titulo: "Apartamento Decorado - 2 Quartos"
-  },
-  {
-    url: "/assets/lancamentos/arcos-do-porto/garden-area-externa.jpg",
-    titulo: "Garden - Área Externa Exclusiva"
-  },
-  {
-    url: "/assets/lancamentos/arcos-do-porto/vista-porto-maravilha.jpg",
-    titulo: "Vista do Porto Maravilha"
-  }
 ];
