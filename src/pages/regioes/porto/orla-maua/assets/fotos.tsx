@@ -1,3 +1,23 @@
+import fachada from './img/orla-maua-fachada.webp'
+import fachadaPredio from './img/orla-maua-fachada-predio.png'
+import piscinaRoofTop from './img/cad-orla-maua-piscina-roof-top.png'
+import academia from './img/orla-maua-academia.jpeg'
+import vistaAereaLocalizacao from './img/orla-maua-vista-aerea-localizacao.png'
+import brinquedoteca from './img/orla-maua-area-kids.jpeg'
+import coworking from './img/orla-maua-coworking.png'
+import easyMarket from './img/orla-maua-easy-market.png'
+import espacoDelivery from './img/orla-maua-espaco-delivery.png'
+import espacoGourmet from './img/orla-maua-espaco-gourmet.png'
+import espacoTeen from './img/orla-maua-espaco-teen.png'
+import espacoZen from './img/orla-maua-espaco-zen.png'
+import lavanderia from './img/orla-maua-lavanderia.jpeg'
+import miniCampo from './img/orla-maua-mini-campo.png'
+import mirante from './img/orla-maua-mirante.png'
+import oficina from './img/orla-maua-oficina.jpeg'
+import psicina from './img/orla-maua-piscina.jpeg'
+import playgroung from './img/orla-maua-playground.png'
+import pub from './img/orla-maua-pub.png'
+import salaoDeFestas from './img/orla-maua-salao-de-festas.png'
 
 export interface Photo {
   url: string;
@@ -7,63 +27,83 @@ export interface Photo {
 // TODO: Substituir por fotos reais do empreendimento Orla Mauá
 export const fotos: Photo[] = [
   {
-    url: "/assets/lancamentos/orla-maua/fachada-principal.jpg",
-    titulo: "Fachada principal do Orla Mauá",
+    url: fachada,
+    titulo: "Fachada",
   },
   {
-    url: "/assets/lancamentos/orla-maua/vista-aerea-empreendimento.jpg", 
-    titulo: "Vista aérea do empreendimento",
+    url: fachadaPredio, 
+    titulo: "Fachada predio",
   },
   {
-    url: "/assets/lancamentos/orla-maua/rooftop-piscina-panoramica.jpg",
+    url: piscinaRoofTop,
     titulo: "Rooftop com piscina e vista panorâmica",
   },
   {
-    url: "/assets/lancamentos/orla-maua/espaco-gourmet-rooftop.jpg",
-    titulo: "Espaço gourmet no rooftop",
+    url: academia,
+    titulo: "Academia",
   },
   {
-    url: "/assets/lancamentos/orla-maua/mirante-vista-mar.jpg",
-    titulo: "Mirante com vista para o mar",
+    url: vistaAereaLocalizacao,
+    titulo: "vista aerea localização",
   },
   {
-    url: "/assets/lancamentos/orla-maua/coworking-moderno.jpg",
+    url: brinquedoteca,
+    titulo: "Brinquedoteca",
+  },
+  {
+    url: coworking,
     titulo: "Espaço de coworking moderno",
   },
   {
-    url: "/assets/lancamentos/orla-maua/pub-lounge.jpg",
-    titulo: "Pub e lounge",
+    url: easyMarket,
+    titulo: "Easy Market",
   },
   {
-    url: "/assets/lancamentos/orla-maua/apartamento-decorado-studio.jpg",
-    titulo: "Studio decorado",
+    url: espacoDelivery,
+    titulo: "Espaço delivery",
   },
   {
-    url: "/assets/lancamentos/orla-maua/apartamento-decorado-1quarto.jpg",
-    titulo: "Apartamento 1 quarto decorado",
+    url: espacoGourmet,
+    titulo: "Espaço gourmet",
   },
   {
-    url: "/assets/lancamentos/orla-maua/apartamento-decorado-2quartos.jpg",
-    titulo: "Apartamento 2 quartos decorado",
+    url: espacoTeen,
+    titulo: "Espaço teen",
   },
   {
-    url: "/assets/lancamentos/orla-maua/apartamento-decorado-3quartos.jpg",
-    titulo: "Apartamento 3 quartos decorado",
+    url: espacoZen,
+    titulo: "Espaço zen",
   },
   {
-    url: "/assets/lancamentos/orla-maua/vista-museu-amanha.jpg",
-    titulo: "Vista para o Museu do Amanhã",
+    url: lavanderia,
+    titulo: "Lavanderia",
   },
   {
-    url: "/assets/lancamentos/orla-maua/boulevard-olimpico.jpg",
-    titulo: "Boulevard Olímpico em frente ao prédio",
+    url: miniCampo,
+    titulo: "Mini campo",
   },
   {
-    url: "/assets/lancamentos/orla-maua/mural-kobra.jpg",
-    titulo: "Mural do Kobra na região",
+    url: mirante,
+    titulo: "Mirante com vista panorâmica",
   },
   {
-    url: "/assets/lancamentos/orla-maua/vlt-transporte.jpg",
-    titulo: "VLT - transporte na porta",
-  }
+    url: oficina,
+    titulo: "Oficina",
+  },
+  {
+    url: psicina,
+    titulo: "Piscina",
+  },
+  {
+    url: playgroung,
+    titulo: "Playground",
+  },
+  {
+    url: pub,
+    titulo: "Pub",
+  },
+  {
+    url: salaoDeFestas,
+    titulo: "Salao de festas",
+  },
 ];

@@ -1,13 +1,7 @@
 
-import React from "react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   MapPin,
-  Clock,
-  Calendar,
-  Phone,
-  Mail,
   Star,
   Car,
   Waves,
@@ -17,55 +11,33 @@ import {
   Coffee,
   Wine,
   Eye,
-  Home,
+  ArrowLeft,
   Train,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import Footer from "@/components/Footer";
 import { fotos } from "./assets/fotos";
-import { videos } from "./assets/videos";
 
 const LandingOrlaMaua = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-yellow-50">
-      {/* Header fixo */}
-      <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-50 border-b border-blue-100">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-900 to-yellow-600 rounded-lg flex items-center justify-center">
-                <Building className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <h1 className="font-bold text-lg text-gray-900">Orla Mauá</h1>
-                <p className="text-sm text-gray-600">
-                  Coração do Porto Maravilha
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600">
-                <div className="flex items-center space-x-1">
-                  <Phone className="w-4 h-4" />
-                  <span>(21) 2222-3333</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Mail className="w-4 h-4" />
-                  <span>contato@feitozaimoveis.com</span>
-                </div>
-              </div>
-              <Button
-                className="bg-gradient-to-r from-blue-900 to-yellow-600 hover:from-blue-800 hover:to-yellow-700 text-white"
-                onClick={() =>
-                  document
-                    .getElementById("form-interesse")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                Tenho Interesse
-              </Button>
-            </div>
+      {/* Header com botão voltar */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Voltar para o início
+              </Link>
+            </Button>
           </div>
         </div>
       </header>
@@ -99,8 +71,9 @@ const LandingOrlaMaua = () => {
           </h1>
 
           <p className="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Viva no Boulevard Olímpico, em frente ao Museu do Amanhã. 
-            Arquitetura de Afonso Kuenner com rooftop exclusivo e vista panorâmica.
+            Viva no Boulevard Olímpico, em frente ao Museu do Amanhã.
+            Arquitetura de Afonso Kuenner com rooftop exclusivo e vista
+            panorâmica.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -133,7 +106,7 @@ const LandingOrlaMaua = () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-blue-800 px-8 py-3 text-lg"
+              className="border-white text-yellow-600 hover:bg-white hover:text-blue-800 px-8 py-3 text-lg"
               onClick={() =>
                 document
                   .getElementById("carrossel")
@@ -161,7 +134,8 @@ const LandingOrlaMaua = () => {
               Localização Exclusiva
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              No coração do Porto Maravilha, onde a história e a modernidade se encontram
+              No coração do Porto Maravilha, onde a história e a modernidade se
+              encontram
             </p>
           </div>
 
@@ -314,22 +288,21 @@ const LandingOrlaMaua = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                    <span className="text-gray-700">Studio: A partir de 25m²</span>
+                    <span className="text-gray-700">
+                      Studio: A partir de 25m²
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                    <span className="text-gray-700">1 Quarto: A partir de 35m²</span>
+                    <span className="text-gray-700">
+                      1 Quarto: A partir de 35m²
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
                     <span className="text-gray-700">Layouts otimizados</span>
                   </div>
                 </div>
-                <img
-                  src="/assets/lancamentos/orla-maua/apartamento-decorado-1quarto.jpg"
-                  alt="Apartamento 1 quarto decorado"
-                  className="w-full h-48 object-cover rounded-xl"
-                />
               </div>
 
               <div className="bg-white rounded-2xl shadow-xl p-6 border border-blue-100">
@@ -339,22 +312,23 @@ const LandingOrlaMaua = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-yellow-600 rounded-full"></div>
-                    <span className="text-gray-700">2 Quartos: A partir de 55m²</span>
+                    <span className="text-gray-700">
+                      2 Quartos: A partir de 55m²
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-yellow-600 rounded-full"></div>
-                    <span className="text-gray-700">3 Quartos: A partir de 75m²</span>
+                    <span className="text-gray-700">
+                      3 Quartos: A partir de 75m²
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-yellow-600 rounded-full"></div>
-                    <span className="text-gray-700">Suíte master com closet</span>
+                    <span className="text-gray-700">
+                      Suíte master com closet
+                    </span>
                   </div>
                 </div>
-                <img
-                  src="/assets/lancamentos/orla-maua/apartamento-decorado-3quartos.jpg"
-                  alt="Apartamento 3 quartos decorado"
-                  className="w-full h-48 object-cover rounded-xl"
-                />
               </div>
             </div>
           </div>
@@ -394,7 +368,9 @@ const LandingOrlaMaua = () => {
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-900 to-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
                       <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
-                        <span className="text-blue-900 font-bold text-xs">🎨</span>
+                        <span className="text-blue-900 font-bold text-xs">
+                          🎨
+                        </span>
                       </div>
                     </div>
                     <div>
@@ -410,7 +386,9 @@ const LandingOrlaMaua = () => {
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-900 to-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
                       <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
-                        <span className="text-blue-900 font-bold text-xs">🏛️</span>
+                        <span className="text-blue-900 font-bold text-xs">
+                          🏛️
+                        </span>
                       </div>
                     </div>
                     <div>
@@ -426,7 +404,9 @@ const LandingOrlaMaua = () => {
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-900 to-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
                       <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
-                        <span className="text-blue-900 font-bold text-xs">🎭</span>
+                        <span className="text-blue-900 font-bold text-xs">
+                          🎭
+                        </span>
                       </div>
                     </div>
                     <div>
@@ -441,22 +421,19 @@ const LandingOrlaMaua = () => {
                 </div>
               </div>
 
-              <div className="relative">
-                <img
-                  src="/assets/lancamentos/orla-maua/vista-museu-amanha.jpg"
-                  alt="Vista para o Museu do Amanhã"
-                  className="w-full h-96 object-cover rounded-2xl shadow-xl"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 to-transparent rounded-2xl"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
-                    <div className="flex items-center space-x-2">
-                      <MapPin className="w-4 h-4 text-blue-600" />
-                      <span className="font-medium text-gray-900">
-                        Av. Venezuela, 194 - Porto Maravilha
-                      </span>
-                    </div>
-                  </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="w-full h-96 rounded-xl overflow-hidden">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.494468602125!2d-43.19046432389558!3d-22.89512583745591!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f3181e37165%3A0xaeb8048c4822979f!2sCury%20Orla%20Mau%C3%A1%20Porto%20Maravilha!5e0!3m2!1spt-BR!2sbr!4v1751982698561!5m2!1spt-BR!2sbr"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Localização do Arcos do Porto"
+                    className="w-full h-full rounded-xl"
+                  ></iframe>
                 </div>
               </div>
             </div>
@@ -476,8 +453,8 @@ const LandingOrlaMaua = () => {
                 Garanta Já o Seu Orla Mauá
               </h2>
               <p className="text-lg text-blue-100">
-                Preencha o formulário e receba informações exclusivas sobre plantas, 
-                preços e condições especiais de lançamento
+                Preencha o formulário e receba informações exclusivas sobre
+                plantas, preços e condições especiais de lançamento
               </p>
             </div>
 
