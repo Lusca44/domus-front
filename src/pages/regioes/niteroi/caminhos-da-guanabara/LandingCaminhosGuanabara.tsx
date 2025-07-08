@@ -200,7 +200,7 @@ const LandingCaminhosGuanabara = () => {
                   <div className="text-sm text-gray-600 leading-tight">Blocos residenciais</div>
                 </div>
                 <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
-                  <div className="text-2xl font-bold text-blue-600 mb-1">22</div>
+                  <div className="text-2xl font-bold text-blue-600 mb-1">22 Pavimentos</div>
                   <div className="text-sm text-gray-600 leading-tight">Pavimentos</div>
                 </div>
                 <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">

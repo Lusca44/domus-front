@@ -1,3 +1,12 @@
+import fachada from './img/caminhos-da-guabara-fachada.png'
+import fachadaLoja from './img/caminhos-da-guabara-fachada-lojas.png'
+import rooftopAreaGourmet from './img/caminhos-da-guabara-rooftop-area-gourmet.png'
+import solario from './img/caminhos-da-guabara-solario.png'
+import piscina from './img/caminhos-da-guabara-piscina-adulto.png'
+import visaoAerea from './img/caminhos-da-guabara-visao-aerea-localizacao.png'
+import academia from './img/caminhos-da-guabara-academia.png'
+import academiaExterna from './img/caminhos-da-guabara-academia-externa.png'
+
 
 export interface Foto {
   url: string;
@@ -6,77 +15,37 @@ export interface Foto {
 
 const fotos: Foto[] = [
   {
-    url: '/assets/lancamentos/caminhos-da-guanabara/fachada-principal.jpg',
+    url: fachada,
     titulo: "Fachada Principal do Empreendimento",
   },
   {
-    url: '/assets/lancamentos/caminhos-da-guanabara/vista-aerea-empreendimento.jpg',
+    url: visaoAerea,
     titulo: "Vista Aérea do Complexo",
   },
   {
-    url: '/assets/lancamentos/caminhos-da-guanabara/rooftop-vista-baia.jpg',
+    url: rooftopAreaGourmet,
     titulo: "Rooftop com Vista da Baía de Guanabara",
   },
   {
-    url: '/assets/lancamentos/caminhos-da-guanabara/lobby-principal.jpg',
-    titulo: "Lobby Principal Elegante",
+    url: fachadaLoja,
+    titulo: "Fachada com lojas",
   },
   {
-    url: '/assets/lancamentos/caminhos-da-guanabara/piscina-adulto.jpg',
+    url: piscina,
     titulo: "Piscina Adulto",
   },
   {
-    url: '/assets/lancamentos/caminhos-da-guanabara/piscina-infantil.jpg',
-    titulo: "Piscina Infantil",
+    url: solario,
+    titulo: "Solario",
   },
   {
-    url: '/assets/lancamentos/caminhos-da-guanabara/academia-completa.jpg',
+    url: academia,
     titulo: "Academia Completa",
   },
   {
-    url: '/assets/lancamentos/caminhos-da-guanabara/salao-festas.jpg',
-    titulo: "Salão de Festas",
+    url: academiaExterna,
+    titulo: "Academia Externa",
   },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/espaco-gourmet.jpg',
-    titulo: "Espaço Gourmet",
-  },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/playground.jpg',
-    titulo: "Playground Infantil",
-  },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/quadra-esportiva.jpg',
-    titulo: "Quadra Esportiva",
-  },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/sauna-spa.jpg',
-    titulo: "Sauna e Spa",
-  },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/coworking.jpg',
-    titulo: "Espaço Coworking",
-  },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/pet-place.jpg',
-    titulo: "Pet Place",
-  },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/apartamento-2q-sala.jpg',
-    titulo: "Apartamento 2 Quartos - Sala",
-  },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/apartamento-2q-quarto.jpg',
-    titulo: "Apartamento 2 Quartos - Suíte",
-  },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/apartamento-varanda.jpg',
-    titulo: "Varanda com Vista da Baía",
-  },
-  {
-    url: '/assets/lancamentos/caminhos-da-guanabara/vista-localizacao.jpg',
-    titulo: "Localização Privilegiada em Niterói",
-  }
 ];
 
 export default fotos;
