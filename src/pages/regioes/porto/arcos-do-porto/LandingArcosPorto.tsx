@@ -61,13 +61,13 @@ const LandingArcosPorto = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Background Hero Section */}
-      <div 
+      <div
         className="relative h-screen bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         {/* Overlay com gradiente marinho */}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-blue-900/70 to-slate-800/60"></div>
-        
+
         {/* Conteúdo Hero */}
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="container mx-auto px-4">
@@ -77,13 +77,15 @@ const LandingArcosPorto = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-blue-300">
                     <Ship className="w-5 h-5" />
-                    <span className="text-sm font-medium tracking-wide">PORTO MARAVILHA</span>
+                    <span className="text-sm font-medium tracking-wide">
+                      PORTO MARAVILHA
+                    </span>
                   </div>
-                  
+
                   <h1 className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
                     Arcos do Porto
                   </h1>
-                  
+
                   <p className="text-xl lg:text-2xl text-blue-100 font-light">
                     A melhor forma de viver o Rio
                   </p>
@@ -92,36 +94,53 @@ const LandingArcosPorto = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 text-blue-200">
                     <MapPin className="w-5 h-5 flex-shrink-0" />
-                    <span className="text-lg">Porto Maravilha, Rio de Janeiro</span>
+                    <span className="text-lg">
+                      Porto Maravilha, Rio de Janeiro
+                    </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-3 text-blue-200">
                     <Building2 className="w-5 h-5 flex-shrink-0" />
-                    <span className="text-lg">Projeto de Érico Franco Guimarães</span>
+                    <span className="text-lg">
+                      Projeto de Érico Franco Guimarães
+                    </span>
                   </div>
                 </div>
 
                 {/* Tags de destaque */}
                 <div className="flex flex-wrap gap-3">
-                  <Badge variant="secondary" className="bg-blue-600/80 text-white border-blue-400 text-sm py-2 px-4">
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-600/80 text-white border-blue-400 text-sm py-2 px-4"
+                  >
                     <Anchor className="w-4 h-4 mr-2" />
                     Lazer Completo
                   </Badge>
-                  <Badge variant="secondary" className="bg-slate-600/80 text-white border-slate-400 text-sm py-2 px-4">
+                  <Badge
+                    variant="secondary"
+                    className="bg-slate-600/80 text-white border-slate-400 text-sm py-2 px-4"
+                  >
                     <Home className="w-4 h-4 mr-2" />
                     Garden
                   </Badge>
-                  <Badge variant="secondary" className="bg-blue-700/80 text-white border-blue-500 text-sm py-2 px-4">
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-700/80 text-white border-blue-500 text-sm py-2 px-4"
+                  >
                     <Waves className="w-4 h-4 mr-2" />
                     Vista Porto
                   </Badge>
                 </div>
 
                 {/* Botão CTA */}
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 text-lg shadow-2xl hover:shadow-blue-500/25 transition-all duration-300"
-                  onClick={() => document.getElementById('interesse')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() =>
+                    document
+                      .getElementById("interesse")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
                 >
                   <Ship className="w-5 h-5 mr-2" />
                   Quero Conhecer o Arcos do Porto
@@ -130,7 +149,7 @@ const LandingArcosPorto = () => {
 
               {/* Coluna Direita - Form de Interesse */}
               <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20">
-                <LeadCaptureForm 
+                <LeadCaptureForm
                   nomeLancamento="Arcos do Porto"
                   title="Garanta sua unidade"
                   description="Preencha seus dados e receba informações exclusivas sobre o Arcos do Porto"
@@ -142,10 +161,13 @@ const LandingArcosPorto = () => {
 
         {/* Botão voltar ao topo */}
         <div className="absolute top-6 left-6">
-          <Button variant="ghost" size="sm" asChild className="text-white hover:bg-white/20">
-            <Link to="/">
-              ← Voltar à Home
-            </Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="text-white hover:bg-white/20"
+          >
+            <Link to="/">← Voltar à Home</Link>
           </Button>
         </div>
       </div>
@@ -158,11 +180,11 @@ const LandingArcosPorto = () => {
               Conheça o Arcos do Porto
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Arquitetura contemporânea no coração do Porto Maravilha, 
+              Arquitetura contemporânea no coração do Porto Maravilha,
               conectando você ao melhor do Rio de Janeiro.
             </p>
           </div>
-          
+
           <PhotoCarousel photos={[...fotosArcosPorto]} />
         </div>
       </section>
@@ -175,27 +197,37 @@ const LandingArcosPorto = () => {
               Plantas Exclusivas
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Do Studio ao Garden, encontre a opção perfeita para o seu estilo de vida
+              Do Studio ao Garden, encontre a opção perfeita para o seu estilo
+              de vida
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {plantas.map((planta, index) => (
-              <div key={index} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-100">
+              <div
+                key={index}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-100"
+              >
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-slate-600 rounded-full flex items-center justify-center mx-auto">
                     <Home className="w-8 h-8 text-white" />
                   </div>
-                  
+
                   <div>
-                    <h3 className="text-xl font-bold text-slate-800">{planta.tipo}</h3>
-                    <p className="text-2xl font-bold text-blue-600 mt-1">{planta.area}</p>
+                    <h3 className="text-xl font-bold text-slate-800">
+                      {planta.tipo}
+                    </h3>
+                    <p className="text-2xl font-bold text-blue-600 mt-1">
+                      {planta.area}
+                    </p>
                   </div>
-                  
+
                   <p className="text-slate-600 text-sm">{planta.descricao}</p>
-                  
+
                   <div className="pt-4 border-t border-slate-100">
-                    <p className="text-lg font-semibold text-slate-800">{planta.preco}</p>
+                    <p className="text-lg font-semibold text-slate-800">
+                      {planta.preco}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -212,7 +244,8 @@ const LandingArcosPorto = () => {
               Lazer Completo
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Amenidades pensadas para proporcionar qualidade de vida e bem-estar
+              Amenidades pensadas para proporcionar qualidade de vida e
+              bem-estar
             </p>
           </div>
 
@@ -222,7 +255,9 @@ const LandingArcosPorto = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 border-2 border-blue-200/50">
                   <span className="text-3xl">{amenidade.icone}</span>
                 </div>
-                <h3 className="font-semibold text-slate-800">{amenidade.nome}</h3>
+                <h3 className="font-semibold text-slate-800">
+                  {amenidade.nome}
+                </h3>
               </div>
             ))}
           </div>
@@ -239,13 +274,15 @@ const LandingArcosPorto = () => {
                   Localização Estratégica
                 </h2>
                 <p className="text-lg text-blue-100 leading-relaxed">
-                  No coração do Porto Maravilha, conectado aos principais pontos 
+                  No coração do Porto Maravilha, conectado aos principais pontos
                   do Rio de Janeiro com mobilidade urbana excepcional.
                 </p>
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-blue-200">Pontos de Referência:</h3>
+                <h3 className="text-xl font-semibold text-blue-200">
+                  Pontos de Referência:
+                </h3>
                 <div className="grid grid-cols-1 gap-3">
                   {referenciasMapa.map((referencia, index) => (
                     <div key={index} className="flex items-center gap-3">
@@ -258,7 +295,9 @@ const LandingArcosPorto = () => {
 
               <div className="flex items-center gap-3 text-blue-200">
                 <Car className="w-5 h-5" />
-                <span>Acesso facilitado via transporte público e particular</span>
+                <span>
+                  Acesso facilitado via transporte público e particular
+                </span>
               </div>
             </div>
 
@@ -267,8 +306,17 @@ const LandingArcosPorto = () => {
               <div className="aspect-square bg-slate-700/50 rounded-xl flex items-center justify-center">
                 <div className="text-center text-slate-300">
                   <MapPin className="w-12 h-12 mx-auto mb-4" />
-                  <p>Mapa Interativo</p>
-                  <p className="text-sm">Porto Maravilha, RJ</p>
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.4001935584133!2d-43.208369724690016!3d-22.898605479260908!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f18561d1145%3A0x78e46e204ae2e58b!2sR.%20Cordeiro%20da%20Gra%C3%A7a%2C%20156%20-%20Santo%20Cristo%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2020220-400!5e0!3m2!1spt-BR!2sbr!4v1751971376326!5m2!1spt-BR!2sbr"
+                    width="100%"
+                    height="600"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Localização do Residencial Pixinguinha"
+                    className={`w-full 'h-80 lg:h-96'}`}
+                  ></iframe>
                 </div>
               </div>
             </div>
@@ -277,7 +325,10 @@ const LandingArcosPorto = () => {
       </section>
 
       {/* Seção Formulário de Interesse */}
-      <section id="interesse" className="py-16 lg:py-24 bg-gradient-to-br from-blue-50 to-slate-50">
+      <section
+        id="interesse"
+        className="py-16 lg:py-24 bg-gradient-to-br from-blue-50 to-slate-50"
+      >
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
@@ -285,14 +336,15 @@ const LandingArcosPorto = () => {
                 Tenho Interesse no Arcos do Porto
               </h2>
               <p className="text-lg text-slate-600">
-                Preencha o formulário e nossa equipe entrará em contato com informações exclusivas
+                Preencha o formulário e nossa equipe entrará em contato com
+                informações exclusivas
               </p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <div className="bg-white rounded-2xl p-8 shadow-lg">
-                  <LeadCaptureForm 
+                  <LeadCaptureForm
                     nomeLancamento="Arcos do Porto"
                     title="Receba informações exclusivas"
                     description="Nossa equipe especializada entrará em contato em breve"
@@ -305,35 +357,47 @@ const LandingArcosPorto = () => {
                   <h3 className="text-2xl font-bold text-slate-800">
                     Por que escolher o Arcos do Porto?
                   </h3>
-                  
+
                   <div className="space-y-4">
                     <div className="flex items-start gap-4">
                       <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                         <span className="text-white text-sm">✓</span>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-slate-800">Localização Premium</h4>
-                        <p className="text-slate-600">No centro do Porto Maravilha, próximo a tudo</p>
+                        <h4 className="font-semibold text-slate-800">
+                          Localização Premium
+                        </h4>
+                        <p className="text-slate-600">
+                          No centro do Porto Maravilha, próximo a tudo
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                       <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                         <span className="text-white text-sm">✓</span>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-slate-800">Construtora CURY</h4>
-                        <p className="text-slate-600">Tradição e qualidade comprovadas</p>
+                        <h4 className="font-semibold text-slate-800">
+                          Construtora CURY
+                        </h4>
+                        <p className="text-slate-600">
+                          Tradição e qualidade comprovadas
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                       <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                         <span className="text-white text-sm">✓</span>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-slate-800">Opções Flexíveis</h4>
-                        <p className="text-slate-600">Do Studio ao Garden, para todos os perfis</p>
+                        <h4 className="font-semibold text-slate-800">
+                          Opções Flexíveis
+                        </h4>
+                        <p className="text-slate-600">
+                          Do Studio ao Garden, para todos os perfis
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -343,8 +407,12 @@ const LandingArcosPorto = () => {
                   <div className="flex items-center gap-4">
                     <Users className="w-8 h-8" />
                     <div>
-                      <h4 className="font-semibold">Atendimento Especializado</h4>
-                      <p className="text-blue-100">Nossa equipe está pronta para atendê-lo</p>
+                      <h4 className="font-semibold">
+                        Atendimento Especializado
+                      </h4>
+                      <p className="text-blue-100">
+                        Nossa equipe está pronta para atendê-lo
+                      </p>
                     </div>
                   </div>
                 </div>
