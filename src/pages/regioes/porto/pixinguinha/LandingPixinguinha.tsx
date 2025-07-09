@@ -132,7 +132,6 @@ const LandingPixinguinha = () => {
     slogan: "A junção do passado e o presente moldando o futuro.",
     descricao:
       "O Residencial Pixinguinha oferece estúdios e apartamentos com 1 à 3 quartos com acabamento de alto padrão. Condominio com lazer completo e um SkyBar com uma vista incrível. Localizado no coração do Porto Maravilha, próximo a museus, restaurantes e do futuro estadio do Flamengo.",
-    entrega: "Previsão de entrega: Maio/2027",
     caracteristicas: [
       { titulo: "Tipos", valor: "1 a 3 quartos", icone: Home },
       { titulo: "Vagas", valor: "Opcionais", icone: Car },
@@ -257,13 +256,6 @@ const LandingPixinguinha = () => {
               </div>
 
               <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-white/20 shadow-xl">
-                <p
-                  className={`font-bold text-white mb-3 md:mb-4 ${
-                    isMobile ? "text-lg" : "text-xl lg:text-2xl"
-                  }`}
-                >
-                  {empreendimento.entrega}
-                </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
                   {empreendimento.caracteristicas.map((item, index) => {
                     const IconComponent = item.icone;
