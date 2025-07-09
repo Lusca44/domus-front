@@ -162,7 +162,7 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
   return (
     <>
       {/* Desktop Table */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <Table>
           <TableHeader>
             <TableRow>
@@ -208,51 +208,45 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
         </Table>
       </div>
 
-      {/* Mobile Cards */}
-      <div className="md:hidden space-y-4">
-        {leads.map((lead) => (
-          <Card key={lead.id} className="p-4 space-y-3">
-            <div className="space-y-2">
+      {/* Mobile Responsive Table */}
+      <div className="lg:hidden">
+        <div className="space-y-2">
+          {leads.map((lead) => (
+            <div key={lead.id} className="border rounded-lg p-3 space-y-2 bg-white">
               <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <h3 className="font-medium text-sm">{lead.nomeLancamento}</h3>
-                  <p className="text-sm text-gray-900">{lead.nomeCliente}</p>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm truncate">{lead.nomeLancamento}</div>
+                  <div className="text-sm text-gray-900 truncate">{lead.nomeCliente}</div>
+                </div>
+                <div className="flex gap-1 ml-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(lead)}
+                    title="Editar"
+                    className="h-8 w-8 p-0"
+                  >
+                    <Edit className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onDelete(lead)}
+                    title="Excluir"
+                    className="h-8 w-8 p-0"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
                 </div>
               </div>
-              
-              <div className="space-y-1">
-                <p className="text-xs text-gray-600">
-                  <span className="font-medium">Tel:</span> {lead.telefoneCliente}
-                </p>
-                <p className="text-xs text-gray-600 break-all">
-                  <span className="font-medium">Email:</span> {lead.emailCliente}
-                </p>
-                <p className="text-xs text-gray-600">
-                  <span className="font-medium">Corretor:</span> {getCorretorNome(lead.usuarioOpcionistaId)}
-                </p>
-              </div>
-              
-              <div className="flex justify-end gap-2 pt-2 border-t">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(lead)}
-                  title="Editar lead"
-                >
-                  <Edit className="h-3 w-3" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onDelete(lead)}
-                  title="Excluir lead"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
+              <div className="grid grid-cols-1 gap-1 text-xs text-gray-600">
+                <div className="flex"><span className="font-medium w-16">Tel:</span> {lead.telefoneCliente}</div>
+                <div className="flex"><span className="font-medium w-16">Email:</span> <span className="truncate ml-1">{lead.emailCliente}</span></div>
+                <div className="flex"><span className="font-medium w-16">Corretor:</span> {getCorretorNome(lead.usuarioOpcionistaId)}</div>
               </div>
             </div>
-          </Card>
-        ))}
+          ))}
+        </div>
       </div>
     </>
   );
