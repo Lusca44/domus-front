@@ -14,12 +14,12 @@ export function LeadsTableControls({
   totalItems,
 }: LeadsTableControlsProps) {
   return (
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
       <div className="text-sm text-gray-600">
         Total de {totalItems} leads encontradas
       </div>
-      <div className="flex flex-col space-y-2">
-        <Label htmlFor="items-per-page">Itens por página</Label>
+      <div className="flex flex-col space-y-2 w-full md:w-auto">
+        <Label htmlFor="items-per-page" className="text-xs">Itens por página</Label>
         <Input
           id="items-per-page"
           type="number"
@@ -30,7 +30,7 @@ export function LeadsTableControls({
             const value = parseInt(e.target.value) || 1;
             onItemsPerPageChange(Math.max(1, Math.min(100, value)));
           }}
-          className="w-[120px]"
+          className="w-[120px] md:w-[120px]"
         />
       </div>
     </div>
