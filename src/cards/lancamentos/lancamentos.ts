@@ -70,7 +70,7 @@ export const lancamentos: Imovel[] = [
     id: "5",
     titulo: "Ciata Residencial",
     descricao: "Cultura • Conexão • Legado. Uma homenagem a Tia Ciata no coração do Porto Maravilha, onde nasceu o samba.",
-    preco: "A partir de R$ 325.455,",
+    preco: "A partir de R$ 325.455",
     imagem: cardCiataResidencialImg,
     regiao: "Porto Maravilha",
     quartos: 2, 
