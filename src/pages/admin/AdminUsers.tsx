@@ -285,7 +285,9 @@ const AdminUsers = () => {
             </h3>
             <ul className="text-sm text-blue-800 space-y-1">
               <li>
-                • <strong>ATENÇÃO:</strong> Usuários excluidos serão apagados para sempre, caso queria manter dados relacionados a ele apenas desative-o
+                • <strong>ATENÇÃO:</strong> Usuários excluidos serão apagados
+                para sempre, caso queria manter dados relacionados a ele apenas
+                desative-o
               </li>
               <li>• A data de cadastro será definida automaticamente</li>
               <li>• Usuários inativos não poderão fazer login no sistema</li>
