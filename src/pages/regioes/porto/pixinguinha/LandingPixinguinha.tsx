@@ -270,11 +270,7 @@ const LandingPixinguinha = () => {
                 }`}>
                   {empreendimento.entrega}
                 </p>
-                <div className={`grid gap-3 md:gap-4 ${
-                  isMobile 
-                    ? 'grid-cols-2' 
-                    : 'grid-cols-2 md:grid-cols-4'
-                }`}>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
                   {empreendimento.caracteristicas.map((item, index) => {
                     const IconComponent = item.icone;
                     return (
@@ -282,8 +278,8 @@ const LandingPixinguinha = () => {
                         <div className="bg-blue-500/25 backdrop-blur-sm rounded-lg p-2 md:p-3 mb-2 mx-auto w-fit border border-blue-400/30">
                           <IconComponent className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-blue-300" />
                         </div>
-                        <p className="text-xs text-blue-200">{item.titulo}</p>
-                        <p className="font-semibold text-white text-xs md:text-sm">{item.valor}</p>
+                        <p className="text-xs text-blue-200 break-words">{item.titulo}</p>
+                        <p className="font-semibold text-white text-xs md:text-sm break-words">{item.valor}</p>
                       </div>
                     );
                   })}

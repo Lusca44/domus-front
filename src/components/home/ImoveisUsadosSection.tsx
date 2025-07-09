@@ -66,16 +66,11 @@ const ImoveisUsadosSection = () => {
                 <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
-              <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
                 {featuredImoveisUsados.map((imovel) => (
                   <div 
                     key={imovel.id} 
-                    className="w-full max-w-sm lg:max-w-md xl:max-w-lg transform hover:scale-105 transition-all duration-500 hover:shadow-2xl flex-shrink-0"
-                    style={{ 
-                      flexBasis: featuredImoveisUsados.length === 1 ? '400px' : 
-                                 featuredImoveisUsados.length === 2 ? '400px' : 
-                                 'min(400px, calc(33.333% - 2rem))'
-                    }}
+                    className="w-full transform hover:scale-105 transition-all duration-500 hover:shadow-2xl"
                   >
                     <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-100 overflow-hidden h-full">
                       <FeaturedCard {...imovel} />
@@ -96,15 +91,11 @@ const ImoveisUsadosSection = () => {
                 </span>
               </h4>
               
-              <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                 {regularImoveisUsados.map((imovel) => (
                   <div 
                     key={imovel.id}
-                    className="w-full max-w-sm transform hover:scale-102 transition-all duration-300 hover:shadow-lg flex-shrink-0"
-                    style={{ 
-                      flexBasis: 'min(320px, calc(25% - 1.5rem))',
-                      minWidth: '280px'
-                    }}
+                    className="w-full transform hover:scale-102 transition-all duration-300 hover:shadow-lg"
                   >
                     <FeaturedCard {...imovel} />
                   </div>
