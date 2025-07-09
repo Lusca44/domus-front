@@ -29,12 +29,13 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
-import Footer from "@/components/Footer";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import fotos from "./assets/fotos";
 import videos from "./assets/videos";
 import fotomontagem from './assets/img/emccamp - porto - fotomontagem a.jpg';
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 /**
  * Landing Page - Porto Carioca Residencial
@@ -138,36 +139,12 @@ const LandingPortoCarioca = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Cabeçalho - adaptado para mobile */}
-      <header className="border-b bg-white/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 md:py-4 flex justify-between items-center">
-          {!isMobile ? (
-            <>
-              <Link
-                to="/"
-                className="flex items-center text-blue-600 hover:text-blue-700 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar para início
-              </Link>
-              <Button variant="ghost" asChild>
-                <a href="tel:+552122223333" className="font-semibold">
-                  Contato: (21) 2222-3333
-                </a>
-              </Button>
-            </>
-          ) : (
-            <>
-              <div className="text-lg font-bold text-gray-900">Porto Carioca</div>
-              <MobileMenu />
-            </>
-          )}
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section com Background Image - adaptado para mobile */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Background Image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: `url(${fotomontagem})`,
@@ -185,39 +162,55 @@ const LandingPortoCarioca = () => {
         </div>
 
         <div className="container mx-auto px-4 py-8 md:py-16 relative z-20">
-          <div className={`grid grid-cols-1 ${isMobile ? 'gap-8' : 'lg:grid-cols-12 gap-8 lg:gap-12'} items-center min-h-[80vh]`}>
+          <div
+            className={`grid grid-cols-1 ${
+              isMobile ? "gap-8" : "lg:grid-cols-12 gap-8 lg:gap-12"
+            } items-center min-h-[80vh]`}
+          >
             {/* Coluna de Conteúdo */}
-            <div className={`${isMobile ? '' : 'lg:col-span-7'} space-y-4 md:space-y-6 lg:space-y-8`}>
+            <div
+              className={`${
+                isMobile ? "" : "lg:col-span-7"
+              } space-y-4 md:space-y-6 lg:space-y-8`}
+            >
               <div className="space-y-3 md:space-y-4">
                 <div className="inline-flex items-center px-3 md:px-4 py-2 bg-blue-500/30 backdrop-blur-sm rounded-full text-blue-200 text-xs md:text-sm font-medium border border-blue-400/30">
                   <Building className="w-3 h-3 md:w-4 md:h-4 mr-2" />
                   Lançamento Exclusivo
                 </div>
-                <h1 className={`font-bold text-white leading-tight ${
-                  isMobile 
-                    ? 'text-2xl sm:text-3xl' 
-                    : 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl'
-                }`}>
+                <h1
+                  className={`font-bold text-white leading-tight ${
+                    isMobile
+                      ? "text-2xl sm:text-3xl"
+                      : "text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+                  }`}
+                >
                   {empreendimento.nome}
                 </h1>
-                <p className={`text-blue-200 font-light ${
-                  isMobile 
-                    ? 'text-base sm:text-lg' 
-                    : 'text-lg sm:text-xl md:text-2xl'
-                }`}>
+                <p
+                  className={`text-blue-200 font-light ${
+                    isMobile
+                      ? "text-base sm:text-lg"
+                      : "text-lg sm:text-xl md:text-2xl"
+                  }`}
+                >
                   {empreendimento.slogan}
                 </p>
               </div>
 
               <div className="flex items-start text-blue-100">
                 <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3 mt-1 text-blue-400 flex-shrink-0" />
-                <p className="text-sm md:text-base lg:text-lg">{empreendimento.endereco}</p>
+                <p className="text-sm md:text-base lg:text-lg">
+                  {empreendimento.endereco}
+                </p>
               </div>
 
               <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-white/20 shadow-xl">
-                <p className={`font-bold text-white mb-3 md:mb-4 ${
-                  isMobile ? 'text-lg' : 'text-xl lg:text-2xl'
-                }`}>
+                <p
+                  className={`font-bold text-white mb-3 md:mb-4 ${
+                    isMobile ? "text-lg" : "text-xl lg:text-2xl"
+                  }`}
+                >
                   {empreendimento.entrega}
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
@@ -228,8 +221,12 @@ const LandingPortoCarioca = () => {
                         <div className="bg-blue-500/25 backdrop-blur-sm rounded-lg p-2 md:p-3 mb-2 mx-auto w-fit border border-blue-400/30">
                           <IconComponent className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-blue-300" />
                         </div>
-                        <p className="text-xs text-blue-200 break-words">{item.titulo}</p>
-                        <p className="font-semibold text-white text-xs md:text-sm break-words">{item.valor}</p>
+                        <p className="text-xs text-blue-200 break-words">
+                          {item.titulo}
+                        </p>
+                        <p className="font-semibold text-white text-xs md:text-sm break-words">
+                          {item.valor}
+                        </p>
                       </div>
                     );
                   })}
@@ -238,7 +235,7 @@ const LandingPortoCarioca = () => {
             </div>
 
             {/* Coluna do Formulário */}
-            <div className={`${isMobile ? '' : 'lg:col-span-5'}`}>
+            <div className={`${isMobile ? "" : "lg:col-span-5"}`}>
               <div className="bg-white/98 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/30 overflow-hidden">
                 <LeadCaptureForm
                   nomeLancamento="Porto Carioca"
@@ -271,7 +268,9 @@ const LandingPortoCarioca = () => {
                 <div className="bg-blue-100 rounded-full p-3 md:p-4 w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 flex items-center justify-center">
                   <Waves className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
                 </div>
-                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">Lazer Completo</h3>
+                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">
+                  Lazer Completo
+                </h3>
                 <p className="text-xs md:text-sm lg:text-base text-gray-600">
                   Rooftop, piscinas, academia e muito mais para sua diversão
                 </p>
@@ -283,7 +282,9 @@ const LandingPortoCarioca = () => {
                 <div className="bg-green-100 rounded-full p-3 md:p-4 w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 flex items-center justify-center">
                   <TreePine className="w-6 h-6 md:w-8 md:h-8 text-green-600" />
                 </div>
-                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">Localização Premium</h3>
+                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">
+                  Localização Premium
+                </h3>
                 <p className="text-xs md:text-sm lg:text-base text-gray-600">
                   No coração da revitalização do Porto Maravilha
                 </p>
@@ -295,7 +296,9 @@ const LandingPortoCarioca = () => {
                 <div className="bg-purple-100 rounded-full p-3 md:p-4 w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 flex items-center justify-center">
                   <Users className="w-6 h-6 md:w-8 md:h-8 text-purple-600" />
                 </div>
-                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">Conveniência</h3>
+                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">
+                  Conveniência
+                </h3>
                 <p className="text-xs md:text-sm lg:text-base text-gray-600">
                   Área comercial integrada e serviços no próprio condomínio
                 </p>
@@ -313,11 +316,12 @@ const LandingPortoCarioca = () => {
               Conheça cada detalhe
             </h2>
             <p className="text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
-              Explore todas as áreas e ambientes que farão parte do seu novo estilo de vida
+              Explore todas as áreas e ambientes que farão parte do seu novo
+              estilo de vida
             </p>
           </div>
 
-          <PhotoCarousel 
+          <PhotoCarousel
             photos={empreendimento.imagens}
             className="mb-8 md:mb-12 lg:mb-16"
           />
@@ -351,10 +355,15 @@ const LandingPortoCarioca = () => {
                                       // Thumbnail do YouTube
                                       <div className="relative w-full h-full">
                                         <iframe
-                                          src={video.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'embed/').split('?')[0]}
+                                          src={
+                                            video.url
+                                              .replace("watch?v=", "embed/")
+                                              .replace("youtu.be/", "embed/")
+                                              .split("?")[0]
+                                          }
                                           title={video.titulo}
                                           className="w-full h-full pointer-events-none"
-                                          style={{ pointerEvents: 'none' }}
+                                          style={{ pointerEvents: "none" }}
                                         />
                                         <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
                                           <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
@@ -370,7 +379,10 @@ const LandingPortoCarioca = () => {
                                           muted
                                           playsInline
                                         >
-                                          <source src={video.url} type="video/mp4" />
+                                          <source
+                                            src={video.url}
+                                            type="video/mp4"
+                                          />
                                         </video>
                                         <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
                                           <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
@@ -390,11 +402,18 @@ const LandingPortoCarioca = () => {
                             </Card>
                           </DialogTrigger>
                           <DialogContent className="max-w-4xl w-[90vw] max-h-[80vh] p-4 overflow-hidden">
-                            <DialogTitle className="sr-only">{video.titulo}</DialogTitle>
-                            <DialogDescription className="sr-only">Reprodução do vídeo: {video.titulo}</DialogDescription>
+                            <DialogTitle className="sr-only">
+                              {video.titulo}
+                            </DialogTitle>
+                            <DialogDescription className="sr-only">
+                              Reprodução do vídeo: {video.titulo}
+                            </DialogDescription>
                             <div className="w-full mx-auto h-full flex flex-col">
                               <div className="flex-1 min-h-0">
-                                <AspectRatio ratio={16 / 9} className="w-full h-full max-h-[calc(80vh-80px)]">
+                                <AspectRatio
+                                  ratio={16 / 9}
+                                  className="w-full h-full max-h-[calc(80vh-80px)]"
+                                >
                                   {isYouTubeVideo(video.url) ? (
                                     <iframe
                                       width="100%"
@@ -413,7 +432,10 @@ const LandingPortoCarioca = () => {
                                       autoPlay
                                       className="rounded object-contain max-h-full"
                                     >
-                                      <source src={video.url} type="video/mp4" />
+                                      <source
+                                        src={video.url}
+                                        type="video/mp4"
+                                      />
                                       Seu navegador não suporta vídeos HTML5.
                                     </video>
                                   )}
@@ -442,12 +464,18 @@ const LandingPortoCarioca = () => {
       {/* Seção de Diferenciais - adaptada para mobile */}
       <section className="py-12 md:py-16 lg:py-20 bg-slate-50">
         <div className="container mx-auto px-4">
-          <div className={`grid grid-cols-1 gap-8 md:gap-12 lg:grid-cols-2 lg:gap-16 items-center`}>
+          <div
+            className={`grid grid-cols-1 gap-8 md:gap-12 lg:grid-cols-2 lg:gap-16 items-center`}
+          >
             <div>
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 lg:mb-8 text-gray-900">
                 Diferenciais únicos
               </h2>
-              <div className={`grid grid-cols-1 gap-2 md:gap-3 lg:gap-4 ${isMobile ? '' : 'md:grid-cols-2'}`}>
+              <div
+                className={`grid grid-cols-1 gap-2 md:gap-3 lg:gap-4 ${
+                  isMobile ? "" : "md:grid-cols-2"
+                }`}
+              >
                 {empreendimento.diferenciais.map((item, index) => (
                   <div key={index} className="flex items-start group">
                     <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
@@ -460,23 +488,33 @@ const LandingPortoCarioca = () => {
             </div>
 
             <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-4 md:p-6 lg:p-8 text-white">
-              <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4 lg:mb-6">Por que escolher o Porto Carioca?</h3>
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4 lg:mb-6">
+                Por que escolher o Porto Carioca?
+              </h3>
               <ul className="space-y-2 md:space-y-3 lg:space-y-4">
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
-                  <span className="text-xs md:text-sm lg:text-base">Região em plena valorização imobiliária</span>
+                  <span className="text-xs md:text-sm lg:text-base">
+                    Região em plena valorização imobiliária
+                  </span>
                 </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
-                  <span className="text-xs md:text-sm lg:text-base">Proximidade com principais pontos turísticos</span>
+                  <span className="text-xs md:text-sm lg:text-base">
+                    Proximidade com principais pontos turísticos
+                  </span>
                 </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
-                  <span className="text-xs md:text-sm lg:text-base">Excelente conectividade urbana</span>
+                  <span className="text-xs md:text-sm lg:text-base">
+                    Excelente conectividade urbana
+                  </span>
                 </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
-                  <span className="text-xs md:text-sm lg:text-base">Projeto arquitetônico diferenciado</span>
+                  <span className="text-xs md:text-sm lg:text-base">
+                    Projeto arquitetônico diferenciado
+                  </span>
                 </li>
               </ul>
             </div>
@@ -496,42 +534,62 @@ const LandingPortoCarioca = () => {
             </p>
           </div>
 
-          <div className={`grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 lg:gap-12 items-center`}>
+          <div
+            className={`grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 lg:gap-12 items-center`}
+          >
             <div className="space-y-4 md:space-y-6">
               <div className="bg-blue-50 rounded-xl p-3 md:p-4 lg:p-6">
-                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-3 md:mb-4 text-blue-900">Facilidades da Localização:</h3>
+                <h3 className="text-base md:text-lg lg:text-xl font-bold mb-3 md:mb-4 text-blue-900">
+                  Facilidades da Localização:
+                </h3>
                 <ul className="space-y-2 md:space-y-3">
                   <li className="flex items-start">
                     <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Em frente ao futuro estádio do Flamengo</span>
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">
+                      Em frente ao futuro estádio do Flamengo
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Hospital da Gamboa - 1,2 km</span>
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">
+                      Hospital da Gamboa - 1,2 km
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Supermercado Supermarket - 850 m</span>
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">
+                      Supermercado Supermarket - 850 m
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Escolas</span>
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">
+                      Escolas
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Próximo ao VLT e estação de metrô</span>
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">
+                      Próximo ao VLT e estação de metrô
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Academias</span>
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">
+                      Academias
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Farmácias</span>
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">
+                      Farmácias
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs md:text-sm lg:text-base text-gray-700">Hortifruti</span>
+                    <span className="text-xs md:text-sm lg:text-base text-gray-700">
+                      Hortifruti
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -547,7 +605,7 @@ const LandingPortoCarioca = () => {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Localização do Porto Carioca Residencial"
-                className={`w-full ${isMobile ? 'h-64' : 'h-80 lg:h-96'}`}
+                className={`w-full ${isMobile ? "h-64" : "h-80 lg:h-96"}`}
               ></iframe>
             </div>
           </div>
@@ -562,18 +620,31 @@ const LandingPortoCarioca = () => {
               Sua nova vida no Porto Maravilha começa aqui
             </h2>
             <p className="text-base md:text-lg lg:text-xl mb-6 md:mb-8 lg:mb-12 text-blue-100">
-              Não perca a oportunidade de fazer parte da maior transformação urbana do Rio de Janeiro
+              Não perca a oportunidade de fazer parte da maior transformação
+              urbana do Rio de Janeiro
             </p>
 
-            <div className={`grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 lg:gap-12 items-center`}>
+            <div
+              className={`grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 lg:gap-12 items-center`}
+            >
               <div className="space-y-3 md:space-y-4 lg:space-y-6">
                 <div className="text-left">
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4">Condições Especiais de Lançamento:</h3>
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4">
+                    Condições Especiais de Lançamento:
+                  </h3>
                   <ul className="space-y-1 md:space-y-2 text-blue-100">
-                    <li className="text-sm md:text-base">• Entrada facilitada</li>
-                    <li className="text-sm md:text-base">• Financiamento direto com a construtora</li>
-                    <li className="text-sm md:text-base">• Desconto especial para pagamento à vista</li>
-                    <li className="text-sm md:text-base">• Parcelas durante a obra</li>
+                    <li className="text-sm md:text-base">
+                      • Entrada facilitada
+                    </li>
+                    <li className="text-sm md:text-base">
+                      • Financiamento direto com a construtora
+                    </li>
+                    <li className="text-sm md:text-base">
+                      • Desconto especial para pagamento à vista
+                    </li>
+                    <li className="text-sm md:text-base">
+                      • Parcelas durante a obra
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -592,14 +663,7 @@ const LandingPortoCarioca = () => {
       </section>
 
       {/* Footer */}
-      <Footer
-        empreendimentoNome={empreendimento.nome}
-        empreendimentoEndereco={empreendimento.endereco}
-        regiao={{
-          nome: "no Porto Maravilha",
-          path: "/",
-        }}
-      />
+      <Footer />
     </div>
   );
 };

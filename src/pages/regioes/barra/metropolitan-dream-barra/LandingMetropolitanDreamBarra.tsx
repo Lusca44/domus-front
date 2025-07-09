@@ -18,6 +18,8 @@ import {
 import PhotoCarousel from '@/components/PhotoCarousel';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 import fotos from './assets/fotos';
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 const LandingMetropolitanDreamBarra = () => {
   // TODO: Substituir por fotos reais
@@ -80,23 +82,7 @@ const LandingMetropolitanDreamBarra = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header com botão voltar */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50"
-            >
-              <Link to="/" className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Voltar para o início
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section
@@ -276,17 +262,17 @@ const LandingMetropolitanDreamBarra = () => {
 
           {/* TODO: Implementar mapa interativo quando a API key estiver disponível */}
           <div className="mt-12 bg-slate-100 h-96 rounded-2xl flex items-center justify-center">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3673.3966965052664!2d-43.368831624687694!3d-22.972435579208934!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9bd9006931209d%3A0xe3c7520268bb9759!2sCury%20-%20Condom%C3%ADnio%20Metropolitan%20Dream!5e0!3m2!1spt-BR!2sbr!4v1751984705381!5m2!1spt-BR!2sbr"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Localização do Residencial Pixinguinha"
-                className={`w-full "h-80 lg:h-96"}`}
-              ></iframe>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3673.3966965052664!2d-43.368831624687694!3d-22.972435579208934!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9bd9006931209d%3A0xe3c7520268bb9759!2sCury%20-%20Condom%C3%ADnio%20Metropolitan%20Dream!5e0!3m2!1spt-BR!2sbr!4v1751984705381!5m2!1spt-BR!2sbr"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Localização do Residencial Pixinguinha"
+              className={`w-full "h-80 lg:h-96"}`}
+            ></iframe>
           </div>
         </div>
       </section>
@@ -503,7 +489,7 @@ const LandingMetropolitanDreamBarra = () => {
       </section>
 
       {/* Footer Premium */}
-      <footer className="bg-gradient-to-br from-slate-800 to-slate-900 text-white py-16">
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold mb-4">
@@ -533,24 +519,9 @@ const LandingMetropolitanDreamBarra = () => {
               <p className="text-slate-300">Itens de lazer premium</p>
             </div>
           </div>
-
-          <div className="border-t border-slate-700 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <div className="mb-4 md:mb-0">
-                <p className="text-slate-300">
-                  &copy; 2024 Metropolitan Dream Barra. Incorporação CURY.
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-slate-400">Realização:</span>
-                <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-                  <span className="font-bold text-white">CURY</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </footer>
+      </div>
+      <Footer />
     </div>
   );
 };

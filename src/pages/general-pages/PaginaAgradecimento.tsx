@@ -28,19 +28,6 @@ const PaginaAgradecimento = () => {
    * Pode ser expandido conforme necessário
    */
   const getMensagem = () => {
-    
-    var acaoLancamento = null;
-
-    switch (dadosAgradecimento.nomeLancamento) {
-      case "Pixinguinha":
-      acaoLancamento = {
-        texto: `Retornar para o lançamento ${dadosAgradecimento.nomeLancamento}.`,
-        url: "/porto-maravilha/lancamento/pixinguinha",
-      };
-      default:
-        break;
-    }
-
     return {
       titulo: `Obrigado pelo seu interesse, ${dadosAgradecimento.nomeCliente}!`,
       subtitulo: `Sua solicitação informações sobre o ${dadosAgradecimento.nomeLancamento} foi recebida com sucesso. Nossa equipe entrará em contato em breve.`,
@@ -49,7 +36,6 @@ const PaginaAgradecimento = () => {
           texto: "Ver todos os lançamentos no Rio de Janeiro!",
           url: "/",
         },
-        acaoLancamento,
       ],
     };
   };
@@ -78,12 +64,14 @@ const PaginaAgradecimento = () => {
         {/* Detalhes sobre próximos passos */}
         <div className="bg-blue-50 rounded-lg p-4 mb-6 sm:mb-8">
           <p className="text-blue-700 text-xs sm:text-sm leading-relaxed">
-            Nossa equipe geralmente retorna o contato em até 24 horas úteis. Se
+            Nossa equipe entrará em contato assim que puder para te ajudar!. Se
             preferir, também pode nos ligar diretamente:
           </p>
-          <p className="text-blue-800 font-semibold mt-2 text-sm sm:text-base">
+          
+          {/* TODO Atualizar numero  */}
+          {/* <p className="text-blue-800 font-semibold mt-2 text-sm sm:text-base">
             Central de Vendas: (21) 2222-3333
-          </p>
+          </p> */}
         </div>
 
         {/* Botões de ação */}
@@ -100,7 +88,7 @@ const PaginaAgradecimento = () => {
 
       {/* Footer simples */}
       <p className="mt-6 sm:mt-8 text-gray-500 text-xs sm:text-sm text-center px-4">
-        &copy; 2025 Imobiliária Feitozza. Todos os direitos reservados.
+        &copy; 2025 Feitoza imóveis. Todos os direitos reservados.
       </p>
     </div>
   );
