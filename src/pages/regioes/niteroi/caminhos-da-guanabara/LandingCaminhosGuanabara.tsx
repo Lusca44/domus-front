@@ -15,8 +15,9 @@ import {
 } from "lucide-react";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
-import Footer from "@/components/Footer";
 import fotos from "./assets/fotos";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 const LandingCaminhosGuanabara = () => {
   // TODO: Substituir por imagem real do empreendimento
@@ -61,23 +62,7 @@ const LandingCaminhosGuanabara = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header com botão voltar */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="text-slate-700 hover:text-blue-600 hover:bg-blue-50"
-            >
-              <Link to="/" className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Voltar para o início
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Background Hero Section */}
       <div
@@ -418,7 +403,7 @@ const LandingCaminhosGuanabara = () => {
       </section>
 
       {/* Footer */}
-      <Footer isHomePage={false} />
+      <Footer  />
     </div>
   );
 };

@@ -362,31 +362,31 @@ const AdminLeads = () => {
     <ProtectedRoute>
       <AdminLayout>
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">
                 {isAdmin ? "Gerenciar Leads" : "Minhas Leads"}
               </h2>
-              <p className="text-gray-600 mt-1">
+              <p className="text-sm md:text-base text-gray-600 mt-1">
                 {isAdmin
                   ? "Gerencie todas as leads e atribua corretores"
                   : "Visualize e gerencie suas leads como corretor opcionista"}
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
               {/* Botão de edição em lote - apenas para administradores */}
               {isAdmin && (
                 <Button
                   onClick={() => setBulkEditModalOpen(true)}
                   variant="outline"
-                  className="gap-2"
+                  className="gap-2 w-full md:w-auto"
                   disabled={filteredLeads.length === 0}
                 >
                   <Users className="h-4 w-4" />
                   Editar em Lote
                 </Button>
               )}
-              <Button onClick={handleExportExcel} className="gap-2">
+              <Button onClick={handleExportExcel} className="gap-2 w-full md:w-auto">
                 <Download className="h-4 w-4" />
                 Exportar Excel
               </Button>
@@ -443,7 +443,7 @@ const AdminLeads = () => {
                   {totalPages > 1 && (
                     <div className="mt-4">
                       <Pagination>
-                        <PaginationContent>
+                        <PaginationContent className="flex-wrap justify-center">
                           {/* Botão "Anterior" - desabilitado se estiver na primeira página */}
                           <PaginationItem>
                             <PaginationPrevious
@@ -458,21 +458,30 @@ const AdminLeads = () => {
                             />
                           </PaginationItem>
 
-                          {/* Botões numerados das páginas */}
+                          {/* Botões numerados das páginas - mostrar menos no mobile */}
                           {Array.from(
                             { length: totalPages },
                             (_, i) => i + 1
-                          ).map((page) => (
-                            <PaginationItem key={page}>
-                              <PaginationLink
-                                onClick={() => setCurrentPage(page)}
-                                isActive={currentPage === page}
-                                className="cursor-pointer"
-                              >
-                                {page}
-                              </PaginationLink>
-                            </PaginationItem>
-                          ))}
+                          )
+                            .filter((page) => {
+                              // No mobile, mostrar apenas página atual ± 1
+                              if (window.innerWidth < 768) {
+                                return Math.abs(page - currentPage) <= 1;
+                              }
+                              // No desktop, mostrar todas as páginas (ou mais se necessário)
+                              return true;
+                            })
+                            .map((page) => (
+                              <PaginationItem key={page}>
+                                <PaginationLink
+                                  onClick={() => setCurrentPage(page)}
+                                  isActive={currentPage === page}
+                                  className="cursor-pointer"
+                                >
+                                  {page}
+                                </PaginationLink>
+                              </PaginationItem>
+                            ))}
 
                           {/* Botão "Próximo" - desabilitado se estiver na última página */}
                           <PaginationItem>

@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card } from "@/components/ui/card";
 import { Edit, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { userApi } from "@/utils/apiConfig";
@@ -159,48 +160,94 @@ export function LeadsTable({ leads, onEdit, onDelete }: LeadsTableProps) {
   };
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Interesse</TableHead>
-          <TableHead>Nome</TableHead>
-          <TableHead>Telefone</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Corretor Opcionista</TableHead>
-          <TableHead>Ações</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {leads.map((lead) => (
-          <TableRow key={lead.id}>
-            <TableCell>{lead.nomeLancamento}</TableCell>
-            <TableCell>{lead.nomeCliente}</TableCell>
-            <TableCell>{lead.telefoneCliente}</TableCell>
-            <TableCell>{lead.emailCliente}</TableCell>
-            <TableCell>{getCorretorNome(lead.usuarioOpcionistaId)}</TableCell>
-            <TableCell>
-              <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(lead)}
-                  title="Editar lead"
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onDelete(lead)}
-                  title="Excluir lead"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+    <>
+      {/* Desktop Table */}
+      <div className="hidden lg:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Interesse</TableHead>
+              <TableHead>Nome</TableHead>
+              <TableHead>Telefone</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Corretor Opcionista</TableHead>
+              <TableHead>Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {leads.map((lead) => (
+              <TableRow key={lead.id}>
+                <TableCell>{lead.nomeLancamento}</TableCell>
+                <TableCell>{lead.nomeCliente}</TableCell>
+                <TableCell>{lead.telefoneCliente}</TableCell>
+                <TableCell className="break-all">{lead.emailCliente}</TableCell>
+                <TableCell>{getCorretorNome(lead.usuarioOpcionistaId)}</TableCell>
+                <TableCell>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEdit(lead)}
+                      title="Editar lead"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onDelete(lead)}
+                      title="Excluir lead"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile Responsive Table */}
+      <div className="lg:hidden">
+        <div className="space-y-2">
+          {leads.map((lead) => (
+            <div key={lead.id} className="border rounded-lg p-3 space-y-2 bg-white">
+              <div className="flex justify-between items-start">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm truncate">{lead.nomeLancamento}</div>
+                  <div className="text-sm text-gray-900 truncate">{lead.nomeCliente}</div>
+                </div>
+                <div className="flex gap-1 ml-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(lead)}
+                    title="Editar"
+                    className="h-8 w-8 p-0"
+                  >
+                    <Edit className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onDelete(lead)}
+                    title="Excluir"
+                    className="h-8 w-8 p-0"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
               </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+              <div className="grid grid-cols-1 gap-1 text-xs text-gray-600">
+                <div className="flex"><span className="font-medium w-16">Tel:</span> {lead.telefoneCliente}</div>
+                <div className="flex"><span className="font-medium w-16">Email:</span> <span className="truncate ml-1">{lead.emailCliente}</span></div>
+                <div className="flex"><span className="font-medium w-16">Corretor:</span> {getCorretorNome(lead.usuarioOpcionistaId)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }

@@ -4,6 +4,14 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { UserPlus, Users, UserX, Trash2 } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
 import { userApi } from "@/utils/apiConfig";
@@ -78,18 +86,18 @@ const AdminUsers = () => {
     <ProtectedRoute>
       <AdminLayout>
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
                 Gerenciar Usuários
               </h2>
-              <p className="text-gray-600">
+              <p className="text-sm md:text-base text-gray-600">
                 Liste e gerencie todos os usuários do sistema.
               </p>
             </div>
             <Button
               onClick={() => setCreateModalOpen(true)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full md:w-auto"
             >
               <UserPlus className="h-4 w-4" />
               Novo Usuário
@@ -111,71 +119,133 @@ const AdminUsers = () => {
                   Nenhum usuário encontrado
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left p-3">Nome</th>
-                        <th className="text-left p-3">Email</th>
-                        <th className="text-left p-3">Telefone</th>
-                        <th className="text-left p-3">Tipo</th>
-                        <th className="text-left p-3">Status</th>
-                        <th className="text-left p-3">Data Cadastro</th>
-                        <th className="text-left p-3">Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {users.map((user) => (
-                        <tr key={user.id} className="border-b hover:bg-gray-50">
-                          <td className="p-3 font-medium">{user.nome}</td>
-                          <td className="p-3">{user.email}</td>
-                          <td className="p-3">{user.telefone || '-'}</td>
-                          <td className="p-3">
-                            <span className={`px-2 py-1 rounded-full text-xs ${
-                              user.isAdmin 
-                                ? 'bg-purple-100 text-purple-800' 
-                                : 'bg-blue-100 text-blue-800'
-                            }`}>
-                              {user.isAdmin ? 'Administrador' : 'Corretor'}
-                            </span>
-                          </td>
-                          <td className="p-3">
-                            <span className={`px-2 py-1 rounded-full text-xs ${
-                              user.ativo 
-                                ? 'bg-green-100 text-green-800' 
-                                : 'bg-red-100 text-red-800'
-                            }`}>
-                              {user.ativo ? 'Ativo' : 'Inativo'}
-                            </span>
-                          </td>
-                          <td className="p-3">
+                <>
+                  {/* Desktop Table */}
+                  <div className="hidden md:block">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Nome</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Telefone</TableHead>
+                          <TableHead>Tipo</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Data Cadastro</TableHead>
+                          <TableHead>Ações</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {users.map((user) => (
+                          <TableRow key={user.id}>
+                            <TableCell className="font-medium">{user.nome}</TableCell>
+                            <TableCell>{user.email}</TableCell>
+                            <TableCell>{user.telefone || '-'}</TableCell>
+                            <TableCell>
+                              <span className={`px-2 py-1 rounded-full text-xs ${
+                                user.isAdmin 
+                                  ? 'bg-purple-100 text-purple-800' 
+                                  : 'bg-blue-100 text-blue-800'
+                              }`}>
+                                {user.isAdmin ? 'Administrador' : 'Corretor'}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              <span className={`px-2 py-1 rounded-full text-xs ${
+                                user.ativo 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-red-100 text-red-800'
+                              }`}>
+                                {user.ativo ? 'Ativo' : 'Inativo'}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(user.dataCadastro).toLocaleDateString('pt-BR')}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  className={user.ativo ? "text-orange-600" : "text-green-600"}
+                                  onClick={() => handleDeactivate(user)}
+                                >
+                                  <UserX className="h-3 w-3" />
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="text-red-600"
+                                  onClick={() => handleDelete(user)}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* Mobile Cards */}
+                  <div className="md:hidden space-y-4">
+                    {users.map((user) => (
+                      <Card key={user.id} className="p-4 space-y-3">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-medium text-sm">{user.nome}</h3>
+                            <p className="text-xs text-gray-600 break-all">{user.email}</p>
+                            {user.telefone && (
+                              <p className="text-xs text-gray-600">{user.telefone}</p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2">
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            user.isAdmin 
+                              ? 'bg-purple-100 text-purple-800' 
+                              : 'bg-blue-100 text-blue-800'
+                          }`}>
+                            {user.isAdmin ? 'Admin' : 'Corretor'}
+                          </span>
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            user.ativo 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {user.ativo ? 'Ativo' : 'Inativo'}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-500">
                             {new Date(user.dataCadastro).toLocaleDateString('pt-BR')}
-                          </td>
-                          <td className="p-3">
-                            <div className="flex gap-2">
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                className={user.ativo ? "text-orange-600" : "text-green-600"}
-                                onClick={() => handleDeactivate(user)}
-                              >
-                                <UserX className="h-3 w-3" />
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="outline" 
-                                className="text-red-600"
-                                onClick={() => handleDelete(user)}
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          </span>
+                          <div className="flex gap-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className={user.ativo ? "text-orange-600" : "text-green-600"}
+                              onClick={() => handleDeactivate(user)}
+                            >
+                              <UserX className="h-3 w-3" />
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="text-red-600"
+                              onClick={() => handleDelete(user)}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </>
+              
               )}
             </CardContent>
           </Card>

@@ -251,10 +251,11 @@ const HomePage = () => {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-gray-600">
-              <div className="flex items-center gap-1">
+              {/* TODO Atualizar numero  */}
+              {/* <div className="flex items-center gap-1">
                 <Phone className="w-4 h-4" />
                 <span>(21) 2222-3333</span>
-              </div>
+              </div> */}
               <div className="flex items-center gap-1">
                 <Mail className="w-4 h-4" />
                 <span>Feitozaimoveis@yahoo.com</span>
@@ -377,7 +378,9 @@ const HomePage = () => {
               investimento no Rio de Janeiro.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
+              
+              {/* TODO Atualizar numero  */}
+              {/* <Button
                 size="lg"
                 variant="secondary"
                 className="bg-white text-blue-600 hover:bg-gray-100"
@@ -387,7 +390,7 @@ const HomePage = () => {
                   <Phone className="w-4 h-4 mr-2" />
                   Ligar Agora
                 </a>
-              </Button>
+              </Button> */}
               <Button
                 size="lg"
                 variant="outline"

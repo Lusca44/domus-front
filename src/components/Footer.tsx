@@ -38,9 +38,10 @@ const Footer: React.FC<FooterProps> = ({
           {/* Bloco 2 - Contato */}
           <div className="text-center max-w-xs">
             <h3 className="text-lg font-semibold mb-4">Contato</h3>
-            <p className="text-gray-400">Central de Vendas: (21) 2222-3333</p>
+            {/* TODO Atualizar numero  */}
+            {/* <p className="text-gray-400">Central de Vendas: (21) 2222-3333</p> */}
             <p className="text-gray-400">
-              Email: contato@portolancamentos.com.br
+              Email: Feitozaimoveis@yahoo.com
             </p>
           </div>
 
@@ -95,7 +96,7 @@ const Footer: React.FC<FooterProps> = ({
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 text-sm">
-          <p>&copy; 2025 Imobiliária Feitozza. Todos os direitos reservados.</p>
+          <p>&copy; 2025 Feitoza imóveis. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

@@ -38,7 +38,7 @@ const FeaturedCard = ({
           <img
             src={imagem}
             alt={titulo}
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-32 md:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           />
 
           {/* Container para os balões alinhados */}
@@ -58,28 +58,28 @@ const FeaturedCard = ({
           </div>
         </div>
 
-        <CardHeader className="pb-3 flex-grow-0">
-          <CardTitle className="text-lg mb-2 line-clamp-2 min-h-[3.5rem]">
+        <CardHeader className="pb-3 flex-grow">
+          <CardTitle className="text-sm md:text-lg mb-2 line-clamp-1 md:line-clamp-2">
             {titulo}
           </CardTitle>
-          <p className="text-gray-600 text-sm line-clamp-3 mb-2 min-h-[4.5rem]">
+          <p className="text-gray-600 text-xs md:text-sm line-clamp-1 md:line-clamp-3 mb-3">
             {descricao}
           </p>
-          <div className="flex items-center gap-1 text-gray-500 text-sm">
-            <MapPin className="w-4 h-4 flex-shrink-0" />
+          <div className="flex items-center gap-1 text-gray-500 text-xs md:text-sm">
+            <MapPin className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
             <span className="truncate">{regiao}</span>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-4 pt-0 flex-grow flex flex-col justify-end">
-          <div className="grid grid-cols-1 gap-2 text-sm text-gray-600">
+        <CardContent className="space-y-2 md:space-y-4 pt-0 flex-grow flex flex-col justify-end">
+          <div className="grid grid-cols-1 gap-1 md:gap-2 text-xs md:text-sm text-gray-600">
             <div className="flex items-center gap-1">
-              <Bed className="w-4 h-4 flex-shrink-0" />
+              <Bed className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
               <span>Até {quartos} quartos</span>
             </div>
           </div>
 
-          <div className="text-sm text-gray-600">
+          <div className="text-xs md:text-sm text-gray-600">
             <span className="font-medium">
               Área: {tipo == "lancamento" && <> Até </>}
             </span>{" "}
@@ -88,7 +88,7 @@ const FeaturedCard = ({
 
           <Button
             asChild
-            className="w-full bg-blue-600 hover:bg-blue-700 mt-auto"
+            className="w-full bg-blue-600 hover:bg-blue-700 mt-auto text-xs md:text-sm py-2 md:py-3"
           >
             <Link to={url} onClick={() => window.scrollTo(0, 0)}>
               Ver Detalhes
