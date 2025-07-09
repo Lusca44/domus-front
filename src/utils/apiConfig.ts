@@ -9,7 +9,7 @@ import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 
 const API_CONFIG = {
   baseUrl:  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/",
-  timeout: 10000, // Tempo limite para requisições (10 segundos)
+  timeout: 30000, // Tempo limite para requisições (10 segundos)
 };
 
 export class ApiClient {
