@@ -55,7 +55,6 @@ const LandingPortoCarioca = () => {
     slogan: "Viva a transformação do Porto Maravilha",
     descricao:
       "O Porto Carioca Residencial é um empreendimento de alto padrão localizado no coração da revitalização do Porto Maravilha. Com apartamentos de 1 a 3 quartos, oferece uma infraestrutura completa de lazer e conveniência, incluindo área comercial própria, academia, piscinas e muito mais.",
-    entrega: "Previsão de entrega: Dezembro/2026",
     caracteristicas: [
       { titulo: "Tipos", valor: "1 a 3 quartos", icone: Home },
       { titulo: "Vagas", valor: "Opcionais", icone: Car },
@@ -206,13 +205,6 @@ const LandingPortoCarioca = () => {
               </div>
 
               <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-white/20 shadow-xl">
-                <p
-                  className={`font-bold text-white mb-3 md:mb-4 ${
-                    isMobile ? "text-lg" : "text-xl lg:text-2xl"
-                  }`}
-                >
-                  {empreendimento.entrega}
-                </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
                   {empreendimento.caracteristicas.map((item, index) => {
                     const IconComponent = item.icone;
