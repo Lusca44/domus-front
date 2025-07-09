@@ -229,7 +229,7 @@ export const userApi = {
   create: (data: any): Promise<any> => apiClient.post('usuario/cadastroUsuario', data),
 
   // PUT /users/:id - Atualizar usuário
-  update: (id: string, data: any): Promise<any> => apiClient.put(`users/${id}`, data),
+  update: (id: string, data: any): Promise<any> => apiClient.put(`usuario/editar/${id}`, data),
 
   // DELETE /users/:id - Excluir usuário
   delete: (id: string): Promise<any> => apiClient.delete(`usuario/deleteUsuario/${id}`),

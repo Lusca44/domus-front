@@ -25,7 +25,7 @@ interface User {
   nome: string;
   email: string;
   telefone?: string;
-  isAdmin: boolean;
+  admin: boolean;
   ativo: boolean;
   dataCadastro: string;
 }
@@ -137,43 +137,59 @@ const AdminUsers = () => {
                       <TableBody>
                         {users.map((user) => (
                           <TableRow key={user.id}>
-                            <TableCell className="font-medium">{user.nome}</TableCell>
+                            {/* NOME */}
+                            <TableCell className="font-medium">
+                              {user.nome}
+                            </TableCell>
+                            {/* EMAIL */}
                             <TableCell>{user.email}</TableCell>
-                            <TableCell>{user.telefone || '-'}</TableCell>
+                            {/* TELEFONE */}
+                            <TableCell>{user.telefone || "-"}</TableCell>
+                            {/* TIPO */}
                             <TableCell>
-                              <span className={`px-2 py-1 rounded-full text-xs ${
-                                user.isAdmin 
-                                  ? 'bg-purple-100 text-purple-800' 
-                                  : 'bg-blue-100 text-blue-800'
-                              }`}>
-                                {user.isAdmin ? 'Administrador' : 'Corretor'}
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs ${
+                                  user.admin
+                                    ? "bg-purple-100 text-purple-800"
+                                    : "bg-blue-100 text-blue-800"
+                                }`}
+                              >
+                                {user.admin ? "Administrador" : "Corretor"}
                               </span>
                             </TableCell>
                             <TableCell>
-                              <span className={`px-2 py-1 rounded-full text-xs ${
-                                user.ativo 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : 'bg-red-100 text-red-800'
-                              }`}>
-                                {user.ativo ? 'Ativo' : 'Inativo'}
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs ${
+                                  user.ativo
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-red-100 text-red-800"
+                                }`}
+                              >
+                                {user.ativo ? "Ativo" : "Inativo"}
                               </span>
                             </TableCell>
                             <TableCell>
-                              {new Date(user.dataCadastro).toLocaleDateString('pt-BR')}
+                              {new Date(user.dataCadastro).toLocaleDateString(
+                                "pt-BR"
+                              )}
                             </TableCell>
                             <TableCell>
                               <div className="flex gap-2">
-                                <Button 
-                                  size="sm" 
+                                <Button
+                                  size="sm"
                                   variant="outline"
-                                  className={user.ativo ? "text-orange-600" : "text-green-600"}
+                                  className={
+                                    user.ativo
+                                      ? "text-orange-600"
+                                      : "text-green-600"
+                                  }
                                   onClick={() => handleDeactivate(user)}
                                 >
                                   <UserX className="h-3 w-3" />
                                 </Button>
-                                <Button 
-                                  size="sm" 
-                                  variant="outline" 
+                                <Button
+                                  size="sm"
+                                  variant="outline"
                                   className="text-red-600"
                                   onClick={() => handleDelete(user)}
                                 >
@@ -194,46 +210,60 @@ const AdminUsers = () => {
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
                             <h3 className="font-medium text-sm">{user.nome}</h3>
-                            <p className="text-xs text-gray-600 break-all">{user.email}</p>
+                            <p className="text-xs text-gray-600 break-all">
+                              {user.email}
+                            </p>
                             {user.telefone && (
-                              <p className="text-xs text-gray-600">{user.telefone}</p>
+                              <p className="text-xs text-gray-600">
+                                {user.telefone}
+                              </p>
                             )}
                           </div>
                         </div>
-                        
+
                         <div className="flex flex-wrap gap-2">
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            user.isAdmin 
-                              ? 'bg-purple-100 text-purple-800' 
-                              : 'bg-blue-100 text-blue-800'
-                          }`}>
-                            {user.isAdmin ? 'Admin' : 'Corretor'}
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs ${
+                              user.admin
+                                ? "bg-purple-100 text-purple-800"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
+                          >
+                            {user.admin ? "Admin" : "Corretor"}
                           </span>
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            user.ativo 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-red-100 text-red-800'
-                          }`}>
-                            {user.ativo ? 'Ativo' : 'Inativo'}
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs ${
+                              user.ativo
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {user.ativo ? "Ativo" : "Inativo"}
                           </span>
                         </div>
-                        
+
                         <div className="flex justify-between items-center">
                           <span className="text-xs text-gray-500">
-                            {new Date(user.dataCadastro).toLocaleDateString('pt-BR')}
+                            {new Date(user.dataCadastro).toLocaleDateString(
+                              "pt-BR"
+                            )}
                           </span>
                           <div className="flex gap-2">
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="outline"
-                              className={user.ativo ? "text-orange-600" : "text-green-600"}
+                              className={
+                                user.ativo
+                                  ? "text-orange-600"
+                                  : "text-green-600"
+                              }
                               onClick={() => handleDeactivate(user)}
                             >
                               <UserX className="h-3 w-3" />
                             </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline" 
+                            <Button
+                              size="sm"
+                              variant="outline"
                               className="text-red-600"
                               onClick={() => handleDelete(user)}
                             >
@@ -245,16 +275,20 @@ const AdminUsers = () => {
                     ))}
                   </div>
                 </>
-              
               )}
             </CardContent>
           </Card>
 
           <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-2">Informações importantes:</h3>
+            <h3 className="font-medium text-blue-900 mb-2">
+              Informações importantes:
+            </h3>
             <ul className="text-sm text-blue-800 space-y-1">
-              <li>• <strong>Corretores Opcionistas:</strong> Usuários com isAdmin = 'N'</li>
-              <li>• <strong>Administradores:</strong> Usuários com isAdmin = 'S'</li>
+              <li>
+                • <strong>ATENÇÃO:</strong> Usuários excluidos serão apagados
+                para sempre, caso queria manter dados relacionados a ele apenas
+                desative-o
+              </li>
               <li>• A data de cadastro será definida automaticamente</li>
               <li>• Usuários inativos não poderão fazer login no sistema</li>
             </ul>

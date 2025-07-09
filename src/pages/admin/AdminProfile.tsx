@@ -25,15 +25,15 @@ import { userApi, authApi } from "@/utils/apiConfig";
 import { useTokenValidation } from "@/hooks/useTokenValidation";
 
 interface UserProfile {
-  id: string;
+  id?: string;
   nome: string;
   email: string;
   telefone: string;
-  isAdmin: boolean;
-  role: string;
-  ativo: boolean;
-  dataCadastro: string;
-  createdAt: string;
+  isAdmin?: boolean;
+  role?: string;
+  ativo?: boolean;
+  dataCadastro?: string;
+  createdAt?: string;
 }
 
 interface EditFormData {
@@ -146,17 +146,17 @@ const AdminProfile = () => {
    */
   const handleSaveProfile = async () => {
     try {
-      const updatedProfile = await authApi.updateProfile({
+      
+      const updateProfile = {
         nome: editForm.name,
         email: editForm.email,
         telefone: editForm.phone,
-      });
+      }
+      userApi.update(authState.user.id, updateProfile);
       
-      // Atualizar estado local
-      setProfile(updatedProfile);
+      setProfile(updateProfile);
       
-      // Atualizar dados no localStorage
-      localStorage.setItem("user", JSON.stringify(updatedProfile));
+      localStorage.setItem("user", JSON.stringify(updateProfile));
       
       toast({
         title: "Perfil atualizado",
