@@ -58,11 +58,11 @@ const FeaturedCard = ({
           </div>
         </div>
 
-        <CardHeader className="pb-3 flex-grow-0">
-          <CardTitle className="text-sm md:text-lg mb-2 line-clamp-2 min-h-[2.5rem] md:min-h-[3.5rem]">
+        <CardHeader className="pb-3 flex-grow">
+          <CardTitle className="text-sm md:text-lg mb-2 line-clamp-1 md:line-clamp-2">
             {titulo}
           </CardTitle>
-          <p className="text-gray-600 text-xs md:text-sm line-clamp-2 md:line-clamp-3 mb-2 min-h-[2.5rem] md:min-h-[4.5rem]">
+          <p className="text-gray-600 text-xs md:text-sm line-clamp-1 md:line-clamp-3 mb-3">
             {descricao}
           </p>
           <div className="flex items-center gap-1 text-gray-500 text-xs md:text-sm">
