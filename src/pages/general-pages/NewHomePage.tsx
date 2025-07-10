@@ -9,15 +9,11 @@ import { usePropertyFilters } from "@/hooks/use-property-filters";
 import { lancamentos } from "@/cards/lancamentos/lancamentos";
 import { alugueis } from "@/cards/alugueis/alugueis";
 import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
+import fotos from '@/assets/images/carrocel-home/fotos-carrocel'
 
 const NewHomePage = () => {
   // Array de imagens para o carrossel de background
-  const backgroundImages = [
-    'https://images.unsplash.com/photo-1721322800607-8c38375eef04?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80',
-    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80',
-    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80',
-    'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80',
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'
+  const backgroundImages = [fotos
   ];
 
   // Estado para controlar qual imagem está sendo exibida
