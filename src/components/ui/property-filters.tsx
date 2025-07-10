@@ -41,9 +41,9 @@ export const PropertyFilters = ({
   return (
     <div className="bg-white rounded-lg p-6 shadow-xl mb-8">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 items-end">
-        <div>
+        <div className="min-w-[140px]">
           <Select value={selectedFinalidade} onValueChange={onFinalidadeChange}>
-            <SelectTrigger className="text-gray-900">
+            <SelectTrigger className="text-gray-900 w-full">
               <SelectValue placeholder="Finalidade" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -55,9 +55,9 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div>
+        <div className="min-w-[120px]">
           <Select value={selectedTipo} onValueChange={onTipoChange}>
-            <SelectTrigger className="text-gray-900">
+            <SelectTrigger className="text-gray-900 w-full">
               <SelectValue placeholder="Tipo" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -70,9 +70,9 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div>
+        <div className="min-w-[120px]">
           <Select value={selectedBairro} onValueChange={onBairroChange}>
-            <SelectTrigger className="text-gray-900">
+            <SelectTrigger className="text-gray-900 w-full">
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -86,9 +86,9 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div>
+        <div className="min-w-[120px]">
           <Select value={selectedQuartos} onValueChange={onQuartosChange}>
-            <SelectTrigger className="text-gray-900">
+            <SelectTrigger className="text-gray-900 w-full">
               <SelectValue placeholder="Quartos" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -101,9 +101,9 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div>
+        <div className="min-w-[130px]">
           <Select value={selectedMetragem} onValueChange={onMetragemChange}>
-            <SelectTrigger className="text-gray-900">
+            <SelectTrigger className="text-gray-900 w-full">
               <SelectValue placeholder="Metragem" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -117,9 +117,9 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div>
+        <div className="min-w-[120px]">
           <Select value={selectedValor} onValueChange={onValorChange}>
-            <SelectTrigger className="text-gray-900">
+            <SelectTrigger className="text-gray-900 w-full">
               <SelectValue placeholder="Valor" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
