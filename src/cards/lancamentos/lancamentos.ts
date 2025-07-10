@@ -52,7 +52,7 @@ export const lancamentos: Imovel[] = [
     quartos: 2,
     area: "51,30m²",
     url: "/lancamentos/caminhos-da-guanabara",
-    destaque: true,
+    destaque: false,
     tipo: "lancamento",
   },
   {
