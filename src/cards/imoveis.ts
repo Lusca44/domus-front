@@ -12,7 +12,6 @@ export interface Imovel {
   area: string;
   url: string;
   destaque: boolean;
-  regiaoDestaque?: boolean;
   tipo: "lancamento" | "aluguel" | "imoveis-usados";
 }
 

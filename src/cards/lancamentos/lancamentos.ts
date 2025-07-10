@@ -25,7 +25,6 @@ export const lancamentos: Imovel[] = [
     area: "83,63m²",
     url: "/porto-maravilha/lancamento/pixinguinha",
     destaque: true,
-    regiaoDestaque: true,
     tipo: "lancamento",
   },
   {
@@ -52,7 +51,6 @@ export const lancamentos: Imovel[] = [
     area: "51,30m²",
     url: "/lancamentos/caminhos-da-guanabara",
     destaque: true,
-    regiaoDestaque: true,
     tipo: "lancamento",
   },
   {
@@ -66,7 +64,6 @@ export const lancamentos: Imovel[] = [
     area: "59,08m²",
     url: "/lancamentos/arcos-do-porto",
     destaque: false,
-    regiaoDestaque: false,
     tipo: "lancamento",
   },
   {
@@ -80,7 +77,6 @@ export const lancamentos: Imovel[] = [
     area: "39,65m²",
     url: "/lancamentos/ciata-residencial",
     destaque: false,
-    regiaoDestaque: false,
     tipo: "lancamento",
   },
   {
@@ -94,7 +90,6 @@ export const lancamentos: Imovel[] = [
     area: "41,34m²",
     url: "/lancamentos/nova-olaria",
     destaque: false,
-    regiaoDestaque: false,
     tipo: "lancamento",
   },
   {
@@ -108,7 +103,6 @@ export const lancamentos: Imovel[] = [
     area: "76,56m²",
     url: "/lancamentos/orla-maua",
     destaque: false,
-    regiaoDestaque: false,
     tipo: "lancamento",
   },
   {
@@ -122,7 +116,6 @@ export const lancamentos: Imovel[] = [
     area: "79,74m²",
     url: "/lancamentos/metropolitan-dream-barra",
     destaque: true,
-    regiaoDestaque: true,
     tipo: "lancamento",
   },
   {
@@ -136,7 +129,6 @@ export const lancamentos: Imovel[] = [
     area: "136,25m²",
     url: "/lancamentos/americas19",
     destaque: false,
-    regiaoDestaque: false,
     tipo: "lancamento",
   },
   {
@@ -150,7 +142,6 @@ export const lancamentos: Imovel[] = [
     area: "67,98m²",
     url: "/lancamentos/orla-recreio-pontal",
     destaque: false,
-    regiaoDestaque: false,
     tipo: "lancamento",
   },
   {
@@ -164,7 +155,6 @@ export const lancamentos: Imovel[] = [
     area: "57,12m²",
     url: "/lancamentos/the-pier-residencial",
     destaque: false,
-    regiaoDestaque: false,
     tipo: "lancamento",
   },
   // **FINAL DA ÁREA DE ADIÇÃO - quando adicionar novos cards, coloque-os aqui seguindo este padrão**
