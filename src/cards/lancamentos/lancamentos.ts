@@ -25,6 +25,7 @@ export const lancamentos: Imovel[] = [
     quartos: 3,
     quartosDisponiveis: [1, 2, 3],
     area: "83,63m²",
+    areasDisponiveis: ["30m²", "45m²", "83m²"], // Áreas disponíveis para este lançamento
     url: "/porto-maravilha/lancamento/pixinguinha",
     destaque: true,
     tipo: "lancamento",
@@ -41,6 +42,7 @@ export const lancamentos: Imovel[] = [
     quartos: 3,
     quartosDisponiveis: [2, 3],
     area: "85,26m²",
+    areasDisponiveis: ["60m²", "75m²", "85m²"], // Áreas disponíveis para este lançamento
     url: "/porto-maravilha/lancamento/porto-carioca",
     destaque: true,
     tipo: "lancamento",
@@ -56,6 +58,7 @@ export const lancamentos: Imovel[] = [
     quartos: 2,
     quartosDisponiveis: [1, 2],
     area: "51,30m²",
+    areasDisponiveis: ["35m²", "42m²", "51m²"], // Áreas disponíveis para este lançamento
     url: "/lancamentos/caminhos-da-guanabara",
     destaque: false,
     tipo: "lancamento",
@@ -71,6 +74,7 @@ export const lancamentos: Imovel[] = [
     quartos: 2,
     quartosDisponiveis: [1, 2],
     area: "59,08m²",
+    areasDisponiveis: ["28m²", "45m²", "59m²"], // Áreas disponíveis para este lançamento
     url: "/lancamentos/arcos-do-porto",
     destaque: false,
     tipo: "lancamento",
@@ -86,6 +90,7 @@ export const lancamentos: Imovel[] = [
     quartos: 2, 
     quartosDisponiveis: [1, 2],
     area: "39,65m²",
+    areasDisponiveis: ["25m²", "32m²", "39m²"], // Áreas disponíveis para este lançamento
     url: "/lancamentos/ciata-residencial",
     destaque: false,
     tipo: "lancamento",
@@ -101,6 +106,7 @@ export const lancamentos: Imovel[] = [
     quartos: 2,
     quartosDisponiveis: [2, 3],
     area: "41,34m²",
+    areasDisponiveis: ["35m²", "38m²", "41m²"], // Áreas disponíveis para este lançamento
     url: "/lancamentos/nova-olaria",
     destaque: false,
     tipo: "lancamento",
@@ -116,6 +122,7 @@ export const lancamentos: Imovel[] = [
     quartos: 3, 
     quartosDisponiveis: [2, 3],
     area: "76,56m²",
+    areasDisponiveis: ["55m²", "68m²", "76m²"], // Áreas disponíveis para este lançamento
     url: "/lancamentos/orla-maua",
     destaque: false,
     tipo: "lancamento",
@@ -132,6 +139,7 @@ export const lancamentos: Imovel[] = [
     quartos: 3, 
     quartosDisponiveis: [2, 3, 4],
     area: "79,74m²",
+    areasDisponiveis: ["58m²", "69m²", "79m²", "95m²"], // Áreas disponíveis para este lançamento
     url: "/lancamentos/metropolitan-dream-barra",
     destaque: true,
     tipo: "lancamento",
@@ -147,6 +155,7 @@ export const lancamentos: Imovel[] = [
     quartos: 3,
     quartosDisponiveis: [3, 4],
     area: "136,25m²",
+    areasDisponiveis: ["98m²", "115m²", "136m²"], // Áreas disponíveis para este lançamento
     url: "/lancamentos/americas19",
     destaque: false,
     tipo: "lancamento",
@@ -162,6 +171,7 @@ export const lancamentos: Imovel[] = [
     quartos: 3,
     quartosDisponiveis: [2, 3],
     area: "67,98m²",
+    areasDisponiveis: ["52m²", "60m²", "67m²"], // Áreas disponíveis para este lançamento
     url: "/lancamentos/orla-recreio-pontal",
     destaque: false,
     tipo: "lancamento",
@@ -177,6 +187,7 @@ export const lancamentos: Imovel[] = [
     quartos: 3,
     quartosDisponiveis: [1, 2, 3],
     area: "57,12m²",
+    areasDisponiveis: ["32m²", "45m²", "57m²"], // Áreas disponíveis para este lançamento
     url: "/lancamentos/the-pier-residencial",
     destaque: false,
     tipo: "lancamento",

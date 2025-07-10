@@ -24,7 +24,7 @@ export const usePropertyFilters = (allProperties: any[]) => {
     return parseInt(numbers) || 0;
   };
 
-  // Função para extrair área numérica
+  // Função para extrair área numérica de uma string (ex: "41m²" -> 41)
   const extractArea = (area: string): number => {
     const numbers = area.replace(/[^\d,]/g, '').replace(',', '.');
     return parseFloat(numbers) || 0;
@@ -66,11 +66,22 @@ export const usePropertyFilters = (allProperties: any[]) => {
       }
     }
 
-    // Filtro de metragem (até)
+    // Filtro de metragem (até) - verifica se existe alguma área disponível que seja <= ao filtro
     if (selectedMetragem && selectedMetragem !== "null") {
-      const area = extractArea(imovel.area);
       const maxArea = parseInt(selectedMetragem);
-      if (area > maxArea) return false;
+      
+      // Se o imóvel tem areasDisponiveis, verificar se alguma área é <= maxArea
+      if (imovel.areasDisponiveis && imovel.areasDisponiveis.length > 0) {
+        const hasValidArea = imovel.areasDisponiveis.some(area => {
+          const areaNumeric = extractArea(area);
+          return areaNumeric <= maxArea;
+        });
+        if (!hasValidArea) return false;
+      } else {
+        // Fallback para o comportamento antigo se não tiver areasDisponiveis
+        const area = extractArea(imovel.area);
+        if (area > maxArea) return false;
+      }
     }
 
     // Filtro de valor (até)

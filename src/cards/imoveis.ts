@@ -11,6 +11,7 @@ export interface Imovel {
   quartos: number;
   quartosDisponiveis?: number[];
   area: string;
+  areasDisponiveis?: string[]; // Lista de áreas disponíveis para o imóvel (ex: ["41m²", "22m²", "30m²"])
   url: string;
   destaque: boolean;
   tipo: "lancamento" | "aluguel" | "imoveis-usados";
