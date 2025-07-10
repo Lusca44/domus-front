@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Building2, BedDouble, Ruler } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { MapPin, Search, BedDouble, Ruler } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -11,21 +10,103 @@ import { alugueis } from "@/cards/alugueis/alugueis";
 import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
 
 const NewHomePage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedFinalidade, setSelectedFinalidade] = useState("");
   const [selectedTipo, setSelectedTipo] = useState("");
   const [selectedBairro, setSelectedBairro] = useState("");
+  const [selectedQuartos, setSelectedQuartos] = useState("");
+  const [selectedMetragem, setSelectedMetragem] = useState("");
+  const [selectedValor, setSelectedValor] = useState("");
 
   // Combinar todos os imóveis
   const todosImoveis = useMemo(() => {
     return [...lancamentos, ...alugueis, ...imoveisUsados];
   }, []);
 
-  // Agrupar por região
+  // Função para extrair valor numérico do preço
+  const extractPrice = (preco: string): number => {
+    const numbers = preco.replace(/[^\d]/g, '');
+    return parseInt(numbers) || 0;
+  };
+
+  // Função para extrair área numérica
+  const extractArea = (area: string): number => {
+    const numbers = area.replace(/[^\d,]/g, '').replace(',', '.');
+    return parseFloat(numbers) || 0;
+  };
+
+  // Função para verificar se o imóvel atende aos filtros
+  const matchesFilters = (imovel: any) => {
+    // Filtro de finalidade
+    if (selectedFinalidade) {
+      if (selectedFinalidade === "venda" && imovel.tipo === "aluguel") return false;
+      if (selectedFinalidade === "aluguel" && imovel.tipo !== "aluguel") return false;
+    }
+
+    // Filtro de bairro
+    if (selectedBairro && imovel.regiao.toLowerCase() !== selectedBairro) return false;
+
+    // Filtro de quartos
+    if (selectedQuartos) {
+      const quartos = parseInt(selectedQuartos);
+      if (quartos === 4 && imovel.quartos < 4) return false;
+      if (quartos !== 4 && imovel.quartos !== quartos) return false;
+    }
+
+    // Filtro de metragem
+    if (selectedMetragem) {
+      const area = extractArea(imovel.area);
+      switch (selectedMetragem) {
+        case "0-50":
+          if (area > 50) return false;
+          break;
+        case "50-80":
+          if (area < 50 || area > 80) return false;
+          break;
+        case "80-120":
+          if (area < 80 || area > 120) return false;
+          break;
+        case "120+":
+          if (area < 120) return false;
+          break;
+      }
+    }
+
+    // Filtro de valor
+    if (selectedValor) {
+      const preco = extractPrice(imovel.preco);
+      switch (selectedValor) {
+        case "0-300000":
+          if (preco > 300000) return false;
+          break;
+        case "300000-500000":
+          if (preco < 300000 || preco > 500000) return false;
+          break;
+        case "500000-800000":
+          if (preco < 500000 || preco > 800000) return false;
+          break;
+        case "800000+":
+          if (preco < 800000) return false;
+          break;
+      }
+    }
+
+    return true;
+  };
+
+  // Filtrar imóveis baseado nos filtros selecionados
+  const imoveisFiltrados = useMemo(() => {
+    return todosImoveis.filter(matchesFilters);
+  }, [todosImoveis, selectedFinalidade, selectedTipo, selectedBairro, selectedQuartos, selectedMetragem, selectedValor]);
+
+  // Agrupar por região (usando imóveis filtrados para busca ou todos para exibição inicial)
+  const imoveisParaAgrupar = (selectedFinalidade || selectedTipo || selectedBairro || selectedQuartos || selectedMetragem || selectedValor) 
+    ? imoveisFiltrados 
+    : todosImoveis;
+
   const imoveisPorRegiao = useMemo(() => {
     const grupos: { [key: string]: typeof todosImoveis } = {};
     
-    todosImoveis.forEach(imovel => {
+    imoveisParaAgrupar.forEach(imovel => {
       if (!grupos[imovel.regiao]) {
         grupos[imovel.regiao] = [];
       }
@@ -33,7 +114,7 @@ const NewHomePage = () => {
     });
 
     return grupos;
-  }, [todosImoveis]);
+  }, [imoveisParaAgrupar]);
 
   // Obter regiões em destaque (que têm pelo menos um imóvel marcado como destaque)
   const regioesDestaque = useMemo(() => {
@@ -114,19 +195,13 @@ const NewHomePage = () => {
 
             {/* Barra de Busca */}
             <div className="bg-white rounded-lg p-6 shadow-xl">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-                <Input
-                  placeholder="Código do imóvel"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="text-gray-900"
-                />
-                
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
                 <Select value={selectedFinalidade} onValueChange={setSelectedFinalidade}>
                   <SelectTrigger className="text-gray-900">
                     <SelectValue placeholder="Finalidade" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="">Todas</SelectItem>
                     <SelectItem value="venda">Venda</SelectItem>
                     <SelectItem value="aluguel">Locação</SelectItem>
                   </SelectContent>
@@ -137,6 +212,7 @@ const NewHomePage = () => {
                     <SelectValue placeholder="Tipo" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="">Todos</SelectItem>
                     <SelectItem value="apartamento">Apartamento</SelectItem>
                     <SelectItem value="casa">Casa</SelectItem>
                     <SelectItem value="cobertura">Cobertura</SelectItem>
@@ -149,6 +225,7 @@ const NewHomePage = () => {
                     <SelectValue placeholder="Bairro" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="">Todos</SelectItem>
                     {Object.keys(imoveisPorRegiao).map(regiao => (
                       <SelectItem key={regiao} value={regiao.toLowerCase()}>
                         {regiao}
@@ -157,9 +234,50 @@ const NewHomePage = () => {
                   </SelectContent>
                 </Select>
 
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                <Select value={selectedQuartos} onValueChange={setSelectedQuartos}>
+                  <SelectTrigger className="text-gray-900">
+                    <SelectValue placeholder="Quartos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Todos</SelectItem>
+                    <SelectItem value="1">1 Quarto</SelectItem>
+                    <SelectItem value="2">2 Quartos</SelectItem>
+                    <SelectItem value="3">3 Quartos</SelectItem>
+                    <SelectItem value="4">4+ Quartos</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={selectedMetragem} onValueChange={setSelectedMetragem}>
+                  <SelectTrigger className="text-gray-900">
+                    <SelectValue placeholder="Área" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Todas</SelectItem>
+                    <SelectItem value="0-50">Até 50m²</SelectItem>
+                    <SelectItem value="50-80">50m² - 80m²</SelectItem>
+                    <SelectItem value="80-120">80m² - 120m²</SelectItem>
+                    <SelectItem value="120+">Acima de 120m²</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={selectedValor} onValueChange={setSelectedValor}>
+                  <SelectTrigger className="text-gray-900">
+                    <SelectValue placeholder="Valor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Todos</SelectItem>
+                    <SelectItem value="0-300000">Até R$ 300.000</SelectItem>
+                    <SelectItem value="300000-500000">R$ 300.000 - R$ 500.000</SelectItem>
+                    <SelectItem value="500000-800000">R$ 500.000 - R$ 800.000</SelectItem>
+                    <SelectItem value="800000+">Acima de R$ 800.000</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex justify-center">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-12">
                   <Search className="w-4 h-4 mr-2" />
-                  Buscar
+                  Buscar Imóveis
                 </Button>
               </div>
             </div>
