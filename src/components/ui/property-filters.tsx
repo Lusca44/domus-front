@@ -41,7 +41,7 @@ export const PropertyFilters = ({
   return (
     <div className="bg-white rounded-lg p-4 sm:p-6 shadow-xl mb-8">
       <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 sm:gap-6 sm:items-end">
-        <div className="w-full sm:min-w-[140px]">
+        <div className="w-full sm:min-w-[120px]">
           <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
             Finalidade
           </label>
@@ -113,7 +113,7 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div className="w-full sm:min-w-[130px]">
+        <div className="w-full sm:min-w-[120px]">
           <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
             Metragem
           </label>
