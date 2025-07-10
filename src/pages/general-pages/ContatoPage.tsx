@@ -51,23 +51,23 @@ const ContatoPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
       <Header />
       
-      <div className="pt-8 pb-16">
+      <div className="pt-6 sm:pt-8 pb-12 sm:pb-16">
         <div className="container mx-auto px-4">
           {/* Hero Section */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-6">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
               Entre em Contato
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
               Estamos aqui para ajudar você a encontrar o imóvel ideal ou esclarecer qualquer dúvida. 
               Nossa equipe especializada está sempre à disposição.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12 max-w-6xl mx-auto">
             {/* Informações de Contato */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   Informações de Contato
                 </h2>
@@ -130,13 +130,13 @@ const ContatoPage = () => {
 
             {/* Formulário de Contato */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   Envie sua Mensagem
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Nome Completo *
@@ -161,7 +161,7 @@ const ContatoPage = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         E-mail *
@@ -215,14 +215,14 @@ const ContatoPage = () => {
           </div>
 
           {/* Seção de Diferenciais */}
-          <div className="mt-16">
+          <div className="mt-12 sm:mt-16">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                 Por que escolher a Feitoza Imóveis?
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Clock className="w-8 h-8 text-white" />

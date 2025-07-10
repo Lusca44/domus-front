@@ -39,11 +39,14 @@ export const PropertyFilters = ({
   showSearchButton = false
 }: PropertyFiltersProps) => {
   return (
-    <div className="bg-white rounded-lg p-6 shadow-xl mb-8">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6 items-end">
-        <div className="min-w-[120px]">
+    <div className="bg-white rounded-lg p-4 sm:p-6 shadow-xl mb-8">
+      <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 sm:gap-6 sm:items-end">
+        <div className="w-full sm:min-w-[140px]">
+          <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
+            Finalidade
+          </label>
           <Select value={selectedFinalidade} onValueChange={onFinalidadeChange}>
-            <SelectTrigger className="text-gray-900 w-full">
+            <SelectTrigger className="text-gray-900 w-full h-12">
               <SelectValue placeholder="Finalidade" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -55,9 +58,12 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div className="min-w-[120px]">
+        <div className="w-full sm:min-w-[120px]">
+          <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
+            Tipo
+          </label>
           <Select value={selectedTipo} onValueChange={onTipoChange}>
-            <SelectTrigger className="text-gray-900 w-full">
+            <SelectTrigger className="text-gray-900 w-full h-12">
               <SelectValue placeholder="Tipo" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -70,9 +76,12 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div className="min-w-[120px]">
+        <div className="w-full sm:min-w-[120px]">
+          <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
+            Bairro
+          </label>
           <Select value={selectedBairro} onValueChange={onBairroChange}>
-            <SelectTrigger className="text-gray-900 w-full">
+            <SelectTrigger className="text-gray-900 w-full h-12">
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -86,9 +95,12 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div className="min-w-[120px]">
+        <div className="w-full sm:min-w-[120px]">
+          <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
+            Quartos
+          </label>
           <Select value={selectedQuartos} onValueChange={onQuartosChange}>
-            <SelectTrigger className="text-gray-900 w-full">
+            <SelectTrigger className="text-gray-900 w-full h-12">
               <SelectValue placeholder="Quartos" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -101,9 +113,12 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div className="min-w-[120px]">
+        <div className="w-full sm:min-w-[130px]">
+          <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
+            Metragem
+          </label>
           <Select value={selectedMetragem} onValueChange={onMetragemChange}>
-            <SelectTrigger className="text-gray-900 w-full">
+            <SelectTrigger className="text-gray-900 w-full h-12">
               <SelectValue placeholder="Metragem" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -117,9 +132,12 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div className="min-w-[120px]">
+        <div className="w-full sm:min-w-[120px]">
+          <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
+            Valor
+          </label>
           <Select value={selectedValor} onValueChange={onValorChange}>
-            <SelectTrigger className="text-gray-900 w-full">
+            <SelectTrigger className="text-gray-900 w-full h-12">
               <SelectValue placeholder="Valor" />
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
@@ -134,9 +152,14 @@ export const PropertyFilters = ({
         </div>
         
         {showSearchButton && (
-          <div>
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 h-10 w-10 p-0" onClick={onSearch}>
-              <Search className="w-4 h-4" />
+          <div className="w-full sm:w-auto mt-2 sm:mt-0">
+            <Button 
+              size="lg" 
+              className="bg-blue-600 hover:bg-blue-700 w-full sm:w-12 h-12 sm:p-0 text-sm sm:text-base" 
+              onClick={onSearch}
+            >
+              <Search className="w-4 h-4 sm:mr-0 mr-2" />
+              <span className="sm:hidden">Buscar</span>
             </Button>
           </div>
         )}

@@ -10,13 +10,13 @@ const ProntosPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
       <Header />
       
-      <div className="pt-8">
+      <div className="pt-6 sm:pt-8">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Imóveis Prontos
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
               Encontre imóveis prontos para morar ou investir, incluindo opções para aluguel e compra.
             </p>
           </div>

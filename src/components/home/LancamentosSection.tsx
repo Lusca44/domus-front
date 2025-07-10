@@ -63,13 +63,13 @@ const LancamentosSection = () => {
           {featuredLancamentos.length > 0 && (
             <div className="mb-16">
               <div className="text-center mb-8">
-                <h3 className="text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Lançamentos em Destaque
                 </h3>
-                <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
+                <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                 {featuredLancamentos.map((lancamento) => (
                   <div 
                     key={lancamento.id} 
@@ -87,14 +87,14 @@ const LancamentosSection = () => {
           {/* Outros Lançamentos */}
           {regularLancamentos.length > 0 && (
             <div className="border-t border-gray-200 pt-12">
-              <h4 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+              <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-8 text-center">
                 Outros Lançamentos 
-                <span className="text-lg font-normal text-gray-600 ml-2">
+                <span className="text-base sm:text-lg font-normal text-gray-600 ml-2">
                   ({regularLancamentos.length})
                 </span>
               </h4>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {regularLancamentos.map((lancamento) => (
                   <div 
                     key={lancamento.id}

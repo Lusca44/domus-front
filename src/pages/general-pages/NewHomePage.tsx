@@ -105,15 +105,15 @@ const NewHomePage = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 to-blue-700 text-white py-20">
+      <section className="relative bg-gradient-to-r from-blue-900 to-blue-700 text-white py-12 sm:py-16 md:py-20">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Encontre Seu Novo
-              <span className="block text-blue-300">Lar no Rio</span>
+              <span className="block text-blue-300 mt-2">Lar no Rio</span>
             </h1>
-            <p className="text-xl mb-12 opacity-90">
+            <p className="text-lg sm:text-xl mb-8 sm:mb-12 opacity-90 max-w-2xl mx-auto">
               Descubra imóveis exclusivos nas melhores regiões do Rio de Janeiro
             </p>
 
@@ -145,16 +145,16 @@ const NewHomePage = () => {
           .slice(0, 2); // Apenas 2 cards por região
 
         return (
-          <section key={regiao} className="py-16 bg-gray-50">
+          <section key={regiao} className="py-12 sm:py-16 bg-gray-50">
             <div className="container mx-auto px-4">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <div className="text-center mb-8 sm:mb-12">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                   {regiao}
                 </h2>
-                <div className="w-24 h-1 bg-blue-600 mx-auto"></div>
+                <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
                 {imoveisRegiao.map((imovel) => (
                   <div
                     key={imovel.id}
@@ -219,16 +219,16 @@ const NewHomePage = () => {
 
       {/* Outras Regiões */}
       {imoveisOutrasRegioes.length > 0 && (
-        <section className="py-16 bg-white">
+        <section className="py-12 sm:py-16 bg-white">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                 Outras Regiões
               </h2>
-              <div className="w-24 h-1 bg-blue-600 mx-auto"></div>
+              <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
               {imoveisOutrasRegioes.map((imovel) => (
                 <div
                   key={imovel.id}
@@ -299,16 +299,16 @@ const NewHomePage = () => {
       )}
 
       {/* CTA Section */}
-      <section className="py-16 bg-blue-600 text-white">
+      <section className="py-12 sm:py-16 bg-blue-600 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h3 className="text-3xl font-bold mb-6">
+            <h3 className="text-2xl sm:text-3xl font-bold mb-6">
               Não Encontrou o Imóvel Ideal?
             </h3>
-            <p className="text-xl mb-8 opacity-90">
+            <p className="text-lg sm:text-xl mb-8 opacity-90">
               Entre em contato conosco e descubra outras oportunidades exclusivas no Rio de Janeiro.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col gap-4 sm:flex-row sm:gap-4 justify-center">
               <Button
                 size="lg"
                 variant="outline"
