@@ -1,6 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import HomePage from "./pages/general-pages/HomePage";
+import HomePage from "./pages/general-pages/NewHomePage";
+import LancamentosPage from "./pages/general-pages/LancamentosPage";
+import ProntosPage from "./pages/general-pages/ProntosPage";
+import AnunciePage from "./pages/general-pages/AnunciePage";
+import ContatoPage from "./pages/general-pages/ContatoPage";
 import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
 import LandingPortoCarioca from "./pages/regioes/porto/porto-carioca/LandingPortoCarioca";
 import LandingCaminhosGuanabara from "./pages/regioes/niteroi/caminhos-da-guanabara/LandingCaminhosGuanabara";
@@ -34,6 +38,12 @@ function App() {
           <Routes>
             {/* Página inicial com hubs de regiões */}
             <Route path="/" element={<HomePage />} />
+            
+            {/* Novas páginas do menu */}
+            <Route path="/lancamentos" element={<LancamentosPage />} />
+            <Route path="/prontos" element={<ProntosPage />} />
+            <Route path="/anuncie" element={<AnunciePage />} />
+            <Route path="/contato" element={<ContatoPage />} />
 
             <Route
               path="/porto-maravilha/lancamento/pixinguinha"
