@@ -13,6 +13,12 @@ export interface Imovel {
   url: string;
   destaque: boolean;
   tipo: "lancamento" | "aluguel" | "imoveis-usados";
+  regiaoDestaque?: boolean;
+}
+
+export interface RegiaoDestaque {
+  nome: string;
+  destaque: boolean;
 }
 
 // Re-exportar os dados dos arquivos específicos
