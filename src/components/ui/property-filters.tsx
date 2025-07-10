@@ -41,7 +41,7 @@ export const PropertyFilters = ({
   return (
     <div className="bg-white rounded-lg p-6 shadow-xl mb-8">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6 items-end">
-        <div className="min-w-[140px]">
+        <div className="min-w-[120px]">
           <Select value={selectedFinalidade} onValueChange={onFinalidadeChange}>
             <SelectTrigger className="text-gray-900 w-full">
               <SelectValue placeholder="Finalidade" />
@@ -101,7 +101,7 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        <div className="min-w-[130px]">
+        <div className="min-w-[120px]">
           <Select value={selectedMetragem} onValueChange={onMetragemChange}>
             <SelectTrigger className="text-gray-900 w-full">
               <SelectValue placeholder="Metragem" />
