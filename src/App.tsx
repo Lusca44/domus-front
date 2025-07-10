@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NewHomePage from "./pages/general-pages/NewHomePage";
 import LancamentosPage from "./pages/general-pages/LancamentosPage";
 import ProntosPage from "./pages/general-pages/ProntosPage";
+import AlugueisPage from "./pages/general-pages/AlugueisPage";
 import AnunciePage from "./pages/general-pages/AnunciePage";
 import ContatoPage from "./pages/general-pages/ContatoPage";
 import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
@@ -39,6 +40,7 @@ function App() {
             {/* Página inicial com hubs de regiões */}
             <Route path="/" element={<NewHomePage />} />
             <Route path="/lancamentos" element={<LancamentosPage />} />
+            <Route path="/alugueis" element={<AlugueisPage />} />
             <Route path="/prontos" element={<ProntosPage />} />
             <Route path="/anuncie" element={<AnunciePage />} />
             <Route path="/contato" element={<ContatoPage />} />

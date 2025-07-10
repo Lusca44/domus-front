@@ -1,24 +1,20 @@
 
-import React, { useState, useMemo } from "react";
-import SubFilters from "./SubFilters";
+import React from "react";
 import FeaturedCard from "./FeaturedCard";
+import { PropertyFilters } from "@/components/ui/property-filters";
+import { usePropertyFilters } from "@/hooks/use-property-filters";
 import { lancamentos } from "@/cards/lancamentos/lancamentos";
-import { getAvailableRegions, getAvailableRooms, itemMatchesFilters } from "@/config/filterConfig";
 
 const LancamentosSection = () => {
-  const [selectedRegion, setSelectedRegion] = useState("todas");
-  const [selectedRooms, setSelectedRooms] = useState("todos");
+  const {
+    filters,
+    setters,
+    filteredProperties,
+    availableRegions
+  } = usePropertyFilters(lancamentos);
 
-  // **FILTROS GERADOS AUTOMATICAMENTE** - baseado nos cards de lançamento existentes
-  const availableRegions = useMemo(() => getAvailableRegions(lancamentos), []);
-  const availableRooms = useMemo(() => getAvailableRooms(lancamentos), []);
-
-  // **FILTRAGEM AUTOMÁTICA** - usando a função centralizada de validação
-  const filteredLancamentos = useMemo(() => {
-    return lancamentos.filter(lancamento => 
-      itemMatchesFilters(lancamento, selectedRegion, selectedRooms, lancamentos)
-    );
-  }, [selectedRegion, selectedRooms]);
+  // Aplicar filtros aos lançamentos
+  const filteredLancamentos = filteredProperties;
 
   // Separar lançamentos em destaque e comuns
   const featuredLancamentos = filteredLancamentos.filter(l => l.destaque);
@@ -45,13 +41,20 @@ const LancamentosSection = () => {
   return (
     <div className="space-y-12">
       {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados dos cards */}
-      <SubFilters
-        onRegionChange={setSelectedRegion}
-        onRoomsChange={setSelectedRooms}
-        selectedRegion={selectedRegion}
-        selectedRooms={selectedRooms}
+      <PropertyFilters
+        selectedFinalidade={filters.selectedFinalidade}
+        selectedTipo={filters.selectedTipo}
+        selectedBairro={filters.selectedBairro}
+        selectedQuartos={filters.selectedQuartos}
+        selectedMetragem={filters.selectedMetragem}
+        selectedValor={filters.selectedValor}
+        onFinalidadeChange={setters.setSelectedFinalidade}
+        onTipoChange={setters.setSelectedTipo}
+        onBairroChange={setters.setSelectedBairro}
+        onQuartosChange={setters.setSelectedQuartos}
+        onMetragemChange={setters.setSelectedMetragem}
+        onValorChange={setters.setSelectedValor}
         availableRegions={availableRegions}
-        availableRooms={availableRooms}
       />
 
       {filteredLancamentos.length > 0 ? (

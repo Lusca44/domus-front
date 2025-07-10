@@ -13,6 +13,7 @@ const Header = () => {
   const menuItems = [
     { label: "HOME", path: "/" },
     { label: "LANÇAMENTOS", path: "/lancamentos" },
+    { label: "ALUGUÉIS", path: "/alugueis" },
     { label: "PRONTOS", path: "/prontos" },
     { label: "ANUNCIE", path: "/anuncie" },
     { label: "CONTATO", path: "/contato" },

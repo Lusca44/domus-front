@@ -1,24 +1,20 @@
 
-import React, { useState, useMemo } from "react";
-import SubFilters from "./SubFilters";
+import React from "react";
 import FeaturedCard from "./FeaturedCard";
+import { PropertyFilters } from "@/components/ui/property-filters";
+import { usePropertyFilters } from "@/hooks/use-property-filters";
 import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
-import { getAvailableRegions, getAvailableRooms, itemMatchesFilters } from "@/config/filterConfig";
 
 const ImoveisUsadosSection = () => {
-  const [selectedRegion, setSelectedRegion] = useState("todas");
-  const [selectedRooms, setSelectedRooms] = useState("todos");
+  const {
+    filters,
+    setters,
+    filteredProperties,
+    availableRegions
+  } = usePropertyFilters(imoveisUsados);
 
-  // **FILTROS GERADOS AUTOMATICAMENTE** - baseado nos cards de imóveis usados existentes
-  const availableRegions = useMemo(() => getAvailableRegions(imoveisUsados), []);
-  const availableRooms = useMemo(() => getAvailableRooms(imoveisUsados), []);
-
-  // **FILTRAGEM AUTOMÁTICA** - usando a função centralizada de validação
-  const filteredImoveisUsados = useMemo(() => {
-    return imoveisUsados.filter(imovel => 
-      itemMatchesFilters(imovel, selectedRegion, selectedRooms, imoveisUsados)
-    );
-  }, [selectedRegion, selectedRooms]);
+  // Aplicar filtros aos imóveis usados
+  const filteredImoveisUsados = filteredProperties;
 
   // Separar imóveis em destaque e comuns
   const featuredImoveisUsados = filteredImoveisUsados.filter(i => i.destaque);
@@ -45,13 +41,20 @@ const ImoveisUsadosSection = () => {
   return (
     <div className="space-y-12">
       {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados dos cards */}
-      <SubFilters
-        onRegionChange={setSelectedRegion}
-        onRoomsChange={setSelectedRooms}
-        selectedRegion={selectedRegion}
-        selectedRooms={selectedRooms}
+      <PropertyFilters
+        selectedFinalidade={filters.selectedFinalidade}
+        selectedTipo={filters.selectedTipo}
+        selectedBairro={filters.selectedBairro}
+        selectedQuartos={filters.selectedQuartos}
+        selectedMetragem={filters.selectedMetragem}
+        selectedValor={filters.selectedValor}
+        onFinalidadeChange={setters.setSelectedFinalidade}
+        onTipoChange={setters.setSelectedTipo}
+        onBairroChange={setters.setSelectedBairro}
+        onQuartosChange={setters.setSelectedQuartos}
+        onMetragemChange={setters.setSelectedMetragem}
+        onValorChange={setters.setSelectedValor}
         availableRegions={availableRegions}
-        availableRooms={availableRooms}
       />
 
       {filteredImoveisUsados.length > 0 ? (
