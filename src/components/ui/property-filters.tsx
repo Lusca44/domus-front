@@ -46,7 +46,7 @@ export const PropertyFilters = ({
             <SelectValue placeholder="Finalidade" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todas</SelectItem>
+            <SelectItem value="null">Todas</SelectItem>
             <SelectItem value="venda">Venda</SelectItem>
             <SelectItem value="aluguel">Locação</SelectItem>
             <SelectItem value="lancamento">Lançamento na Planta</SelectItem>
@@ -58,7 +58,7 @@ export const PropertyFilters = ({
             <SelectValue placeholder="Tipo" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value="null">Todos</SelectItem>
             <SelectItem value="apartamento">Apartamento</SelectItem>
             <SelectItem value="casa">Casa</SelectItem>
             <SelectItem value="cobertura">Cobertura</SelectItem>
@@ -71,7 +71,7 @@ export const PropertyFilters = ({
             <SelectValue placeholder="Bairro" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value="null">Todos</SelectItem>
             {availableRegions.map(regiao => (
               <SelectItem key={regiao} value={regiao.toLowerCase()}>
                 {regiao}
@@ -85,7 +85,7 @@ export const PropertyFilters = ({
             <SelectValue placeholder="Quartos" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value="null">Todos</SelectItem>
             <SelectItem value="1">1 Quarto</SelectItem>
             <SelectItem value="2">2 Quartos</SelectItem>
             <SelectItem value="3">3 Quartos</SelectItem>
@@ -98,7 +98,7 @@ export const PropertyFilters = ({
             <SelectValue placeholder="Área" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todas</SelectItem>
+            <SelectItem value="null">Todas</SelectItem>
             <SelectItem value="50">Até 50m²</SelectItem>
             <SelectItem value="80">Até 80m²</SelectItem>
             <SelectItem value="120">Até 120m²</SelectItem>
@@ -112,7 +112,7 @@ export const PropertyFilters = ({
             <SelectValue placeholder="Valor" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos</SelectItem>
+            <SelectItem value="null">Todos</SelectItem>
             <SelectItem value="300000">Até R$ 300.000</SelectItem>
             <SelectItem value="500000">Até R$ 500.000</SelectItem>
             <SelectItem value="800000">Até R$ 800.000</SelectItem>
