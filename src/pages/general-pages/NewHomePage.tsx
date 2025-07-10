@@ -106,16 +106,18 @@ const NewHomePage = () => {
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-900 to-blue-700 text-white py-12 sm:py-16 md:py-20">
-        <div className="absolute inset-0 bg-black/20"></div>
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1721322800607-8c38375eef04?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80)'
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Encontre Seu Novo
-              <span className="block text-blue-300 mt-2">Lar no Rio</span>
-            </h1>
-            <p className="text-lg sm:text-xl mb-8 sm:mb-12 opacity-90 max-w-2xl mx-auto">
-              Descubra imóveis exclusivos nas melhores regiões do Rio de Janeiro
-            </p>
+            {/* Espaço reservado onde estava o texto */}
+            <div className="mb-8 sm:mb-12" style={{ height: '200px' }}></div>
 
             {/* Barra de Busca */}
             <PropertyFilters
