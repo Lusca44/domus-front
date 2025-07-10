@@ -15,6 +15,8 @@ export interface Imovel {
   destaque: boolean;
   tipo: "lancamento" | "aluguel" | "imoveis-usados";
   regiaoDestaque?: boolean;
+  // Status da obra para lançamentos: "Lançamento", "Em obras", "Pronto"
+  statusObra?: "Lançamento" | "Em obras" | "Pronto";
 }
 
 export interface RegiaoDestaque {

@@ -28,6 +28,7 @@ export const lancamentos: Imovel[] = [
     url: "/porto-maravilha/lancamento/pixinguinha",
     destaque: true,
     tipo: "lancamento",
+    statusObra: "Lançamento", // Status atual da obra
   },
   {
     id: "2",
@@ -43,6 +44,7 @@ export const lancamentos: Imovel[] = [
     url: "/porto-maravilha/lancamento/porto-carioca",
     destaque: true,
     tipo: "lancamento",
+    statusObra: "Pronto", // Status atual da obra
   },
   {
     id: "3",
@@ -57,6 +59,7 @@ export const lancamentos: Imovel[] = [
     url: "/lancamentos/caminhos-da-guanabara",
     destaque: false,
     tipo: "lancamento",
+    statusObra: "Em obras", // Status atual da obra
   },
   {
     id: "4",
@@ -71,6 +74,7 @@ export const lancamentos: Imovel[] = [
     url: "/lancamentos/arcos-do-porto",
     destaque: false,
     tipo: "lancamento",
+    statusObra: "Pronto", // Status atual da obra
   },
   {
     id: "5",
@@ -85,6 +89,7 @@ export const lancamentos: Imovel[] = [
     url: "/lancamentos/ciata-residencial",
     destaque: false,
     tipo: "lancamento",
+    statusObra: "Lançamento", // Status atual da obra
   },
   {
     id: "6",
@@ -99,6 +104,7 @@ export const lancamentos: Imovel[] = [
     url: "/lancamentos/nova-olaria",
     destaque: false,
     tipo: "lancamento",
+    statusObra: "Em obras", // Status atual da obra
   },
   {
     id: "7",
@@ -113,6 +119,7 @@ export const lancamentos: Imovel[] = [
     url: "/lancamentos/orla-maua",
     destaque: false,
     tipo: "lancamento",
+    statusObra: "Lançamento", // Status atual da obra
   },
   {
     id: "8",
@@ -128,6 +135,7 @@ export const lancamentos: Imovel[] = [
     url: "/lancamentos/metropolitan-dream-barra",
     destaque: true,
     tipo: "lancamento",
+    statusObra: "Pronto", // Status atual da obra
   },
   {
     id: "9",
@@ -142,6 +150,7 @@ export const lancamentos: Imovel[] = [
     url: "/lancamentos/americas19",
     destaque: false,
     tipo: "lancamento",
+    statusObra: "Em obras", // Status atual da obra
   },
   {
     id: "10",
@@ -156,6 +165,7 @@ export const lancamentos: Imovel[] = [
     url: "/lancamentos/orla-recreio-pontal",
     destaque: false,
     tipo: "lancamento",
+    statusObra: "Lançamento", // Status atual da obra
   },
   {
     id: "11",
@@ -170,6 +180,7 @@ export const lancamentos: Imovel[] = [
     url: "/lancamentos/the-pier-residencial",
     destaque: false,
     tipo: "lancamento",
+    statusObra: "Pronto", // Status atual da obra
   },
   // **FINAL DA ÁREA DE ADIÇÃO - quando adicionar novos cards, coloque-os aqui seguindo este padrão**
 ];

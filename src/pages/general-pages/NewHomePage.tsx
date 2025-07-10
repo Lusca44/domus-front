@@ -13,8 +13,8 @@ import fotos from '@/assets/images/carrocel-home/fotos-carrocel'
 
 const NewHomePage = () => {
   // Array de imagens para o carrossel de background
-  const backgroundImages = [fotos
-  ];
+  // Usando as imagens importadas do arquivo fotos-carrocel.tsx
+  const backgroundImages = fotos;
 
   // Estado para controlar qual imagem está sendo exibida
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -127,6 +127,7 @@ const NewHomePage = () => {
       <section className="relative bg-gradient-to-r from-blue-900 to-blue-700 text-white py-12 sm:py-16 md:py-20">
         {/* Background Carousel */}
         <div className="absolute inset-0 overflow-hidden">
+          {/* Renderização das imagens do carrossel de background */}
           {backgroundImages.map((image, index) => (
             <div
               key={index}
