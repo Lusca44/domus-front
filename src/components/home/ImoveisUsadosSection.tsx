@@ -69,7 +69,7 @@ const ImoveisUsadosSection = () => {
                 <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
                 {featuredImoveisUsados.map((imovel) => (
                   <div 
                     key={imovel.id} 
@@ -94,7 +94,7 @@ const ImoveisUsadosSection = () => {
                 </span>
               </h4>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
                 {regularImoveisUsados.map((imovel) => (
                   <div 
                     key={imovel.id}

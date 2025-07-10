@@ -38,7 +38,7 @@ const FeaturedCard = ({
           <img
             src={imagem}
             alt={titulo}
-            className="w-full h-48 sm:h-52 md:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-56 sm:h-64 md:h-56 object-cover group-hover:scale-105 transition-transform duration-300"
           />
 
           {/* Container para os balões alinhados */}

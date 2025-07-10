@@ -154,7 +154,7 @@ const NewHomePage = () => {
                 <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
                 {imoveisRegiao.map((imovel) => (
                   <div
                     key={imovel.id}
@@ -164,14 +164,14 @@ const NewHomePage = () => {
                       <img
                         src={imovel.imagem}
                         alt={imovel.titulo}
-                        className="w-full h-64 object-cover"
+                        className="w-full h-72 sm:h-80 object-cover"
                       />
                       <div className={`absolute top-4 left-4 ${getCardTypeColor(imovel.tipo)} text-white px-3 py-1 rounded-full text-sm font-medium`}>
                         {getCardTypeLabel(imovel.tipo)}
                       </div>
                     </div>
                     
-                    <div className="p-6">
+                    <div className="p-8">
                       <div className="flex items-center text-gray-600 mb-2">
                         <MapPin className="w-4 h-4 mr-1" />
                         <span className="text-sm">{imovel.regiao}</span>
@@ -228,7 +228,7 @@ const NewHomePage = () => {
               <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
               {imoveisOutrasRegioes.map((imovel) => (
                 <div
                   key={imovel.id}
@@ -238,14 +238,14 @@ const NewHomePage = () => {
                     <img
                       src={imovel.imagem}
                       alt={imovel.titulo}
-                      className="w-full h-64 object-cover"
+                      className="w-full h-72 sm:h-80 object-cover"
                     />
                     <div className={`absolute top-4 left-4 ${getCardTypeColor(imovel.tipo)} text-white px-3 py-1 rounded-full text-sm font-medium`}>
                       {getCardTypeLabel(imovel.tipo)}
                     </div>
                   </div>
                   
-                  <div className="p-6">
+                  <div className="p-8">
                     <div className="flex items-center text-gray-600 mb-2">
                       <MapPin className="w-4 h-4 mr-1" />
                       <span className="text-sm">{imovel.regiao}</span>
