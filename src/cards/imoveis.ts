@@ -9,6 +9,7 @@ export interface Imovel {
   imagem: string;
   regiao: string;
   quartos: number;
+  quartosDisponiveis?: number[];
   area: string;
   url: string;
   destaque: boolean;

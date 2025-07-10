@@ -50,8 +50,20 @@ export const usePropertyFilters = (allProperties: any[]) => {
     // Filtro de quartos
     if (selectedQuartos && selectedQuartos !== "null") {
       const quartos = parseInt(selectedQuartos);
-      if (quartos === 4 && imovel.quartos < 4) return false;
-      if (quartos !== 4 && imovel.quartos !== quartos) return false;
+      // Se o imóvel tem quartosDisponiveis, verificar se contém o valor selecionado
+      if (imovel.quartosDisponiveis && imovel.quartosDisponiveis.length > 0) {
+        if (quartos === 4) {
+          // Para 4+, verificar se tem algum valor >= 4
+          if (!imovel.quartosDisponiveis.some(q => q >= 4)) return false;
+        } else {
+          // Para valores específicos, verificar se está na lista
+          if (!imovel.quartosDisponiveis.includes(quartos)) return false;
+        }
+      } else {
+        // Fallback para o comportamento antigo se não tiver quartosDisponiveis
+        if (quartos === 4 && imovel.quartos < 4) return false;
+        if (quartos !== 4 && imovel.quartos !== quartos) return false;
+      }
     }
 
     // Filtro de metragem (até)
