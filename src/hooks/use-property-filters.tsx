@@ -10,12 +10,12 @@ export interface PropertyFilterOptions {
 }
 
 export const usePropertyFilters = (allProperties: any[]) => {
-  const [selectedFinalidade, setSelectedFinalidade] = useState("");
-  const [selectedTipo, setSelectedTipo] = useState("");
-  const [selectedBairro, setSelectedBairro] = useState("");
-  const [selectedQuartos, setSelectedQuartos] = useState("");
-  const [selectedMetragem, setSelectedMetragem] = useState("");
-  const [selectedValor, setSelectedValor] = useState("");
+  const [selectedFinalidade, setSelectedFinalidade] = useState("null");
+  const [selectedTipo, setSelectedTipo] = useState("null");
+  const [selectedBairro, setSelectedBairro] = useState("null");
+  const [selectedQuartos, setSelectedQuartos] = useState("null");
+  const [selectedMetragem, setSelectedMetragem] = useState("null");
+  const [selectedValor, setSelectedValor] = useState("null");
 
   // Função para extrair valor numérico do preço
   const extractPrice = (preco: string): number => {
@@ -32,36 +32,36 @@ export const usePropertyFilters = (allProperties: any[]) => {
   // Função para verificar se o imóvel atende aos filtros
   const matchesFilters = (imovel: any) => {
     // Filtro de finalidade
-    if (selectedFinalidade) {
+    if (selectedFinalidade && selectedFinalidade !== "null") {
       if (selectedFinalidade === "venda" && imovel.tipo === "aluguel") return false;
       if (selectedFinalidade === "aluguel" && imovel.tipo !== "aluguel") return false;
       if (selectedFinalidade === "lancamento" && imovel.tipo !== "lancamento") return false;
     }
 
     // Filtro de tipo (apartamento, casa, etc.) - seria necessário adicionar essa propriedade aos dados
-    if (selectedTipo) {
+    if (selectedTipo && selectedTipo !== "null") {
       // Como não temos essa propriedade nos dados ainda, vamos ignorar este filtro por enquanto
     }
 
     // Filtro de bairro
-    if (selectedBairro && imovel.regiao.toLowerCase() !== selectedBairro) return false;
+    if (selectedBairro && selectedBairro !== "null" && imovel.regiao.toLowerCase() !== selectedBairro) return false;
 
     // Filtro de quartos
-    if (selectedQuartos) {
+    if (selectedQuartos && selectedQuartos !== "null") {
       const quartos = parseInt(selectedQuartos);
       if (quartos === 4 && imovel.quartos < 4) return false;
       if (quartos !== 4 && imovel.quartos !== quartos) return false;
     }
 
     // Filtro de metragem (até)
-    if (selectedMetragem) {
+    if (selectedMetragem && selectedMetragem !== "null") {
       const area = extractArea(imovel.area);
       const maxArea = parseInt(selectedMetragem);
       if (area > maxArea) return false;
     }
 
     // Filtro de valor (até)
-    if (selectedValor) {
+    if (selectedValor && selectedValor !== "null") {
       const preco = extractPrice(imovel.preco);
       const maxValor = parseInt(selectedValor);
       if (preco > maxValor) return false;
@@ -82,12 +82,12 @@ export const usePropertyFilters = (allProperties: any[]) => {
   }, [allProperties]);
 
   const clearFilters = () => {
-    setSelectedFinalidade("");
-    setSelectedTipo("");
-    setSelectedBairro("");
-    setSelectedQuartos("");
-    setSelectedMetragem("");
-    setSelectedValor("");
+    setSelectedFinalidade("null");
+    setSelectedTipo("null");
+    setSelectedBairro("null");
+    setSelectedQuartos("null");
+    setSelectedMetragem("null");
+    setSelectedValor("null");
   };
 
   return {
@@ -110,6 +110,13 @@ export const usePropertyFilters = (allProperties: any[]) => {
     filteredProperties,
     availableRegions,
     clearFilters,
-    hasActiveFilters: Boolean(selectedFinalidade || selectedTipo || selectedBairro || selectedQuartos || selectedMetragem || selectedValor)
+    hasActiveFilters: Boolean(
+      (selectedFinalidade && selectedFinalidade !== "null") || 
+      (selectedTipo && selectedTipo !== "null") || 
+      (selectedBairro && selectedBairro !== "null") || 
+      (selectedQuartos && selectedQuartos !== "null") || 
+      (selectedMetragem && selectedMetragem !== "null") || 
+      (selectedValor && selectedValor !== "null")
+    )
   };
 };
