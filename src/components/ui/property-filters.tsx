@@ -40,7 +40,7 @@ export const PropertyFilters = ({
 }: PropertyFiltersProps) => {
   return (
     <div className="bg-white rounded-lg p-6 shadow-xl mb-8">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 items-end">
         <div>
           <Select value={selectedFinalidade} onValueChange={onFinalidadeChange}>
             <SelectTrigger className="text-gray-900">
@@ -132,16 +132,15 @@ export const PropertyFilters = ({
             </SelectContent>
           </Select>
         </div>
+        
+        {showSearchButton && (
+          <div>
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 h-10 w-10 p-0" onClick={onSearch}>
+              <Search className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
       </div>
-      
-      {showSearchButton && (
-        <div className="flex justify-center">
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-12" onClick={onSearch}>
-            <Search className="w-4 h-4 mr-2" />
-            Buscar Imóveis
-          </Button>
-        </div>
-      )}
     </div>
   );
 };
