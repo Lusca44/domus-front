@@ -46,7 +46,7 @@ export const PropertyFilters = ({
             <SelectTrigger className="text-gray-900">
               <SelectValue placeholder="Finalidade" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Finalidade</SelectItem>
               <SelectItem value="venda">Venda</SelectItem>
               <SelectItem value="aluguel">Locação</SelectItem>
@@ -60,7 +60,7 @@ export const PropertyFilters = ({
             <SelectTrigger className="text-gray-900">
               <SelectValue placeholder="Tipo" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Tipo</SelectItem>
               <SelectItem value="apartamento">Apartamento</SelectItem>
               <SelectItem value="casa">Casa</SelectItem>
@@ -75,7 +75,7 @@ export const PropertyFilters = ({
             <SelectTrigger className="text-gray-900">
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Bairro</SelectItem>
               {availableRegions.map(regiao => (
                 <SelectItem key={regiao} value={regiao.toLowerCase()}>
@@ -91,7 +91,7 @@ export const PropertyFilters = ({
             <SelectTrigger className="text-gray-900">
               <SelectValue placeholder="Quartos" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Quartos</SelectItem>
               <SelectItem value="1">1 Quarto</SelectItem>
               <SelectItem value="2">2 Quartos</SelectItem>
@@ -106,7 +106,7 @@ export const PropertyFilters = ({
             <SelectTrigger className="text-gray-900">
               <SelectValue placeholder="Metragem" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Metragem</SelectItem>
               <SelectItem value="50">Até 50m²</SelectItem>
               <SelectItem value="80">Até 80m²</SelectItem>
@@ -122,7 +122,7 @@ export const PropertyFilters = ({
             <SelectTrigger className="text-gray-900">
               <SelectValue placeholder="Valor" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Valor</SelectItem>
               <SelectItem value="300000">Até R$ 300.000</SelectItem>
               <SelectItem value="500000">Até R$ 500.000</SelectItem>
