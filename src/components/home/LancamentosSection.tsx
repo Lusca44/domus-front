@@ -1,9 +1,10 @@
 
-import React from "react";
+import React, { useState } from "react";
 import FeaturedCard from "./FeaturedCard";
 import { PropertyFilters } from "@/components/ui/property-filters";
 import { usePropertyFilters } from "@/hooks/use-property-filters";
 import { lancamentos } from "@/cards/lancamentos/lancamentos";
+import { Button } from "@/components/ui/button";
 
 const LancamentosSection = () => {
   const {
@@ -13,12 +14,24 @@ const LancamentosSection = () => {
     availableRegions
   } = usePropertyFilters(lancamentos);
 
+  // Estado para controlar quantos cards mostrar na seção "Outros Lançamentos"
+  const [visibleRegularCards, setVisibleRegularCards] = useState(4);
+
   // Aplicar filtros aos lançamentos
   const filteredLancamentos = filteredProperties;
 
   // Separar lançamentos em destaque e comuns
   const featuredLancamentos = filteredLancamentos.filter(l => l.destaque);
   const regularLancamentos = filteredLancamentos.filter(l => !l.destaque);
+
+  // Função para carregar mais cards
+  const loadMoreCards = () => {
+    setVisibleRegularCards(prev => prev + 4);
+  };
+
+  // Cards visíveis na seção "Outros Lançamentos"
+  const visibleRegularLancamentos = regularLancamentos.slice(0, visibleRegularCards);
+  const hasMoreCards = regularLancamentos.length > visibleRegularCards;
 
   const EmptyState = () => (
     <div className="text-center py-16 bg-gray-50 rounded-2xl">
@@ -95,7 +108,7 @@ const LancamentosSection = () => {
               </h4>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
-                {regularLancamentos.map((lancamento) => (
+                {visibleRegularLancamentos.map((lancamento) => (
                   <div 
                     key={lancamento.id}
                     className="w-full transform hover:scale-102 transition-all duration-300 hover:shadow-lg"
@@ -104,6 +117,20 @@ const LancamentosSection = () => {
                   </div>
                 ))}
               </div>
+
+              {/* Botão Carregar Mais */}
+              {hasMoreCards && (
+                <div className="text-center mt-12">
+                  <Button
+                    onClick={loadMoreCards}
+                    variant="outline"
+                    size="lg"
+                    className="px-8 py-3 text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white transition-colors duration-300"
+                  >
+                    Carregar Mais
+                  </Button>
+                </div>
+              )}
             </div>
           )}
 
