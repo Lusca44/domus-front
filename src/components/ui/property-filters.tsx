@@ -41,85 +41,103 @@ export const PropertyFilters = ({
   return (
     <div className="bg-white rounded-lg p-6 shadow-xl mb-8">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
-        <Select value={selectedFinalidade} onValueChange={onFinalidadeChange}>
-          <SelectTrigger className="text-gray-900">
-            <SelectValue placeholder="Finalidade" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="null">Todas</SelectItem>
-            <SelectItem value="venda">Venda</SelectItem>
-            <SelectItem value="aluguel">Locação</SelectItem>
-            <SelectItem value="lancamento">Lançamento na Planta</SelectItem>
-          </SelectContent>
-        </Select>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Finalidade</label>
+          <Select value={selectedFinalidade} onValueChange={onFinalidadeChange}>
+            <SelectTrigger className="text-gray-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="null">Todas</SelectItem>
+              <SelectItem value="venda">Venda</SelectItem>
+              <SelectItem value="aluguel">Locação</SelectItem>
+              <SelectItem value="lancamento">Lançamento na Planta</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Select value={selectedTipo} onValueChange={onTipoChange}>
-          <SelectTrigger className="text-gray-900">
-            <SelectValue placeholder="Tipo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="null">Todos</SelectItem>
-            <SelectItem value="apartamento">Apartamento</SelectItem>
-            <SelectItem value="casa">Casa</SelectItem>
-            <SelectItem value="cobertura">Cobertura</SelectItem>
-            <SelectItem value="loja">Loja</SelectItem>
-          </SelectContent>
-        </Select>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+          <Select value={selectedTipo} onValueChange={onTipoChange}>
+            <SelectTrigger className="text-gray-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="null">Todos</SelectItem>
+              <SelectItem value="apartamento">Apartamento</SelectItem>
+              <SelectItem value="casa">Casa</SelectItem>
+              <SelectItem value="cobertura">Cobertura</SelectItem>
+              <SelectItem value="loja">Loja</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Select value={selectedBairro} onValueChange={onBairroChange}>
-          <SelectTrigger className="text-gray-900">
-            <SelectValue placeholder="Bairro" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="null">Todos</SelectItem>
-            {availableRegions.map(regiao => (
-              <SelectItem key={regiao} value={regiao.toLowerCase()}>
-                {regiao}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Bairro</label>
+          <Select value={selectedBairro} onValueChange={onBairroChange}>
+            <SelectTrigger className="text-gray-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="null">Todos</SelectItem>
+              {availableRegions.map(regiao => (
+                <SelectItem key={regiao} value={regiao.toLowerCase()}>
+                  {regiao}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Select value={selectedQuartos} onValueChange={onQuartosChange}>
-          <SelectTrigger className="text-gray-900">
-            <SelectValue placeholder="Quartos" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="null">Todos</SelectItem>
-            <SelectItem value="1">1 Quarto</SelectItem>
-            <SelectItem value="2">2 Quartos</SelectItem>
-            <SelectItem value="3">3 Quartos</SelectItem>
-            <SelectItem value="4">4+ Quartos</SelectItem>
-          </SelectContent>
-        </Select>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Quartos</label>
+          <Select value={selectedQuartos} onValueChange={onQuartosChange}>
+            <SelectTrigger className="text-gray-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="null">Todos</SelectItem>
+              <SelectItem value="1">1 Quarto</SelectItem>
+              <SelectItem value="2">2 Quartos</SelectItem>
+              <SelectItem value="3">3 Quartos</SelectItem>
+              <SelectItem value="4">4+ Quartos</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Select value={selectedMetragem} onValueChange={onMetragemChange}>
-          <SelectTrigger className="text-gray-900">
-            <SelectValue placeholder="Área" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="null">Todas</SelectItem>
-            <SelectItem value="50">Até 50m²</SelectItem>
-            <SelectItem value="80">Até 80m²</SelectItem>
-            <SelectItem value="120">Até 120m²</SelectItem>
-            <SelectItem value="150">Até 150m²</SelectItem>
-            <SelectItem value="200">Até 200m²</SelectItem>
-          </SelectContent>
-        </Select>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Metragem</label>
+          <Select value={selectedMetragem} onValueChange={onMetragemChange}>
+            <SelectTrigger className="text-gray-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="null">Todas</SelectItem>
+              <SelectItem value="50">Até 50m²</SelectItem>
+              <SelectItem value="80">Até 80m²</SelectItem>
+              <SelectItem value="120">Até 120m²</SelectItem>
+              <SelectItem value="150">Até 150m²</SelectItem>
+              <SelectItem value="200">Até 200m²</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Select value={selectedValor} onValueChange={onValorChange}>
-          <SelectTrigger className="text-gray-900">
-            <SelectValue placeholder="Valor" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="null">Todos</SelectItem>
-            <SelectItem value="300000">Até R$ 300.000</SelectItem>
-            <SelectItem value="500000">Até R$ 500.000</SelectItem>
-            <SelectItem value="800000">Até R$ 800.000</SelectItem>
-            <SelectItem value="1000000">Até R$ 1.000.000</SelectItem>
-            <SelectItem value="1500000">Até R$ 1.500.000</SelectItem>
-          </SelectContent>
-        </Select>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Valor</label>
+          <Select value={selectedValor} onValueChange={onValorChange}>
+            <SelectTrigger className="text-gray-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="null">Todos</SelectItem>
+              <SelectItem value="300000">Até R$ 300.000</SelectItem>
+              <SelectItem value="500000">Até R$ 500.000</SelectItem>
+              <SelectItem value="800000">Até R$ 800.000</SelectItem>
+              <SelectItem value="1000000">Até R$ 1.000.000</SelectItem>
+              <SelectItem value="1500000">Até R$ 1.500.000</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       
       {showSearchButton && (
