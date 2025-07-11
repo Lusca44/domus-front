@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, Send, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { imovelAnuncioApi } from "@/utils/apiConfig";
 
 const AnunciePage = () => {
   const { toast } = useToast();
@@ -52,6 +53,11 @@ const AnunciePage = () => {
       description: "Entraremos em contato em breve para avaliar seu imóvel.",
     });
 
+    console.log(formData);
+
+    imovelAnuncioApi.enviarEmailAnuncio(formData);
+    //QUERO ENVIAR ESSE FORM DATA PRO EMAIL
+
     // Resetar formulário
     setFormData({
       nome: "",
@@ -82,7 +88,7 @@ const AnunciePage = () => {
           {/* Hero Section */}
           <div className="text-center mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-              Anuncie seu Imóvel
+              Anuncie seu Imóvel conosco!
             </h1>
             <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto mb-8 px-4">
               Seu imóvel na vitrine certa! Anuncie conosco e tenha acesso a fotografia profissional, 
