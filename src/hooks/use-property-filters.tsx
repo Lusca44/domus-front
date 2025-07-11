@@ -38,9 +38,15 @@ export const usePropertyFilters = (allProperties: any[]) => {
       if (selectedFinalidade === "aluguel" && imovel.tipo !== "aluguel") return false;
       if (selectedFinalidade === "lancamento" && imovel.tipo !== "lancamento") return false;
     }
-
     // Filtro de tipo (apartamento, casa, etc.) - seria necessário adicionar essa propriedade aos dados
     if (selectedTipo && selectedTipo !== "null") {
+      // "loft" | "Garden" | "Cobertura" | "Duplex" | "Apartamento" | "Casa"
+        if(selectedTipo === "loft" && !imovel.tipagem.includes("loft")) return false;
+        if(selectedTipo === "cobertura" && !imovel.tipagem.includes("cobertura")) return false;
+        if(selectedTipo === "duplex" && !imovel.tipagem.includes("duplex")) return false;
+        if(selectedTipo === "apartamento" && !imovel.tipagem.includes("apartamento")) return false;
+        if(selectedTipo === "casa" && !imovel.tipagem.includes("casa")) return false;
+
       // Como não temos essa propriedade nos dados ainda, vamos ignorar este filtro por enquanto
     }
 
