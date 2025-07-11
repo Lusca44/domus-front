@@ -358,7 +358,7 @@ const NewHomePage = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-blue-600"
+                className="border-white text-blue-600 hover:bg-white hover:text-blue-600"
                 asChild
               >
                 <Link to="/contato">
