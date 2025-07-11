@@ -199,14 +199,16 @@ const AdminProfile = () => {
     }
 
     try {
-      await authApi.changePassword({
-        currentPassword: passwordForm.currentPassword,
-        newPassword: passwordForm.newPassword,
+      const userData = profile || authState.user;
+
+      const data = await authApi.alterarSenha({
+        email: userData.email,
+        senha: passwordForm.currentPassword,
+        senhaNova: passwordForm.newPassword,
       });
 
       toast({
-        title: "Senha alterada",
-        description: "Sua senha foi alterada com sucesso.",
+        description: data,
       });
       
       // Resetar formulário e fechar modal
