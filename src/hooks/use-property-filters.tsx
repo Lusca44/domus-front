@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 
 export interface PropertyFilterOptions {
@@ -38,16 +39,20 @@ export const usePropertyFilters = (allProperties: any[]) => {
       if (selectedFinalidade === "aluguel" && imovel.tipo !== "aluguel") return false;
       if (selectedFinalidade === "lancamento" && imovel.tipo !== "lancamento") return false;
     }
-    // Filtro de tipo (apartamento, casa, etc.) - seria necessário adicionar essa propriedade aos dados
+    
+    // Filtro de tipo (apartamento, casa, etc.) - usando o atributo tipagem
     if (selectedTipo && selectedTipo !== "null") {
-      // "loft" | "Garden" | "Cobertura" | "Duplex" | "Apartamento" | "Casa"
-        if(selectedTipo === "loft" && !imovel.tipagem.includes("loft")) return false;
-        if(selectedTipo === "cobertura" && !imovel.tipagem.includes("cobertura")) return false;
-        if(selectedTipo === "duplex" && !imovel.tipagem.includes("duplex")) return false;
-        if(selectedTipo === "apartamento" && !imovel.tipagem.includes("apartamento")) return false;
-        if(selectedTipo === "casa" && !imovel.tipagem.includes("casa")) return false;
-
-      // Como não temos essa propriedade nos dados ainda, vamos ignorar este filtro por enquanto
+      // Verificar se o imóvel tem o atributo tipagem
+      if (imovel.tipagem && Array.isArray(imovel.tipagem)) {
+        // Buscar por tipo específico na lista de tipagens (case insensitive)
+        const hasSelectedType = imovel.tipagem.some((tipo: string) => 
+          tipo.toLowerCase().includes(selectedTipo.toLowerCase())
+        );
+        if (!hasSelectedType) return false;
+      } else {
+        // Fallback: se não tem tipagem, não atende ao filtro de tipo
+        return false;
+      }
     }
 
     // Filtro de bairro
@@ -60,7 +65,7 @@ export const usePropertyFilters = (allProperties: any[]) => {
       if (imovel.quartosDisponiveis && imovel.quartosDisponiveis.length > 0) {
         if (quartos === 4) {
           // Para 4+, verificar se tem algum valor >= 4
-          if (!imovel.quartosDisponiveis.some(q => q >= 4)) return false;
+          if (!imovel.quartosDisponiveis.some((q: number) => q >= 4)) return false;
         } else {
           // Para valores específicos, verificar se está na lista
           if (!imovel.quartosDisponiveis.includes(quartos)) return false;
@@ -78,7 +83,7 @@ export const usePropertyFilters = (allProperties: any[]) => {
       
       // Se o imóvel tem areasDisponiveis, verificar se alguma área é <= maxArea
       if (imovel.areasDisponiveis && imovel.areasDisponiveis.length > 0) {
-        const hasValidArea = imovel.areasDisponiveis.some(area => {
+        const hasValidArea = imovel.areasDisponiveis.some((area: string) => {
           const areaNumeric = extractArea(area);
           return areaNumeric <= maxArea;
         });
