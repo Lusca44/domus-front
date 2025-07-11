@@ -1,24 +1,20 @@
 
-import React, { useState, useMemo } from "react";
-import SubFilters from "./SubFilters";
+import React from "react";
 import FeaturedCard from "./FeaturedCard";
+import { PropertyFilters } from "@/components/ui/property-filters";
+import { usePropertyFilters } from "@/hooks/use-property-filters";
 import { alugueis } from "@/cards/alugueis/alugueis";
-import { getAvailableRegions, getAvailableRooms, itemMatchesFilters } from "@/config/filterConfig";
 
 const AluguelSection = () => {
-  const [selectedRegion, setSelectedRegion] = useState("todas");
-  const [selectedRooms, setSelectedRooms] = useState("todos");
+  const {
+    filters,
+    setters,
+    filteredProperties,
+    availableRegions
+  } = usePropertyFilters(alugueis);
 
-  // **FILTROS GERADOS AUTOMATICAMENTE** - baseado nos cards de aluguel existentes
-  const availableRegions = useMemo(() => getAvailableRegions(alugueis), []);
-  const availableRooms = useMemo(() => getAvailableRooms(alugueis), []);
-
-  // **FILTRAGEM AUTOMÁTICA** - usando a função centralizada de validação
-  const filteredAlugueis = useMemo(() => {
-    return alugueis.filter(aluguel => 
-      itemMatchesFilters(aluguel, selectedRegion, selectedRooms, alugueis)
-    );
-  }, [selectedRegion, selectedRooms]);
+  // Aplicar filtros aos alugueis
+  const filteredAlugueis = filteredProperties;
 
   // Separar alugueis em destaque e comuns
   const featuredAlugueis = filteredAlugueis.filter(l => l.destaque);
@@ -45,13 +41,20 @@ const AluguelSection = () => {
   return (
     <div className="space-y-12">
       {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados dos cards */}
-      <SubFilters
-        onRegionChange={setSelectedRegion}
-        onRoomsChange={setSelectedRooms}
-        selectedRegion={selectedRegion}
-        selectedRooms={selectedRooms}
+      <PropertyFilters
+        selectedFinalidade={filters.selectedFinalidade}
+        selectedTipo={filters.selectedTipo}
+        selectedBairro={filters.selectedBairro}
+        selectedQuartos={filters.selectedQuartos}
+        selectedMetragem={filters.selectedMetragem}
+        selectedValor={filters.selectedValor}
+        onFinalidadeChange={setters.setSelectedFinalidade}
+        onTipoChange={setters.setSelectedTipo}
+        onBairroChange={setters.setSelectedBairro}
+        onQuartosChange={setters.setSelectedQuartos}
+        onMetragemChange={setters.setSelectedMetragem}
+        onValorChange={setters.setSelectedValor}
         availableRegions={availableRegions}
-        availableRooms={availableRooms}
       />
 
       {filteredAlugueis.length > 0 ? (
@@ -60,13 +63,13 @@ const AluguelSection = () => {
           {featuredAlugueis.length > 0 && (
             <div className="mb-16">
               <div className="text-center mb-8">
-                <h3 className="text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Alugueis em Destaque
                 </h3>
-                <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
+                <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
                 {featuredAlugueis.map((aluguel) => (
                   <div 
                     key={aluguel.id} 
@@ -84,14 +87,14 @@ const AluguelSection = () => {
           {/* Outros Alugueis */}
           {regularAlugueis.length > 0 && (
             <div className="border-t border-gray-200 pt-12">
-              <h4 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+              <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-8 text-center">
                 Outros Alugueis 
-                <span className="text-lg font-normal text-gray-600 ml-2">
+                <span className="text-base sm:text-lg font-normal text-gray-600 ml-2">
                   ({regularAlugueis.length})
                 </span>
               </h4>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
                 {regularAlugueis.map((aluguel) => (
                   <div 
                     key={aluguel.id}

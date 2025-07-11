@@ -9,10 +9,21 @@ export interface Imovel {
   imagem: string;
   regiao: string;
   quartos: number;
+  quartosDisponiveis?: number[];
   area: string;
+  areasDisponiveis?: string[]; // Lista de áreas disponíveis para o imóvel (ex: ["41m²", "22m²", "30m²"])
   url: string;
   destaque: boolean;
   tipo: "lancamento" | "aluguel" | "imoveis-usados";
+  tipagem?: string[]; 
+  regiaoDestaque?: boolean;
+  // Status da obra para lançamentos: "Lançamento", "Em obras", "Pronto"
+  statusObra?: "Lançamento" | "Em obras" | "Pronto";
+}
+
+export interface RegiaoDestaque {
+  nome: string;
+  destaque: boolean;
 }
 
 // Re-exportar os dados dos arquivos específicos

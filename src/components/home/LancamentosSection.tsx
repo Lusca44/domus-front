@@ -1,28 +1,37 @@
 
-import React, { useState, useMemo } from "react";
-import SubFilters from "./SubFilters";
+import React, { useState } from "react";
 import FeaturedCard from "./FeaturedCard";
+import { PropertyFilters } from "@/components/ui/property-filters";
+import { usePropertyFilters } from "@/hooks/use-property-filters";
 import { lancamentos } from "@/cards/lancamentos/lancamentos";
-import { getAvailableRegions, getAvailableRooms, itemMatchesFilters } from "@/config/filterConfig";
+import { Button } from "@/components/ui/button";
 
 const LancamentosSection = () => {
-  const [selectedRegion, setSelectedRegion] = useState("todas");
-  const [selectedRooms, setSelectedRooms] = useState("todos");
+  const {
+    filters,
+    setters,
+    filteredProperties,
+    availableRegions
+  } = usePropertyFilters(lancamentos);
 
-  // **FILTROS GERADOS AUTOMATICAMENTE** - baseado nos cards de lançamento existentes
-  const availableRegions = useMemo(() => getAvailableRegions(lancamentos), []);
-  const availableRooms = useMemo(() => getAvailableRooms(lancamentos), []);
+  // Estado para controlar quantos cards mostrar na seção "Outros Lançamentos"
+  const [visibleRegularCards, setVisibleRegularCards] = useState(4);
 
-  // **FILTRAGEM AUTOMÁTICA** - usando a função centralizada de validação
-  const filteredLancamentos = useMemo(() => {
-    return lancamentos.filter(lancamento => 
-      itemMatchesFilters(lancamento, selectedRegion, selectedRooms, lancamentos)
-    );
-  }, [selectedRegion, selectedRooms]);
+  // Aplicar filtros aos lançamentos
+  const filteredLancamentos = filteredProperties;
 
   // Separar lançamentos em destaque e comuns
   const featuredLancamentos = filteredLancamentos.filter(l => l.destaque);
   const regularLancamentos = filteredLancamentos.filter(l => !l.destaque);
+
+  // Função para carregar mais cards
+  const loadMoreCards = () => {
+    setVisibleRegularCards(prev => prev + 4);
+  };
+
+  // Cards visíveis na seção "Outros Lançamentos"
+  const visibleRegularLancamentos = regularLancamentos.slice(0, visibleRegularCards);
+  const hasMoreCards = regularLancamentos.length > visibleRegularCards;
 
   const EmptyState = () => (
     <div className="text-center py-16 bg-gray-50 rounded-2xl">
@@ -45,13 +54,20 @@ const LancamentosSection = () => {
   return (
     <div className="space-y-12">
       {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados dos cards */}
-      <SubFilters
-        onRegionChange={setSelectedRegion}
-        onRoomsChange={setSelectedRooms}
-        selectedRegion={selectedRegion}
-        selectedRooms={selectedRooms}
+      <PropertyFilters
+        selectedFinalidade={filters.selectedFinalidade}
+        selectedTipo={filters.selectedTipo}
+        selectedBairro={filters.selectedBairro}
+        selectedQuartos={filters.selectedQuartos}
+        selectedMetragem={filters.selectedMetragem}
+        selectedValor={filters.selectedValor}
+        onFinalidadeChange={setters.setSelectedFinalidade}
+        onTipoChange={setters.setSelectedTipo}
+        onBairroChange={setters.setSelectedBairro}
+        onQuartosChange={setters.setSelectedQuartos}
+        onMetragemChange={setters.setSelectedMetragem}
+        onValorChange={setters.setSelectedValor}
         availableRegions={availableRegions}
-        availableRooms={availableRooms}
       />
 
       {filteredLancamentos.length > 0 ? (
@@ -60,13 +76,13 @@ const LancamentosSection = () => {
           {featuredLancamentos.length > 0 && (
             <div className="mb-16">
               <div className="text-center mb-8">
-                <h3 className="text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Lançamentos em Destaque
                 </h3>
-                <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
+                <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
                 {featuredLancamentos.map((lancamento) => (
                   <div 
                     key={lancamento.id} 
@@ -84,15 +100,15 @@ const LancamentosSection = () => {
           {/* Outros Lançamentos */}
           {regularLancamentos.length > 0 && (
             <div className="border-t border-gray-200 pt-12">
-              <h4 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+              <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-8 text-center">
                 Outros Lançamentos 
-                <span className="text-lg font-normal text-gray-600 ml-2">
+                <span className="text-base sm:text-lg font-normal text-gray-600 ml-2">
                   ({regularLancamentos.length})
                 </span>
               </h4>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                {regularLancamentos.map((lancamento) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
+                {visibleRegularLancamentos.map((lancamento) => (
                   <div 
                     key={lancamento.id}
                     className="w-full transform hover:scale-102 transition-all duration-300 hover:shadow-lg"
@@ -101,6 +117,20 @@ const LancamentosSection = () => {
                   </div>
                 ))}
               </div>
+
+              {/* Botão Carregar Mais */}
+              {hasMoreCards && (
+                <div className="text-center mt-12">
+                  <Button
+                    onClick={loadMoreCards}
+                    variant="outline"
+                    size="lg"
+                    className="px-8 py-3 text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white transition-colors duration-300"
+                  >
+                    Carregar Mais
+                  </Button>
+                </div>
+              )}
             </div>
           )}
 
