@@ -43,6 +43,21 @@ const NewHomePage = () => {
     hasActiveFilters
   } = usePropertyFilters(todosImoveis);
 
+
+  const obterValorFiltroFinalidade = () => {
+
+    if(filters.selectedFinalidade != 'null'){
+      if(filters.selectedFinalidade === 'venda'){
+        return {path : "/prontos", texto: "imóveis prontos"};
+      }else if (filters.selectedFinalidade === 'aluguel'){
+        return {path : "/alugueis", texto: "imóveis a alugar"};
+      }else if (filters.selectedFinalidade === 'lancamento'){
+        return {path : "/lancamentos", texto: "lançamentos"};
+      }
+    }else {
+      return {path : "/lancamentos", texto: "lançamentos"};
+    }
+  }
   // Agrupar por região (usando imóveis filtrados se há filtros ativos, senão todos)
   const imoveisParaAgrupar = hasActiveFilters ? filteredProperties : todosImoveis;
 
@@ -142,7 +157,7 @@ const NewHomePage = () => {
         </div>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
+          {/* <div className="max-w-4xl mx-auto text-center"> */}
             {/* Espaço reservado onde estava o texto */}
             <div className="mb-8 sm:mb-12" style={{ height: '200px' }}></div>
 
@@ -161,9 +176,10 @@ const NewHomePage = () => {
               onMetragemChange={setters.setSelectedMetragem}
               onValorChange={setters.setSelectedValor}
               availableRegions={availableRegions}
-              showSearchButton={true}
+              showSearchButton={false}
+              showFinalidadeBox={true}
             />
-          </div>
+          {/* </div> */}
         </div>
       </section>
 
@@ -318,8 +334,9 @@ const NewHomePage = () => {
 
             <div className="text-center mt-12">
               <Button asChild size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
-                <Link to="/prontos">
-                  Ver Todos os Imóveis
+                <Link to={obterValorFiltroFinalidade().path}>
+                {/* <Link to="/prontos"> */}
+                  Ver Todos os {obterValorFiltroFinalidade().texto}
                 </Link>
               </Button>
             </div>

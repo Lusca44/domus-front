@@ -107,7 +107,7 @@ const ProntosPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
       <Header />
-      
+
       <div className="pt-6 sm:pt-8">
         <div className="container mx-auto px-4">
           {/* Cabeçalho da página */}
@@ -116,33 +116,39 @@ const ProntosPage = () => {
               Imóveis Prontos
             </h1>
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-              Encontre imóveis prontos para morar ou investir. Inclui imóveis usados e lançamentos já finalizados.
+              Encontre imóveis prontos para morar ou investir. Inclui imóveis
+              usados e lançamentos já finalizados.
             </p>
           </div>
 
-          {/* Barra de Filtros */}
-          <PropertyFilters
-            selectedFinalidade={filters.selectedFinalidade}
-            selectedTipo={filters.selectedTipo}
-            selectedBairro={filters.selectedBairro}
-            selectedQuartos={filters.selectedQuartos}
-            selectedMetragem={filters.selectedMetragem}
-            selectedValor={filters.selectedValor}
-            onFinalidadeChange={setters.setSelectedFinalidade}
-            onTipoChange={setters.setSelectedTipo}
-            onBairroChange={setters.setSelectedBairro}
-            onQuartosChange={setters.setSelectedQuartos}
-            onMetragemChange={setters.setSelectedMetragem}
-            onValorChange={setters.setSelectedValor}
-            availableRegions={availableRegions}
-            showSearchButton={false}
-          />
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Barra de Filtros */}
+            <PropertyFilters
+              selectedFinalidade={filters.selectedFinalidade}
+              selectedTipo={filters.selectedTipo}
+              selectedBairro={filters.selectedBairro}
+              selectedQuartos={filters.selectedQuartos}
+              selectedMetragem={filters.selectedMetragem}
+              selectedValor={filters.selectedValor}
+              onFinalidadeChange={setters.setSelectedFinalidade}
+              onTipoChange={setters.setSelectedTipo}
+              onBairroChange={setters.setSelectedBairro}
+              onQuartosChange={setters.setSelectedQuartos}
+              onMetragemChange={setters.setSelectedMetragem}
+              onValorChange={setters.setSelectedValor}
+              availableRegions={availableRegions}
+              showSearchButton={false}
+              showFinalidadeBox={false}
+            />
+          </div>
 
           {/* Informações dos resultados */}
           {filteredProperties.length > 0 && (
             <div className="text-center mb-6">
               <p className="text-gray-600">
-                {hasActiveFilters ? `${filteredProperties.length} imóveis encontrados` : `${filteredProperties.length} imóveis disponíveis`}
+                {hasActiveFilters
+                  ? `${filteredProperties.length} imóveis encontrados`
+                  : `${filteredProperties.length} imóveis disponíveis`}
                 {hasActiveFilters && (
                   <Button
                     onClick={clearFilters}
@@ -155,7 +161,7 @@ const ProntosPage = () => {
               </p>
             </div>
           )}
-          
+
           {/* Conteúdo principal */}
           {filteredProperties.length > 0 ? (
             <>
@@ -173,28 +179,32 @@ const ProntosPage = () => {
                         className="w-full h-72 sm:h-80 object-cover"
                       />
                       {/* Badge do tipo de imóvel */}
-                      <div className={`absolute top-4 left-4 ${getCardTypeColor(imovel.tipo)} text-white px-3 py-1 rounded-full text-sm font-medium`}>
+                      <div
+                        className={`absolute top-4 left-4 ${getCardTypeColor(
+                          imovel.tipo
+                        )} text-white px-3 py-1 rounded-full text-sm font-medium`}
+                      >
                         {getCardTypeLabel(imovel.tipo)}
                       </div>
                     </div>
-                    
+
                     <div className="p-8">
                       {/* Localização */}
                       <div className="flex items-center text-gray-600 mb-2">
                         <MapPin className="w-4 h-4 mr-1" />
                         <span className="text-sm">{imovel.regiao}</span>
                       </div>
-                      
+
                       {/* Título */}
                       <h3 className="text-xl font-bold text-gray-900 mb-2">
                         {imovel.titulo}
                       </h3>
-                      
+
                       {/* Descrição */}
                       <p className="text-gray-600 mb-4 line-clamp-2">
                         {imovel.descricao}
                       </p>
-                      
+
                       {/* Detalhes (quartos e área) */}
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
@@ -208,16 +218,17 @@ const ProntosPage = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Preço e botão */}
                       <div className="flex items-center justify-between">
                         <span className="text-2xl font-bold text-blue-600">
                           {imovel.preco}
                         </span>
-                        <Button asChild className="bg-blue-600 hover:bg-blue-700">
-                          <Link to={imovel.url}>
-                            Ver Detalhes
-                          </Link>
+                        <Button
+                          asChild
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
+                          <Link to={imovel.url}>Ver Detalhes</Link>
                         </Button>
                       </div>
                     </div>
@@ -228,10 +239,10 @@ const ProntosPage = () => {
               {/* Botão "Carregar Mais" - só aparece se há mais itens */}
               {hasMoreItems && (
                 <div className="text-center mt-12">
-                  <Button 
+                  <Button
                     onClick={loadMoreItems}
-                    size="lg" 
-                    variant="outline" 
+                    size="lg"
+                    variant="outline"
                     className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
                   >
                     Carregar Mais
@@ -243,7 +254,11 @@ const ProntosPage = () => {
               {!hasMoreItems && filteredProperties.length > 4 && (
                 <div className="text-center mt-12">
                   <p className="text-gray-500">
-                    Você visualizou todos os {filteredProperties.length} imóveis{hasActiveFilters ? ' que atendem aos filtros selecionados' : ' disponíveis'}.
+                    Você visualizou todos os {filteredProperties.length} imóveis
+                    {hasActiveFilters
+                      ? " que atendem aos filtros selecionados"
+                      : " disponíveis"}
+                    .
                   </p>
                 </div>
               )}
