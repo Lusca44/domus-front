@@ -198,14 +198,15 @@ export const authApi = {
   // POST /auth/login - Fazer login
   login: (credentials: any): Promise<any> => apiClient.post('api/auth/login', credentials),
 
+  // PUT /auth/profile - Atualizar perfil
+  alterarSenha: (data: any): Promise<any> => apiClient.put('api/auth/alterarSenha', data),
+
   // GET /auth/profile - Buscar perfil do usuário
   profile: (): Promise<any> => apiClient.get('auth/profile'),
 
   // PUT /auth/profile - Atualizar perfil
   updateProfile: (data: any): Promise<any> => apiClient.put('auth/profile', data),
-
-  // PUT /auth/profile/password - Alterar senha
-  changePassword: (data: any): Promise<any> => apiClient.put('auth/profile/password', data),
+  
 };
 
 /**
