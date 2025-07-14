@@ -239,4 +239,10 @@ export const userApi = {
   alterarStatusUsuario: (id: string): Promise<any> => apiClient.put(`usuario/alterarStatusUsuarios/${id}`),
 };
 
+export const imovelAnuncioApi = {
+  
+  // POST /users - Criar novo usuário
+  enviarEmailAnuncio: (data: any): Promise<any> => apiClient.post('imovel-anuncio/enviar-email', data),
+};
+
 export default apiClient;
