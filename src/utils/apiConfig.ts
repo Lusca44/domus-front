@@ -239,9 +239,81 @@ export const userApi = {
   alterarStatusUsuario: (id: string): Promise<any> => apiClient.put(`usuario/alterarStatusUsuarios/${id}`),
 };
 
+/**
+ * API PARA GERENCIAR REGIAO
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const regiaoApi = {
+
+  obterTodasRegioes: (): Promise<any> => apiClient.get("regiao/obterTodos"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`regiao/obterPorId/${id}`),
+  
+  create: (data: any): Promise<any> => apiClient.post('regiao/cadastrarRegiao', data),
+
+  delete: (id: string): Promise<any> => apiClient.delete(`regiao/deletar/${id}`),
+  
+  alterarStatusDestaque: (id: string): Promise<any> => apiClient.put(`regiao/alterarStatus/${id}`),
+};
+
+/**
+ * API PARA GERENCIAR TIPOLOGIA
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const tipologiaApi = {
+
+  obterTodasTipologias: (): Promise<any> => apiClient.get("tipologia/obterTodos"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`tipologia/obterPorId/${id}`),
+  
+  create: (data: any): Promise<any> => apiClient.post('tipologia/criarTipologia', data),
+};
+
+/**
+ * API PARA GERENCIAR IMOVEIS
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const imovelApi = {
+  obterTodosImoveis: (): Promise<any> => apiClient.get("imovel/obterTodosImoveis"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`imovel/obterImovel/${id}`),
+  
+  getByFinalidadeId: (id: string): Promise<any> => apiClient.get(`imovel/obterImoveisPorFinalidade/${id}`),
+  
+  create: (data: any): Promise<any> => apiClient.post('imovel/cadastrarImovel', data),
+};
+
+/**
+ * API PARA GERENCIAR LANCAMENTOS
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const lancamentoApi = {
+  obterTodosLancamentos: (): Promise<any> => apiClient.get("projeto-lancamento/obterTodosLancamentos"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`projeto-lancamento/obterLancamentoPorId/${id}`),
+  
+  create: (data: any): Promise<any> => apiClient.post('projeto-lancamento/criarLancamento', data),
+};
+
+/**
+ * API PARA GERENCIAR FINALIDADE
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const finalidadeApi = {
+  obterTodasFinalidades: (): Promise<any> => apiClient.get("finalidade/obterTodasFinalidades"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`finalidade/obterFinalidadePorId/${id}`),
+  
+  create: (data: any): Promise<any> => apiClient.post('finalidade/cadastrarFinalidade', data),
+};
+
 export const imovelAnuncioApi = {
   
-  // POST /users - Criar novo usuário
   enviarEmailAnuncio: (data: any): Promise<any> => apiClient.post('imovel-anuncio/enviar-email', data),
 };
 

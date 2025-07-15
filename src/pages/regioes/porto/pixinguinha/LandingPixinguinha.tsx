@@ -369,198 +369,30 @@ const LandingPixinguinha = () => {
             photos={empreendimento.imagens}
             className="mb-8 md:mb-12 lg:mb-16"
           />
-
-          {/* Seção de Vídeos */}
-          <div className="mt-16">
-            <div className="text-center mb-8">
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-gray-900">
-                Vídeos do Empreendimento
-              </h3>
-              <p className="text-sm md:text-base lg:text-lg text-gray-600">
-                Conheça cada detalhe do seu futuro lar!
-              </p>
-            </div>
-            <div className="flex justify-center">
-              <Carousel className="w-full max-w-4xl">
-                <CarouselContent className="flex justify-center items-center">
-                  {empreendimento.videos.map((video, index) => (
-                    <CarouselItem
-                      key={index}
-                      className="flex justify-center md:basis-1/2 lg:basis-1/3"
-                    >
-                      <div className="w-full max-w-sm">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Card className="overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                              <div className="relative">
-                                <AspectRatio ratio={16 / 9}>
-                                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                    {isYouTubeVideo(video.url) ? (
-                                      // Thumbnail do YouTube
-                                      <div className="relative w-full h-full">
-                                        <iframe
-                                          src={
-                                            video.url
-                                              .replace("watch?v=", "embed/")
-                                              .replace("youtu.be/", "embed/")
-                                              .split("?")[0]
-                                          }
-                                          title={video.titulo}
-                                          className="w-full h-full pointer-events-none"
-                                          style={{ pointerEvents: "none" }}
-                                        />
-                                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
-                                          <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                                            <Play className="w-8 h-8 text-blue-600 ml-1" />
-                                          </div>
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      // Thumbnail do vídeo local
-                                      <div className="relative w-full h-full">
-                                        <video
-                                          className="w-full h-full object-cover"
-                                          muted
-                                          playsInline
-                                        >
-                                          <source
-                                            src={video.url}
-                                            type="video/mp4"
-                                          />
-                                        </video>
-                                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
-                                          <div className="bg-white/90 group-hover:bg-white rounded-full p-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                                            <Play className="w-8 h-8 text-blue-600 ml-1" />
-                                          </div>
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                </AspectRatio>
-                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
-                                  <p className="font-semibold text-sm">
-                                    {video.titulo}
-                                  </p>
-                                </div>
-                              </div>
-                            </Card>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-4xl w-[90vw] max-h-[80vh] p-4 overflow-hidden">
-                            <DialogTitle className="sr-only">
-                              {video.titulo}
-                            </DialogTitle>
-                            <DialogDescription className="sr-only">
-                              Reprodução do vídeo: {video.titulo}
-                            </DialogDescription>
-                            <div className="w-full mx-auto h-full flex flex-col">
-                              <div className="flex-1 min-h-0">
-                                <AspectRatio
-                                  ratio={16 / 9}
-                                  className="w-full h-full max-h-[calc(80vh-80px)]"
-                                >
-                                  {isYouTubeVideo(video.url) ? (
-                                    <iframe
-                                      width="100%"
-                                      height="100%"
-                                      src={getYouTubeEmbedUrl(video.url)}
-                                      title={video.titulo}
-                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                      allowFullScreen
-                                      className="rounded object-contain"
-                                    ></iframe>
-                                  ) : (
-                                    <video
-                                      width="100%"
-                                      height="100%"
-                                      controls
-                                      autoPlay
-                                      className="rounded object-contain max-h-full"
-                                    >
-                                      <source
-                                        src={video.url}
-                                        type="video/mp4"
-                                      />
-                                      Seu navegador não suporta vídeos HTML5.
-                                    </video>
-                                  )}
-                                </AspectRatio>
-                              </div>
-                              <div className="mt-2 text-center flex-shrink-0">
-                                <h4 className="text-sm font-semibold truncate">
-                                  {video.titulo}
-                                </h4>
-                              </div>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-2 bg-white/90 hover:bg-white shadow-lg" />
-                <CarouselNext className="right-2 bg-white/90 hover:bg-white shadow-lg" />
-              </Carousel>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* Seção de Diferenciais - adaptada para mobile */}
-      <section className="py-12 md:py-16 lg:py-20 bg-slate-50">
-        <div className="container mx-auto px-4">
-          <div
-            className={`grid grid-cols-1 gap-8 md:gap-12 lg:grid-cols-2 lg:gap-16 items-center`}
-          >
-            <div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 lg:mb-8 text-gray-900">
-                Diferenciais únicos
-              </h2>
-              <div
-                className={`grid grid-cols-1 gap-2 md:gap-3 lg:gap-4 ${
-                  isMobile ? "" : "md:grid-cols-2"
-                }`}
-              >
-                {empreendimento.diferenciais.map((item, index) => (
-                  <div key={index} className="flex items-start group">
-                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                    <span className="text-xs md:text-sm lg:text-base text-gray-700 group-hover:text-gray-900 transition-colors">
-                      {item}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-4 md:p-6 lg:p-8 text-white">
-              <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4 lg:mb-6">
-                Por que escolher o Pixinguinha?
-              </h3>
-              <ul className="space-y-2 md:space-y-3 lg:space-y-4">
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
-                  <span className="text-xs md:text-sm lg:text-base">
-                    Região em plena valorização imobiliária
+      <section className="flex items-center justify-center min-h-screen py-12 md:py-16 lg:py-20 bg-slate-50">
+        <div className="container mx-auto px-4 flex justify-center">
+          <div className="max-w-4xl w-full text-center">
+            {" "}
+            {/* Container centralizado com largura máxima */}
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 lg:mb-8 text-gray-900">
+              Diferenciais únicos
+            </h2>
+            <div className={`grid grid-cols-1 gap-4 md:gap-6 justify-center`}>
+              {empreendimento.diferenciais.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-center group" // Centraliza cada item
+                >
+                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-500 mr-2 md:mr-3 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs md:text-sm lg:text-base text-gray-700 group-hover:text-gray-900 transition-colors">
+                    {item}
                   </span>
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
-                  <span className="text-xs md:text-sm lg:text-base">
-                    Proximidade com principais pontos turísticos
-                  </span>
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
-                  <span className="text-xs md:text-sm lg:text-base">
-                    Excelente conectividade urbana
-                  </span>
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full mr-3 flex-shrink-0"></div>
-                  <span className="text-xs md:text-sm lg:text-base">
-                    Projeto arquitetônico diferenciado
-                  </span>
-                </li>
-              </ul>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -574,7 +406,7 @@ const LandingPixinguinha = () => {
               Localização Privilegiada
             </h2>
             <p className="text-sm md:text-base lg:text-lg text-gray-600 max-w-3xl mx-auto">
-              Estrategicamente localizado no coração do Porto Maravilha
+              Estrategicamente localizado na região
             </p>
           </div>
 
@@ -584,7 +416,7 @@ const LandingPixinguinha = () => {
             <div className="space-y-4 md:space-y-6">
               <div className="bg-blue-50 rounded-xl p-3 md:p-4 lg:p-6">
                 <h3 className="text-base md:text-lg lg:text-xl font-bold mb-3 md:mb-4 text-blue-900">
-                  Facilidades da Localização:
+                  Proximidades da Localização:
                 </h3>
                 <ul className="space-y-2 md:space-y-3">
                   <li className="flex items-start">
