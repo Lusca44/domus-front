@@ -31,7 +31,6 @@ import PhotoCarousel from "@/components/PhotoCarousel";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import fotos from "./assets/fotos";
-import videos from "./assets/videos";
 import ImgBackground from "./assets/img/back-ground-pixinguinha.jpeg"
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -76,15 +75,6 @@ const LandingPixinguinha = () => {
     video.src = videoSrc;
     video.load();
   };
-
-  useEffect(() => {
-    // Gerar thumbnails para vídeos locais
-    empreendimento.videos.forEach((video, index) => {
-      if (video.url && !video.url.includes('youtube') && !video.url.includes('embed')) {
-        generateVideoThumbnail(video.url, index);
-      }
-    });
-  }, []);
 
   /**
    * Função para obter thumbnail - prioriza vídeo local gerado, fallback para YouTube
@@ -152,7 +142,6 @@ const LandingPixinguinha = () => {
     ],
     endereco: "Rua General Luís Mendes de Morais, S/N, Santo Cristo. Rio de Janeiro - RJ",
     imagens: fotos,
-    videos: videos,
     mapa: "https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d14431.125032052134!2d-43.211162307681796!3d-22.904241560534498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e6!4m0!4m3!3m2!1d-22.9044362!2d-43.208009499999996!5e0!3m2!1spt-BR!2sbr!4v1749758760039!5m2!1spt-BR!2sbr",
   };
 
