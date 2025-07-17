@@ -9,7 +9,7 @@ import { usePropertyFilters } from "@/hooks/use-property-filters";
 import { useLancamentos } from "@/hooks/useLancamentos";
 import { alugueis } from "@/cards/alugueis/alugueis";
 import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
-import fotos from '@/assets/images/carrocel-home/fotos-carrocel';
+import fotos from '@/assets/images/carrocel-home/fotos-carrocel'
 
 const NewHomePage = () => {
   // Array de imagens para o carrossel de background
@@ -18,6 +18,9 @@ const NewHomePage = () => {
 
   // Estado para controlar qual imagem está sendo exibida
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Carregar lançamentos da API
+  const { lancamentos, loading: loadingLancamentos } = useLancamentos();
 
   // Efeito para mudar automaticamente a imagem a cada 5 segundos
   useEffect(() => {
@@ -30,9 +33,6 @@ const NewHomePage = () => {
     return () => clearInterval(interval);
   }, [backgroundImages.length]);
 
-  // Carregar lançamentos da API
-  const { lancamentos, loading: loadingLancamentos } = useLancamentos();
-
   // Combinar todos os imóveis
   const todosImoveis = useMemo(() => {
     return [...lancamentos, ...alugueis, ...imoveisUsados];
@@ -42,7 +42,7 @@ const NewHomePage = () => {
     filters,
     setters,
     filteredProperties,
-    filterData,
+    availableRegions,
     hasActiveFilters
   } = usePropertyFilters(todosImoveis);
 
@@ -61,7 +61,7 @@ const NewHomePage = () => {
     }
   }
 
-  // Agrupar por região usando os dados da API
+  // Agrupar por região (usando imóveis filtrados se há filtros ativos, senão todos)
   const imoveisParaAgrupar = hasActiveFilters ? filteredProperties : todosImoveis;
 
   const imoveisPorRegiao = useMemo(() => {
@@ -77,24 +77,17 @@ const NewHomePage = () => {
     return grupos;
   }, [imoveisParaAgrupar]);
 
-  // Obter regiões em destaque baseadas na API
+  // Obter regiões em destaque (que têm pelo menos um imóvel marcado como destaque)
   const regioesDestaque = useMemo(() => {
-    if (!filterData?.regioes) return [];
-    
-    const regioesDestaqueAPI = filterData.regioes
-      .filter(regiao => regiao.destaque)
-      .map(regiao => regiao.nomeRegiao);
-    
-    // Filtrar apenas regiões que têm imóveis e estão marcadas como destaque na API
-    const regioes = Object.keys(imoveisPorRegiao).filter(regiao => 
-      regioesDestaqueAPI.includes(regiao)
-    );
+    const regioes = Object.keys(imoveisPorRegiao).filter(regiao => {
+      return imoveisPorRegiao[regiao].some(imovel => imovel.destaque);
+    });
     
     // Retornar apenas as primeiras 2 regiões para mostrar na tela
     return regioes.slice(0, 2);
-  }, [imoveisPorRegiao, filterData?.regioes]);
+  }, [imoveisPorRegiao]);
 
-  // Obter outras regiões (não destacadas pela API)
+  // Obter outras regiões (não destacadas)
   const outrasRegioes = useMemo(() => {
     return Object.keys(imoveisPorRegiao).filter(regiao => 
       !regioesDestaque.includes(regiao)
@@ -185,9 +178,9 @@ const NewHomePage = () => {
               onQuartosChange={setters.setSelectedQuartos}
               onMetragemChange={setters.setSelectedMetragem}
               onValorChange={setters.setSelectedValor}
+              availableRegions={availableRegions}
               showSearchButton={false}
               showFinalidadeBox={true}
-              filterData={filterData}
             />
           {/* </div> */}
         </div>

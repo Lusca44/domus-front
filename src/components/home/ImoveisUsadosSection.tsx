@@ -10,7 +10,7 @@ const ImoveisUsadosSection = () => {
     filters,
     setters,
     filteredProperties,
-    filterData
+    availableRegions
   } = usePropertyFilters(imoveisUsados);
 
   // Aplicar filtros aos imóveis usados
@@ -40,7 +40,7 @@ const ImoveisUsadosSection = () => {
 
   return (
     <div className="space-y-12">
-      {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados da API */}
+      {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados dos cards */}
       <PropertyFilters
         selectedFinalidade={filters.selectedFinalidade}
         selectedTipo={filters.selectedTipo}
@@ -54,7 +54,7 @@ const ImoveisUsadosSection = () => {
         onQuartosChange={setters.setSelectedQuartos}
         onMetragemChange={setters.setSelectedMetragem}
         onValorChange={setters.setSelectedValor}
-        filterData={filterData}
+        availableRegions={availableRegions}
       />
 
       {filteredImoveisUsados.length > 0 ? (
