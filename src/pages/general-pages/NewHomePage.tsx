@@ -6,7 +6,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/Footer";
 import { PropertyFilters } from "@/components/ui/property-filters";
 import { usePropertyFilters } from "@/hooks/use-property-filters";
-import { lancamentos } from "@/cards/lancamentos/lancamentos";
+import { useLancamentos } from "@/hooks/useLancamentos";
 import { alugueis } from "@/cards/alugueis/alugueis";
 import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
 import fotos from '@/assets/images/carrocel-home/fotos-carrocel'
@@ -18,6 +18,9 @@ const NewHomePage = () => {
 
   // Estado para controlar qual imagem está sendo exibida
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Carregar lançamentos da API
+  const { lancamentos, loading: loadingLancamentos } = useLancamentos();
 
   // Efeito para mudar automaticamente a imagem a cada 5 segundos
   useEffect(() => {
@@ -33,7 +36,7 @@ const NewHomePage = () => {
   // Combinar todos os imóveis
   const todosImoveis = useMemo(() => {
     return [...lancamentos, ...alugueis, ...imoveisUsados];
-  }, []);
+  }, [lancamentos]);
 
   const {
     filters,
@@ -42,7 +45,6 @@ const NewHomePage = () => {
     availableRegions,
     hasActiveFilters
   } = usePropertyFilters(todosImoveis);
-
 
   const obterValorFiltroFinalidade = () => {
 
@@ -58,6 +60,7 @@ const NewHomePage = () => {
       return {path : "/lancamentos", texto: "lançamentos"};
     }
   }
+
   // Agrupar por região (usando imóveis filtrados se há filtros ativos, senão todos)
   const imoveisParaAgrupar = hasActiveFilters ? filteredProperties : todosImoveis;
 

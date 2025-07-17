@@ -16,6 +16,7 @@ import { Trash2, Edit, Plus, Building2, MapPin, ExternalLink, RefreshCw } from '
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Imovel } from '@/cards/imoveis';
+import { updateLancamentosFromAPI } from '@/cards/lancamentos/lancamentos';
 
 interface Lancamento {
   id: string;
@@ -120,9 +121,9 @@ export default function LancamentosAdminPage() {
       const data = await fetchLancamentos(() => lancamentoApi.obterTodosLancamentos());
       setLancamentos(data || []);
       
-      // Se existem lançamentos, atualizar o arquivo lancamentos.ts
+      // Se existem lançamentos, sincronizar com os cards
       if (data && data.length > 0) {
-        await updateLancamentosFile(data);
+        await syncLancamentosToCards(data);
       }
     } catch (error) {
       console.error('Erro ao carregar lançamentos:', error);
@@ -130,9 +131,9 @@ export default function LancamentosAdminPage() {
   };
 
   /**
-   * Atualiza o arquivo lancamentos.ts com os dados da API
+   * Sincroniza os lançamentos com os cards da home
    */
-  const updateLancamentosFile = async (lancamentosData: Lancamento[]) => {
+  const syncLancamentosToCards = async (lancamentosData: Lancamento[]) => {
     try {
       const lancamentosForCards: Imovel[] = lancamentosData
         .filter(lancamento => lancamento.cardLancamentoInfo)
@@ -141,12 +142,12 @@ export default function LancamentosAdminPage() {
           const regiao = regioes.find(r => r.id === lancamento.regiaoId);
           
           return {
-            id: lancamento.id || String(index + 1),
+            id: lancamento.id || String(index + 2),
             titulo: lancamento.nomeLancamento,
             descricao: lancamento.sobreLancamento?.texto || lancamento.slogan || '',
             preco: `A partir de R$ ${cardInfo.valor}`,
             imagem: cardInfo.urlImagemCard || '/placeholder.svg',
-            regiao: regiao?.nome || 'Não informado',
+            regiao: regiao?.nome || 'Região não informada',
             quartos: parseInt(cardInfo.quartosDisponiveis[0]) || 1,
             quartosDisponiveis: cardInfo.quartosDisponiveis.map(q => parseInt(q)),
             area: cardInfo.areasDisponiveis[0] ? `${cardInfo.areasDisponiveis[0]}m²` : '0m²',
@@ -159,16 +160,15 @@ export default function LancamentosAdminPage() {
           };
         });
 
-      console.log('Cards de lançamentos gerados:', lancamentosForCards);
+      // Atualiza o array de lançamentos
+      updateLancamentosFromAPI(lancamentosForCards);
       
-      // Aqui você poderia fazer uma requisição para atualizar o arquivo no servidor
-      // ou usar uma funcionalidade específica para isso
       toast({
         title: 'Sucesso',
         description: `${lancamentosForCards.length} lançamento(s) sincronizado(s) para exibição`,
       });
     } catch (error) {
-      console.error('Erro ao atualizar arquivo de lançamentos:', error);
+      console.error('Erro ao sincronizar lançamentos:', error);
       toast({
         title: 'Aviso',
         description: 'Erro ao sincronizar lançamentos para exibição',

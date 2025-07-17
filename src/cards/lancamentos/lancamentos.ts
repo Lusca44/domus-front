@@ -9,7 +9,7 @@ import { Imovel } from "../imoveis";
 // forem cadastrados no sistema administrativo. Os lançamentos cadastrados
 // através da API aparecerão automaticamente aqui.
 
-export const lancamentos: Imovel[] = [
+export let lancamentos: Imovel[] = [
   {
     id: "1",
     titulo: "Residencial Pixinguinha",
@@ -45,3 +45,45 @@ export const updateLancamentosFromAPI = (apiLancamentos: Imovel[]) => {
   lancamentos.length = 0; // Limpa o array
   lancamentos.push(...estaticos, ...apiLancamentos);
 };
+
+// Função para carregar lançamentos da API automaticamente
+export const loadLancamentosFromAPI = async () => {
+  try {
+    const { lancamentoApi } = await import('../../utils/apiConfig');
+    const apiLancamentos = await lancamentoApi.obterTodosLancamentos();
+    
+    if (apiLancamentos && apiLancamentos.length > 0) {
+      const lancamentosForCards: Imovel[] = apiLancamentos
+        .filter((lancamento: any) => lancamento.cardLancamentoInfo)
+        .map((lancamento: any, index: number) => {
+          const cardInfo = lancamento.cardLancamentoInfo;
+          
+          return {
+            id: lancamento.id || String(index + 2), // Começar do ID 2 para não conflitar com o estático
+            titulo: lancamento.nomeLancamento,
+            descricao: lancamento.sobreLancamento?.texto || lancamento.slogan || '',
+            preco: `A partir de R$ ${cardInfo.valor}`,
+            imagem: cardInfo.urlImagemCard || '/placeholder.svg',
+            regiao: 'Região não informada', // Será preenchido com dados da região
+            quartos: parseInt(cardInfo.quartosDisponiveis[0]) || 1,
+            quartosDisponiveis: cardInfo.quartosDisponiveis.map((q: string) => parseInt(q)),
+            area: cardInfo.areasDisponiveis[0] ? `${cardInfo.areasDisponiveis[0]}m²` : '0m²',
+            areasDisponiveis: cardInfo.areasDisponiveis.map((a: string) => `${a}m²`),
+            url: `/lancamento/${lancamento.id}`,
+            destaque: cardInfo.isCardDestaque,
+            tipo: "lancamento" as const,
+            statusObra: cardInfo.statusObra,
+            regiaoDestaque: cardInfo.isCardDestaque
+          };
+        });
+      
+      // Atualiza o array com os novos lançamentos
+      updateLancamentosFromAPI(lancamentosForCards);
+    }
+  } catch (error) {
+    console.error('Erro ao carregar lançamentos da API:', error);
+  }
+};
+
+// Carrega os lançamentos automaticamente quando o módulo é importado
+loadLancamentosFromAPI();
