@@ -1,7 +1,7 @@
-
 import { Imovel } from '../imoveis';
 
-export const imoveisUsados: Imovel[] = [
+// Base imoveisUsados data
+export let imoveisUsados: Imovel[] = [
   {
     id: "17",
     titulo: "Cobertura Duplex - Leblon",
@@ -81,3 +81,50 @@ export const imoveisUsados: Imovel[] = [
     tipo: "imoveis-usados",
   },
 ];
+
+// Function to update imoveisUsados from API
+export const updateImoveisUsadosFromAPI = (apiImoveisUsados: Imovel[]) => {
+  // Keep static entries (if needed)
+  const estaticos = imoveisUsados.slice(0, 6);
+  
+  // Add new entries from API
+  imoveisUsados.length = 0; 
+  imoveisUsados.push(...estaticos, ...apiImoveisUsados);
+};
+
+// Function to load imoveisUsados from API
+export const loadImoveisUsadosFromAPI = async () => {
+  try {
+    const { imovelApi } = await import('../../utils/apiConfig');
+    // Get used properties using the finalidade ID for "Venda"
+    const apiImoveis = await imovelApi.getByFinalidadeId("6875aeccb6b99837cba82fec");
+    
+    if (apiImoveis && apiImoveis.length > 0) {
+      const imoveisForCards: Imovel[] = apiImoveis.map((imovel: any, index: number) => {
+        return {
+          id: imovel.id || `api-venda-${index}`,
+          titulo: imovel.titulo || "Imóvel à Venda",
+          descricao: imovel.descricaoImovel || "",
+          preco: imovel.valor ? `R$ ${imovel.valor}` : "Consulte",
+          imagem: imovel.urlFotoCard || "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
+          regiao: imovel.regiaoId || "Região não informada",
+          quartos: parseInt(imovel.quantidadeQuartos) || 1,
+          quartosDisponiveis: imovel.quantidadeQuartos ? [parseInt(imovel.quantidadeQuartos)] : [1],
+          area: imovel.areaQuadrada ? `${imovel.areaQuadrada}m²` : "N/A",
+          areasDisponiveis: imovel.areaQuadrada ? [`${imovel.areaQuadrada}m²`] : ["N/A"],
+          url: `/imovel/${imovel.id}`,
+          destaque: true, // Can be adjusted based on API data if available
+          tipo: "imoveis-usados" as const,
+        };
+      });
+      
+      // Update imoveisUsados array with API data
+      updateImoveisUsadosFromAPI(imoveisForCards);
+    }
+  } catch (error) {
+    console.error('Erro ao carregar imóveis usados da API:', error);
+  }
+};
+
+// Load imoveisUsados automatically when module is imported
+loadImoveisUsadosFromAPI();

@@ -9,7 +9,8 @@ import { usePropertyFilters } from "@/hooks/use-property-filters";
 import { useLancamentos } from "@/hooks/useLancamentos";
 import { alugueis } from "@/cards/alugueis/alugueis";
 import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
-import fotos from '@/assets/images/carrocel-home/fotos-carrocel'
+import fotos from '@/assets/images/carrocel-home/fotos-carrocel';
+import { getCardsRegioes, RegiaoCard } from "./cards-home-page";
 
 const NewHomePage = () => {
   // Array de imagens para o carrossel de background
@@ -18,6 +19,21 @@ const NewHomePage = () => {
 
   // Estado para controlar qual imagem está sendo exibida
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Estado para as regiões em destaque da API
+  const [regioesDestaqueAPI, setRegioesDestaqueAPI] = useState<RegiaoCard[]>([]);
+  const [regioesAPI, setRegioesAPI] = useState<RegiaoCard[]>([]);
+  
+  // Carregar regiões da API
+  useEffect(() => {
+    const loadRegions = async () => {
+      const regions = await getCardsRegioes();
+      setRegioesAPI(regions);
+      setRegioesDestaqueAPI(regions.filter(regiao => regiao.destaque));
+    };
+    
+    loadRegions();
+  }, []);
 
   // Carregar lançamentos da API
   const { lancamentos, loading: loadingLancamentos } = useLancamentos();
@@ -36,7 +52,7 @@ const NewHomePage = () => {
   // Combinar todos os imóveis
   const todosImoveis = useMemo(() => {
     return [...lancamentos, ...alugueis, ...imoveisUsados];
-  }, [lancamentos]);
+  }, [lancamentos, alugueis, imoveisUsados]);
 
   const {
     filters,
@@ -47,7 +63,6 @@ const NewHomePage = () => {
   } = usePropertyFilters(todosImoveis);
 
   const obterValorFiltroFinalidade = () => {
-
     if(filters.selectedFinalidade != 'null'){
       if(filters.selectedFinalidade === 'venda'){
         return {path : "/prontos", texto: "imóveis prontos"};
@@ -77,15 +92,24 @@ const NewHomePage = () => {
     return grupos;
   }, [imoveisParaAgrupar]);
 
-  // Obter regiões em destaque (que têm pelo menos um imóvel marcado como destaque)
+  // Obter regiões em destaque (usando API)
   const regioesDestaque = useMemo(() => {
+    // Se temos regiões em destaque da API, usamos elas
+    if (regioesDestaqueAPI.length > 0) {
+      return regioesDestaqueAPI
+        .map(regiao => regiao.nome)
+        .filter(nome => imoveisPorRegiao[nome] && imoveisPorRegiao[nome].length > 0)
+        .slice(0, 2); // Limitar a 2 regiões
+    }
+    
+    // Fallback para a lógica antiga
     const regioes = Object.keys(imoveisPorRegiao).filter(regiao => {
       return imoveisPorRegiao[regiao].some(imovel => imovel.destaque);
     });
     
     // Retornar apenas as primeiras 2 regiões para mostrar na tela
     return regioes.slice(0, 2);
-  }, [imoveisPorRegiao]);
+  }, [imoveisPorRegiao, regioesDestaqueAPI]);
 
   // Obter outras regiões (não destacadas)
   const outrasRegioes = useMemo(() => {
@@ -178,7 +202,6 @@ const NewHomePage = () => {
               onQuartosChange={setters.setSelectedQuartos}
               onMetragemChange={setters.setSelectedMetragem}
               onValorChange={setters.setSelectedValor}
-              availableRegions={availableRegions}
               showSearchButton={false}
               showFinalidadeBox={true}
             />
@@ -338,7 +361,6 @@ const NewHomePage = () => {
             <div className="text-center mt-12">
               <Button asChild size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
                 <Link to={obterValorFiltroFinalidade().path}>
-                {/* <Link to="/prontos"> */}
                   Ver Todos os {obterValorFiltroFinalidade().texto}
                 </Link>
               </Button>
