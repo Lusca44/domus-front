@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { useFilterData } from "./useFilterData";
 
@@ -18,15 +19,7 @@ export const usePropertyFilters = (allProperties: any[]) => {
   const [selectedMetragem, setSelectedMetragem] = useState("null");
   const [selectedValor, setSelectedValor] = useState("null");
 
-  const {
-    finalidades,
-    tipologias,
-    regioes,
-    quartosDisponiveis,
-    areasDisponiveis,
-    valoresDisponiveis,
-    loading
-  } = useFilterData(allProperties);
+  const filterData = useFilterData(allProperties);
 
   // Função para extrair valor numérico do preço
   const extractPrice = (preco: string): number => {
@@ -119,11 +112,6 @@ export const usePropertyFilters = (allProperties: any[]) => {
     return allProperties.filter(matchesFilters);
   }, [allProperties, selectedFinalidade, selectedTipo, selectedBairro, selectedQuartos, selectedMetragem, selectedValor]);
 
-  // Obter regiões disponíveis a partir da API
-  const availableRegions = useMemo(() => {
-    return regioes.map(regiao => regiao.nomeRegiao).sort();
-  }, [regioes]);
-
   const clearFilters = () => {
     setSelectedFinalidade("null");
     setSelectedTipo("null");
@@ -150,17 +138,8 @@ export const usePropertyFilters = (allProperties: any[]) => {
       setSelectedMetragem,
       setSelectedValor,
     },
-    filterData: {
-      finalidades,
-      tipologias,
-      regioes,
-      quartosDisponiveis,
-      areasDisponiveis,
-      valoresDisponiveis,
-      loading
-    },
+    filterData,
     filteredProperties,
-    availableRegions,
     clearFilters,
     hasActiveFilters: Boolean(
       (selectedFinalidade && selectedFinalidade !== "null") ||
