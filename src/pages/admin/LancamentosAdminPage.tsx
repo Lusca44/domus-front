@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Trash2, Edit, Plus, Building2, MapPin, ExternalLink, Sync } from 'lucide-react';
+import { Trash2, Edit, Plus, Building2, MapPin, ExternalLink, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Imovel } from '@/cards/imoveis';
@@ -317,7 +317,7 @@ export default function LancamentosAdminPage() {
           
           <div className="flex gap-2">
             <Button variant="outline" onClick={loadLancamentos}>
-              <Sync className="w-4 h-4 mr-2" />
+              <RefreshCw className="w-4 h-4 mr-2" />
               Sincronizar
             </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
