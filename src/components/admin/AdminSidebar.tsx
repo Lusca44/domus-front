@@ -1,7 +1,6 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Users, FileText, LogOut, Home, UserPlus, Globe } from "lucide-react";
+import { Users, FileText, LogOut, Home, UserPlus, Globe, Building } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
   Sidebar,
@@ -21,7 +20,7 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ onLogout }: AdminSidebarProps) {
   const location = useLocation();
-  const { isAdmin } = useAuth(); // Usar a nova flag de admin
+  const { isAdmin } = useAuth();
 
   // Menu base que todos os usuários autenticados podem ver
   const baseMenuItems = [
@@ -35,6 +34,39 @@ export function AdminSidebar({ onLogout }: AdminSidebarProps) {
       url: "/admin/leads",
       icon: Users,
     },
+  ];
+
+  // Menu items exclusivos para administradores
+  const adminOnlyItems = [
+    {
+      title: "Usuários",
+      url: "/admin/users",
+      icon: UserPlus,
+    },
+    {
+      title: "Finalidades",
+      url: "/admin/finalidades",
+      icon: Building,
+    },
+    {
+      title: "Tipologias",
+      url: "/admin/tipologias",
+      icon: Home,
+    },
+    {
+      title: "Lançamentos",
+      url: "/admin/lancamentos",
+      icon: Building,
+    },
+    {
+      title: "Imóveis",
+      url: "/admin/imoveis",
+      icon: Home,
+    },
+  ];
+
+  // Menu items que aparecem para todos
+  const bottomMenuItems = [
     {
       title: "Meu Perfil",
       url: "/admin/profile",
@@ -47,19 +79,10 @@ export function AdminSidebar({ onLogout }: AdminSidebarProps) {
     },
   ];
 
-  // Menu item exclusivo para administradores
-  const adminOnlyItems = [
-    {
-      title: "Cadastrar Usuários",
-      url: "/admin/users",
-      icon: UserPlus,
-    },
-  ];
-
   // Combinar menus baseado no tipo de usuário
   const menuItems = isAdmin 
-    ? [...baseMenuItems.slice(0, 2), ...adminOnlyItems, ...baseMenuItems.slice(2)]
-    : baseMenuItems;
+    ? [...baseMenuItems, ...adminOnlyItems, ...bottomMenuItems]
+    : [...baseMenuItems, ...bottomMenuItems];
 
   return (
     <Sidebar>

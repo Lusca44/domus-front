@@ -269,6 +269,7 @@ export const tipologiaApi = {
   getById: (id: string): Promise<any> => apiClient.get(`tipologia/obterPorId/${id}`),
   
   create: (data: any): Promise<any> => apiClient.post('tipologia/criarTipologia', data),
+  delete: (id: string): Promise<any> => apiClient.delete(`tipologia/deletar/${id}`),
 };
 
 /**
@@ -284,6 +285,7 @@ export const imovelApi = {
   getByFinalidadeId: (id: string): Promise<any> => apiClient.get(`imovel/obterImoveisPorFinalidade/${id}`),
   
   create: (data: any): Promise<any> => apiClient.post('imovel/cadastrarImovel', data),
+  delete: (id: string): Promise<any> => apiClient.delete(`imovel/deletar/${id}`),
 };
 
 /**
@@ -297,6 +299,7 @@ export const lancamentoApi = {
   getById: (id: string): Promise<any> => apiClient.get(`projeto-lancamento/obterLancamentoPorId/${id}`),
   
   create: (data: any): Promise<any> => apiClient.post('projeto-lancamento/criarLancamento', data),
+  delete: (id: string): Promise<any> => apiClient.delete(`projeto-lancamento/deletar/${id}`),
 };
 
 /**
@@ -310,6 +313,7 @@ export const finalidadeApi = {
   getById: (id: string): Promise<any> => apiClient.get(`finalidade/obterFinalidadePorId/${id}`),
   
   create: (data: any): Promise<any> => apiClient.post('finalidade/cadastrarFinalidade', data),
+  delete: (id: string): Promise<any> => apiClient.delete(`finalidade/deletar/${id}`),
 };
 
 export const imovelAnuncioApi = {
