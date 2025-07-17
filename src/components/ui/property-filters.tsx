@@ -1,7 +1,9 @@
+
 import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { Finalidade, Tipologia, Regiao } from "@/types/api";
 
 interface PropertyFiltersProps {
   selectedFinalidade: string;
@@ -17,10 +19,18 @@ interface PropertyFiltersProps {
   onMetragemChange: (value: string) => void;
   onValorChange: (value: string) => void;
   onSearch?: () => void;
-  availableRegions: string[];
   showSearchButton?: boolean;
   showFinalidadeBox?: boolean;
-  isMenuAluguel?:boolean;
+  isMenuAluguel?: boolean;
+  filterData?: {
+    finalidades: Finalidade[];
+    tipologias: Tipologia[];
+    regioes: Regiao[];
+    quartosDisponiveis: number[];
+    areasDisponiveis: string[];
+    valoresDisponiveis: number[];
+    loading: boolean;
+  };
 }
 
 export const PropertyFilters = ({
@@ -37,17 +47,74 @@ export const PropertyFilters = ({
   onMetragemChange,
   onValorChange,
   onSearch,
-  availableRegions,
   showSearchButton = false,
   showFinalidadeBox,
   isMenuAluguel,
+  filterData
 }: PropertyFiltersProps) => {
+  if (filterData?.loading) {
+    return (
+      <div className="bg-white rounded-lg p-4 sm:p-6 shadow-xl mb-8">
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-2 text-gray-600">Carregando filtros...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Criar ranges de valores baseados nos valores disponíveis
+  const createValueRanges = (valores: number[]) => {
+    if (valores.length === 0) return [];
+    
+    const maxValue = Math.max(...valores);
+    const ranges = [];
+    
+    if (isMenuAluguel) {
+      ranges.push(
+        { value: "1000", label: "Até R$ 1.000" },
+        { value: "1500", label: "Até R$ 1.500" },
+        { value: "2000", label: "Até R$ 2.000" },
+        { value: "2500", label: "Até R$ 2.500" },
+        { value: "3000", label: "Até R$ 3.000" },
+        { value: "3500", label: "Até R$ 3.500" },
+        { value: "4000", label: "Até R$ 4.000" },
+        { value: "4500", label: "Até R$ 4.500" },
+        { value: "5000", label: "Até R$ 5.000" },
+        { value: "5500", label: "Até R$ 5.500" },
+        { value: "6000", label: "Até R$ 6.000 ou +" }
+      );
+    } else {
+      ranges.push(
+        { value: "300000", label: "Até R$ 300.000" },
+        { value: "500000", label: "Até R$ 500.000" },
+        { value: "800000", label: "Até R$ 800.000" },
+        { value: "1000000", label: "Até R$ 1.000.000" },
+        { value: "1500000", label: "Até R$ 1.500.000" }
+      );
+    }
+    
+    return ranges;
+  };
+
+  // Criar ranges de metragem baseados nas áreas disponíveis
+  const createAreaRanges = (areas: string[]) => {
+    return [
+      { value: "50", label: "Até 50m²" },
+      { value: "80", label: "Até 80m²" },
+      { value: "120", label: "Até 120m²" },
+      { value: "150", label: "Até 150m²" },
+      { value: "200", label: "Até 200m²" }
+    ];
+  };
+
+  const valueRanges = createValueRanges(filterData?.valoresDisponiveis || []);
+  const areaRanges = createAreaRanges(filterData?.areasDisponiveis || []);
+
   return (
     <div className="bg-white rounded-lg p-4 sm:p-6 shadow-xl mb-8">
-      {/* <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 sm:gap-6 sm:items-end"> */}
       <div className="flex flex-wrap justify-center items-end gap-4 sm:gap-6">
         {showFinalidadeBox && (
-          // <div className="w-full sm:min-w-[120px]">
           <div className="flex-1 min-w-[150px] max-w-[200px]">
             <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
               Finalidade
@@ -61,15 +128,16 @@ export const PropertyFilters = ({
               </SelectTrigger>
               <SelectContent className="min-w-[200px]">
                 <SelectItem value="null">Finalidade</SelectItem>
-                <SelectItem value="venda">Venda</SelectItem>
-                <SelectItem value="aluguel">Locação</SelectItem>
-                <SelectItem value="lancamento">Lançamento na Planta</SelectItem>
+                {filterData?.finalidades.map((finalidade) => (
+                  <SelectItem key={finalidade.id} value={finalidade.id}>
+                    {finalidade.nome}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
         )}
 
-        {/* <div className="w-full sm:min-w-[120px]"> */}
         <div className="flex-1 min-w-[150px] max-w-[200px]">
           <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
             Tipo
@@ -80,37 +148,34 @@ export const PropertyFilters = ({
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Tipo</SelectItem>
-              <SelectItem value="loft">Loft</SelectItem>
-              <SelectItem value="casa">Casa</SelectItem>
-              <SelectItem value="cobertura">Cobertura</SelectItem>
-              <SelectItem value="garden">Garden</SelectItem>
-              <SelectItem value="apartamento">Apartamento</SelectItem>
-              <SelectItem value="duplex">Duplex</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* <div className="w-full sm:min-w-[120px]"> */}
-        <div className="flex-1 min-w-[150px] max-w-[200px]">
-          <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
-            Bairro
-          </label>
-          <Select value={selectedBairro} onValueChange={onBairroChange}>
-            <SelectTrigger className="text-gray-900 w-full h-12">
-              <SelectValue placeholder="Bairro" />
-            </SelectTrigger>
-            <SelectContent className="min-w-[200px]">
-              <SelectItem value="null">Bairro</SelectItem>
-              {availableRegions.map((regiao) => (
-                <SelectItem key={regiao} value={regiao.toLowerCase()}>
-                  {regiao}
+              {filterData?.tipologias.map((tipologia) => (
+                <SelectItem key={tipologia.id} value={tipologia.id}>
+                  {tipologia.nome}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        {/* <div className="w-full sm:min-w-[120px]"> */}
+        <div className="flex-1 min-w-[150px] max-w-[200px]">
+          <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
+            Região
+          </label>
+          <Select value={selectedBairro} onValueChange={onBairroChange}>
+            <SelectTrigger className="text-gray-900 w-full h-12">
+              <SelectValue placeholder="Região" />
+            </SelectTrigger>
+            <SelectContent className="min-w-[200px]">
+              <SelectItem value="null">Região</SelectItem>
+              {filterData?.regioes.map((regiao) => (
+                <SelectItem key={regiao.id} value={regiao.id}>
+                  {regiao.nomeRegiao}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="flex-1 min-w-[150px] max-w-[200px]">
           <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
             Quartos
@@ -121,16 +186,17 @@ export const PropertyFilters = ({
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Quartos</SelectItem>
-              <SelectItem value="0">Studio</SelectItem>
-              <SelectItem value="1">1 Quarto</SelectItem>
-              <SelectItem value="2">2 Quartos</SelectItem>
-              <SelectItem value="3">3 Quartos</SelectItem>
-              <SelectItem value="4">4+ Quartos</SelectItem>
+              {filterData?.quartosDisponiveis.map((quartos) => (
+                <SelectItem key={quartos} value={quartos.toString()}>
+                  {quartos === 0 ? "Studio" : 
+                   quartos >= 4 ? "4+ Quartos" : 
+                   `${quartos} ${quartos === 1 ? "Quarto" : "Quartos"}`}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
-        {/* <div className="w-full sm:min-w-[120px]"> */}
         <div className="flex-1 min-w-[150px] max-w-[200px]">
           <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
             Metragem
@@ -141,68 +207,35 @@ export const PropertyFilters = ({
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Metragem</SelectItem>
-              <SelectItem value="50">Até 50m²</SelectItem>
-              <SelectItem value="80">Até 80m²</SelectItem>
-              <SelectItem value="120">Até 120m²</SelectItem>
-              <SelectItem value="150">Até 150m²</SelectItem>
-              <SelectItem value="200">Até 200m²</SelectItem>
+              {areaRanges.map((range) => (
+                <SelectItem key={range.value} value={range.value}>
+                  {range.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
-        {/* <div className="w-full sm:min-w-[120px]"> */}
-        {!isMenuAluguel && (
-          <div className="flex-1 min-w-[150px] max-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
-              Valor
-            </label>
-            <Select value={selectedValor} onValueChange={onValorChange}>
-              <SelectTrigger className="text-gray-900 w-full h-12">
-                <SelectValue placeholder="Valor" />
-              </SelectTrigger>
-              <SelectContent className="min-w-[200px]">
-                <SelectItem value="null">Valor</SelectItem>
-
-                <SelectItem value="300000">Até R$ 300.000</SelectItem>
-                <SelectItem value="500000">Até R$ 500.000</SelectItem>
-                <SelectItem value="800000">Até R$ 800.000</SelectItem>
-                <SelectItem value="1000000">Até R$ 1.000.000</SelectItem>
-                <SelectItem value="1500000">Até R$ 1.500.000</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-        
-        {isMenuAluguel && (
-          <div className="flex-1 min-w-[150px] max-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
-              Valor
-            </label>
-            <Select value={selectedValor} onValueChange={onValorChange}>
-              <SelectTrigger className="text-gray-900 w-full h-12">
-                <SelectValue placeholder="Valor" />
-              </SelectTrigger>
-              <SelectContent className="min-w-[200px]">
-                <SelectItem value="null">Valor</SelectItem>
-
-                <SelectItem value="1000">Até R$ 1.000</SelectItem>
-                <SelectItem value="1500">Até R$ 1.500</SelectItem>
-                <SelectItem value="2000">Até R$ 2.000</SelectItem>
-                <SelectItem value="2500">Até R$ 2.500</SelectItem>
-                <SelectItem value="3000">Até R$ 3.000</SelectItem>
-                <SelectItem value="3500">Até R$ 3.500</SelectItem>
-                <SelectItem value="4000">Até R$ 4.000</SelectItem>
-                <SelectItem value="4500">Até R$ 4.500</SelectItem>
-                <SelectItem value="5000">Até R$ 5.000</SelectItem>
-                <SelectItem value="5500">Até R$ 5.500</SelectItem>
-                <SelectItem value="6000+">Até R$ 6.000 ou +</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        )}
+        <div className="flex-1 min-w-[150px] max-w-[200px]">
+          <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
+            Valor
+          </label>
+          <Select value={selectedValor} onValueChange={onValorChange}>
+            <SelectTrigger className="text-gray-900 w-full h-12">
+              <SelectValue placeholder="Valor" />
+            </SelectTrigger>
+            <SelectContent className="min-w-[200px]">
+              <SelectItem value="null">Valor</SelectItem>
+              {valueRanges.map((range) => (
+                <SelectItem key={range.value} value={range.value}>
+                  {range.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {showSearchButton && (
-          // <div className="w-full sm:w-auto mt-2 sm:mt-0">
           <div className="flex-1 min-w-[150px] max-w-[200px]">
             <Button
               size="lg"

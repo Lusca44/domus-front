@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/Footer";
@@ -12,7 +11,6 @@ import { Imovel } from "@/cards/imoveis";
 
 const AlugueisPage = () => {
   // Estado para controlar quantos cards estão sendo exibidos
-  // Inicialmente mostra 4 cards
   const [itemsToShow, setItemsToShow] = useState(4);
 
   // Hook de filtros usando os aluguéis
@@ -20,7 +18,7 @@ const AlugueisPage = () => {
     filters,
     setters,
     filteredProperties,
-    availableRegions,
+    filterData,
     clearFilters,
     hasActiveFilters
   } = usePropertyFilters(alugueis);
@@ -124,10 +122,10 @@ const AlugueisPage = () => {
               onQuartosChange={setters.setSelectedQuartos}
               onMetragemChange={setters.setSelectedMetragem}
               onValorChange={setters.setSelectedValor}
-              availableRegions={availableRegions}
               showSearchButton={false}
               showFinalidadeBox={false}
               isMenuAluguel={true}
+              filterData={filterData}
             />
           </div>
 

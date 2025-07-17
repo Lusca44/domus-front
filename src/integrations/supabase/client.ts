@@ -1,49 +1,16 @@
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
 
-// Use environment variables or fallback to empty strings if not available
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+// Fallback values for development - these will be replaced by actual values when Supabase is properly configured
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co'
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
 
-// Check if Supabase is configured
-export const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey);
+// Only create client if we have real values
+const hasValidConfig = supabaseUrl !== 'https://placeholder.supabase.co' && supabaseKey !== 'placeholder-key'
 
-// Create client only if URL and key are available
-export const supabase = isSupabaseConfigured 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+export const supabase = hasValidConfig 
+  ? createClient(supabaseUrl, supabaseKey)
+  : null
 
-// Graceful fallback if supabase client is not configured
-// This will be used as a placeholder for methods that require the supabase client
-export const getSupabaseClient = () => {
-  if (!isSupabaseConfigured) {
-    console.warn('Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.');
-    // Return a mock client with no-op methods for safety
-    return {
-      from: () => ({
-        select: () => ({
-          eq: () => ({
-            single: async () => ({ data: null, error: new Error('Supabase not configured') })
-          }),
-          async get() {
-            return { data: [], error: new Error('Supabase not configured') };
-          }
-        })
-      }),
-      storage: {
-        from: () => ({
-          upload: async () => ({ data: null, error: new Error('Supabase not configured') }),
-          getPublicUrl: () => ({ data: { publicUrl: '' } })
-        })
-      },
-      auth: {
-        signIn: async () => ({ user: null, session: null, error: new Error('Supabase not configured') }),
-        signUp: async () => ({ user: null, session: null, error: new Error('Supabase not configured') }),
-        signOut: async () => ({ error: null })
-      }
-    };
-  }
-  return supabase;
-};
-
-export default supabase;
+// Helper function to check if Supabase is properly configured
+export const isSupabaseConfigured = () => hasValidConfig

@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/Footer";
 import { PropertyFilters } from "@/components/ui/property-filters";
@@ -9,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { MapPin, BedDouble, Ruler } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Imovel } from "@/cards/imoveis";
-import { useState } from "react";
 
 const LancamentosPage = () => {
   // Estado para controlar quantos cards estão sendo exibidos
@@ -20,7 +18,7 @@ const LancamentosPage = () => {
     filters,
     setters,
     filteredProperties,
-    availableRegions,
+    filterData,
     clearFilters,
     hasActiveFilters
   } = usePropertyFilters(lancamentos);
@@ -124,9 +122,9 @@ const LancamentosPage = () => {
               onQuartosChange={setters.setSelectedQuartos}
               onMetragemChange={setters.setSelectedMetragem}
               onValorChange={setters.setSelectedValor}
-              availableRegions={availableRegions}
               showSearchButton={false}
               showFinalidadeBox={false}
+              filterData={filterData}
             />
           </div>
 

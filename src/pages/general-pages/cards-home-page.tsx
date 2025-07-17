@@ -1,7 +1,6 @@
 
 import ImgCardPorto from '../../assets/images/imagem-regiao-portuaria-MAM-praca-flutuante.jpg'
 import ImgCardBarra from '../../assets/images/imagem-barra-da-tijuca.webp'
-import { useEffect, useState } from 'react';
 
 export interface RegiaoCard {
   id: string;
@@ -16,14 +15,7 @@ export interface RegiaoCard {
   destaque: boolean;
 }
 
-export interface RegiaoAPI {
-  nomeRegiao: string;
-  id: string;
-  destaque: boolean;
-}
-
-// Static region cards as fallback
-const staticCardsRegioes: RegiaoCard[] = [
+const cardsRegioes: RegiaoCard[] = [
   {
     id: "porto-maravilha",
     nome: "Porto Maravilha",
@@ -95,60 +87,4 @@ const staticCardsRegioes: RegiaoCard[] = [
   },
 ];
 
-// Function to load region cards from API
-export const loadRegionsFromAPI = async (): Promise<RegiaoCard[]> => {
-  try {
-    // Dynamically import the API to avoid circular dependencies
-    const { obterTodasRegioes } = await import('../../services/filterApi');
-    const regioesApi = await obterTodasRegioes();
-    
-    if (regioesApi && regioesApi.length > 0) {
-      // Map API regions to RegiaoCard format
-      const regionCards: RegiaoCard[] = regioesApi.map((regiao: RegiaoAPI) => {
-        // Find if we have an existing static card for this region to reuse its data
-        const existingCard = staticCardsRegioes.find(
-          card => card.nome.toLowerCase() === regiao.nomeRegiao.toLowerCase()
-        );
-
-        // Default image based on region name
-        let defaultImage = ImgCardPorto;
-        if (regiao.nomeRegiao.includes("Barra")) {
-          defaultImage = ImgCardBarra;
-        }
-
-        return {
-          id: regiao.id,
-          nome: regiao.nomeRegiao,
-          descricao: existingCard?.descricao || `Excelente localização em ${regiao.nomeRegiao}`,
-          caracteristicas: existingCard?.caracteristicas || [
-            "Localização privilegiada",
-            "Infraestrutura completa",
-            "Fácil acesso",
-            "Opções de lazer nas proximidades",
-          ],
-          lancamentosAtivos: existingCard?.lancamentosAtivos || 1,
-          precoPartir: existingCard?.precoPartir || "A partir de R$ 290.000",
-          imagem: existingCard?.imagem || defaultImage,
-          url: `/${regiao.nomeRegiao.toLowerCase().replace(/ /g, "-")}`,
-          status: "Disponível",
-          destaque: regiao.destaque,
-        };
-      });
-      
-      return regionCards;
-    }
-  } catch (error) {
-    console.error('Erro ao carregar regiões da API:', error);
-  }
-  
-  // Return static cards as fallback
-  return staticCardsRegioes;
-};
-
-// Export a function to get the cards, which can be used in components
-export const getCardsRegioes = async (): Promise<RegiaoCard[]> => {
-  return await loadRegionsFromAPI();
-};
-
-// Default export for backward compatibility
-export default staticCardsRegioes;
+export default cardsRegioes;

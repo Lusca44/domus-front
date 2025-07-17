@@ -1,7 +1,7 @@
+
 import { Imovel } from '../imoveis';
 
-// Base alugueis data
-export let alugueis: Imovel[] = [
+export const alugueis: Imovel[] = [
   {
     id: "11",
     titulo: "Apartamento Moderno - Copacabana",
@@ -81,50 +81,3 @@ export let alugueis: Imovel[] = [
     tipo: "aluguel",
   },
 ];
-
-// Function to update alugueis from API
-export const updateAlugueisFromAPI = (apiAlugueis: Imovel[]) => {
-  // Keep static entries (if needed)
-  const estaticos = alugueis.slice(0, 6);
-  
-  // Add new entries from API
-  alugueis.length = 0; 
-  alugueis.push(...estaticos, ...apiAlugueis);
-};
-
-// Function to load alugueis from API
-export const loadAlugueisFromAPI = async () => {
-  try {
-    const { imovelApi } = await import('../../utils/apiConfig');
-    // Get rentals using the finalidade ID for "Aluguel"
-    const apiImoveis = await imovelApi.getByFinalidadeId("6875aeb4b6b99837cba82feb");
-    
-    if (apiImoveis && apiImoveis.length > 0) {
-      const imoveisForCards: Imovel[] = apiImoveis.map((imovel: any, index: number) => {
-        return {
-          id: imovel.id || `api-aluguel-${index}`,
-          titulo: imovel.titulo || "Imóvel para Aluguel",
-          descricao: imovel.descricaoImovel || "",
-          preco: imovel.valor ? `R$ ${imovel.valor}/mês` : "Consulte",
-          imagem: imovel.urlFotoCard || "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
-          regiao: imovel.regiaoId || "Região não informada",
-          quartos: parseInt(imovel.quantidadeQuartos) || 1,
-          quartosDisponiveis: imovel.quantidadeQuartos ? [parseInt(imovel.quantidadeQuartos)] : [1],
-          area: imovel.areaQuadrada ? `${imovel.areaQuadrada}m²` : "N/A",
-          areasDisponiveis: imovel.areaQuadrada ? [`${imovel.areaQuadrada}m²`] : ["N/A"],
-          url: `/imovel/${imovel.id}`,
-          destaque: true, // Can be adjusted based on API data if available
-          tipo: "aluguel" as const,
-        };
-      });
-      
-      // Update alugueis array with API data
-      updateAlugueisFromAPI(imoveisForCards);
-    }
-  } catch (error) {
-    console.error('Erro ao carregar alugueis da API:', error);
-  }
-};
-
-// Load alugueis automatically when module is imported
-loadAlugueisFromAPI();
