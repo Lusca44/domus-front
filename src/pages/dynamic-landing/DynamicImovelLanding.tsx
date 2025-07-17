@@ -26,7 +26,7 @@ import { Link } from 'react-router-dom';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { ImovelAPI } from '@/types/api';
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 
 /**
  * Landing Page Dinâmica para Imóveis
@@ -53,6 +53,38 @@ export default function DynamicImovelLanding() {
 
       try {
         setLoading(true);
+        
+        if (!isSupabaseConfigured() || !supabase) {
+          console.warn('Supabase not configured, using mock data');
+          // Mock data for development
+          const mockImovel: ImovelAPI = {
+            id: id,
+            titulo: "Apartamento Moderno no Centro",
+            urlFotoCard: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
+            urlsFotos: [
+              "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
+              "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"
+            ],
+            finalidadeId: ["Venda"],
+            tipologiaId: ["Apartamento"],
+            regiaoId: "Centro",
+            endereco: "Rua das Flores, 123 - Centro, Rio de Janeiro",
+            quantidadeQuartos: "2",
+            quantidadeBanheiros: "1",
+            quantidadeVagas: "1",
+            quantidadeSuites: "1",
+            areaQuadrada: "65",
+            descricaoImovel: "Apartamento moderno e bem localizado no centro da cidade",
+            valor: "450000",
+            valorCondominio: "350",
+            valorIptu: "200",
+            urlLocalizacaoMaps: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.2962040845813!2d-43.18753!3d-22.903538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f58a6a00a9d%3A0x3f251d85272aa76a!2sTeatro%20Municipal%20do%20Rio%20de%20Janeiro!5e0!3m2!1spt-BR!2sbr!4v1673886755654!5m2!1spt-BR!2sbr"
+          };
+          setImovel(mockImovel);
+          setLoading(false);
+          return;
+        }
+        
         const { data, error } = await supabase.functions.invoke('obterImovelPorId', {
           body: { id }
         });
