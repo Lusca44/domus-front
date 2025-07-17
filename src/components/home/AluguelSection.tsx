@@ -10,7 +10,7 @@ const AluguelSection = () => {
     filters,
     setters,
     filteredProperties,
-    filterData
+    availableRegions
   } = usePropertyFilters(alugueis);
 
   // Aplicar filtros aos alugueis
@@ -40,7 +40,7 @@ const AluguelSection = () => {
 
   return (
     <div className="space-y-12">
-      {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados da API */}
+      {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados dos cards */}
       <PropertyFilters
         selectedFinalidade={filters.selectedFinalidade}
         selectedTipo={filters.selectedTipo}
@@ -54,8 +54,7 @@ const AluguelSection = () => {
         onQuartosChange={setters.setSelectedQuartos}
         onMetragemChange={setters.setSelectedMetragem}
         onValorChange={setters.setSelectedValor}
-        isMenuAluguel={true}
-        filterData={filterData}
+        availableRegions={availableRegions}
       />
 
       {filteredAlugueis.length > 0 ? (

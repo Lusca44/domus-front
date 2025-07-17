@@ -3,18 +3,16 @@ import React, { useState } from "react";
 import FeaturedCard from "./FeaturedCard";
 import { PropertyFilters } from "@/components/ui/property-filters";
 import { usePropertyFilters } from "@/hooks/use-property-filters";
-import { useLancamentos } from "@/hooks/useLancamentos";
+import { lancamentos } from "@/cards/lancamentos/lancamentos";
 import { Button } from "@/components/ui/button";
 
 const LancamentosSection = () => {
-  const { lancamentos: lancamentosData, loading: lancamentosLoading } = useLancamentos();
-  
   const {
     filters,
     setters,
     filteredProperties,
-    filterData
-  } = usePropertyFilters(lancamentosData);
+    availableRegions
+  } = usePropertyFilters(lancamentos);
 
   // Estado para controlar quantos cards mostrar na seção "Outros Lançamentos"
   const [visibleRegularCards, setVisibleRegularCards] = useState(4);
@@ -53,18 +51,9 @@ const LancamentosSection = () => {
     </div>
   );
 
-  if (lancamentosLoading) {
-    return (
-      <div className="text-center py-16">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Carregando lançamentos...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-12">
-      {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados da API */}
+      {/* **FILTROS AUTOMÁTICOS** - populados baseado nos dados dos cards */}
       <PropertyFilters
         selectedFinalidade={filters.selectedFinalidade}
         selectedTipo={filters.selectedTipo}
@@ -78,7 +67,7 @@ const LancamentosSection = () => {
         onQuartosChange={setters.setSelectedQuartos}
         onMetragemChange={setters.setSelectedMetragem}
         onValorChange={setters.setSelectedValor}
-        filterData={filterData}
+        availableRegions={availableRegions}
       />
 
       {filteredLancamentos.length > 0 ? (

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApi } from '@/hooks/useApi';
+import { imovelApi } from '@/utils/apiConfig';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -25,8 +26,25 @@ import PhotoCarousel from '@/components/PhotoCarousel';
 import { Link } from 'react-router-dom';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
-import { ImovelAPI } from '@/types/api';
-import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
+
+interface Imovel {
+  id: string;
+  nome: string;
+  descricao?: string;
+  endereco?: string;
+  preco?: number;
+  area?: string;
+  quartos?: number;
+  banheiros?: number;
+  vagas?: number;
+  imagemPrincipal?: string;
+  imagens?: string[];
+  mapUrl?: string;
+  diferenciais?: string[];
+  finalidade?: { nome: string };
+  regiao?: { nome: string };
+  tipologia?: { nome: string };
+}
 
 /**
  * Landing Page Dinâmica para Imóveis
@@ -36,9 +54,11 @@ import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
  */
 export default function DynamicImovelLanding() {
   const { id } = useParams<{ id: string }>();
-  const [imovel, setImovel] = useState<ImovelAPI | null>(null);
+  const [imovel, setImovel] = useState<Imovel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  const { execute: fetchImovel } = useApi();
 
   /**
    * Carrega os dados do imóvel pela API
@@ -53,46 +73,7 @@ export default function DynamicImovelLanding() {
 
       try {
         setLoading(true);
-        
-        if (!isSupabaseConfigured() || !supabase) {
-          console.warn('Supabase not configured, using mock data');
-          // Mock data for development
-          const mockImovel: ImovelAPI = {
-            id: id,
-            titulo: "Apartamento Moderno no Centro",
-            urlFotoCard: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
-            urlsFotos: [
-              "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
-              "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"
-            ],
-            finalidadeId: ["Venda"],
-            tipologiaId: ["Apartamento"],
-            regiaoId: "Centro",
-            endereco: "Rua das Flores, 123 - Centro, Rio de Janeiro",
-            quantidadeQuartos: "2",
-            quantidadeBanheiros: "1",
-            quantidadeVagas: "1",
-            quantidadeSuites: "1",
-            areaQuadrada: "65",
-            descricaoImovel: "Apartamento moderno e bem localizado no centro da cidade",
-            valor: "450000",
-            valorCondominio: "350",
-            valorIptu: "200",
-            urlLocalizacaoMaps: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.2962040845813!2d-43.18753!3d-22.903538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f58a6a00a9d%3A0x3f251d85272aa76a!2sTeatro%20Municipal%20do%20Rio%20de%20Janeiro!5e0!3m2!1spt-BR!2sbr!4v1673886755654!5m2!1spt-BR!2sbr"
-          };
-          setImovel(mockImovel);
-          setLoading(false);
-          return;
-        }
-        
-        const { data, error } = await supabase.functions.invoke('obterImovelPorId', {
-          body: { id }
-        });
-        
-        if (error) {
-          throw error;
-        }
-        
+        const data = await fetchImovel(() => imovelApi.getById(id));
         setImovel(data);
       } catch (err) {
         console.error('Erro ao carregar imóvel:', err);
@@ -103,7 +84,7 @@ export default function DynamicImovelLanding() {
     };
 
     loadImovel();
-  }, [id]);
+  }, [id, fetchImovel]);
 
   /**
    * Prepara as características para exibição
@@ -113,53 +94,50 @@ export default function DynamicImovelLanding() {
     
     const caracteristicas = [];
     
-    if (imovel.tipologiaId && imovel.tipologiaId.length > 0) {
+    if (imovel.tipologia?.nome) {
       caracteristicas.push({
         titulo: 'Tipo',
-        valor: imovel.tipologiaId.join(', '),
+        valor: imovel.tipologia.nome,
         icone: Home
       });
     }
     
-    if (imovel.areaQuadrada) {
+    if (imovel.area) {
       caracteristicas.push({
         titulo: 'Área',
-        valor: `${imovel.areaQuadrada}m²`,
+        valor: imovel.area,
         icone: Square
       });
     }
     
-    if (imovel.quantidadeQuartos) {
-      const quartos = parseInt(imovel.quantidadeQuartos);
+    if (imovel.quartos) {
       caracteristicas.push({
         titulo: 'Quartos',
-        valor: `${quartos} ${quartos === 1 ? 'quarto' : 'quartos'}`,
+        valor: `${imovel.quartos} ${imovel.quartos === 1 ? 'quarto' : 'quartos'}`,
         icone: Bed
       });
     }
     
-    if (imovel.quantidadeBanheiros) {
-      const banheiros = parseInt(imovel.quantidadeBanheiros);
+    if (imovel.banheiros) {
       caracteristicas.push({
         titulo: 'Banheiros',
-        valor: `${banheiros} ${banheiros === 1 ? 'banheiro' : 'banheiros'}`,
+        valor: `${imovel.banheiros} ${imovel.banheiros === 1 ? 'banheiro' : 'banheiros'}`,
         icone: Bath
       });
     }
     
-    if (imovel.quantidadeVagas) {
-      const vagas = parseInt(imovel.quantidadeVagas);
+    if (imovel.vagas) {
       caracteristicas.push({
         titulo: 'Vagas',
-        valor: `${vagas} ${vagas === 1 ? 'vaga' : 'vagas'}`,
+        valor: `${imovel.vagas} ${imovel.vagas === 1 ? 'vaga' : 'vagas'}`,
         icone: Car
       });
     }
     
-    if (imovel.regiaoId) {
+    if (imovel.regiao?.nome) {
       caracteristicas.push({
         titulo: 'Região',
-        valor: imovel.regiaoId,
+        valor: imovel.regiao.nome,
         icone: Location
       });
     }
@@ -175,19 +153,19 @@ export default function DynamicImovelLanding() {
     
     const fotos = [];
     
-    if (imovel.urlFotoCard) {
+    if (imovel.imagemPrincipal) {
       fotos.push({
-        src: imovel.urlFotoCard,
-        alt: `${imovel.titulo} - Imagem principal`,
+        src: imovel.imagemPrincipal,
+        alt: `${imovel.nome} - Imagem principal`,
         titulo: 'Fachada'
       });
     }
     
-    if (imovel.urlsFotos && imovel.urlsFotos.length > 0) {
-      imovel.urlsFotos.forEach((img, index) => {
+    if (imovel.imagens && imovel.imagens.length > 0) {
+      imovel.imagens.forEach((img, index) => {
         fotos.push({
           src: img,
-          alt: `${imovel.titulo} - Imagem ${index + 1}`,
+          alt: `${imovel.nome} - Imagem ${index + 1}`,
           titulo: `Ambiente ${index + 1}`
         });
       });
@@ -200,7 +178,7 @@ export default function DynamicImovelLanding() {
    * Determina a cor do tema baseado na finalidade
    */
   const getThemeColors = () => {
-    const finalidade = imovel?.finalidadeId?.[0]?.toLowerCase();
+    const finalidade = imovel?.finalidade?.nome?.toLowerCase();
     
     if (finalidade === 'aluguel') {
       return {
@@ -278,7 +256,7 @@ export default function DynamicImovelLanding() {
       <section
         className="relative h-screen flex items-center justify-center text-white overflow-hidden"
         style={{
-          backgroundImage: imovel.urlFotoCard ? `url("${imovel.urlFotoCard}")` : `linear-gradient(135deg, ${theme.primary === 'blue' ? '#2563eb' : '#059669'} 0%, ${theme.primary === 'blue' ? '#1d4ed8' : '#047857'} 100%)`,
+          backgroundImage: imovel.imagemPrincipal ? `url("${imovel.imagemPrincipal}")` : `linear-gradient(135deg, ${theme.primary === 'blue' ? '#2563eb' : '#059669'} 0%, ${theme.primary === 'blue' ? '#1d4ed8' : '#047857'} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -291,23 +269,23 @@ export default function DynamicImovelLanding() {
             <div className={`inline-flex items-center space-x-2 ${theme.accentBg} backdrop-blur-sm px-4 py-2 rounded-full border ${theme.accentBorder} mb-4`}>
               <Star className="w-4 h-4 text-yellow-400" />
               <span className="text-sm font-medium">
-                {imovel.finalidadeId?.[0] || 'Disponível'}
+                {imovel.finalidade?.nome || 'Disponível'}
               </span>
             </div>
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="block text-white">{imovel.titulo}</span>
-            {imovel.tipologiaId && imovel.tipologiaId.length > 0 && (
+            <span className="block text-white">{imovel.nome}</span>
+            {imovel.tipologia?.nome && (
               <span className="block text-2xl md:text-3xl lg:text-4xl font-normal text-white/90 mt-2">
-                {imovel.tipologiaId.join(', ')}
+                {imovel.tipologia.nome}
               </span>
             )}
           </h1>
 
-          {imovel.descricaoImovel && (
+          {imovel.descricao && (
             <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-              {imovel.descricaoImovel}
+              {imovel.descricao}
             </p>
           )}
 
@@ -323,19 +301,14 @@ export default function DynamicImovelLanding() {
             })}
           </div>
 
-          {imovel.valor && (
+          {imovel.preco && (
             <div className="mb-8">
               <div className="inline-block bg-white/15 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/20">
                 <span className="text-2xl md:text-3xl font-bold">
-                  R$ {parseInt(imovel.valor).toLocaleString('pt-BR')}
+                  R$ {imovel.preco.toLocaleString('pt-BR')}
                 </span>
-                {imovel.finalidadeId?.[0]?.toLowerCase() === 'aluguel' && (
+                {imovel.finalidade?.nome?.toLowerCase() === 'aluguel' && (
                   <span className="text-lg text-white/80 ml-2">/mês</span>
-                )}
-                {imovel.valorCondominio && (
-                  <div className="text-sm text-white/70 mt-1">
-                    + Condomínio R$ {parseInt(imovel.valorCondominio).toLocaleString('pt-BR')}
-                  </div>
                 )}
               </div>
             </div>
@@ -385,9 +358,9 @@ export default function DynamicImovelLanding() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Características do Imóvel
             </h2>
-            {imovel.descricaoImovel && (
+            {imovel.descricao && (
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                {imovel.descricaoImovel}
+                {imovel.descricao}
               </p>
             )}
           </div>
@@ -439,6 +412,35 @@ export default function DynamicImovelLanding() {
         </section>
       )}
 
+      {/* Seção de Diferenciais */}
+      {imovel.diferenciais && imovel.diferenciais.length > 0 && (
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Diferenciais do Imóvel
+              </h2>
+              <p className="text-lg text-gray-600">
+                Tudo o que torna este imóvel especial
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-4">
+                {imovel.diferenciais.map((item, index) => (
+                  <div key={index} className="flex items-center group">
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                    <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Seção de Localização */}
       {imovel.endereco && (
         <section className={`py-16 bg-gradient-to-br ${theme.gradient}`}>
@@ -452,18 +454,18 @@ export default function DynamicImovelLanding() {
               </p>
             </div>
 
-            {imovel.urlLocalizacaoMaps && (
+            {imovel.mapUrl && (
               <div className="max-w-4xl mx-auto">
                 <div className={`bg-white rounded-2xl shadow-xl p-8 border ${theme.cardBorder}`}>
                   <iframe
-                    src={imovel.urlLocalizacaoMaps}
+                    src={imovel.mapUrl}
                     width="100%"
                     height="400"
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title={`Localização de ${imovel.titulo}`}
+                    title={`Localização de ${imovel.nome}`}
                     className="w-full h-96 rounded-xl"
                   />
                 </div>
@@ -486,13 +488,13 @@ export default function DynamicImovelLanding() {
               </h2>
               <p className="text-lg text-white/90">
                 Preencha o formulário e nossa equipe entrará em contato para 
-                {imovel.finalidadeId?.[0]?.toLowerCase() === 'aluguel' ? ' agendar uma visita' : ' mais informações'}
+                {imovel.finalidade?.nome?.toLowerCase() === 'aluguel' ? ' agendar uma visita' : ' mais informações'}
               </p>
             </div>
 
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
               <LeadCaptureForm
-                nomeLancamento={imovel.titulo}
+                nomeLancamento={imovel.nome}
                 title="Fale conosco"
                 description="Nossa equipe especializada entrará em contato em breve"
               />
