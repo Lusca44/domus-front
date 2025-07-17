@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NewHomePage from "./pages/general-pages/NewHomePage";
 import AnunciePage from "./pages/general-pages/AnunciePage";
@@ -20,7 +21,7 @@ import LancamentosPage from '@/pages/general-pages/LancamentosPage';
 import ProntosPage from '@/pages/general-pages/ProntosPage';
 import AlugueisPage from '@/pages/general-pages/AlugueisPage';
 
-// Import das páginas admin existentes
+// Import das páginas admin criadas
 import FinalidadesPage from '@/pages/admin/FinalidadesPage';
 import TipologiasPage from '@/pages/admin/TipologiasPage';
 import LancamentosAdminPage from '@/pages/admin/LancamentosAdminPage';
@@ -53,10 +54,15 @@ function App() {
             <Route path="/anuncie" element={<AnunciePage />} />
             <Route path="/contato" element={<ContatoPage />} />
 
+            {/* Landing Pages estáticas */}
             <Route
               path="/porto-maravilha/lancamento/pixinguinha"
               element={<LandingPixinguinha />}
             />
+
+            {/* Landing Pages dinâmicas */}
+            <Route path="/lancamento/:id" element={<DynamicLancamentoLanding />} />
+            <Route path="/imovel/:id" element={<DynamicImovelLanding />} />
 
             <Route path="/obrigado" element={<PaginaAgradecimento />} />
 
@@ -104,49 +110,46 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Novas rotas administrativas criadas */}
+            <Route
+              path="/admin/finalidades"
+              element={
+                <ProtectedRoute>
+                  <FinalidadesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/tipologias"
+              element={
+                <ProtectedRoute>
+                  <TipologiasPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/lancamentos"
+              element={
+                <ProtectedRoute>
+                  <LancamentosAdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/imoveis"
+              element={
+                <ProtectedRoute>
+                  <ImoveisAdminPage />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Rota 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />
         </div>
-        <Routes>
-          {/* Rotas públicas existentes */}
-          <Route path="/" element={<LancamentosPage />} />
-          <Route path="/lancamentos" element={<LancamentosPage />} />
-          <Route path="/prontos" element={<ProntosPage />} />
-          <Route path="/alugueis" element={<AlugueisPage />} />
-          
-          {/* Rotas de regiões específicas (estáticas) */}
-          <Route path="/regioes/porto/pixinguinha" element={<LandingPixinguinha />} />
-          
-          {/* Rotas dinâmicas para landing pages */}
-          <Route path="/lancamento/:id" element={<DynamicLancamentoLanding />} />
-          <Route path="/imovel/:id" element={<DynamicImovelLanding />} />
-          
-          {/* Rotas protegidas do admin */}
-          <Route path="/admin/*" element={
-            <ProtectedRoute>
-              <Routes>
-                <Route path="finalidades" element={<FinalidadesPage />} />
-                <Route path="tipologias" element={<TipologiasPage />} />
-                <Route path="lancamentos" element={<LancamentosAdminPage />} />
-                <Route path="imoveis" element={<ImoveisAdminPage />} />
-              </Routes>
-            </ProtectedRoute>
-          } />
-          
-          {/* Rota 404 - temporária */}
-          <Route path="*" element={
-            <div className="min-h-screen flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-gray-900 mb-4">Página não encontrada</h1>
-                <p className="text-gray-600">A página que você procura não existe.</p>
-              </div>
-            </div>
-          } />
-        </Routes>
-        <Toaster />
       </Router>
     </QueryClientProvider>
   );
