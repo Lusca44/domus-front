@@ -35,18 +35,34 @@ import Header from '@/components/Header';
 
 interface Lancamento {
   id: string;
-  nome: string;
+  nomeLancamento: string;
+  urlFotoBackGround?: string;
+  urlsFotos?: string[];
   slogan?: string;
-  descricao?: string;
+  regiaoId?: string;
   endereco?: string;
-  preco?: number;
-  statusObra: 'Lançamento' | 'Em obras' | 'Pronto';
-  areasDisponiveis?: string[];
-  imagemPrincipal?: string;
-  imagens?: string[];
-  mapUrl?: string;
-  diferenciais?: string[];
-  caracteristicas?: any[];
+  sobreLancamento?: {
+    titulo: string;
+    texto: string;
+    cardsSobreLancamento?: Array<{
+      icone: string;
+      titulo: string;
+      texto: string;
+    }>;
+  };
+  diferenciaisLancamento?: string[];
+  proximidadesDaLocalizacao?: string[];
+  localizacaoMapsSource?: string;
+  cardLancamentoInfo?: {
+    valor: string;
+    quartosDisponiveis: string[];
+    isCardDestaque: boolean;
+    areasDisponiveis: string[];
+    finalidadeId: string;
+    tipologiaId: string[];
+    urlImagemCard: string;
+    statusObra: 'Lançamento' | 'Em obras' | 'Pronto';
+  };
   regiao?: { nome: string };
   tipologia?: { nome: string };
 }
@@ -107,25 +123,35 @@ export default function DynamicLancamentoLanding() {
       });
     }
     
-    if (lancamento.areasDisponiveis && lancamento.areasDisponiveis.length > 0) {
+    if (lancamento.cardLancamentoInfo?.areasDisponiveis && lancamento.cardLancamentoInfo.areasDisponiveis.length > 0) {
       caracteristicas.push({
         titulo: 'Áreas',
-        valor: lancamento.areasDisponiveis.join(', '),
+        valor: lancamento.cardLancamentoInfo.areasDisponiveis.map(a => `${a}m²`).join(', '),
         icone: Building
       });
     }
     
-    caracteristicas.push({
-      titulo: 'Status',
-      valor: lancamento.statusObra,
-      icone: Clock
-    });
+    if (lancamento.cardLancamentoInfo?.statusObra) {
+      caracteristicas.push({
+        titulo: 'Status',
+        valor: lancamento.cardLancamentoInfo.statusObra,
+        icone: Clock
+      });
+    }
     
     if (lancamento.regiao?.nome) {
       caracteristicas.push({
         titulo: 'Região',
         valor: lancamento.regiao.nome,
         icone: MapPin
+      });
+    }
+
+    if (lancamento.cardLancamentoInfo?.quartosDisponiveis && lancamento.cardLancamentoInfo.quartosDisponiveis.length > 0) {
+      caracteristicas.push({
+        titulo: 'Quartos',
+        valor: lancamento.cardLancamentoInfo.quartosDisponiveis.join(', '),
+        icone: Home
       });
     }
 
@@ -140,19 +166,19 @@ export default function DynamicLancamentoLanding() {
     
     const fotos = [];
     
-    if (lancamento.imagemPrincipal) {
+    if (lancamento.urlFotoBackGround) {
       fotos.push({
-        src: lancamento.imagemPrincipal,
-        alt: `${lancamento.nome} - Imagem principal`,
+        src: lancamento.urlFotoBackGround,
+        alt: `${lancamento.nomeLancamento} - Imagem principal`,
         titulo: 'Fachada'
       });
     }
     
-    if (lancamento.imagens && lancamento.imagens.length > 0) {
-      lancamento.imagens.forEach((img, index) => {
+    if (lancamento.urlsFotos && lancamento.urlsFotos.length > 0) {
+      lancamento.urlsFotos.forEach((img, index) => {
         fotos.push({
           src: img,
-          alt: `${lancamento.nome} - Imagem ${index + 1}`,
+          alt: `${lancamento.nomeLancamento} - Imagem ${index + 1}`,
           titulo: `Ambiente ${index + 1}`
         });
       });
@@ -206,7 +232,7 @@ export default function DynamicLancamentoLanding() {
       <section
         className="relative h-screen flex items-center justify-center text-white overflow-hidden"
         style={{
-          backgroundImage: lancamento.imagemPrincipal ? `url("${lancamento.imagemPrincipal}")` : 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+          backgroundImage: lancamento.urlFotoBackGround ? `url("${lancamento.urlFotoBackGround}")` : 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -218,12 +244,12 @@ export default function DynamicLancamentoLanding() {
           <div className="mb-6">
             <div className="inline-flex items-center space-x-2 bg-orange-600/20 backdrop-blur-sm px-4 py-2 rounded-full border border-orange-400/30 mb-4">
               <Star className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm font-medium">{lancamento.statusObra}</span>
+              <span className="text-sm font-medium">{lancamento.cardLancamentoInfo?.statusObra || 'Lançamento'}</span>
             </div>
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="block text-orange-100">{lancamento.nome}</span>
+            <span className="block text-orange-100">{lancamento.nomeLancamento}</span>
             {lancamento.slogan && (
               <span className="block text-2xl md:text-3xl lg:text-4xl font-normal text-orange-200 mt-2">
                 {lancamento.slogan}
@@ -231,9 +257,9 @@ export default function DynamicLancamentoLanding() {
             )}
           </h1>
 
-          {lancamento.descricao && (
+          {lancamento.sobreLancamento?.texto && (
             <p className="text-lg md:text-xl text-orange-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-              {lancamento.descricao}
+              {lancamento.sobreLancamento.texto}
             </p>
           )}
 
@@ -291,11 +317,16 @@ export default function DynamicLancamentoLanding() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {lancamento.nome}
+              {lancamento.nomeLancamento}
             </h2>
-            {lancamento.descricao && (
+            {lancamento.sobreLancamento?.titulo && (
+              <h3 className="text-xl font-semibold text-orange-600 mb-2">
+                {lancamento.sobreLancamento.titulo}
+              </h3>
+            )}
+            {lancamento.sobreLancamento?.texto && (
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                {lancamento.descricao}
+                {lancamento.sobreLancamento.texto}
               </p>
             )}
           </div>
@@ -330,7 +361,7 @@ export default function DynamicLancamentoLanding() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Conheça o {lancamento.nome}
+                Conheça o {lancamento.nomeLancamento}
               </h2>
               <p className="text-lg text-gray-600">
                 Descubra todos os detalhes do seu futuro lar
@@ -348,7 +379,7 @@ export default function DynamicLancamentoLanding() {
       )}
 
       {/* Seção de Diferenciais */}
-      {lancamento.diferenciais && lancamento.diferenciais.length > 0 && (
+      {lancamento.diferenciaisLancamento && lancamento.diferenciaisLancamento.length > 0 && (
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
@@ -362,7 +393,7 @@ export default function DynamicLancamentoLanding() {
 
             <div className="max-w-4xl mx-auto">
               <div className="grid md:grid-cols-2 gap-4">
-                {lancamento.diferenciais.map((item, index) => (
+                {lancamento.diferenciaisLancamento.map((item, index) => (
                   <div key={index} className="flex items-center group">
                     <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0 group-hover:scale-110 transition-transform" />
                     <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
@@ -376,9 +407,38 @@ export default function DynamicLancamentoLanding() {
         </section>
       )}
 
+      {/* Seção de Proximidades */}
+      {lancamento.proximidadesDaLocalizacao && lancamento.proximidadesDaLocalizacao.length > 0 && (
+        <section className="py-16 bg-gradient-to-br from-orange-50 to-red-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Proximidades e Conveniências
+              </h2>
+              <p className="text-lg text-gray-600">
+                Tudo que você precisa está pertinho de você
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-4">
+                {lancamento.proximidadesDaLocalizacao.map((item, index) => (
+                  <div key={index} className="flex items-center group">
+                    <MapPin className="w-5 h-5 text-orange-500 mr-3 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                    <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Seção de Localização */}
       {lancamento.endereco && (
-        <section className="py-16 bg-gradient-to-br from-orange-50 to-red-50">
+        <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -389,18 +449,18 @@ export default function DynamicLancamentoLanding() {
               </p>
             </div>
 
-            {lancamento.mapUrl && (
+            {lancamento.localizacaoMapsSource && (
               <div className="max-w-4xl mx-auto">
                 <div className="bg-white rounded-2xl shadow-xl p-8 border border-orange-100">
                   <iframe
-                    src={lancamento.mapUrl}
+                    src={lancamento.localizacaoMapsSource}
                     width="100%"
                     height="400"
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title={`Localização do ${lancamento.nome}`}
+                    title={`Localização do ${lancamento.nomeLancamento}`}
                     className="w-full h-96 rounded-xl"
                   />
                 </div>
@@ -419,17 +479,24 @@ export default function DynamicLancamentoLanding() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Garanta Já o Seu {lancamento.nome}
+                Garanta Já o Seu {lancamento.nomeLancamento}
               </h2>
               <p className="text-lg text-orange-100">
                 Preencha o formulário e receba informações exclusivas sobre
                 preços, plantas e condições especiais
               </p>
+              {lancamento.cardLancamentoInfo?.valor && (
+                <div className="mt-6">
+                  <span className="text-2xl font-bold text-yellow-300">
+                    A partir de R$ {lancamento.cardLancamentoInfo.valor}
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
               <LeadCaptureForm
-                nomeLancamento={lancamento.nome}
+                nomeLancamento={lancamento.nomeLancamento}
                 title="Receba informações exclusivas"
                 description="Nossa equipe especializada entrará em contato em breve"
               />
