@@ -1,5 +1,5 @@
-
 import { useState, useMemo } from "react";
+import { useFilterData } from "./useFilterData";
 
 export interface PropertyFilterOptions {
   selectedFinalidade: string;
@@ -17,7 +17,16 @@ export const usePropertyFilters = (allProperties: any[]) => {
   const [selectedQuartos, setSelectedQuartos] = useState("null");
   const [selectedMetragem, setSelectedMetragem] = useState("null");
   const [selectedValor, setSelectedValor] = useState("null");
-  
+
+  const {
+    finalidades,
+    tipologias,
+    regioes,
+    quartosDisponiveis,
+    areasDisponiveis,
+    valoresDisponiveis,
+    loading
+  } = useFilterData(allProperties);
 
   // Função para extrair valor numérico do preço
   const extractPrice = (preco: string): number => {
@@ -110,11 +119,10 @@ export const usePropertyFilters = (allProperties: any[]) => {
     return allProperties.filter(matchesFilters);
   }, [allProperties, selectedFinalidade, selectedTipo, selectedBairro, selectedQuartos, selectedMetragem, selectedValor]);
 
-  // Obter regiões disponíveis
+  // Obter regiões disponíveis a partir da API
   const availableRegions = useMemo(() => {
-    const regions = [...new Set(allProperties.map(property => property.regiao))];
-    return regions.sort();
-  }, [allProperties]);
+    return regioes.map(regiao => regiao.nomeRegiao).sort();
+  }, [regioes]);
 
   const clearFilters = () => {
     setSelectedFinalidade("null");
@@ -141,6 +149,15 @@ export const usePropertyFilters = (allProperties: any[]) => {
       setSelectedQuartos,
       setSelectedMetragem,
       setSelectedValor,
+    },
+    filterData: {
+      finalidades,
+      tipologias,
+      regioes,
+      quartosDisponiveis,
+      areasDisponiveis,
+      valoresDisponiveis,
+      loading
     },
     filteredProperties,
     availableRegions,

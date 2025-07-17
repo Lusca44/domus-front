@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/Footer";
@@ -15,15 +14,12 @@ const ProntosPage = () => {
   // Estado para controlar quantos cards estão sendo exibidos
   const [itemsToShow, setItemsToShow] = useState(4);
 
-  // Filtrar e combinar imóveis prontos:
-  // 1. Todos os imóveis usados
-  // 2. Lançamentos com statusObra = "Pronto"
+  // Filtrar e combinar imóveis prontos
   const imoveisProntos = useMemo(() => {
     const lancamentosProntos = lancamentos.filter(
       (imovel) => imovel.statusObra === "Pronto"
     );
     
-    // Combinar imóveis usados com lançamentos prontos
     return [...imoveisUsados, ...lancamentosProntos];
   }, []);
 
@@ -32,7 +28,7 @@ const ProntosPage = () => {
     filters,
     setters,
     filteredProperties,
-    availableRegions,
+    filterData,
     clearFilters,
     hasActiveFilters
   } = usePropertyFilters(imoveisProntos);
@@ -136,9 +132,9 @@ const ProntosPage = () => {
               onQuartosChange={setters.setSelectedQuartos}
               onMetragemChange={setters.setSelectedMetragem}
               onValorChange={setters.setSelectedValor}
-              availableRegions={availableRegions}
               showSearchButton={false}
               showFinalidadeBox={false}
+              filterData={filterData}
             />
           </div>
 

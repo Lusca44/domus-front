@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApi } from '@/hooks/useApi';
-import { imovelApi } from '@/utils/apiConfig';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -26,25 +25,8 @@ import PhotoCarousel from '@/components/PhotoCarousel';
 import { Link } from 'react-router-dom';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
-
-interface Imovel {
-  id: string;
-  nome: string;
-  descricao?: string;
-  endereco?: string;
-  preco?: number;
-  area?: string;
-  quartos?: number;
-  banheiros?: number;
-  vagas?: number;
-  imagemPrincipal?: string;
-  imagens?: string[];
-  mapUrl?: string;
-  diferenciais?: string[];
-  finalidade?: { nome: string };
-  regiao?: { nome: string };
-  tipologia?: { nome: string };
-}
+import { ImovelAPI } from '@/types/api';
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Landing Page Dinâmica para Imóveis
@@ -54,11 +36,9 @@ interface Imovel {
  */
 export default function DynamicImovelLanding() {
   const { id } = useParams<{ id: string }>();
-  const [imovel, setImovel] = useState<Imovel | null>(null);
+  const [imovel, setImovel] = useState<ImovelAPI | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  const { execute: fetchImovel } = useApi();
 
   /**
    * Carrega os dados do imóvel pela API
@@ -73,7 +53,14 @@ export default function DynamicImovelLanding() {
 
       try {
         setLoading(true);
-        const data = await fetchImovel(() => imovelApi.getById(id));
+        const { data, error } = await supabase.functions.invoke('obterImovelPorId', {
+          body: { id }
+        });
+        
+        if (error) {
+          throw error;
+        }
+        
         setImovel(data);
       } catch (err) {
         console.error('Erro ao carregar imóvel:', err);
@@ -84,7 +71,7 @@ export default function DynamicImovelLanding() {
     };
 
     loadImovel();
-  }, [id, fetchImovel]);
+  }, [id]);
 
   /**
    * Prepara as características para exibição
@@ -94,50 +81,53 @@ export default function DynamicImovelLanding() {
     
     const caracteristicas = [];
     
-    if (imovel.tipologia?.nome) {
+    if (imovel.tipologiaId && imovel.tipologiaId.length > 0) {
       caracteristicas.push({
         titulo: 'Tipo',
-        valor: imovel.tipologia.nome,
+        valor: imovel.tipologiaId.join(', '),
         icone: Home
       });
     }
     
-    if (imovel.area) {
+    if (imovel.areaQuadrada) {
       caracteristicas.push({
         titulo: 'Área',
-        valor: imovel.area,
+        valor: `${imovel.areaQuadrada}m²`,
         icone: Square
       });
     }
     
-    if (imovel.quartos) {
+    if (imovel.quantidadeQuartos) {
+      const quartos = parseInt(imovel.quantidadeQuartos);
       caracteristicas.push({
         titulo: 'Quartos',
-        valor: `${imovel.quartos} ${imovel.quartos === 1 ? 'quarto' : 'quartos'}`,
+        valor: `${quartos} ${quartos === 1 ? 'quarto' : 'quartos'}`,
         icone: Bed
       });
     }
     
-    if (imovel.banheiros) {
+    if (imovel.quantidadeBanheiros) {
+      const banheiros = parseInt(imovel.quantidadeBanheiros);
       caracteristicas.push({
         titulo: 'Banheiros',
-        valor: `${imovel.banheiros} ${imovel.banheiros === 1 ? 'banheiro' : 'banheiros'}`,
+        valor: `${banheiros} ${banheiros === 1 ? 'banheiro' : 'banheiros'}`,
         icone: Bath
       });
     }
     
-    if (imovel.vagas) {
+    if (imovel.quantidadeVagas) {
+      const vagas = parseInt(imovel.quantidadeVagas);
       caracteristicas.push({
         titulo: 'Vagas',
-        valor: `${imovel.vagas} ${imovel.vagas === 1 ? 'vaga' : 'vagas'}`,
+        valor: `${vagas} ${vagas === 1 ? 'vaga' : 'vagas'}`,
         icone: Car
       });
     }
     
-    if (imovel.regiao?.nome) {
+    if (imovel.regiaoId) {
       caracteristicas.push({
         titulo: 'Região',
-        valor: imovel.regiao.nome,
+        valor: imovel.regiaoId,
         icone: Location
       });
     }
@@ -153,19 +143,19 @@ export default function DynamicImovelLanding() {
     
     const fotos = [];
     
-    if (imovel.imagemPrincipal) {
+    if (imovel.urlFotoCard) {
       fotos.push({
-        src: imovel.imagemPrincipal,
-        alt: `${imovel.nome} - Imagem principal`,
+        src: imovel.urlFotoCard,
+        alt: `${imovel.titulo} - Imagem principal`,
         titulo: 'Fachada'
       });
     }
     
-    if (imovel.imagens && imovel.imagens.length > 0) {
-      imovel.imagens.forEach((img, index) => {
+    if (imovel.urlsFotos && imovel.urlsFotos.length > 0) {
+      imovel.urlsFotos.forEach((img, index) => {
         fotos.push({
           src: img,
-          alt: `${imovel.nome} - Imagem ${index + 1}`,
+          alt: `${imovel.titulo} - Imagem ${index + 1}`,
           titulo: `Ambiente ${index + 1}`
         });
       });
@@ -178,7 +168,7 @@ export default function DynamicImovelLanding() {
    * Determina a cor do tema baseado na finalidade
    */
   const getThemeColors = () => {
-    const finalidade = imovel?.finalidade?.nome?.toLowerCase();
+    const finalidade = imovel?.finalidadeId?.[0]?.toLowerCase();
     
     if (finalidade === 'aluguel') {
       return {
@@ -256,7 +246,7 @@ export default function DynamicImovelLanding() {
       <section
         className="relative h-screen flex items-center justify-center text-white overflow-hidden"
         style={{
-          backgroundImage: imovel.imagemPrincipal ? `url("${imovel.imagemPrincipal}")` : `linear-gradient(135deg, ${theme.primary === 'blue' ? '#2563eb' : '#059669'} 0%, ${theme.primary === 'blue' ? '#1d4ed8' : '#047857'} 100%)`,
+          backgroundImage: imovel.urlFotoCard ? `url("${imovel.urlFotoCard}")` : `linear-gradient(135deg, ${theme.primary === 'blue' ? '#2563eb' : '#059669'} 0%, ${theme.primary === 'blue' ? '#1d4ed8' : '#047857'} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -269,23 +259,23 @@ export default function DynamicImovelLanding() {
             <div className={`inline-flex items-center space-x-2 ${theme.accentBg} backdrop-blur-sm px-4 py-2 rounded-full border ${theme.accentBorder} mb-4`}>
               <Star className="w-4 h-4 text-yellow-400" />
               <span className="text-sm font-medium">
-                {imovel.finalidade?.nome || 'Disponível'}
+                {imovel.finalidadeId?.[0] || 'Disponível'}
               </span>
             </div>
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="block text-white">{imovel.nome}</span>
-            {imovel.tipologia?.nome && (
+            <span className="block text-white">{imovel.titulo}</span>
+            {imovel.tipologiaId && imovel.tipologiaId.length > 0 && (
               <span className="block text-2xl md:text-3xl lg:text-4xl font-normal text-white/90 mt-2">
-                {imovel.tipologia.nome}
+                {imovel.tipologiaId.join(', ')}
               </span>
             )}
           </h1>
 
-          {imovel.descricao && (
+          {imovel.descricaoImovel && (
             <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-              {imovel.descricao}
+              {imovel.descricaoImovel}
             </p>
           )}
 
@@ -301,14 +291,19 @@ export default function DynamicImovelLanding() {
             })}
           </div>
 
-          {imovel.preco && (
+          {imovel.valor && (
             <div className="mb-8">
               <div className="inline-block bg-white/15 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/20">
                 <span className="text-2xl md:text-3xl font-bold">
-                  R$ {imovel.preco.toLocaleString('pt-BR')}
+                  R$ {parseInt(imovel.valor).toLocaleString('pt-BR')}
                 </span>
-                {imovel.finalidade?.nome?.toLowerCase() === 'aluguel' && (
+                {imovel.finalidadeId?.[0]?.toLowerCase() === 'aluguel' && (
                   <span className="text-lg text-white/80 ml-2">/mês</span>
+                )}
+                {imovel.valorCondominio && (
+                  <div className="text-sm text-white/70 mt-1">
+                    + Condomínio R$ {parseInt(imovel.valorCondominio).toLocaleString('pt-BR')}
+                  </div>
                 )}
               </div>
             </div>
@@ -358,9 +353,9 @@ export default function DynamicImovelLanding() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Características do Imóvel
             </h2>
-            {imovel.descricao && (
+            {imovel.descricaoImovel && (
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                {imovel.descricao}
+                {imovel.descricaoImovel}
               </p>
             )}
           </div>
@@ -412,35 +407,6 @@ export default function DynamicImovelLanding() {
         </section>
       )}
 
-      {/* Seção de Diferenciais */}
-      {imovel.diferenciais && imovel.diferenciais.length > 0 && (
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Diferenciais do Imóvel
-              </h2>
-              <p className="text-lg text-gray-600">
-                Tudo o que torna este imóvel especial
-              </p>
-            </div>
-
-            <div className="max-w-4xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-4">
-                {imovel.diferenciais.map((item, index) => (
-                  <div key={index} className="flex items-center group">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                    <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
-                      {item}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Seção de Localização */}
       {imovel.endereco && (
         <section className={`py-16 bg-gradient-to-br ${theme.gradient}`}>
@@ -454,18 +420,18 @@ export default function DynamicImovelLanding() {
               </p>
             </div>
 
-            {imovel.mapUrl && (
+            {imovel.urlLocalizacaoMaps && (
               <div className="max-w-4xl mx-auto">
                 <div className={`bg-white rounded-2xl shadow-xl p-8 border ${theme.cardBorder}`}>
                   <iframe
-                    src={imovel.mapUrl}
+                    src={imovel.urlLocalizacaoMaps}
                     width="100%"
                     height="400"
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title={`Localização de ${imovel.nome}`}
+                    title={`Localização de ${imovel.titulo}`}
                     className="w-full h-96 rounded-xl"
                   />
                 </div>
@@ -488,13 +454,13 @@ export default function DynamicImovelLanding() {
               </h2>
               <p className="text-lg text-white/90">
                 Preencha o formulário e nossa equipe entrará em contato para 
-                {imovel.finalidade?.nome?.toLowerCase() === 'aluguel' ? ' agendar uma visita' : ' mais informações'}
+                {imovel.finalidadeId?.[0]?.toLowerCase() === 'aluguel' ? ' agendar uma visita' : ' mais informações'}
               </p>
             </div>
 
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
               <LeadCaptureForm
-                nomeLancamento={imovel.nome}
+                nomeLancamento={imovel.titulo}
                 title="Fale conosco"
                 description="Nossa equipe especializada entrará em contato em breve"
               />
