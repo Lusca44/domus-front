@@ -7,16 +7,6 @@ import AlugueisPage from "./pages/general-pages/AlugueisPage";
 import AnunciePage from "./pages/general-pages/AnunciePage";
 import ContatoPage from "./pages/general-pages/ContatoPage";
 import LandingPixinguinha from "./pages/regioes/porto/pixinguinha/LandingPixinguinha";
-import LandingPortoCarioca from "./pages/regioes/porto/porto-carioca/LandingPortoCarioca";
-import LandingCaminhosGuanabara from "./pages/regioes/niteroi/caminhos-da-guanabara/LandingCaminhosGuanabara";
-import LandingArcosPorto from "./pages/regioes/porto/arcos-do-porto/LandingArcosPorto";
-import LandingCiataResidencial from "./pages/regioes/porto/ciata-residencial/LandingCiataResidencial";
-import LandingNovaOlaria from "./pages/regioes/olaria/nova-olaria/LandingNovaOlaria";
-import LandingOrlaMaua from "./pages/regioes/porto/orla-maua/LandingOrlaMaua";
-import LandingMetropolitanDreamBarra from "./pages/regioes/barra/metropolitan-dream-barra/LandingMetropolitanDreamBarra";
-import LandingAmericas19 from "./pages/regioes/recreio/americas19/LandingAmericas19";
-import LandingOrlaRecreioPontal from "./pages/regioes/recreio/orla-recreio-pontal/LandingOrlaRecreioPontal";
-import LandingThePierResidencial from "./pages/regioes/niteroi/the-pier-residencial/LandingThePierResidencial";
 import NotFound from "./pages/general-pages/NotFound";
 import PaginaAgradecimento from "./pages/general-pages/PaginaAgradecimento";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -50,101 +40,51 @@ function App() {
               element={<LandingPixinguinha />}
             />
 
-            <Route
-              path="/porto-maravilha/lancamento/porto-carioca"
-              element={<LandingPortoCarioca />}
-            />
-            
-            <Route
-              path="/lancamentos/caminhos-da-guanabara"
-              element={<LandingCaminhosGuanabara />}
-            />
-
-            <Route
-              path="/lancamentos/arcos-do-porto"
-              element={<LandingArcosPorto />}
-            />
-
-            <Route
-              path="/lancamentos/ciata-residencial"
-              element={<LandingCiataResidencial />}
-            />
-
-            <Route
-              path="/lancamentos/nova-olaria"
-              element={<LandingNovaOlaria />}
-            />
-
-            <Route
-              path="/lancamentos/orla-maua"
-              element={<LandingOrlaMaua />}
-            />
-
-            <Route
-              path="/lancamentos/metropolitan-dream-barra"
-              element={<LandingMetropolitanDreamBarra />}
-            />
-
-            <Route
-              path="/lancamentos/americas19"
-              element={<LandingAmericas19 />}
-            />
-
-            <Route
-              path="/lancamentos/orla-recreio-pontal"
-              element={<LandingOrlaRecreioPontal />}
-            />
-
-            <Route
-              path="/lancamentos/the-pier-residencial"
-              element={<LandingThePierResidencial />}
-            />
-
             <Route path="/obrigado" element={<PaginaAgradecimento />} />
 
             {/* Rota de login - não protegida */}
             <Route path="/admin/login" element={<AdminLogin />} />
 
             {/* Rotas administrativas protegidas */}
-            <Route 
-              path="/admin/dashboard" 
+            <Route
+              path="/admin/dashboard"
               element={
                 <ProtectedRoute>
                   <AdminDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/admin/leads" 
+            <Route
+              path="/admin/leads"
               element={
                 <ProtectedRoute>
                   <AdminLeads />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/admin/users" 
+            <Route
+              path="/admin/users"
               element={
                 <ProtectedRoute>
                   <AdminUsers />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/admin/profile" 
+            <Route
+              path="/admin/profile"
               element={
                 <ProtectedRoute>
                   <AdminProfile />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/admin/settings" 
+            <Route
+              path="/admin/settings"
               element={
                 <ProtectedRoute>
                   <AdminSettings />
                 </ProtectedRoute>
-              } 
+              }
             />
 
             {/* Rota 404 */}
