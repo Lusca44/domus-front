@@ -30,9 +30,6 @@ import ImoveisAdminPage from '@/pages/admin/ImoveisAdminPage';
 // Import do componente de proteção
 import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
 
-// Import das Landing Pages estáticas
-import LandingPixinguinha from '@/pages/regioes/porto/pixinguinha/LandingPixinguinha';
-
 // Import das Landing Pages dinâmicas
 import DynamicLancamentoLanding from '@/pages/dynamic-landing/DynamicLancamentoLanding';
 import DynamicImovelLanding from '@/pages/dynamic-landing/DynamicImovelLanding';
@@ -53,12 +50,6 @@ function App() {
             <Route path="/prontos" element={<ProntosPage />} />
             <Route path="/anuncie" element={<AnunciePage />} />
             <Route path="/contato" element={<ContatoPage />} />
-
-            {/* Landing Pages estáticas */}
-            <Route
-              path="/porto-maravilha/lancamento/pixinguinha"
-              element={<LandingPixinguinha />}
-            />
 
             {/* Landing Pages dinâmicas */}
             <Route path="/lancamento/:id" element={<DynamicLancamentoLanding />} />

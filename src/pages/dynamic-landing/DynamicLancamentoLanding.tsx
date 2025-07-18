@@ -1,37 +1,29 @@
-
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useApi } from '@/hooks/useApi';
 import { lancamentoApi } from '@/utils/apiConfig';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import {
-  MapPin,
-  Clock,
-  Calendar,
-  Phone,
-  Mail,
-  Star,
-  Car,
-  Waves,
-  Trees,
-  Dumbbell,
-  Users,
-  Gamepad2,
-  Coffee,
-  Heart,
-  Bike,
-  Home,
+import { 
+  MapPin, 
+  Building, 
+  Clock, 
+  Home, 
+  CheckCircle, 
+  Users, 
+  Waves, 
+  TreePine, 
   ArrowLeft,
-  CheckCircle,
-  Building,
-  Loader2,
+  Phone,
+  Menu
 } from 'lucide-react';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
 import PhotoCarousel from '@/components/PhotoCarousel';
-import { Link } from 'react-router-dom';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Card, CardContent } from '@/components/ui/card';
+import { resolveImageUrl } from "@/utils/imageConfig";
 
 interface Lancamento {
   id: string;
@@ -67,23 +59,15 @@ interface Lancamento {
   tipologia?: { nome: string };
 }
 
-/**
- * Landing Page Dinâmica para Lançamentos
- * 
- * Esta página gera automaticamente uma landing page para qualquer lançamento
- * cadastrado no sistema, consumindo dados da API do backend.
- */
 export default function DynamicLancamentoLanding() {
   const { id } = useParams<{ id: string }>();
   const [lancamento, setLancamento] = useState<Lancamento | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isMobile = useIsMobile();
   
   const { execute: fetchLancamento } = useApi();
 
-  /**
-   * Carrega os dados do lançamento pela API
-   */
   useEffect(() => {
     const loadLancamento = async () => {
       if (!id) {
@@ -107,60 +91,40 @@ export default function DynamicLancamentoLanding() {
     loadLancamento();
   }, [id, fetchLancamento]);
 
-  /**
-   * Prepara as características para exibição
-   */
+  // Prepara características para exibição
   const getCaracteristicas = () => {
     if (!lancamento) return [];
     
-    const caracteristicas = [];
-    
-    if (lancamento.tipologia?.nome) {
-      caracteristicas.push({
-        titulo: 'Tipo',
+    return [
+      ...(lancamento.tipologia?.nome ? [{
+        titulo: 'Tipos',
         valor: lancamento.tipologia.nome,
         icone: Home
-      });
-    }
-    
-    if (lancamento.cardLancamentoInfo?.areasDisponiveis && lancamento.cardLancamentoInfo.areasDisponiveis.length > 0) {
-      caracteristicas.push({
+      }] : []),
+      ...(lancamento.cardLancamentoInfo?.areasDisponiveis?.length ? [{
         titulo: 'Áreas',
         valor: lancamento.cardLancamentoInfo.areasDisponiveis.map(a => `${a}m²`).join(', '),
         icone: Building
-      });
-    }
-    
-    if (lancamento.cardLancamentoInfo?.statusObra) {
-      caracteristicas.push({
+      }] : []),
+      ...(lancamento.cardLancamentoInfo?.statusObra ? [{
         titulo: 'Status',
         valor: lancamento.cardLancamentoInfo.statusObra,
         icone: Clock
-      });
-    }
-    
-    if (lancamento.regiao?.nome) {
-      caracteristicas.push({
+      }] : []),
+      ...(lancamento.regiao?.nome ? [{
         titulo: 'Região',
         valor: lancamento.regiao.nome,
         icone: MapPin
-      });
-    }
-
-    if (lancamento.cardLancamentoInfo?.quartosDisponiveis && lancamento.cardLancamentoInfo.quartosDisponiveis.length > 0) {
-      caracteristicas.push({
+      }] : []),
+      ...(lancamento.cardLancamentoInfo?.quartosDisponiveis?.length ? [{
         titulo: 'Quartos',
         valor: lancamento.cardLancamentoInfo.quartosDisponiveis.join(', '),
         icone: Home
-      });
-    }
-
-    return caracteristicas;
+      }] : [])
+    ];
   };
 
-  /**
-   * Prepara as fotos para o carrossel
-   */
+  // Prepara as fotos para o carrossel
   const getFotos = () => {
     if (!lancamento) return [];
     
@@ -168,33 +132,32 @@ export default function DynamicLancamentoLanding() {
     
     if (lancamento.urlFotoBackGround) {
       fotos.push({
-        src: lancamento.urlFotoBackGround,
+        src: resolveImageUrl(lancamento.urlFotoBackGround),
         alt: `${lancamento.nomeLancamento} - Imagem principal`,
         titulo: 'Fachada'
       });
     }
     
-    if (lancamento.urlsFotos && lancamento.urlsFotos.length > 0) {
+    if (lancamento.urlsFotos) {
       lancamento.urlsFotos.forEach((img, index) => {
         fotos.push({
-          src: img,
+          src: resolveImageUrl(img),
           alt: `${lancamento.nomeLancamento} - Imagem ${index + 1}`,
           titulo: `Ambiente ${index + 1}`
         });
+
       });
     }
     
     return fotos;
   };
 
-  /**
-   * Estados de loading e erro
-   */
+  // Renderização condicional para loading e erro
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Carregando lançamento...</p>
         </div>
       </div>
@@ -223,235 +186,240 @@ export default function DynamicLancamentoLanding() {
   const caracteristicas = getCaracteristicas();
   const fotos = getFotos();
 
+  // Componente para o menu mobile
+  const MobileMenu = () => (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          <Menu className="w-5 h-5" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-80">
+        <div className="flex flex-col space-y-6 mt-6">
+          <Link
+            to="/"
+            className="flex items-center text-blue-600 hover:text-blue-700 transition-colors text-lg"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Voltar para Início
+          </Link>
+          <div className="border-t pt-4">
+            <a 
+              href="tel:+552122223333" 
+              className="flex items-center text-gray-900 hover:text-blue-600 transition-colors text-lg font-semibold"
+            >
+              <Phone className="w-5 h-5 mr-3" />
+              (21) 2222-3333
+            </a>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <Header />
 
-      {/* Hero Section */}
-      <section
-        className="relative h-screen flex items-center justify-center text-white overflow-hidden"
-        style={{
-          backgroundImage: lancamento.urlFotoBackGround ? `url("${lancamento.urlFotoBackGround}")` : 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-900/80 via-red-800/70 to-amber-900/80"></div>
-
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <div className="mb-6">
-            <div className="inline-flex items-center space-x-2 bg-orange-600/20 backdrop-blur-sm px-4 py-2 rounded-full border border-orange-400/30 mb-4">
-              <Star className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm font-medium">{lancamento.cardLancamentoInfo?.statusObra || 'Lançamento'}</span>
-            </div>
+      {/* Hero Section - Mesmo design da LandingPixinguinha */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Background Image */}
+        {lancamento.urlFotoBackGround && (
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${lancamento.urlFotoBackGround})`,
+            }}
+          >
+            {/* Overlay Gradiente */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-blue-900/70 to-blue-900/90"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-blue-900/60"></div>
           </div>
+        )}
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="block text-orange-100">{lancamento.nomeLancamento}</span>
-            {lancamento.slogan && (
-              <span className="block text-2xl md:text-3xl lg:text-4xl font-normal text-orange-200 mt-2">
-                {lancamento.slogan}
-              </span>
-            )}
-          </h1>
+        {/* Background Pattern Adicional */}
+        <div className="absolute inset-0 opacity-20 z-10">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
 
-          {lancamento.sobreLancamento?.texto && (
-            <p className="text-lg md:text-xl text-orange-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-              {lancamento.sobreLancamento.texto}
-            </p>
-          )}
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            {caracteristicas.slice(0, 3).map((item, index) => {
-              const IconComponent = item.icone;
-              return (
-                <div key={index} className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
-                  <IconComponent className="w-4 h-4" />
-                  <span>{item.valor}</span>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
-              onClick={() =>
-                document
-                  .getElementById("form-interesse")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
+        <div className="container mx-auto px-4 py-8 md:py-16 relative z-20">
+          <div
+            className={`grid grid-cols-1 ${
+              isMobile ? "gap-8" : "lg:grid-cols-12 gap-8 lg:gap-12"
+            } items-center min-h-[80vh]`}
+          >
+            {/* Coluna de Conteúdo */}
+            <div
+              className={`${
+                isMobile ? "" : "lg:col-span-7"
+              } space-y-4 md:space-y-6 lg:space-y-8`}
             >
-              Tenho Interesse
-            </Button>
-            {fotos.length > 0 && (
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-orange-600 hover:bg-white hover:text-orange-800 px-8 py-3 text-lg"
-                onClick={() =>
-                  document
-                    .getElementById("carrossel")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                Ver Fotos
-              </Button>
-            )}
-          </div>
-        </div>
+              <div className="space-y-3 md:space-y-4">
+                <div className="inline-flex items-center px-3 md:px-4 py-2 bg-blue-500/30 backdrop-blur-sm rounded-full text-blue-200 text-xs md:text-sm font-medium border border-blue-400/30">
+                  <Building className="w-3 h-3 md:w-4 md:h-4 mr-2" />
+                  {lancamento.cardLancamentoInfo?.statusObra || "Lançamento"}
+                </div>
+                <h1
+                  className={`font-bold text-white leading-tight ${
+                    isMobile
+                      ? "text-2xl sm:text-3xl"
+                      : "text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+                  }`}
+                >
+                  {lancamento.nomeLancamento}
+                </h1>
+                {lancamento.slogan && (
+                  <p
+                    className={`text-blue-200 font-light ${
+                      isMobile
+                        ? "text-base sm:text-lg"
+                        : "text-lg sm:text-xl md:text-2xl"
+                    }`}
+                  >
+                    {lancamento.slogan}
+                  </p>
+                )}
+              </div>
 
-        {/* Indicador de scroll */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
-      </section>
+              {lancamento.endereco && (
+                <div className="flex items-start text-blue-100">
+                  <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3 mt-1 text-blue-400 flex-shrink-0" />
+                  <p className="text-sm md:text-base lg:text-lg">
+                    {lancamento.endereco}
+                  </p>
+                </div>
+              )}
 
-      {/* Seção de Destaque */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {lancamento.nomeLancamento}
-            </h2>
-            {lancamento.sobreLancamento?.titulo && (
-              <h3 className="text-xl font-semibold text-orange-600 mb-2">
-                {lancamento.sobreLancamento.titulo}
-              </h3>
-            )}
-            {lancamento.sobreLancamento?.texto && (
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                {lancamento.sobreLancamento.texto}
-              </p>
-            )}
-          </div>
-
-          {caracteristicas.length > 0 && (
-            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              {caracteristicas.slice(0, 3).map((item, index) => {
-                const IconComponent = item.icone;
-                return (
-                  <div key={index} className="text-center p-6 rounded-xl bg-gradient-to-br from-orange-50 to-red-50 border border-orange-100">
-                    <div className="w-16 h-16 bg-gradient-to-br from-orange-600 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <IconComponent className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      {item.titulo}
-                    </h3>
-                    <p className="text-gray-600">{item.valor}</p>
+              {caracteristicas.length > 0 && (
+                <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-white/20 shadow-xl">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+                    {caracteristicas.map((item, index) => {
+                      const IconComponent = item.icone;
+                      return (
+                        <div key={index} className="text-center">
+                          <div className="bg-blue-500/25 backdrop-blur-sm rounded-lg p-2 md:p-3 mb-2 mx-auto w-fit border border-blue-400/30">
+                            <IconComponent className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-blue-300" />
+                          </div>
+                          <p className="text-xs text-blue-200 break-words">
+                            {item.titulo}
+                          </p>
+                          <p className="font-semibold text-white text-xs md:text-sm break-words">
+                            {item.valor}
+                          </p>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
+                </div>
+              )}
             </div>
-          )}
+
+            {/* Coluna do Formulário */}
+            <div className={`${isMobile ? "" : "lg:col-span-5"}`}>
+              <div className="bg-white/98 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/30 overflow-hidden">
+                <LeadCaptureForm
+                  nomeLancamento={lancamento.nomeLancamento}
+                  redirectTo="/obrigado"
+                  title="Garanta sua unidade no lançamento!"
+                  description="Preencha o formulário e nossa equipe entrará em contato com condições especiais"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Carrossel de Fotos */}
+      {/* Seção de Galeria */}
       {fotos.length > 0 && (
-        <section
-          id="carrossel"
-          className="py-16 bg-gradient-to-br from-orange-50 to-red-50"
-        >
+        <section className="py-12 md:py-16 lg:py-20 bg-white">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Conheça o {lancamento.nomeLancamento}
+            <div className="text-center mb-8 md:mb-12 lg:mb-16">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-gray-900">
+                Conheça cada detalhe
               </h2>
-              <p className="text-lg text-gray-600">
-                Descubra todos os detalhes do seu futuro lar
+              <p className="text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
+                Explore todas as áreas e ambientes que farão parte do seu novo
+                estilo de vida
               </p>
             </div>
 
-            <div className="max-w-6xl mx-auto">
-              <PhotoCarousel
-                photos={fotos}
-                className="rounded-2xl overflow-hidden shadow-2xl"
-              />
-            </div>
+            <PhotoCarousel photos={fotos} className="mb-8 md:mb-12 lg:mb-16" />
           </div>
         </section>
       )}
 
       {/* Seção de Diferenciais */}
-      {lancamento.diferenciaisLancamento && lancamento.diferenciaisLancamento.length > 0 && (
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Diferenciais únicos
-              </h2>
-              <p className="text-lg text-gray-600">
-                Tudo o que você precisa para uma vida completa
-              </p>
-            </div>
-
-            <div className="max-w-4xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-4">
-                {lancamento.diferenciaisLancamento.map((item, index) => (
-                  <div key={index} className="flex items-center group">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                    <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
-                      {item}
-                    </span>
-                  </div>
-                ))}
+      {lancamento.diferenciaisLancamento &&
+        lancamento.diferenciaisLancamento.length > 0 && (
+          <section className="flex items-center justify-center min-h-screen py-12 md:py-16 lg:py-20 bg-slate-50">
+            <div className="container mx-auto px-4 flex justify-center">
+              <div className="max-w-4xl w-full text-center">
+                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 lg:mb-8 text-gray-900">
+                  Diferenciais únicos
+                </h2>
+                <div
+                  className={`grid grid-cols-1 gap-4 md:gap-6 justify-center`}
+                >
+                  {lancamento.diferenciaisLancamento.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-center group"
+                    >
+                      <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-500 mr-2 md:mr-3 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                      <span className="text-xs md:text-sm lg:text-base text-gray-700 group-hover:text-gray-900 transition-colors">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* Seção de Proximidades */}
-      {lancamento.proximidadesDaLocalizacao && lancamento.proximidadesDaLocalizacao.length > 0 && (
-        <section className="py-16 bg-gradient-to-br from-orange-50 to-red-50">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Proximidades e Conveniências
-              </h2>
-              <p className="text-lg text-gray-600">
-                Tudo que você precisa está pertinho de você
-              </p>
-            </div>
-
-            <div className="max-w-4xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-4">
-                {lancamento.proximidadesDaLocalizacao.map((item, index) => (
-                  <div key={index} className="flex items-center group">
-                    <MapPin className="w-5 h-5 text-orange-500 mr-3 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                    <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
-                      {item}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
 
       {/* Seção de Localização */}
       {lancamento.endereco && (
-        <section className="py-16 bg-white">
+        <section className="py-12 md:py-16 lg:py-20 bg-white">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <div className="text-center mb-8 md:mb-12 lg:mb-16">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-gray-900">
                 Localização Privilegiada
               </h2>
-              <p className="text-lg text-gray-600">
+              <p className="text-sm md:text-base lg:text-lg text-gray-600 max-w-3xl mx-auto">
                 {lancamento.endereco}
               </p>
             </div>
 
-            {lancamento.localizacaoMapsSource && (
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-xl p-8 border border-orange-100">
+            <div
+              className={`grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 lg:gap-12 items-center`}
+            >
+              {lancamento.proximidadesDaLocalizacao &&
+                lancamento.proximidadesDaLocalizacao.length > 0 && (
+                  <div className="space-y-4 md:space-y-6">
+                    <div className="bg-blue-50 rounded-xl p-3 md:p-4 lg:p-6">
+                      <h3 className="text-base md:text-lg lg:text-xl font-bold mb-3 md:mb-4 text-blue-900">
+                        Proximidades da Localização:
+                      </h3>
+                      <ul className="space-y-2 md:space-y-3">
+                        {lancamento.proximidadesDaLocalizacao.map(
+                          (item, index) => (
+                            <li key={index} className="flex items-start">
+                              <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500 mr-2 md:mr-3 flex-shrink-0 mt-0.5" />
+                              <span className="text-xs md:text-sm lg:text-base text-gray-700">
+                                {item}
+                              </span>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+              {lancamento.localizacaoMapsSource && (
+                <div className="rounded-2xl overflow-hidden shadow-2xl">
                   <iframe
                     src={lancamento.localizacaoMapsSource}
                     width="100%"
@@ -461,45 +429,60 @@ export default function DynamicLancamentoLanding() {
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     title={`Localização do ${lancamento.nomeLancamento}`}
-                    className="w-full h-96 rounded-xl"
-                  />
+                    className={`w-full ${isMobile ? "h-64" : "h-80 lg:h-96"}`}
+                  ></iframe>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </section>
       )}
 
-      {/* CTA Section - Formulário */}
-      <section
-        id="form-interesse"
-        className="py-16 bg-gradient-to-br from-orange-600 to-red-600 text-white"
-      >
+      {/* CTA Final */}
+      <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Garanta Já o Seu {lancamento.nomeLancamento}
-              </h2>
-              <p className="text-lg text-orange-100">
-                Preencha o formulário e receba informações exclusivas sobre
-                preços, plantas e condições especiais
-              </p>
-              {lancamento.cardLancamentoInfo?.valor && (
-                <div className="mt-6">
-                  <span className="text-2xl font-bold text-yellow-300">
-                    A partir de R$ {lancamento.cardLancamentoInfo.valor}
-                  </span>
-                </div>
-              )}
-            </div>
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-3 md:mb-4 lg:mb-6">
+              Não Perca Esta Oportunidade!
+            </h2>
+            <p className="text-base md:text-lg lg:text-xl mb-6 md:mb-8 lg:mb-12 text-blue-100">
+              Garanta já sua unidade no {lancamento.nomeLancamento} com
+              condições especiais de lançamento
+            </p>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-              <LeadCaptureForm
-                nomeLancamento={lancamento.nomeLancamento}
-                title="Receba informações exclusivas"
-                description="Nossa equipe especializada entrará em contato em breve"
-              />
+            <div
+              className={`grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 lg:gap-12 items-center`}
+            >
+              <div className="space-y-3 md:space-y-4 lg:space-y-6">
+                <div className="text-left">
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4">
+                    Condições Especiais de Lançamento:
+                  </h3>
+                  <ul className="space-y-1 md:space-y-2 text-blue-100">
+                    <li className="text-sm md:text-base">
+                      • Entrada facilitada
+                    </li>
+                    <li className="text-sm md:text-base">
+                      • Financiamento direto com a construtora
+                    </li>
+                    <li className="text-sm md:text-base">
+                      • Desconto especial para pagamento à vista
+                    </li>
+                    <li className="text-sm md:text-base">
+                      • Parcelas durante a obra
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-3 md:p-4 lg:p-6 border border-white/20">
+                <LeadCaptureForm
+                  nomeLancamento={lancamento.nomeLancamento}
+                  redirectTo="/obrigado"
+                  title="Quero garantir minha unidade"
+                  description="Preencha seus dados para receber mais informações"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { resolveImageUrl } from '@/utils/imageConfig';
 
 interface Photo {
-  url: string;
+  src: string;
   titulo: string;
 }
 
@@ -58,7 +59,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
       <div className="relative group">
         <div className="aspect-[16/10] overflow-hidden rounded-xl bg-gray-900 shadow-lg cursor-pointer" onClick={handleImageClick}>
           <img
-            src={photos[currentIndex].url}
+            src={photos[currentIndex].src}
             alt={photos[currentIndex].titulo}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
@@ -117,7 +118,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
           <div className="relative w-full h-full flex items-center justify-center p-4">
             <div className="relative max-w-full max-h-full flex items-center justify-center">
               <img
-                src={photos[currentIndex].url}
+                src={photos[currentIndex].src}
                 alt={photos[currentIndex].titulo}
                 className="max-w-[90vw] max-h-[80vh] object-contain"
               />
@@ -194,7 +195,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos, className }) => {
               )}
             >
               <img
-                src={photo.url}
+                src={photo.src}
                 alt={photo.titulo}
                 className="w-full h-full object-cover"
               />

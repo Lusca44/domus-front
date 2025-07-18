@@ -10,28 +10,13 @@ import { useLancamentos } from "@/hooks/useLancamentos";
 import { alugueis } from "@/cards/alugueis/alugueis";
 import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
 import fotos from '@/assets/images/carrocel-home/fotos-carrocel'
+import { useRegioes } from "@/hooks/useRegioes";
 
 const NewHomePage = () => {
-  // Array de imagens para o carrossel de background
-  // Usando as imagens importadas do arquivo fotos-carrocel.tsx
   const backgroundImages = fotos;
-
-  // Estado para controlar qual imagem está sendo exibida
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  // Carregar lançamentos da API
   const { lancamentos, loading: loadingLancamentos } = useLancamentos();
-
-  // Efeito para mudar automaticamente a imagem a cada 5 segundos
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
-        (prevIndex + 1) % backgroundImages.length
-      );
-    }, 5000); // Muda a cada 5 segundos
-
-    return () => clearInterval(interval);
-  }, [backgroundImages.length]);
+  const { regioesDestaque, loading: loadingRegioes } = useRegioes();
 
   // Combinar todos os imóveis
   const todosImoveis = useMemo(() => {
@@ -45,6 +30,18 @@ const NewHomePage = () => {
     availableRegions,
     hasActiveFilters
   } = usePropertyFilters(todosImoveis);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        (prevIndex + 1) % backgroundImages.length
+      );
+    }, 5000); // Muda a cada 5 segundos
+
+    return () => clearInterval(interval);
+  }, [backgroundImages.length]);
+
+
 
   const obterValorFiltroFinalidade = () => {
 
@@ -61,55 +58,50 @@ const NewHomePage = () => {
     }
   }
 
-  // Agrupar por região (usando imóveis filtrados se há filtros ativos, senão todos)
-  const imoveisParaAgrupar = hasActiveFilters ? filteredProperties : todosImoveis;
+  // Agrupar por região (tipagem mais segura)
+const imoveisPorRegiao = useMemo(() => {
+  const grupos: Record<string, typeof todosImoveis> = {};
 
-  const imoveisPorRegiao = useMemo(() => {
-    const grupos: { [key: string]: typeof todosImoveis } = {};
+  todosImoveis.forEach((imovel) => {
+    if (!grupos[imovel.regiao]) {
+      grupos[imovel.regiao] = [];
+    }
+    grupos[imovel.regiao].push(imovel);
+  });
+
+  return grupos;
+}, [todosImoveis]);
+
+   // Obter regiões em destaque da API
+  const regioesDestaqueNomes = useMemo(() => {
+    return regioesDestaque.map(regiao => regiao.nomeRegiao);
+  }, [regioesDestaque]);
     
-    imoveisParaAgrupar.forEach(imovel => {
-      if (!grupos[imovel.regiao]) {
-        grupos[imovel.regiao] = [];
-      }
-      grupos[imovel.regiao].push(imovel);
-    });
-
-    return grupos;
-  }, [imoveisParaAgrupar]);
-
-  // Obter regiões em destaque (que têm pelo menos um imóvel marcado como destaque)
-  const regioesDestaque = useMemo(() => {
-    const regioes = Object.keys(imoveisPorRegiao).filter(regiao => {
-      return imoveisPorRegiao[regiao].some(imovel => imovel.destaque);
-    });
-    
-    // Retornar apenas as primeiras 2 regiões para mostrar na tela
-    return regioes.slice(0, 2);
-  }, [imoveisPorRegiao]);
-
   // Obter outras regiões (não destacadas)
   const outrasRegioes = useMemo(() => {
     return Object.keys(imoveisPorRegiao).filter(regiao => 
-      !regioesDestaque.includes(regiao)
+      !regioesDestaqueNomes.includes(regiao)
     );
-  }, [imoveisPorRegiao, regioesDestaque]);
+  }, [imoveisPorRegiao, regioesDestaqueNomes]);
 
-  // Obter 2 imóveis aleatórios de outras regiões
-  const imoveisOutrasRegioes = useMemo(() => {
-    const imoveisOutras: typeof todosImoveis = [];
+ // Obter APENAS 2 imóveis aleatórios de outras regiões (no total)
+const imoveisOutrasRegioes = useMemo(() => {
+  // 1. Pegar uma amostra de cada região
+  const amostrasPorRegiao = outrasRegioes.map(regiao => {
+    const imoveis = imoveisPorRegiao[regiao] || [];
+    if (imoveis.length === 0) return null;
     
-    outrasRegioes.forEach(regiao => {
-      const imoveisRegiao = imoveisPorRegiao[regiao];
-      if (imoveisRegiao.length > 0) {
-        // Pegar um imóvel aleatório desta região
-        const randomIndex = Math.floor(Math.random() * imoveisRegiao.length);
-        imoveisOutras.push(imoveisRegiao[randomIndex]);
-      }
-    });
-    
-    // Retornar apenas 2 imóveis
-    return imoveisOutras.slice(0, 2);
-  }, [outrasRegioes, imoveisPorRegiao]);
+    // Pegar um imóvel aleatório desta região
+    const randomIndex = Math.floor(Math.random() * imoveis.length);
+    return imoveis[randomIndex];
+  }).filter(Boolean); // Remover regiões vazias
+
+  // 2. Embaralhar as amostras
+  const embaralhados = [...amostrasPorRegiao].sort(() => Math.random() - 0.5);
+  
+  // 3. Pegar no máximo 2
+  return embaralhados.slice(0, 2);
+}, [outrasRegioes, imoveisPorRegiao]);
 
   const getCardTypeLabel = (tipo: string) => {
     switch (tipo) {
@@ -187,17 +179,20 @@ const NewHomePage = () => {
       </section>
 
       {/* Regiões em Destaque */}
-      {regioesDestaque.map((regiao) => {
-        const imoveisRegiao = imoveisPorRegiao[regiao]
-          .filter(imovel => imovel.destaque)
-          .slice(0, 2); // Apenas 2 cards por região
+     {!loadingRegioes && regioesDestaqueNomes.map((regiaoNome) => {
+  // Verificar se a região existe no agrupamento
+  const imoveisRegiao = imoveisPorRegiao.hasOwnProperty(regiaoNome) 
+    ? imoveisPorRegiao[regiaoNome].slice(0, 2)
+    : [];
+
+  if (imoveisRegiao.length === 0) return null;
 
         return (
-          <section key={regiao} className="py-12 sm:py-16 bg-gray-50">
+          <section key={regiaoNome} className="py-12 sm:py-16 bg-gray-50">
             <div className="container mx-auto px-4">
               <div className="text-center mb-8 sm:mb-12">
                 <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                  {regiao}
+                  {regiaoNome}
                 </h2>
                 <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
               </div>
@@ -237,11 +232,11 @@ const NewHomePage = () => {
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center">
                             <BedDouble className="w-4 h-4 mr-1" />
-                            <span>{imovel.quartos} quartos</span>
+                            <span>Até {imovel.quartos} quartos</span>
                           </div>
                           <div className="flex items-center">
                             <Ruler className="w-4 h-4 mr-1" />
-                            <span>{imovel.area}</span>
+                            <span>Até {imovel.area} m²</span>
                           </div>
                         </div>
                       </div>
@@ -276,7 +271,7 @@ const NewHomePage = () => {
               <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
+             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
               {imoveisOutrasRegioes.map((imovel) => (
                 <div
                   key={imovel.id}
