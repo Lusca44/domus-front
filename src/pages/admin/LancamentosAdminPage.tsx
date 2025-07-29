@@ -119,9 +119,9 @@ interface Finalidade {
 }
 
 export default function LancamentosAdminPage() {
-  const [backgroundImageFile, setBackgroundImageFile] = useState<File | null>(
-    null
-  );
+  // Adicionar estado para armazenar ID da finalidade "Lançamento"
+  const [lancamentoFinalidadeId, setLancamentoFinalidadeId] = useState<string>("");
+  const [backgroundImageFile, setBackgroundImageFile] = useState<File | null>(null);
   const [cardImageFile, setCardImageFile] = useState<File | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -129,9 +129,15 @@ export default function LancamentosAdminPage() {
   const [regioes, setRegioes] = useState<Regiao[]>([]);
   const [tipologias, setTipologias] = useState<Tipologia[]>([]);
   const [finalidades, setFinalidades] = useState<Finalidade[]>([]);
-  const [selectedLancamento, setSelectedLancamento] =
-    useState<Lancamento | null>(null);
+  const [selectedLancamento, setSelectedLancamento] = useState<Lancamento | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  // Estado para o modal de edição
+  const [editModal, setEditModal] = useState({
+    isOpen: false,
+    lancamento: null as Lancamento | null,
+  });
+  
   const [formData, setFormData] = useState({
     nomeLancamento: "",
     urlFotoBackGround: "",
@@ -149,7 +155,7 @@ export default function LancamentosAdminPage() {
     isCardDestaque: false,
     areasDisponiveis: "",
     finalidadeId: "",
-    tipologiaId: "",
+    tipologiaId: [] as string[],
     urlImagemCard: "",
     statusObra: "Lançamento" as const,
   });
@@ -163,10 +169,36 @@ export default function LancamentosAdminPage() {
     showSuccessToast: true,
     successMessage: "Lançamento criado com sucesso!",
   });
+  const { execute: updateLancamento, loading: loadingUpdate } = useApi({
+    showSuccessToast: true,
+    successMessage: "Lançamento atualizado com sucesso!",
+  });
   const { execute: deleteLancamento, loading: loadingDelete } = useApi({
     showSuccessToast: true,
     successMessage: "Lançamento excluído com sucesso!",
   });
+
+  // Efeito para setar a finalidade "Lançamento"
+  useEffect(() => {
+    if (finalidades.length > 0) {
+      const lancamentoFinalidade = finalidades.find(
+        (f) => f.nome.toLowerCase() === "lançamento"
+      );
+      if (lancamentoFinalidade) {
+        setLancamentoFinalidadeId(lancamentoFinalidade.id);
+        setFormData((prev) => ({
+          ...prev,
+          finalidadeId: lancamentoFinalidade.id,
+        }));
+      } else {
+        toast({
+          title: "Atenção",
+          description: "Finalidade 'Lançamento' não encontrada. Por favor, crie uma finalidade com esse nome.",
+          variant: "destructive",
+        });
+      }
+    }
+  }, [finalidades, toast]);
 
   // Componente de preview de imagem otimizado
   const ImagePreview = ({
@@ -341,7 +373,6 @@ export default function LancamentosAdminPage() {
       setUploading(true);
 
       try {
-        // Upload de imagens em paralelo
         const [backgroundUrl, cardUrl, galleryUrlsResult] = await Promise.all([
           backgroundImageFile
             ? uploadImage(backgroundImageFile)
@@ -356,10 +387,15 @@ export default function LancamentosAdminPage() {
               ),
         ]);
 
+        // Verificar se o upload do background foi bem-sucedido
+        if (backgroundImageFile && !backgroundUrl) {
+          throw new Error("Falha no upload da imagem de fundo");
+        }
+
         // Preparar dados para envio
         const dataToSend = {
           nomeLancamento: formData.nomeLancamento,
-          urlFotoBackGround: backgroundUrl || "",
+          urlFotoBackGround: backgroundUrl || formData.urlFotoBackGround || "",
           urlsFotos: Array.isArray(galleryUrlsResult)
             ? galleryUrlsResult
             : galleryUrlsResult,
@@ -388,7 +424,7 @@ export default function LancamentosAdminPage() {
               ? formData.areasDisponiveis.split(",").map((a) => a.trim())
               : [],
             finalidadeId: formData.finalidadeId,
-            tipologiaId: formData.tipologiaId ? [formData.tipologiaId] : [],
+            tipologiaId: formData.tipologiaId,
             urlImagemCard: cardUrl || "",
             statusObra: formData.statusObra,
           },
@@ -422,6 +458,138 @@ export default function LancamentosAdminPage() {
       createLancamento,
       loadLancamentos,
       toast,
+    ]
+  );
+
+  // Função para abrir o modal de edição
+  const openEditModal = useCallback((lancamento: Lancamento) => {
+    setEditModal({
+      isOpen: true,
+      lancamento,
+    });
+    
+    // Preencher o formulário com os dados do lançamento
+    setFormData({
+      nomeLancamento: lancamento.nomeLancamento,
+      urlFotoBackGround: lancamento.urlFotoBackGround || "",
+      urlsFotos: lancamento.urlsFotos?.join(", ") || "",
+      slogan: lancamento.slogan || "",
+      regiaoId: lancamento.regiaoId || "",
+      endereco: lancamento.endereco || "",
+      sobreLancamentoTitulo: lancamento.sobreLancamento?.titulo || "",
+      sobreLancamentoTexto: lancamento.sobreLancamento?.texto || "",
+      diferenciaisLancamento: lancamento.diferenciaisLancamento?.join(", ") || "",
+      proximidadesDaLocalizacao: lancamento.proximidadesDaLocalizacao?.join(", ") || "",
+      localizacaoMapsSource: lancamento.localizacaoMapsSource || "",
+      valor: lancamento.cardLancamentoInfo?.valor || "",
+      quartosDisponiveis: lancamento.cardLancamentoInfo?.quartosDisponiveis?.join(", ") || "",
+      isCardDestaque: lancamento.cardLancamentoInfo?.isCardDestaque || false,
+      areasDisponiveis: lancamento.cardLancamentoInfo?.areasDisponiveis?.join(", ") || "",
+      finalidadeId: lancamento.cardLancamentoInfo?.finalidadeId || lancamentoFinalidadeId,
+      tipologiaId: lancamento.cardLancamentoInfo?.tipologiaId || [],
+      urlImagemCard: lancamento.cardLancamentoInfo?.urlImagemCard || "",
+      statusObra: "Lançamento",
+    });
+  }, [lancamentoFinalidadeId]);
+
+  // Função para fechar o modal de edição
+  const closeEditModal = useCallback(() => {
+    setEditModal({ isOpen: false, lancamento: null });
+    resetForm();
+  }, []);
+
+  // Função para atualizar um lançamento
+  const handleUpdate = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!editModal.lancamento) return;
+
+      setUploading(true);
+
+      try {
+        const [backgroundUrl, cardUrl, galleryUrlsResult] = await Promise.all([
+          backgroundImageFile
+            ? uploadImage(backgroundImageFile)
+            : Promise.resolve(formData.urlFotoBackGround),
+          cardImageFile
+            ? uploadImage(cardImageFile)
+            : Promise.resolve(formData.urlImagemCard),
+          galleryFiles.length > 0
+            ? uploadMultipleImages(galleryFiles)
+            : Promise.resolve(
+                formData.urlsFotos.split(",").filter((url) => url.trim())
+              ),
+        ]);
+
+        // Preparar dados para envio
+        const dataToSend = {
+          nomeLancamento: formData.nomeLancamento,
+          urlFotoBackGround: backgroundUrl || formData.urlFotoBackGround || "",
+          urlsFotos: Array.isArray(galleryUrlsResult)
+            ? galleryUrlsResult
+            : galleryUrlsResult,
+          slogan: formData.slogan,
+          regiaoId: formData.regiaoId,
+          endereco: formData.endereco,
+          sobreLancamento: {
+            titulo: formData.sobreLancamentoTitulo,
+            texto: formData.sobreLancamentoTexto,
+            cardsSobreLancamento: [],
+          },
+          diferenciaisLancamento: formData.diferenciaisLancamento
+            ? formData.diferenciaisLancamento.split(",").map((d) => d.trim())
+            : [],
+          proximidadesDaLocalizacao: formData.proximidadesDaLocalizacao
+            ? formData.proximidadesDaLocalizacao.split(",").map((p) => p.trim())
+            : [],
+          localizacaoMapsSource: formData.localizacaoMapsSource,
+          cardLancamentoInfo: {
+            valor: formData.valor,
+            quartosDisponiveis: formData.quartosDisponiveis
+              ? formData.quartosDisponiveis.split(",").map((q) => q.trim())
+              : [],
+            isCardDestaque: formData.isCardDestaque,
+            areasDisponiveis: formData.areasDisponiveis
+              ? formData.areasDisponiveis.split(",").map((a) => a.trim())
+              : [],
+            finalidadeId: formData.finalidadeId,
+            tipologiaId: formData.tipologiaId,
+            urlImagemCard: cardUrl || "",
+            statusObra: formData.statusObra,
+          },
+        };
+
+        await updateLancamento(() => 
+          lancamentoApi.update(editModal.lancamento!.id, dataToSend)
+        );
+        closeEditModal();
+        loadLancamentos();
+      } catch (error) {
+        console.error("Erro ao atualizar lançamento:", error);
+        toast({
+          title: "Erro",
+          description: "Falha ao atualizar lançamento",
+          variant: "destructive",
+        });
+      } finally {
+        setUploading(false);
+        setBackgroundImageFile(null);
+        setCardImageFile(null);
+        setGalleryFiles([]);
+      }
+    },
+    [
+      editModal.lancamento,
+      backgroundImageFile,
+      cardImageFile,
+      galleryFiles,
+      formData,
+      uploadImage,
+      uploadMultipleImages,
+      updateLancamento,
+      loadLancamentos,
+      toast,
+      closeEditModal
     ]
   );
 
@@ -466,7 +634,7 @@ export default function LancamentosAdminPage() {
       isCardDestaque: false,
       areasDisponiveis: "",
       finalidadeId: "",
-      tipologiaId: "",
+      tipologiaId: [],
       urlImagemCard: "",
       statusObra: "Lançamento",
     });
@@ -875,51 +1043,60 @@ export default function LancamentosAdminPage() {
                           </SelectContent>
                         </Select>
                       </div>
+                      
+                      {/* Campo de Finalidade (fixo) */}
                       <div className="space-y-2">
-                        <Label htmlFor="finalidadeId">Finalidade</Label>
-                        <Select
-                          value={formData.finalidadeId}
-                          onValueChange={(value) =>
-                            setFormData({ ...formData, finalidadeId: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione a finalidade" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {finalidades.map((finalidade) => (
-                              <SelectItem
-                                key={finalidade.id}
-                                value={finalidade.id}
-                              >
-                                {finalidade.nome}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <Label>Finalidade</Label>
+                        <div className="flex items-center gap-2 p-2 border rounded bg-gray-50 text-muted-foreground">
+                          <Building2 className="w-4 h-4" />
+                          <span>Lançamento</span>
+                          {!lancamentoFinalidadeId && (
+                            <Badge variant="destructive" className="ml-2">
+                              Configurar Finalidades
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Finalidade fixa para lançamentos
+                        </p>
                       </div>
+                      
+                      {/* Campo de Tipologias (múltiplas) */}
                       <div className="space-y-2">
-                        <Label htmlFor="tipologiaId">Tipologia</Label>
-                        <Select
-                          value={formData.tipologiaId}
-                          onValueChange={(value) =>
-                            setFormData({ ...formData, tipologiaId: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione a tipologia" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {tipologias.map((tipologia) => (
-                              <SelectItem
-                                key={tipologia.id}
-                                value={tipologia.id}
-                              >
+                        <Label>Tipologias *</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {tipologias.map((tipologia) => (
+                            <div key={tipologia.id} className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                id={`tipologia-${tipologia.id}`}
+                                checked={formData.tipologiaId.includes(tipologia.id)}
+                                onChange={(e) => {
+                                  const checked = e.target.checked;
+                                  setFormData((prev) => {
+                                    if (checked) {
+                                      return {
+                                        ...prev,
+                                        tipologiaId: [...prev.tipologiaId, tipologia.id],
+                                      };
+                                    } else {
+                                      return {
+                                        ...prev,
+                                        tipologiaId: prev.tipologiaId.filter(
+                                          (id) => id !== tipologia.id
+                                        ),
+                                      };
+                                    }
+                                  });
+                                }}
+                                className="rounded"
+                              />
+                              <Label htmlFor={`tipologia-${tipologia.id}`} className="text-sm">
                                 {tipologia.nome}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
 
@@ -1045,11 +1222,8 @@ export default function LancamentosAdminPage() {
                         </TableCell>
                         <TableCell>
                           {lancamento.cardLancamentoInfo?.isCardDestaque
-                            ? `"Sim"`
+                            ? "Sim"
                             : "Não"}
-                          {/* //// {lancamento.cardLancamentoInfo?.isCardDestaque && ( */}
-                          {/* //   <Badge variant="secondary">Destaque</Badge> */}
-                          {/* // )} */}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end space-x-2">
@@ -1062,7 +1236,11 @@ export default function LancamentosAdminPage() {
                                 <ExternalLink className="w-4 h-4" />
                               </a>
                             </Button>
-                            <Button variant="outline" size="sm">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => openEditModal(lancamento)}
+                            >
                               <Edit className="w-4 h-4" />
                             </Button>
                             <AlertDialog>
@@ -1106,6 +1284,493 @@ export default function LancamentosAdminPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal de Edição */}
+      <Dialog open={editModal.isOpen} onOpenChange={closeEditModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>
+              Editar Lançamento: {editModal.lancamento?.nomeLancamento}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdate} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-nomeLancamento">
+                  Nome do Lançamento *
+                </Label>
+                <Input
+                  id="edit-nomeLancamento"
+                  value={formData.nomeLancamento}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      nomeLancamento: e.target.value,
+                    })
+                  }
+                  placeholder="Nome do lançamento"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-slogan">Slogan</Label>
+                <Input
+                  id="edit-slogan"
+                  value={formData.slogan}
+                  onChange={(e) =>
+                    setFormData({ ...formData, slogan: e.target.value })
+                  }
+                  placeholder="Slogan do lançamento"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Imagem de Fundo</Label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  setBackgroundImageFile(e.target.files?.[0] || null)
+                }
+                disabled={uploading}
+              />
+              {backgroundImageFile && (
+                <ImagePreview file={backgroundImageFile} />
+              )}
+              {formData.urlFotoBackGround && !backgroundImageFile && (
+                <div className="mt-2">
+                  <p className="text-sm text-muted-foreground">
+                    Imagem atual:
+                  </p>
+                  <img
+                    src={formData.urlFotoBackGround}
+                    alt="Background atual"
+                    className="w-full h-32 object-contain rounded border"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Fotos da Galeria</Label>
+              <Input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={(e) => {
+                  const newFiles = Array.from(e.target.files || []);
+                  setGalleryFiles((prev) => [...prev, ...newFiles]);
+                }}
+                disabled={uploading}
+              />
+
+              <div className="mt-2">
+                {galleryFiles.length > 0 && (
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-sm text-muted-foreground">
+                      {galleryFiles.length} foto(s) selecionada(s)
+                    </p>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setGalleryFiles([])}
+                      disabled={uploading}
+                    >
+                      Limpar Todas
+                    </Button>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-3 gap-2">
+                  {paginatedGalleryFiles.map((file, index) => {
+                    const globalIndex =
+                      (currentGalleryPage - 1) * GALLERY_PAGE_SIZE +
+                      index;
+                    return (
+                      <div key={globalIndex} className="relative">
+                        <ImagePreview
+                          file={file}
+                          className="w-full h-24 object-cover rounded"
+                        />
+                        <Button
+                          size="icon"
+                          variant="destructive"
+                          className="absolute top-1 right-1 w-6 h-6"
+                          onClick={() => {
+                            const newFiles = [...galleryFiles];
+                            newFiles.splice(globalIndex, 1);
+                            setGalleryFiles(newFiles);
+
+                            // Ajustar a página se necessário
+                            if (
+                              newFiles.length <=
+                              (currentGalleryPage - 1) * GALLERY_PAGE_SIZE
+                            ) {
+                              setCurrentGalleryPage(
+                                Math.max(1, currentGalleryPage - 1)
+                              );
+                            }
+                          }}
+                          disabled={uploading}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {totalGalleryPages > 1 && (
+                  <div className="flex justify-center mt-4 space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentGalleryPage === 1 || uploading}
+                      onClick={() =>
+                        setCurrentGalleryPage((prev) =>
+                          Math.max(1, prev - 1)
+                        )
+                      }
+                    >
+                      Anterior
+                    </Button>
+                    <span className="flex items-center px-3">
+                      Página {currentGalleryPage} de {totalGalleryPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={
+                        currentGalleryPage === totalGalleryPages ||
+                        uploading
+                      }
+                      onClick={() =>
+                        setCurrentGalleryPage((prev) =>
+                          Math.min(totalGalleryPages, prev + 1)
+                        )
+                      }
+                    >
+                      Próxima
+                    </Button>
+                  </div>
+                )}
+
+                {formData.urlsFotos && galleryFiles.length === 0 && (
+                  <div className="mt-2">
+                    <p className="text-sm text-muted-foreground">
+                      Fotos atuais:
+                    </p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {formData.urlsFotos
+                        .split(",")
+                        .map(
+                          (url, index) =>
+                            url.trim() && (
+                              <img
+                                key={index}
+                                src={url.trim()}
+                                alt={`Foto ${index}`}
+                                className="w-full h-24 object-cover rounded"
+                              />
+                            )
+                        )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Imagem do Card (Home)</Label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  setCardImageFile(e.target.files?.[0] || null)
+                }
+                disabled={uploading}
+              />
+              {cardImageFile && (
+                <ImagePreview file={cardImageFile} className="mt-2" />
+              )}
+              {formData.urlImagemCard && !cardImageFile && (
+                <div className="mt-2">
+                  <p className="text-sm text-muted-foreground">
+                    Imagem atual do card:
+                  </p>
+                  <img
+                    src={formData.urlImagemCard}
+                    alt="Card atual"
+                    className="w-full h-32 object-contain rounded border"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-endereco">Endereço</Label>
+                <Input
+                  id="edit-endereco"
+                  value={formData.endereco}
+                  onChange={(e) =>
+                    setFormData({ ...formData, endereco: e.target.value })
+                  }
+                  placeholder="Endereço completo"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-regiaoId">Região</Label>
+                <Select
+                  value={formData.regiaoId}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, regiaoId: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione a região" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {regioes.map((regiao) => (
+                      <SelectItem key={regiao.id} value={regiao.id}>
+                        {regiao.nomeRegiao}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-diferenciaisLancamento">Diferenciais</Label>
+              <Textarea
+                id="edit-diferenciaisLancamento"
+                value={formData.diferenciaisLancamento}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    diferenciaisLancamento: e.target.value,
+                  })
+                }
+                placeholder="Piscina, Academia, Salão de festas (separados por vírgula)"
+                rows={2}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-proximidadesDaLocalizacao">
+                Proximidades
+              </Label>
+              <Textarea
+                id="edit-proximidadesDaLocalizacao"
+                value={formData.proximidadesDaLocalizacao}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    proximidadesDaLocalizacao: e.target.value,
+                  })
+                }
+                placeholder="Shopping, Metro, Escola (separados por vírgula)"
+                rows={2}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-localizacaoMapsSource">URL do Mapa</Label>
+              <Input
+                id="edit-localizacaoMapsSource"
+                value={formData.localizacaoMapsSource}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    localizacaoMapsSource: e.target.value,
+                  })
+                }
+                placeholder="URL do Google Maps embed"
+              />
+            </div>
+
+            <div className="border-t pt-4">
+              <h3 className="text-lg font-semibold mb-4">
+                Informações do Card
+              </h3>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-valor">Valor (R$)</Label>
+                  <Input
+                    id="edit-valor"
+                    value={formData.valor}
+                    onChange={(e) =>
+                      setFormData({ ...formData, valor: e.target.value })
+                    }
+                    placeholder="310000"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-quartosDisponiveis">
+                    Quartos Disponíveis
+                  </Label>
+                  <Input
+                    id="edit-quartosDisponiveis"
+                    value={formData.quartosDisponiveis}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        quartosDisponiveis: e.target.value,
+                      })
+                    }
+                    placeholder="1, 2, 3 (separados por vírgula)"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-areasDisponiveis">
+                    Áreas Disponíveis
+                  </Label>
+                  <Input
+                    id="edit-areasDisponiveis"
+                    value={formData.areasDisponiveis}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        areasDisponiveis: e.target.value,
+                      })
+                    }
+                    placeholder="43, 50, 65 (separados por vírgula)"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-statusObra">Status da Obra</Label>
+                  <Select
+                    value={formData.statusObra}
+                    onValueChange={(value: any) =>
+                      setFormData({ ...formData, statusObra: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Lançamento">
+                        Lançamento
+                      </SelectItem>
+                      <SelectItem value="Em obras">Em obras</SelectItem>
+                      <SelectItem value="Pronto">Pronto</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Campo de Finalidade (fixo) */}
+                <div className="space-y-2">
+                  <Label>Finalidade</Label>
+                  <div className="flex items-center gap-2 p-2 border rounded bg-gray-50 text-muted-foreground">
+                    <Building2 className="w-4 h-4" />
+                    <span>Lançamento</span>
+                    {!lancamentoFinalidadeId && (
+                      <Badge variant="destructive" className="ml-2">
+                        Configurar Finalidades
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Finalidade fixa para lançamentos
+                  </p>
+                </div>
+                
+                {/* Campo de Tipologias (múltiplas) */}
+                <div className="space-y-2">
+                  <Label>Tipologias *</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {tipologias.map((tipologia) => (
+                      <div key={tipologia.id} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={`edit-tipologia-${tipologia.id}`}
+                          checked={formData.tipologiaId.includes(tipologia.id)}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setFormData((prev) => {
+                              if (checked) {
+                                return {
+                                  ...prev,
+                                  tipologiaId: [...prev.tipologiaId, tipologia.id],
+                                };
+                              } else {
+                                return {
+                                  ...prev,
+                                  tipologiaId: prev.tipologiaId.filter(
+                                    (id) => id !== tipologia.id
+                                  ),
+                                };
+                              }
+                            });
+                          }}
+                          className="rounded"
+                        />
+                        <Label htmlFor={`edit-tipologia-${tipologia.id}`} className="text-sm">
+                          {tipologia.nome}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="space-y-2 flex items-end">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="edit-isCardDestaque"
+                      checked={formData.isCardDestaque}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          isCardDestaque: e.target.checked,
+                        })
+                      }
+                      className="rounded"
+                    />
+                    <Label htmlFor="edit-isCardDestaque">
+                      Card em Destaque
+                    </Label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2 pt-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={closeEditModal}
+                disabled={uploading}
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={uploading || loadingUpdate}>
+                {uploading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Enviando imagens...
+                  </>
+                ) : loadingUpdate ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Atualizando...
+                  </>
+                ) : (
+                  "Atualizar"
+                )}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 }

@@ -194,9 +194,6 @@ export default function TipologiasPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nome</TableHead>
-                    <TableHead>Descrição</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Criado em</TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -204,15 +201,6 @@ export default function TipologiasPage() {
                   {tipologias.map((tipologia) => (
                     <TableRow key={tipologia.id}>
                       <TableCell className="font-medium">{tipologia.nome}</TableCell>
-                      <TableCell>{tipologia.descricao || '-'}</TableCell>
-                      <TableCell>
-                        <Badge variant={tipologia.ativo ? 'default' : 'secondary'}>
-                          {tipologia.ativo ? 'Ativo' : 'Inativo'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(tipologia.createdAt).toLocaleDateString('pt-BR')}
-                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
                           <Button variant="outline" size="sm">

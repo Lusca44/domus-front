@@ -63,6 +63,11 @@ export function AdminSidebar({ onLogout }: AdminSidebarProps) {
       url: "/admin/imoveis",
       icon: Home,
     },
+    {
+      title: "Regioes",
+      url: "/admin/regioes",
+      icon: Home,
+    },
   ];
 
   // Menu items que aparecem para todos

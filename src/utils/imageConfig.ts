@@ -8,3 +8,4 @@ function removeUltimoDigito(str: string): string {
 
   return`${removeUltimoDigito(path)}${url}`;
 }
+

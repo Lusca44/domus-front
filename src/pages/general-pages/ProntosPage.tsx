@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -8,24 +8,60 @@ import { Link } from "react-router-dom";
 import { PropertyFilters } from "@/components/ui/property-filters";
 import { usePropertyFilters } from "@/hooks/use-property-filters";
 import { lancamentos } from "@/cards/lancamentos/lancamentos";
-import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
 import { Imovel } from "@/cards/imoveis";
+import { useImoveis } from "@/hooks/useImoveis";
+import { finalidadeApi, tipologiaApi } from "@/utils/apiConfig";
 
 const ProntosPage = () => {
   // Estado para controlar quantos cards estão sendo exibidos
   const [itemsToShow, setItemsToShow] = useState(4);
+  const { imoveisUsados } = useImoveis();
+
+const [availableTipologias, setAvailableTipologias] = useState<string[]>([]);
+  const [availableFinalidades, setAvailableFinalidades] = useState<string[]>(
+    []
+  );
+
+  // Buscar tipologias da API
+  useEffect(() => {
+    const fetchTipologias = async () => {
+      try {
+        const response = await tipologiaApi.obterTodasTipologias();
+        const tipologias = response.map((t: any) => t.nome);
+        setAvailableTipologias(tipologias);
+      } catch (error) {
+        console.error("Erro ao buscar tipologias:", error);
+      }
+    };
+    
+    fetchTipologias();
+  }, []);
+
+
+   useEffect(() => {
+      const fetchFinalidades = async () => {
+        try {
+          const response = await finalidadeApi.obterTodasFinalidades();
+          const finalidades = response.map((f: any) => f.nome);
+          setAvailableFinalidades(finalidades);
+        } catch (error) {
+          console.error("Erro ao buscar finalidades:", error);
+        }
+      };
+      
+      fetchFinalidades();
+    }, []);
 
   // Filtrar e combinar imóveis prontos:
   // 1. Todos os imóveis usados
   // 2. Lançamentos com statusObra = "Pronto"
-  const imoveisProntos = useMemo(() => {
-    const lancamentosProntos = lancamentos.filter(
-      (imovel) => imovel.statusObra === "Pronto"
-    );
-    
-    // Combinar imóveis usados com lançamentos prontos
-    return [...imoveisUsados, ...lancamentosProntos];
-  }, []);
+ const imoveisProntos = useMemo(() => {
+  const lancamentosProntos = lancamentos.filter(
+    (imovel) => imovel.statusObra.toLowerCase() === "pronto"
+  );
+  
+  return [...imoveisUsados, ...lancamentosProntos];
+}, [imoveisUsados]);
 
   // Hook de filtros usando os imóveis prontos
   const {
@@ -137,6 +173,8 @@ const ProntosPage = () => {
               onMetragemChange={setters.setSelectedMetragem}
               onValorChange={setters.setSelectedValor}
               availableRegions={availableRegions}
+              availableTipologias={availableTipologias} // Passando as tipologias
+              availableFinalidades={availableFinalidades} // Passando as finalidades
               showSearchButton={false}
               showFinalidadeBox={false}
             />

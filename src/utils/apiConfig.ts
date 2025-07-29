@@ -260,6 +260,8 @@ export const regiaoApi = {
   getById: (id: string): Promise<any> => apiClient.get(`regiao/obterPorId/${id}`),
   
   create: (data: any): Promise<any> => apiClient.post('regiao/cadastrarRegiao', data),
+  
+  update: (id: string, data: any): Promise<any> => apiClient.put(`regiao/updateRegiao/${id}`, data),
 
   delete: (id: string): Promise<any> => apiClient.delete(`regiao/deletar/${id}`),
   
@@ -285,7 +287,7 @@ export const tipologiaApi = {
  * API PARA GERENCIAR IMOVEIS
  * 
  * Endpoints para administradores gerenciarem usuários
- */
+ */ 
 export const imovelApi = {
   obterTodosImoveis: (): Promise<any> => apiClient.get("imovel/obterTodosImoveis"),
 
@@ -294,7 +296,10 @@ export const imovelApi = {
   getByFinalidadeId: (id: string): Promise<any> => apiClient.get(`imovel/obterImoveisPorFinalidade/${id}`),
   
   create: (data: any): Promise<any> => apiClient.post('imovel/cadastrarImovel', data),
-  delete: (id: string): Promise<any> => apiClient.delete(`imovel/deletar/${id}`),
+  
+  update: (id: string, data: any): Promise<any> => apiClient.put(`imovel/updateImovel/${id}`, data),
+
+  delete: (id: string): Promise<any> => apiClient.delete(`imovel/deleteImovel/${id}`),
 };
 
 /**
@@ -308,7 +313,8 @@ export const lancamentoApi = {
   getById: (id: string): Promise<any> => apiClient.get(`projeto-lancamento/obterLancamentoPorId/${id}`),
   
   create: (data: any): Promise<any> => apiClient.post('projeto-lancamento/criarLancamento', data),
-  delete: (id: string): Promise<any> => apiClient.delete(`projeto-lancamento/deletar/${id}`),
+  update: (id: string, data: any): Promise<any> => apiClient.put(`projeto-lancamento/updateLancamento/${id}`, data),
+  delete: (id: string): Promise<any> => apiClient.delete(`projeto-lancamento/deleteLancamento/${id}`),
 };
 
 /**

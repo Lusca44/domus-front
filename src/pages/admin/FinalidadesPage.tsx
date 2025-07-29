@@ -197,9 +197,6 @@ export default function FinalidadesPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nome</TableHead>
-                    <TableHead>Descrição</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Criado em</TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -207,15 +204,6 @@ export default function FinalidadesPage() {
                   {finalidades.map((finalidade) => (
                     <TableRow key={finalidade.id}>
                       <TableCell className="font-medium">{finalidade.nome}</TableCell>
-                      <TableCell>{finalidade.descricao || '-'}</TableCell>
-                      <TableCell>
-                        <Badge variant={finalidade.ativo ? 'default' : 'secondary'}>
-                          {finalidade.ativo ? 'Ativo' : 'Inativo'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(finalidade.createdAt).toLocaleDateString('pt-BR')}
-                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
                           <Button variant="outline" size="sm">

@@ -9,16 +9,23 @@ export interface Imovel {
   imagem: string;
   regiao: string;
   quartos: number;
+  banheiros?: number;
   quartosDisponiveis?: number[];
   area: string;
-  areasDisponiveis?: string[]; // Lista de áreas disponíveis para o imóvel (ex: ["41m²", "22m²", "30m²"])
+  areasDisponiveis?: string[];
   url: string;
   destaque: boolean;
   tipo: "lancamento" | "aluguel" | "imoveis-usados";
-  tipagem?: string[]; 
+  
+  // Adicione estas novas propriedades:
+  tipologia?: string[]; // Tipologias do imóvel
+  finalidade?: string;   // Finalidade do imóvel
   regiaoDestaque?: boolean;
-  // Status da obra para lançamentos: "Lançamento", "Em obras", "Pronto"
   statusObra?: "Lançamento" | "Em obras" | "Pronto";
+  
+  // Mantenha a tipagem existente para compatibilidade
+  tipagem?: string[]; 
+  vagas?: number
 }
 
 export interface RegiaoDestaque {

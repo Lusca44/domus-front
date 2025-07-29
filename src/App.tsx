@@ -23,6 +23,7 @@ import AlugueisPage from '@/pages/general-pages/AlugueisPage';
 
 // Import das páginas admin criadas
 import FinalidadesPage from '@/pages/admin/FinalidadesPage';
+import RegioesPage from '@/pages/admin/RegioesPage';
 import TipologiasPage from '@/pages/admin/TipologiasPage';
 import LancamentosAdminPage from '@/pages/admin/LancamentosAdminPage';
 import ImoveisAdminPage from '@/pages/admin/ImoveisAdminPage';
@@ -108,6 +109,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <FinalidadesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/regioes"
+              element={
+                <ProtectedRoute>
+                  <RegioesPage />
                 </ProtectedRoute>
               }
             />

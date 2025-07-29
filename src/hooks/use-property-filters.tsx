@@ -1,5 +1,43 @@
-
 import { useState, useMemo } from "react";
+
+// Função para extrair valor numérico do preço formatado
+const extractPrice = (preco: string): number => {
+  // Remove texto não numérico, mantendo vírgulas e pontos
+  const cleaned = preco.replace(/[^\d,.]/g, '');
+  
+  // Casos especiais para formatos brasileiros
+  if (cleaned.includes(',')) {
+    // Formato: 310.000,00 ou 1.444,00
+    const parts = cleaned.split(',');
+    const integerPart = parts[0].replace(/\./g, '');
+    const decimalPart = parts[1] || '00';
+    return parseFloat(`${integerPart}.${decimalPart}`);
+  } else if (cleaned.includes('.')) {
+    // Formato: 1.444 ou 2.444
+    return parseFloat(cleaned.replace(/\./g, ''));
+  }
+  
+  return parseFloat(cleaned) || 0;
+};
+
+// Função para extrair área numérica
+const extractArea = (area: string): number => {
+  const numbers = area.replace(/[^\d]/g, "");
+  return parseInt(numbers) || 0;
+};
+
+// Função para verificar se um valor está em um intervalo
+const inRange = (value: number, range: string): boolean => {
+  if (range.endsWith('+')) {
+    return value >= parseInt(range.replace('+', ''));
+  }
+  
+  const [minStr, maxStr] = range.split('-');
+  const min = parseInt(minStr);
+  const max = parseInt(maxStr);
+  
+  return value >= min && value <= max;
+};
 
 export interface PropertyFilterOptions {
   selectedFinalidade: string;
@@ -17,102 +55,120 @@ export const usePropertyFilters = (allProperties: any[]) => {
   const [selectedQuartos, setSelectedQuartos] = useState("null");
   const [selectedMetragem, setSelectedMetragem] = useState("null");
   const [selectedValor, setSelectedValor] = useState("null");
-  
 
-  // Função para extrair valor numérico do preço
-  const extractPrice = (preco: string): number => {
-    const numbers = preco.replace(/[^\d]/g, '');
-    return parseInt(numbers) || 0;
-  };
-
-  // Função para extrair área numérica de uma string (ex: "41m²" -> 41)
-  const extractArea = (area: string): number => {
-    const numbers = area.replace(/[^\d,]/g, '').replace(',', '.');
-    return parseFloat(numbers) || 0;
-  };
-
-  // Função para verificar se o imóvel atende aos filtros
   const matchesFilters = (imovel: any) => {
-    // Filtro de finalidade
-    if (selectedFinalidade && selectedFinalidade !== "null") {
-      if (selectedFinalidade === "venda" && imovel.tipo === "aluguel") return false;
-      if (selectedFinalidade === "aluguel" && imovel.tipo !== "aluguel") return false;
-      if (selectedFinalidade === "lancamento" && imovel.tipo !== "lancamento") return false;
+    if (selectedFinalidade !== "null") {
+      const finalidadeFiltro = selectedFinalidade.toLowerCase();
+
+      if (
+        finalidadeFiltro === "lancamento" &&
+        imovel.tipo !== "lancamento"
+      ) {
+        return false;
+      }
+
+      if (
+        finalidadeFiltro !== "lancamento" &&
+        imovel.finalidade &&
+        imovel.finalidade.toLowerCase() !== finalidadeFiltro
+      ) {
+        return false;
+      }
+
+      if (finalidadeFiltro === "lancamento") {
+        if (imovel.tipo !== "lancamento") return false;
+      } else if (finalidadeFiltro === "aluguel") {
+        if (imovel.tipo !== "aluguel") return false;
+      } else if (finalidadeFiltro === "venda") {
+        if (imovel.tipo !== "imoveis-usados") return false;
+      }
     }
-    
-    // Filtro de tipo (apartamento, casa, etc.) - usando o atributo tipagem
-    if (selectedTipo && selectedTipo !== "null") {
-      // Verificar se o imóvel tem o atributo tipagem
-      if (imovel.tipagem && Array.isArray(imovel.tipagem)) {
-        // Buscar por tipo específico na lista de tipagens (case insensitive)
-        const hasSelectedType = imovel.tipagem.some((tipo: string) => 
-          tipo.toLowerCase().includes(selectedTipo.toLowerCase())
+
+    if (selectedTipo !== "null") {
+      const tipoNormalized = selectedTipo.toLowerCase();
+      if (imovel.tipologia && Array.isArray(imovel.tipologia)) {
+        const hasSelectedType = imovel.tipologia.some((tipo: string) =>
+          tipo.toLowerCase().includes(tipoNormalized)
         );
         if (!hasSelectedType) return false;
       } else {
-        // Fallback: se não tem tipagem, não atende ao filtro de tipo
         return false;
       }
     }
 
-    // Filtro de bairro
-    if (selectedBairro && selectedBairro !== "null" && imovel.regiao.toLowerCase() !== selectedBairro) return false;
+    if (selectedBairro !== "null") {
+      const selectedBairroNormalized = selectedBairro.toLowerCase();
+      const imovelRegiaoNormalized = imovel.regiao
+        ? imovel.regiao.toLowerCase()
+        : "";
 
-    // Filtro de quartos
-    if (selectedQuartos && selectedQuartos !== "null") {
-      const quartos = parseInt(selectedQuartos);
-      // Se o imóvel tem quartosDisponiveis, verificar se contém o valor selecionado
+      if (!imovelRegiaoNormalized.includes(selectedBairroNormalized)) {
+        return false;
+      }
+    }
+
+    if (selectedQuartos !== "null") {
+      const quartosFiltro = parseInt(selectedQuartos);
+
       if (imovel.quartosDisponiveis && imovel.quartosDisponiveis.length > 0) {
-        if (quartos === 4) {
-          // Para 4+, verificar se tem algum valor >= 4
-          if (!imovel.quartosDisponiveis.some((q: number) => q >= 4)) return false;
+        if (quartosFiltro === 4) {
+          if (!imovel.quartosDisponiveis.some((q: number) => q >= 4))
+            return false;
         } else {
-          // Para valores específicos, verificar se está na lista
-          if (!imovel.quartosDisponiveis.includes(quartos)) return false;
+          if (!imovel.quartosDisponiveis.includes(quartosFiltro)) return false;
         }
-      } else {
-        // Fallback para o comportamento antigo se não tiver quartosDisponiveis
-        if (quartos === 4 && imovel.quartos < 4) return false;
-        if (quartos !== 4 && imovel.quartos !== quartos) return false;
+      }
+      else if (imovel.quartos) {
+        if (quartosFiltro === 4 && imovel.quartos < 4) return false;
+        if (quartosFiltro !== 4 && imovel.quartos !== quartosFiltro)
+          return false;
       }
     }
 
-    // Filtro de metragem (até) - verifica se existe alguma área disponível que seja <= ao filtro
-    if (selectedMetragem && selectedMetragem !== "null") {
-      const maxArea = parseInt(selectedMetragem);
-      
-      // Se o imóvel tem areasDisponiveis, verificar se alguma área é <= maxArea
+    // Filtro de metragem (área)
+    if (selectedMetragem !== "null") {
+      // Para lançamentos com areasDisponiveis
       if (imovel.areasDisponiveis && imovel.areasDisponiveis.length > 0) {
-        const hasValidArea = imovel.areasDisponiveis.some((area: string) => {
+        // Verifica se pelo menos uma área disponível está no intervalo
+        const hasMatch = imovel.areasDisponiveis.some((area: string) => {
           const areaNumeric = extractArea(area);
-          return areaNumeric <= maxArea;
+          return inRange(areaNumeric, selectedMetragem);
         });
-        if (!hasValidArea) return false;
-      } else {
-        // Fallback para o comportamento antigo se não tiver areasDisponiveis
-        const area = extractArea(imovel.area);
-        if (area > maxArea) return false;
+        
+        if (!hasMatch) return false;
+      }
+      // Para outros imóveis (useImoveis)
+      else if (imovel.area) {
+        const areaNumeric = extractArea(imovel.area);
+        if (!inRange(areaNumeric, selectedMetragem)) return false;
       }
     }
 
-    // Filtro de valor (até)
-    if (selectedValor && selectedValor !== "null") {
+    // Filtro de valor
+    if (selectedValor !== "null") {
       const preco = extractPrice(imovel.preco);
-      const maxValor = parseInt(selectedValor);
-      if (preco > maxValor) return false;
+      if (!inRange(preco, selectedValor)) return false;
     }
 
     return true;
   };
 
-  // Filtrar imóveis baseado nos filtros selecionados
   const filteredProperties = useMemo(() => {
     return allProperties.filter(matchesFilters);
-  }, [allProperties, selectedFinalidade, selectedTipo, selectedBairro, selectedQuartos, selectedMetragem, selectedValor]);
+  }, [
+    allProperties,
+    selectedFinalidade,
+    selectedTipo,
+    selectedBairro,
+    selectedQuartos,
+    selectedMetragem,
+    selectedValor,
+  ]);
 
-  // Obter regiões disponíveis
   const availableRegions = useMemo(() => {
-    const regions = [...new Set(allProperties.map(property => property.regiao))];
+    const regions = [
+      ...new Set(allProperties.map((property) => property.regiao)),
+    ];
     return regions.sort();
   }, [allProperties]);
 

@@ -35,7 +35,7 @@ export const useAuth = () => {
           const userData = JSON.parse(user);
           const loginTimestamp = parseInt(loginTime);
           const currentTime = Date.now();
-          const sessionDuration = 30 * 60 * 1000; // 30 minutos
+          const sessionDuration = 60 * 60 * 1000; // 30 minutos
           
           // Verificar se a sessão expirou
           if (currentTime - loginTimestamp > sessionDuration) {

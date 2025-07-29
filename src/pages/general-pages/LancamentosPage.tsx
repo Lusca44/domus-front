@@ -11,8 +11,12 @@ import { useState } from "react";
 import { useLancamentos } from "@/hooks/useLancamentos"; // Importe o hook
 
 const LancamentosPage = () => {
+  const [availableTipologias, setAvailableTipologias] = useState<string[]>([]);
+  const [availableFinalidades, setAvailableFinalidades] = useState<string[]>(
+    []
+  );
 
-   const { lancamentos, loading } = useLancamentos();
+  const { lancamentos, loading } = useLancamentos();
 
   // Estado para controlar quantos cards estão sendo exibidos
   const [itemsToShow, setItemsToShow] = useState(4);
@@ -105,19 +109,19 @@ const LancamentosPage = () => {
   );
 
   if (loading) {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
-      <Header />
-      <div className="container mx-auto px-4 py-20 text-center">
-        <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
+        <Header />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+          </div>
+          <p className="mt-4 text-gray-600">Carregando lançamentos...</p>
         </div>
-        <p className="mt-4 text-gray-600">Carregando lançamentos...</p>
+        <Footer isHomePage={false} />
       </div>
-      <Footer isHomePage={false} />
-    </div>
-  );
-}
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
@@ -154,6 +158,8 @@ const LancamentosPage = () => {
               availableRegions={availableRegions}
               showSearchButton={false}
               showFinalidadeBox={false}
+              availableTipologias={availableTipologias} // Passando as tipologias
+              availableFinalidades={availableFinalidades} // Passando as finalidades
             />
           </div>
 
@@ -194,12 +200,15 @@ const LancamentosPage = () => {
                         className="w-full h-72 sm:h-80 object-cover"
                       />
                       {/* Badge do tipo de imóvel */}
-                      <div
-                        className={`absolute top-4 left-4 ${getCardTypeColor(
-                          imovel.tipo
-                        )} text-white px-3 py-1 rounded-full text-sm font-medium`}
-                      >
-                        {getCardTypeLabel(imovel.tipo)}
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {imovel.tipologia?.map((tipo, index) => (
+                          <span
+                            key={index}
+                            className="text-xs bg-gray-100 px-2 py-1 rounded"
+                          >
+                            {tipo}
+                          </span>
+                        ))}
                       </div>
                     </div>
 

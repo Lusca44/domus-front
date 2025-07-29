@@ -9,20 +9,16 @@ import {
   Clock, 
   Home, 
   CheckCircle, 
-  Users, 
-  Waves, 
-  TreePine, 
   ArrowLeft,
   Phone,
   Menu
 } from 'lucide-react';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
-import PhotoCarousel from '@/components/PhotoCarousel';
+import OptimizedPhotoCarousel from '@/components/OptimizedPhotoCarousel';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Card, CardContent } from '@/components/ui/card';
 import { resolveImageUrl } from "@/utils/imageConfig";
 
 interface Lancamento {
@@ -91,39 +87,6 @@ export default function DynamicLancamentoLanding() {
     loadLancamento();
   }, [id, fetchLancamento]);
 
-  // Prepara características para exibição
-  const getCaracteristicas = () => {
-    if (!lancamento) return [];
-    
-    return [
-      ...(lancamento.tipologia?.nome ? [{
-        titulo: 'Tipos',
-        valor: lancamento.tipologia.nome,
-        icone: Home
-      }] : []),
-      ...(lancamento.cardLancamentoInfo?.areasDisponiveis?.length ? [{
-        titulo: 'Áreas',
-        valor: lancamento.cardLancamentoInfo.areasDisponiveis.map(a => `${a}m²`).join(', '),
-        icone: Building
-      }] : []),
-      ...(lancamento.cardLancamentoInfo?.statusObra ? [{
-        titulo: 'Status',
-        valor: lancamento.cardLancamentoInfo.statusObra,
-        icone: Clock
-      }] : []),
-      ...(lancamento.regiao?.nome ? [{
-        titulo: 'Região',
-        valor: lancamento.regiao.nome,
-        icone: MapPin
-      }] : []),
-      ...(lancamento.cardLancamentoInfo?.quartosDisponiveis?.length ? [{
-        titulo: 'Quartos',
-        valor: lancamento.cardLancamentoInfo.quartosDisponiveis.join(', '),
-        icone: Home
-      }] : [])
-    ];
-  };
-
   // Prepara as fotos para o carrossel
   const getFotos = () => {
     if (!lancamento) return [];
@@ -183,39 +146,8 @@ export default function DynamicLancamentoLanding() {
     );
   }
 
-  const caracteristicas = getCaracteristicas();
   const fotos = getFotos();
-
   // Componente para o menu mobile
-  const MobileMenu = () => (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
-          <Menu className="w-5 h-5" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="w-80">
-        <div className="flex flex-col space-y-6 mt-6">
-          <Link
-            to="/"
-            className="flex items-center text-blue-600 hover:text-blue-700 transition-colors text-lg"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Voltar para Início
-          </Link>
-          <div className="border-t pt-4">
-            <a 
-              href="tel:+552122223333" 
-              className="flex items-center text-gray-900 hover:text-blue-600 transition-colors text-lg font-semibold"
-            >
-              <Phone className="w-5 h-5 mr-3" />
-              (21) 2222-3333
-            </a>
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -229,7 +161,9 @@ export default function DynamicLancamentoLanding() {
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: `url(${lancamento.urlFotoBackGround})`,
+              backgroundImage: `url(${resolveImageUrl(
+                lancamento.urlFotoBackGround
+              )})`,
             }}
           >
             {/* Overlay Gradiente */}
@@ -291,29 +225,6 @@ export default function DynamicLancamentoLanding() {
                   </p>
                 </div>
               )}
-
-              {caracteristicas.length > 0 && (
-                <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-white/20 shadow-xl">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
-                    {caracteristicas.map((item, index) => {
-                      const IconComponent = item.icone;
-                      return (
-                        <div key={index} className="text-center">
-                          <div className="bg-blue-500/25 backdrop-blur-sm rounded-lg p-2 md:p-3 mb-2 mx-auto w-fit border border-blue-400/30">
-                            <IconComponent className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-blue-300" />
-                          </div>
-                          <p className="text-xs text-blue-200 break-words">
-                            {item.titulo}
-                          </p>
-                          <p className="font-semibold text-white text-xs md:text-sm break-words">
-                            {item.valor}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Coluna do Formulário */}
@@ -345,7 +256,7 @@ export default function DynamicLancamentoLanding() {
               </p>
             </div>
 
-            <PhotoCarousel photos={fotos} className="mb-8 md:mb-12 lg:mb-16" />
+            <OptimizedPhotoCarousel photos={fotos} className="mb-8 md:mb-12 lg:mb-16" />
           </div>
         </section>
       )}
