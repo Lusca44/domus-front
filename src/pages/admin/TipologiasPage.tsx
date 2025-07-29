@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useApi } from '@/hooks/useApi';
 import { tipologiaApi } from '@/utils/apiConfig';
@@ -17,25 +16,14 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 interface Tipologia {
   id: string;
   nome: string;
-  descricao?: string;
-  ativo: boolean;
-  createdAt: string;
-  updatedAt: string;
 }
 
-/**
- * Página de Gestão de Tipologias
- * 
- * Esta página permite gerenciar as tipologias dos imóveis (ex: apartamento, casa, terreno)
- * que são utilizadas para categorizar os tipos de imóveis no sistema.
- */
 export default function TipologiasPage() {
   const [tipologias, setTipologias] = useState<Tipologia[]>([]);
   const [selectedTipologia, setSelectedTipologia] = useState<Tipologia | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
-    nome: '',
-    descricao: ''
+    nomeTipologia: ''
   });
 
   const { toast } = useToast();
@@ -44,14 +32,15 @@ export default function TipologiasPage() {
     showSuccessToast: true,
     successMessage: 'Tipologia criada com sucesso!'
   });
+  const { execute: updateTipologia, loading: loadingUpdate } = useApi({
+    showSuccessToast: true,
+    successMessage: 'Tipologia atualizada com sucesso!'
+  });
   const { execute: deleteTipologia, loading: loadingDelete } = useApi({
     showSuccessToast: true,
     successMessage: 'Tipologia excluída com sucesso!'
   });
 
-  /**
-   * Carrega todas as tipologias do backend
-   */
   const loadTipologias = async () => {
     try {
       const data = await fetchTipologias(() => tipologiaApi.obterTodasTipologias());
@@ -61,20 +50,14 @@ export default function TipologiasPage() {
     }
   };
 
-  /**
-   * Inicializa os dados da página
-   */
   useEffect(() => {
     loadTipologias();
   }, []);
 
-  /**
-   * Manipula o envio do formulário de criação/edição
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.nome.trim()) {
+    if (!formData.nomeTipologia.trim()) {
       toast({
         title: 'Erro',
         description: 'Nome é obrigatório',
@@ -84,18 +67,20 @@ export default function TipologiasPage() {
     }
 
     try {
-      await createTipologia(() => tipologiaApi.create(formData));
-      setFormData({ nome: '', descricao: '' });
+      if (selectedTipologia) {
+        await updateTipologia(() => tipologiaApi.update(selectedTipologia.id, formData));
+      } else {
+        await createTipologia(() => tipologiaApi.create(formData));
+      }
+      
+      resetForm();
       setIsDialogOpen(false);
       loadTipologias();
     } catch (error) {
-      console.error('Erro ao criar tipologia:', error);
+      console.error('Erro ao salvar tipologia:', error);
     }
   };
 
-  /**
-   * Manipula a exclusão de uma tipologia
-   */
   const handleDelete = async (id: string) => {
     try {
       await deleteTipologia(() => tipologiaApi.delete?.(id));
@@ -105,18 +90,23 @@ export default function TipologiasPage() {
     }
   };
 
-  /**
-   * Reseta o formulário
-   */
   const resetForm = () => {
-    setFormData({ nome: '', descricao: '' });
+    setFormData({ nomeTipologia: '' });
     setSelectedTipologia(null);
+  };
+
+  // Correção: Abrir o diálogo ao editar
+  const handleEditClick = (tipologia: Tipologia) => {
+    setSelectedTipologia(tipologia);
+    setFormData({
+      nomeTipologia: tipologia.nome
+    });
+    setIsDialogOpen(true); // Esta linha estava faltando para abrir o modal
   };
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Cabeçalho da página */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Tipologias</h1>
@@ -134,34 +124,34 @@ export default function TipologiasPage() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Nova Tipologia</DialogTitle>
+                <DialogTitle>
+                  {selectedTipologia ? 'Editar Tipologia' : 'Nova Tipologia'}
+                </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="nome">Nome *</Label>
                   <Input
                     id="nome"
-                    value={formData.nome}
-                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                    value={formData.nomeTipologia}
+                    onChange={(e) => setFormData({ ...formData, nomeTipologia: e.target.value })}
                     placeholder="Ex: Apartamento, Casa, Terreno"
                     required
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="descricao">Descrição</Label>
-                  <Input
-                    id="descricao"
-                    value={formData.descricao}
-                    onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-                    placeholder="Descrição da tipologia"
-                  />
-                </div>
                 <div className="flex justify-end space-x-2">
-                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => {
+                      resetForm();
+                      setIsDialogOpen(false);
+                    }}
+                  >
                     Cancelar
                   </Button>
-                  <Button type="submit" disabled={loadingCreate}>
-                    {loadingCreate ? 'Criando...' : 'Criar'}
+                  <Button type="submit" disabled={loadingCreate || loadingUpdate}>
+                    {loadingCreate || loadingUpdate ? 'Salvando...' : 'Salvar'}
                   </Button>
                 </div>
               </form>
@@ -169,7 +159,6 @@ export default function TipologiasPage() {
           </Dialog>
         </div>
 
-        {/* Lista de tipologias */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -203,7 +192,11 @@ export default function TipologiasPage() {
                       <TableCell className="font-medium">{tipologia.nome}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleEditClick(tipologia)}
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
                           <AlertDialog>

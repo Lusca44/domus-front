@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useApi } from '@/hooks/useApi';
 import { finalidadeApi } from '@/utils/apiConfig';
@@ -17,25 +16,14 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 interface Finalidade {
   id: string;
   nome: string;
-  descricao?: string;
-  ativo: boolean;
-  createdAt: string;
-  updatedAt: string;
 }
 
-/**
- * Página de Gestão de Finalidades
- * 
- * Esta página permite gerenciar as finalidades dos imóveis (ex: aluguel, venda, lançamento)
- * que são utilizadas para categorizar os imóveis no sistema.
- */
 export default function FinalidadesPage() {
   const [finalidades, setFinalidades] = useState<Finalidade[]>([]);
   const [selectedFinalidade, setSelectedFinalidade] = useState<Finalidade | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
-    nome: '',
-    descricao: ''
+    nomeFinalidade: ''
   });
 
   const { toast } = useToast();
@@ -44,40 +32,32 @@ export default function FinalidadesPage() {
     showSuccessToast: true,
     successMessage: 'Finalidade criada com sucesso!'
   });
+  const { execute: updateFinalidade, loading: loadingUpdate } = useApi({
+    showSuccessToast: true,
+    successMessage: 'Finalidade atualizada com sucesso!'
+  });
   const { execute: deleteFinalidade, loading: loadingDelete } = useApi({
     showSuccessToast: true,
     successMessage: 'Finalidade excluída com sucesso!'
   });
 
-  /**
-   * Carrega todas as finalidades do backend
-   */
   const loadFinalidades = async () => {
     try {
       const data = await fetchFinalidades(() => finalidadeApi.obterTodasFinalidades());
-
-      console.log("----------------------");
-      console.log(data);
       setFinalidades(data || []);
     } catch (error) {
       console.error('Erro ao carregar finalidades:', error);
     }
   };
 
-  /**
-   * Inicializa os dados da página
-   */
   useEffect(() => {
     loadFinalidades();
   }, []);
 
-  /**
-   * Manipula o envio do formulário de criação/edição
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.nome.trim()) {
+    if (!formData.nomeFinalidade.trim()) {
       toast({
         title: 'Erro',
         description: 'Nome é obrigatório',
@@ -87,18 +67,20 @@ export default function FinalidadesPage() {
     }
 
     try {
-      await createFinalidade(() => finalidadeApi.create(formData));
-      setFormData({ nome: '', descricao: '' });
+      if (selectedFinalidade) {
+        await updateFinalidade(() => finalidadeApi.update(selectedFinalidade.id, formData));
+      } else {
+        await createFinalidade(() => finalidadeApi.create(formData));
+      }
+      
+      resetForm();
       setIsDialogOpen(false);
       loadFinalidades();
     } catch (error) {
-      console.error('Erro ao criar finalidade:', error);
+      console.error('Erro ao salvar finalidade:', error);
     }
   };
 
-  /**
-   * Manipula a exclusão de uma finalidade
-   */
   const handleDelete = async (id: string) => {
     try {
       await deleteFinalidade(() => finalidadeApi.delete?.(id));
@@ -108,18 +90,22 @@ export default function FinalidadesPage() {
     }
   };
 
-  /**
-   * Reseta o formulário
-   */
   const resetForm = () => {
-    setFormData({ nome: '', descricao: '' });
+    setFormData({ nomeFinalidade: '' });
     setSelectedFinalidade(null);
+  };
+
+  const handleEditClick = (finalidade: Finalidade) => {
+    setSelectedFinalidade(finalidade);
+    setFormData({
+      nomeFinalidade: finalidade.nome
+    });
+    setIsDialogOpen(true); // Abre o modal
   };
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Cabeçalho da página */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Finalidades</h1>
@@ -137,34 +123,34 @@ export default function FinalidadesPage() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Nova Finalidade</DialogTitle>
+                <DialogTitle>
+                  {selectedFinalidade ? 'Editar Finalidade' : 'Nova Finalidade'}
+                </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="nome">Nome *</Label>
                   <Input
                     id="nome"
-                    value={formData.nome}
-                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                    value={formData.nomeFinalidade}
+                    onChange={(e) => setFormData({ ...formData, nomeFinalidade: e.target.value })}
                     placeholder="Ex: Aluguel, Venda, Lançamento"
                     required
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="descricao">Descrição</Label>
-                  <Input
-                    id="descricao"
-                    value={formData.descricao}
-                    onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-                    placeholder="Descrição da finalidade"
-                  />
-                </div>
                 <div className="flex justify-end space-x-2">
-                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => {
+                      resetForm();
+                      setIsDialogOpen(false);
+                    }}
+                  >
                     Cancelar
                   </Button>
-                  <Button type="submit" disabled={loadingCreate}>
-                    {loadingCreate ? 'Criando...' : 'Criar'}
+                  <Button type="submit" disabled={loadingCreate || loadingUpdate}>
+                    {loadingCreate || loadingUpdate ? 'Salvando...' : 'Salvar'}
                   </Button>
                 </div>
               </form>
@@ -172,7 +158,6 @@ export default function FinalidadesPage() {
           </Dialog>
         </div>
 
-        {/* Lista de finalidades */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -206,7 +191,11 @@ export default function FinalidadesPage() {
                       <TableCell className="font-medium">{finalidade.nome}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleEditClick(finalidade)}
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
                           <AlertDialog>

@@ -56,11 +56,6 @@ const NewHomePage = () => {
 
   // Combinar todos os imóveis
   const todosImoveis = useMemo(() => {
-
-
-    console.log("...lancamentos, ...alugueis, ...imoveisUsados");
-    console.log(...lancamentos, ...alugueis, ...imoveisUsados);
-
     return [...lancamentos, ...alugueis, ...imoveisUsados];
   }, [lancamentos, alugueis, imoveisUsados]);
 
@@ -91,9 +86,7 @@ const NewHomePage = () => {
       } else if (filters.selectedFinalidade === "lancamento") {
         return { path: "/lancamentos", texto: "lançamentos" };
       }
-    } else {
-      return { path: "/lancamentos", texto: "lançamentos" };
-    }
+    } 
   };
 
   // Agrupar por região (tipagem mais segura)
