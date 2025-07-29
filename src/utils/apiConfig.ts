@@ -276,11 +276,14 @@ export const regiaoApi = {
 export const tipologiaApi = {
 
   obterTodasTipologias: (): Promise<any> => apiClient.get("tipologia/obterTodos"),
-
-  getById: (id: string): Promise<any> => apiClient.get(`tipologia/obterPorId/${id}`),
   
+  getById: (id: string): Promise<any> => apiClient.get(`tipologia/obterPorId/${id}`),
+    
   create: (data: any): Promise<any> => apiClient.post('tipologia/criarTipologia', data),
-  delete: (id: string): Promise<any> => apiClient.delete(`tipologia/deletar/${id}`),
+    
+  update: (id: string, data: any): Promise<any> => apiClient.put(`tipologia/updateTipologia/${id}`, data),
+
+  delete: (id: string): Promise<any> => apiClient.delete(`tipologia/delteTipologia/${id}`),
 };
 
 /**
@@ -328,7 +331,10 @@ export const finalidadeApi = {
   getById: (id: string): Promise<any> => apiClient.get(`finalidade/obterFinalidadePorId/${id}`),
   
   create: (data: any): Promise<any> => apiClient.post('finalidade/cadastrarFinalidade', data),
-  delete: (id: string): Promise<any> => apiClient.delete(`finalidade/deletar/${id}`),
+  
+  update: (id: string, data: any): Promise<any> => apiClient.put(`finalidade/updateFinalidade/${id}`, data),
+
+  delete: (id: string): Promise<any> => apiClient.delete(`finalidade/deleteFinalidade/${id}`),
 };
 
 export const imagemApi = {
