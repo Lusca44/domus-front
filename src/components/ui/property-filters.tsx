@@ -18,9 +18,11 @@ interface PropertyFiltersProps {
   onValorChange: (value: string) => void;
   onSearch?: () => void;
   availableRegions: string[];
+  availableTipologias: string[];
+  availableFinalidades: string[];
   showSearchButton?: boolean;
   showFinalidadeBox?: boolean;
-  isMenuAluguel?:boolean;
+  isMenuAluguel?: boolean;
 }
 
 export const PropertyFilters = ({
@@ -38,16 +40,51 @@ export const PropertyFilters = ({
   onValorChange,
   onSearch,
   availableRegions,
+  availableTipologias,
+  availableFinalidades,
   showSearchButton = false,
   showFinalidadeBox,
   isMenuAluguel,
 }: PropertyFiltersProps) => {
+  // Definir os intervalos para metragem
+  const areaRanges = [
+    { label: "0 a 50m²", value: "0-50" },
+    { label: "51 a 100m²", value: "51-100" },
+    { label: "101 a 200m²", value: "101-200" },
+    { label: "201 a 300m²", value: "201-300" },
+    { label: "Acima de 300m²", value: "301+" },
+  ];
+
+  // Definir os intervalos para valor (venda)
+  const valorVendaRanges = [
+    { label: "Até R$ 300.000", value: "0-300000" },
+    { label: "R$ 300.001 a R$ 500.000", value: "300001-500000" },
+    { label: "R$ 500.001 a R$ 800.000", value: "500001-800000" },
+    { label: "R$ 800.001 a R$ 1.000.000", value: "800001-1000000" },
+    { label: "R$ 1.000.001 a R$ 1.500.000", value: "1000001-1500000" },
+    { label: "R$ 1.500.001 a R$ 2.000.000", value: "1500001-2000000" },
+    { label: "Acima de R$ 2.000.000", value: "2000001+" },
+  ];
+
+  // Definir os intervalos para valor (aluguel)
+  const valorAluguelRanges = [
+    { label: "Até R$ 1.000", value: "0-1000" },
+    { label: "R$ 1.001 a R$ 1.500", value: "1001-1500" },
+    { label: "R$ 1.501 a R$ 2.000", value: "1501-2000" },
+    { label: "R$ 2.001 a R$ 2.500", value: "2001-2500" },
+    { label: "R$ 2.501 a R$ 3.000", value: "2501-3000" },
+    { label: "R$ 3.001 a R$ 3.500", value: "3001-3500" },
+    { label: "R$ 3.501 a R$ 4.000", value: "3501-4000" },
+    { label: "R$ 4.001 a R$ 4.500", value: "4001-4500" },
+    { label: "R$ 4.501 a R$ 5.000", value: "4501-5000" },
+    { label: "R$ 5.001 a R$ 6.000", value: "5001-6000" },
+    { label: "Acima de R$ 6.000", value: "6001+" },
+  ];
+
   return (
     <div className="bg-white rounded-lg p-4 sm:p-6 shadow-xl mb-8">
-      {/* <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 sm:gap-6 sm:items-end"> */}
       <div className="flex flex-wrap justify-center items-end gap-4 sm:gap-6">
         {showFinalidadeBox && (
-          // <div className="w-full sm:min-w-[120px]">
           <div className="flex-1 min-w-[150px] max-w-[200px]">
             <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
               Finalidade
@@ -61,15 +98,16 @@ export const PropertyFilters = ({
               </SelectTrigger>
               <SelectContent className="min-w-[200px]">
                 <SelectItem value="null">Finalidade</SelectItem>
-                <SelectItem value="venda">Venda</SelectItem>
-                <SelectItem value="aluguel">Locação</SelectItem>
-                <SelectItem value="lancamento">Lançamento na Planta</SelectItem>
+                {availableFinalidades.map((finalidade) => (
+                  <SelectItem key={finalidade} value={finalidade.toLowerCase()}>
+                    {finalidade}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
         )}
 
-        {/* <div className="w-full sm:min-w-[120px]"> */}
         <div className="flex-1 min-w-[150px] max-w-[200px]">
           <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
             Tipo
@@ -80,17 +118,15 @@ export const PropertyFilters = ({
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Tipo</SelectItem>
-              <SelectItem value="loft">Loft</SelectItem>
-              <SelectItem value="casa">Casa</SelectItem>
-              <SelectItem value="cobertura">Cobertura</SelectItem>
-              <SelectItem value="garden">Garden</SelectItem>
-              <SelectItem value="apartamento">Apartamento</SelectItem>
-              <SelectItem value="duplex">Duplex</SelectItem>
+              {availableTipologias.map((tipologia) => (
+                <SelectItem key={tipologia} value={tipologia.toLowerCase()}>
+                  {tipologia}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
-        {/* <div className="w-full sm:min-w-[120px]"> */}
         <div className="flex-1 min-w-[150px] max-w-[200px]">
           <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
             Bairro
@@ -110,7 +146,6 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        {/* <div className="w-full sm:min-w-[120px]"> */}
         <div className="flex-1 min-w-[150px] max-w-[200px]">
           <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
             Quartos
@@ -130,7 +165,6 @@ export const PropertyFilters = ({
           </Select>
         </div>
 
-        {/* <div className="w-full sm:min-w-[120px]"> */}
         <div className="flex-1 min-w-[150px] max-w-[200px]">
           <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
             Metragem
@@ -141,16 +175,15 @@ export const PropertyFilters = ({
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Metragem</SelectItem>
-              <SelectItem value="50">Até 50m²</SelectItem>
-              <SelectItem value="80">Até 80m²</SelectItem>
-              <SelectItem value="120">Até 120m²</SelectItem>
-              <SelectItem value="150">Até 150m²</SelectItem>
-              <SelectItem value="200">Até 200m²</SelectItem>
+              {areaRanges.map((range) => (
+                <SelectItem key={range.value} value={range.value}>
+                  {range.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
-        {/* <div className="w-full sm:min-w-[120px]"> */}
         {!isMenuAluguel && (
           <div className="flex-1 min-w-[150px] max-w-[200px]">
             <label className="block text-sm font-medium text-gray-700 mb-2 sm:hidden">
@@ -162,12 +195,11 @@ export const PropertyFilters = ({
               </SelectTrigger>
               <SelectContent className="min-w-[200px]">
                 <SelectItem value="null">Valor</SelectItem>
-
-                <SelectItem value="300000">Até R$ 300.000</SelectItem>
-                <SelectItem value="500000">Até R$ 500.000</SelectItem>
-                <SelectItem value="800000">Até R$ 800.000</SelectItem>
-                <SelectItem value="1000000">Até R$ 1.000.000</SelectItem>
-                <SelectItem value="1500000">Até R$ 1.500.000</SelectItem>
+                {valorVendaRanges.map((range) => (
+                  <SelectItem key={range.value} value={range.value}>
+                    {range.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -184,25 +216,17 @@ export const PropertyFilters = ({
               </SelectTrigger>
               <SelectContent className="min-w-[200px]">
                 <SelectItem value="null">Valor</SelectItem>
-
-                <SelectItem value="1000">Até R$ 1.000</SelectItem>
-                <SelectItem value="1500">Até R$ 1.500</SelectItem>
-                <SelectItem value="2000">Até R$ 2.000</SelectItem>
-                <SelectItem value="2500">Até R$ 2.500</SelectItem>
-                <SelectItem value="3000">Até R$ 3.000</SelectItem>
-                <SelectItem value="3500">Até R$ 3.500</SelectItem>
-                <SelectItem value="4000">Até R$ 4.000</SelectItem>
-                <SelectItem value="4500">Até R$ 4.500</SelectItem>
-                <SelectItem value="5000">Até R$ 5.000</SelectItem>
-                <SelectItem value="5500">Até R$ 5.500</SelectItem>
-                <SelectItem value="6000+">Até R$ 6.000 ou +</SelectItem>
+                {valorAluguelRanges.map((range) => (
+                  <SelectItem key={range.value} value={range.value}>
+                    {range.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
         )}
 
         {showSearchButton && (
-          // <div className="w-full sm:w-auto mt-2 sm:mt-0">
           <div className="flex-1 min-w-[150px] max-w-[200px]">
             <Button
               size="lg"

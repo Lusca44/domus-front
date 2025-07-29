@@ -40,19 +40,24 @@ export class ApiClient {
     // REQUEST INTERCEPTOR - Adiciona token de autenticação automaticamente
     this.axiosInstance.interceptors.request.use(
       (config) => {
+        if (config.data instanceof FormData) {
+          delete config.headers["Content-Type"];
+        }
         // Obter token do localStorage
-        const token = localStorage.getItem('token');
-        
+        const token = localStorage.getItem("token");
+
         // Adicionar token no header Authorization se existir
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
 
-        console.log(`🚀 Fazendo requisição: ${config.method?.toUpperCase()} ${config.url}`);
+        console.log(
+          `🚀 Fazendo requisição: ${config.method?.toUpperCase()} ${config.url}`
+        );
         return config;
       },
       (error) => {
-        console.error('❌ Erro no request interceptor:', error);
+        console.error("❌ Erro no request interceptor:", error);
         return Promise.reject(error);
       }
     );
@@ -60,35 +65,39 @@ export class ApiClient {
     // RESPONSE INTERCEPTOR - Trata respostas e erros
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => {
-        console.log(`✅ Resposta recebida: ${response.status} - ${response.config.url}`);
-        
+        console.log(
+          `✅ Resposta recebida: ${response.status} - ${response.config.url}`
+        );
+
         // Se a resposta não tem dados ou é vazia, retorna objeto vazio
         if (!response.data) {
           return {};
         }
-        
+
         return response.data; // Retorna apenas os dados, não o objeto completo da resposta
       },
       (error: AxiosError) => {
-        console.error('❌ Erro na resposta:', error);
-        
+        console.error("❌ Erro na resposta:", error);
+
         // Tratamento específico para diferentes tipos de erro
         if (error.response) {
           // Erro da API (4xx, 5xx)
           const status = error.response.status;
           const message = error.response.data || error.message;
-          
+
           // Se for erro 401 (não autorizado), redirecionar para login
           if (status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/admin/login';
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/admin/login";
           }
-          
+
           throw new Error(`HTTP Error ${status}: ${message}`);
         } else if (error.request) {
           // Erro de rede (sem resposta)
-          throw new Error('Erro de conexão. Verifique sua internet e tente novamente.');
+          throw new Error(
+            "Erro de conexão. Verifique sua internet e tente novamente."
+          );
         } else {
           // Erro na configuração da requisição
           throw new Error(`Erro na requisição: ${error.message}`);
@@ -239,10 +248,98 @@ export const userApi = {
   alterarStatusUsuario: (id: string): Promise<any> => apiClient.put(`usuario/alterarStatusUsuarios/${id}`),
 };
 
-export const imovelAnuncioApi = {
+/**
+ * API PARA GERENCIAR REGIAO
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const regiaoApi = {
+
+  obterTodasRegioes: (): Promise<any> => apiClient.get("regiao/obterTodos"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`regiao/obterPorId/${id}`),
   
-  // POST /users - Criar novo usuário
-  enviarEmailAnuncio: (data: any): Promise<any> => apiClient.post('imovel-anuncio/enviar-email', data),
+  create: (data: any): Promise<any> => apiClient.post('regiao/cadastrarRegiao', data),
+  
+  update: (id: string, data: any): Promise<any> => apiClient.put(`regiao/updateRegiao/${id}`, data),
+
+  delete: (id: string): Promise<any> => apiClient.delete(`regiao/deletar/${id}`),
+  
+  alterarStatusDestaque: (id: string): Promise<any> => apiClient.put(`regiao/alterarStatus/${id}`),
+};
+
+/**
+ * API PARA GERENCIAR TIPOLOGIA
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const tipologiaApi = {
+
+  obterTodasTipologias: (): Promise<any> => apiClient.get("tipologia/obterTodos"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`tipologia/obterPorId/${id}`),
+  
+  create: (data: any): Promise<any> => apiClient.post('tipologia/criarTipologia', data),
+  delete: (id: string): Promise<any> => apiClient.delete(`tipologia/deletar/${id}`),
+};
+
+/**
+ * API PARA GERENCIAR IMOVEIS
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */ 
+export const imovelApi = {
+  obterTodosImoveis: (): Promise<any> => apiClient.get("imovel/obterTodosImoveis"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`imovel/obterImovel/${id}`),
+  
+  getByFinalidadeId: (id: string): Promise<any> => apiClient.get(`imovel/obterImoveisPorFinalidade/${id}`),
+  
+  create: (data: any): Promise<any> => apiClient.post('imovel/cadastrarImovel', data),
+  
+  update: (id: string, data: any): Promise<any> => apiClient.put(`imovel/updateImovel/${id}`, data),
+
+  delete: (id: string): Promise<any> => apiClient.delete(`imovel/deleteImovel/${id}`),
+};
+
+/**
+ * API PARA GERENCIAR LANCAMENTOS
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const lancamentoApi = {
+  obterTodosLancamentos: (): Promise<any> => apiClient.get("projeto-lancamento/obterTodosLancamentos"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`projeto-lancamento/obterLancamentoPorId/${id}`),
+  
+  create: (data: any): Promise<any> => apiClient.post('projeto-lancamento/criarLancamento', data),
+  update: (id: string, data: any): Promise<any> => apiClient.put(`projeto-lancamento/updateLancamento/${id}`, data),
+  delete: (id: string): Promise<any> => apiClient.delete(`projeto-lancamento/deleteLancamento/${id}`),
+};
+
+/**
+ * API PARA GERENCIAR FINALIDADE
+ * 
+ * Endpoints para administradores gerenciarem usuários
+ */
+export const finalidadeApi = {
+  obterTodasFinalidades: (): Promise<any> => apiClient.get("finalidade/obterTodasFinalidades"),
+
+  getById: (id: string): Promise<any> => apiClient.get(`finalidade/obterFinalidadePorId/${id}`),
+  
+  create: (data: any): Promise<any> => apiClient.post('finalidade/cadastrarFinalidade', data),
+  delete: (id: string): Promise<any> => apiClient.delete(`finalidade/deletar/${id}`),
+};
+
+export const imagemApi = {
+  
+  salvarImagem: (file: any): Promise<any> => apiClient.post('imagem/salvarImagem', file),
+  
+  salvarMultiplasImagens: (files: File[]): Promise<string[]> => {
+    const formData = new FormData();
+    files.forEach(file => formData.append("files", file));
+    return apiClient.post('imagem/salvarMultiplas', formData);
+  }
 };
 
 export default apiClient;

@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,13 +7,51 @@ import { MapPin, BedDouble, Ruler } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PropertyFilters } from "@/components/ui/property-filters";
 import { usePropertyFilters } from "@/hooks/use-property-filters";
-import { alugueis } from "@/cards/alugueis/alugueis";
 import { Imovel } from "@/cards/imoveis";
+import { useImoveis } from "@/hooks/useImoveis";
+import { finalidadeApi, tipologiaApi } from "@/utils/apiConfig";
 
 const AlugueisPage = () => {
   // Estado para controlar quantos cards estão sendo exibidos
   // Inicialmente mostra 4 cards
   const [itemsToShow, setItemsToShow] = useState(4);
+  const { alugueis } = useImoveis();
+
+const [availableTipologias, setAvailableTipologias] = useState<string[]>([]);
+  const [availableFinalidades, setAvailableFinalidades] = useState<string[]>(
+    []
+  );
+
+  // Buscar tipologias da API
+  useEffect(() => {
+    const fetchTipologias = async () => {
+      try {
+        const response = await tipologiaApi.obterTodasTipologias();
+        const tipologias = response.map((t: any) => t.nome);
+        setAvailableTipologias(tipologias);
+      } catch (error) {
+        console.error("Erro ao buscar tipologias:", error);
+      }
+    };
+    
+    fetchTipologias();
+  }, []);
+
+
+   useEffect(() => {
+      const fetchFinalidades = async () => {
+        try {
+          const response = await finalidadeApi.obterTodasFinalidades();
+          const finalidades = response.map((f: any) => f.nome);
+          setAvailableFinalidades(finalidades);
+        } catch (error) {
+          console.error("Erro ao buscar finalidades:", error);
+        }
+      };
+      
+      fetchFinalidades();
+    }, []);
+    
 
   // Hook de filtros usando os aluguéis
   const {
@@ -125,6 +163,8 @@ const AlugueisPage = () => {
               onMetragemChange={setters.setSelectedMetragem}
               onValorChange={setters.setSelectedValor}
               availableRegions={availableRegions}
+              availableTipologias={availableTipologias} // Passando as tipologias
+              availableFinalidades={availableFinalidades} // Passando as finalidades
               showSearchButton={false}
               showFinalidadeBox={false}
               isMenuAluguel={true}

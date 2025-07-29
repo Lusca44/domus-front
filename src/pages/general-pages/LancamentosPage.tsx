@@ -1,17 +1,23 @@
-
 import React from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/Footer";
 import { PropertyFilters } from "@/components/ui/property-filters";
 import { usePropertyFilters } from "@/hooks/use-property-filters";
-import { lancamentos } from "@/cards/lancamentos/lancamentos";
 import { Button } from "@/components/ui/button";
 import { MapPin, BedDouble, Ruler } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Imovel } from "@/cards/imoveis";
 import { useState } from "react";
+import { useLancamentos } from "@/hooks/useLancamentos"; // Importe o hook
 
 const LancamentosPage = () => {
+  const [availableTipologias, setAvailableTipologias] = useState<string[]>([]);
+  const [availableFinalidades, setAvailableFinalidades] = useState<string[]>(
+    []
+  );
+
+  const { lancamentos, loading } = useLancamentos();
+
   // Estado para controlar quantos cards estão sendo exibidos
   const [itemsToShow, setItemsToShow] = useState(4);
 
@@ -22,18 +28,18 @@ const LancamentosPage = () => {
     filteredProperties,
     availableRegions,
     clearFilters,
-    hasActiveFilters
+    hasActiveFilters,
   } = usePropertyFilters(lancamentos);
 
   // Imóveis visíveis na tela (limitados pelo estado itemsToShow)
   const imoveisVisiveis = filteredProperties.slice(0, itemsToShow);
-  
+
   // Verificar se ainda há mais imóveis para carregar
   const hasMoreItems = itemsToShow < filteredProperties.length;
 
   // Função para carregar mais 4 imóveis
   const loadMoreItems = () => {
-    setItemsToShow(prev => prev + 4);
+    setItemsToShow((prev) => prev + 4);
   };
 
   // Função para obter label do tipo de card
@@ -69,8 +75,18 @@ const LancamentosPage = () => {
     <div className="text-center py-16 bg-gray-50 rounded-2xl">
       <div className="max-w-md mx-auto">
         <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          <svg
+            className="w-8 h-8 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+            />
           </svg>
         </div>
         <p className="text-gray-500 text-lg mb-2">
@@ -91,6 +107,21 @@ const LancamentosPage = () => {
       </div>
     </div>
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
+        <Header />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+          </div>
+          <p className="mt-4 text-gray-600">Carregando lançamentos...</p>
+        </div>
+        <Footer isHomePage={false} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
@@ -127,6 +158,8 @@ const LancamentosPage = () => {
               availableRegions={availableRegions}
               showSearchButton={false}
               showFinalidadeBox={false}
+              availableTipologias={availableTipologias} // Passando as tipologias
+              availableFinalidades={availableFinalidades} // Passando as finalidades
             />
           </div>
 
@@ -167,12 +200,15 @@ const LancamentosPage = () => {
                         className="w-full h-72 sm:h-80 object-cover"
                       />
                       {/* Badge do tipo de imóvel */}
-                      <div
-                        className={`absolute top-4 left-4 ${getCardTypeColor(
-                          imovel.tipo
-                        )} text-white px-3 py-1 rounded-full text-sm font-medium`}
-                      >
-                        {getCardTypeLabel(imovel.tipo)}
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {imovel.tipologia?.map((tipo, index) => (
+                          <span
+                            key={index}
+                            className="text-xs bg-gray-100 px-2 py-1 rounded"
+                          >
+                            {tipo}
+                          </span>
+                        ))}
                       </div>
                     </div>
 
@@ -198,11 +234,11 @@ const LancamentosPage = () => {
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center">
                             <BedDouble className="w-4 h-4 mr-1" />
-                            <span>{imovel.quartos} quartos</span>
+                            <span>Até {imovel.quartos} quartos</span>
                           </div>
                           <div className="flex items-center">
                             <Ruler className="w-4 h-4 mr-1" />
-                            <span>{imovel.area}</span>
+                            <span> Até {imovel.area} m²</span>
                           </div>
                         </div>
                       </div>

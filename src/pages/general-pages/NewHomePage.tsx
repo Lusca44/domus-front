@@ -6,65 +6,101 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/Footer";
 import { PropertyFilters } from "@/components/ui/property-filters";
 import { usePropertyFilters } from "@/hooks/use-property-filters";
-import { lancamentos } from "@/cards/lancamentos/lancamentos";
-import { alugueis } from "@/cards/alugueis/alugueis";
-import { imoveisUsados } from "@/cards/imoveis-usados/imoveis-usados";
-import fotos from '@/assets/images/carrocel-home/fotos-carrocel'
+import { useLancamentos } from "@/hooks/useLancamentos";
+import { useImoveis } from "@/hooks/useImoveis";
+import fotos from "@/assets/images/carrocel-home/fotos-carrocel";
+import { useRegioes } from "@/hooks/useRegioes";
+
+import { finalidadeApi, tipologiaApi } from "@/utils/apiConfig";
 
 const NewHomePage = () => {
-  // Array de imagens para o carrossel de background
-  // Usando as imagens importadas do arquivo fotos-carrocel.tsx
   const backgroundImages = fotos;
-
-  // Estado para controlar qual imagem está sendo exibida
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { lancamentos, loading: loadingLancamentos } = useLancamentos();
+  const { alugueis, imoveisUsados, loading: loadingImoveis } = useImoveis();
+  const { regioesDestaque, loading: loadingRegioes } = useRegioes();
 
-  // Efeito para mudar automaticamente a imagem a cada 5 segundos
+  const [availableTipologias, setAvailableTipologias] = useState<string[]>([]);
+  const [availableFinalidades, setAvailableFinalidades] = useState<string[]>(
+    []
+  );
+
+  // Buscar tipologias da API
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
-        (prevIndex + 1) % backgroundImages.length
-      );
-    }, 5000); // Muda a cada 5 segundos
+    const fetchTipologias = async () => {
+      try {
+        const response = await tipologiaApi.obterTodasTipologias();
+        const tipologias = response.map((t: any) => t.nome);
+        setAvailableTipologias(tipologias);
+      } catch (error) {
+        console.error("Erro ao buscar tipologias:", error);
+      }
+    };
+    
+    fetchTipologias();
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [backgroundImages.length]);
+  useEffect(() => {
+    const fetchFinalidades = async () => {
+      try {
+        const response = await finalidadeApi.obterTodasFinalidades();
+        const finalidades = response.map((f: any) => f.nome);
+        setAvailableFinalidades(finalidades);
+      } catch (error) {
+        console.error("Erro ao buscar finalidades:", error);
+      }
+    };
+    
+    fetchFinalidades();
+  }, []);
 
   // Combinar todos os imóveis
   const todosImoveis = useMemo(() => {
+
+
+    console.log("...lancamentos, ...alugueis, ...imoveisUsados");
+    console.log(...lancamentos, ...alugueis, ...imoveisUsados);
+
     return [...lancamentos, ...alugueis, ...imoveisUsados];
-  }, []);
+  }, [lancamentos, alugueis, imoveisUsados]);
 
   const {
     filters,
     setters,
     filteredProperties,
     availableRegions,
-    hasActiveFilters
+    hasActiveFilters,
   } = usePropertyFilters(todosImoveis);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex(
+        (prevIndex) => (prevIndex + 1) % backgroundImages.length
+      );
+    }, 5000); // Muda a cada 5 segundos
+
+    return () => clearInterval(interval);
+  }, [backgroundImages.length]);
 
   const obterValorFiltroFinalidade = () => {
-
-    if(filters.selectedFinalidade != 'null'){
-      if(filters.selectedFinalidade === 'venda'){
-        return {path : "/prontos", texto: "imóveis prontos"};
-      }else if (filters.selectedFinalidade === 'aluguel'){
-        return {path : "/alugueis", texto: "imóveis a alugar"};
-      }else if (filters.selectedFinalidade === 'lancamento'){
-        return {path : "/lancamentos", texto: "lançamentos"};
+    if (filters.selectedFinalidade != "null") {
+      if (filters.selectedFinalidade === "venda") {
+        return { path: "/prontos", texto: "imóveis prontos" };
+      } else if (filters.selectedFinalidade === "aluguel") {
+        return { path: "/alugueis", texto: "imóveis a alugar" };
+      } else if (filters.selectedFinalidade === "lancamento") {
+        return { path: "/lancamentos", texto: "lançamentos" };
       }
-    }else {
-      return {path : "/lancamentos", texto: "lançamentos"};
+    } else {
+      return { path: "/lancamentos", texto: "lançamentos" };
     }
-  }
-  // Agrupar por região (usando imóveis filtrados se há filtros ativos, senão todos)
-  const imoveisParaAgrupar = hasActiveFilters ? filteredProperties : todosImoveis;
+  };
 
+  // Agrupar por região (tipagem mais segura)
   const imoveisPorRegiao = useMemo(() => {
-    const grupos: { [key: string]: typeof todosImoveis } = {};
-    
-    imoveisParaAgrupar.forEach(imovel => {
+    const grupos: Record<string, typeof todosImoveis> = {};
+
+    todosImoveis.forEach((imovel) => {
       if (!grupos[imovel.regiao]) {
         grupos[imovel.regiao] = [];
       }
@@ -72,40 +108,39 @@ const NewHomePage = () => {
     });
 
     return grupos;
-  }, [imoveisParaAgrupar]);
+  }, [todosImoveis]);
 
-  // Obter regiões em destaque (que têm pelo menos um imóvel marcado como destaque)
-  const regioesDestaque = useMemo(() => {
-    const regioes = Object.keys(imoveisPorRegiao).filter(regiao => {
-      return imoveisPorRegiao[regiao].some(imovel => imovel.destaque);
-    });
-    
-    // Retornar apenas as primeiras 2 regiões para mostrar na tela
-    return regioes.slice(0, 2);
-  }, [imoveisPorRegiao]);
+  // Obter regiões em destaque da API
+  const regioesDestaqueNomes = useMemo(() => {
+    return regioesDestaque.map((regiao) => regiao.nomeRegiao);
+  }, [regioesDestaque]);
 
   // Obter outras regiões (não destacadas)
   const outrasRegioes = useMemo(() => {
-    return Object.keys(imoveisPorRegiao).filter(regiao => 
-      !regioesDestaque.includes(regiao)
+    return Object.keys(imoveisPorRegiao).filter(
+      (regiao) => !regioesDestaqueNomes.includes(regiao)
     );
-  }, [imoveisPorRegiao, regioesDestaque]);
+  }, [imoveisPorRegiao, regioesDestaqueNomes]);
 
-  // Obter 2 imóveis aleatórios de outras regiões
+  // Obter APENAS 2 imóveis aleatórios de outras regiões (no total)
   const imoveisOutrasRegioes = useMemo(() => {
-    const imoveisOutras: typeof todosImoveis = [];
-    
-    outrasRegioes.forEach(regiao => {
-      const imoveisRegiao = imoveisPorRegiao[regiao];
-      if (imoveisRegiao.length > 0) {
+    // 1. Pegar uma amostra de cada região
+    const amostrasPorRegiao = outrasRegioes
+      .map((regiao) => {
+        const imoveis = imoveisPorRegiao[regiao] || [];
+        if (imoveis.length === 0) return null;
+
         // Pegar um imóvel aleatório desta região
-        const randomIndex = Math.floor(Math.random() * imoveisRegiao.length);
-        imoveisOutras.push(imoveisRegiao[randomIndex]);
-      }
-    });
-    
-    // Retornar apenas 2 imóveis
-    return imoveisOutras.slice(0, 2);
+        const randomIndex = Math.floor(Math.random() * imoveis.length);
+        return imoveis[randomIndex];
+      })
+      .filter(Boolean); // Remover regiões vazias
+
+    // 2. Embaralhar as amostras
+    const embaralhados = [...amostrasPorRegiao].sort(() => Math.random() - 0.5);
+
+    // 3. Pegar no máximo 2
+    return embaralhados.slice(0, 2);
   }, [outrasRegioes, imoveisPorRegiao]);
 
   const getCardTypeLabel = (tipo: string) => {
@@ -147,10 +182,10 @@ const NewHomePage = () => {
             <div
               key={index}
               className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
-                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                index === currentImageIndex ? "opacity-100" : "opacity-0"
               }`}
               style={{
-                backgroundImage: `url(${image})`
+                backgroundImage: `url(${image})`,
               }}
             />
           ))}
@@ -158,192 +193,372 @@ const NewHomePage = () => {
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative container mx-auto px-4">
           {/* <div className="max-w-4xl mx-auto text-center"> */}
-            {/* Espaço reservado onde estava o texto */}
-            <div className="mb-8 sm:mb-12" style={{ height: '200px' }}></div>
+          {/* Espaço reservado onde estava o texto */}
+          <div className="mb-8 sm:mb-12" style={{ height: "200px" }}></div>
 
-            {/* Barra de Busca */}
-            <PropertyFilters
-              selectedFinalidade={filters.selectedFinalidade}
-              selectedTipo={filters.selectedTipo}
-              selectedBairro={filters.selectedBairro}
-              selectedQuartos={filters.selectedQuartos}
-              selectedMetragem={filters.selectedMetragem}
-              selectedValor={filters.selectedValor}
-              onFinalidadeChange={setters.setSelectedFinalidade}
-              onTipoChange={setters.setSelectedTipo}
-              onBairroChange={setters.setSelectedBairro}
-              onQuartosChange={setters.setSelectedQuartos}
-              onMetragemChange={setters.setSelectedMetragem}
-              onValorChange={setters.setSelectedValor}
-              availableRegions={availableRegions}
-              showSearchButton={false}
-              showFinalidadeBox={true}
-            />
+          {/* Barra de Busca */}
+          <PropertyFilters
+          selectedFinalidade={filters.selectedFinalidade}
+          selectedTipo={filters.selectedTipo}
+          selectedBairro={filters.selectedBairro}
+          selectedQuartos={filters.selectedQuartos}
+          selectedMetragem={filters.selectedMetragem}
+          selectedValor={filters.selectedValor}
+          onFinalidadeChange={setters.setSelectedFinalidade}
+          onTipoChange={setters.setSelectedTipo}
+          onBairroChange={setters.setSelectedBairro}
+          onQuartosChange={setters.setSelectedQuartos}
+          onMetragemChange={setters.setSelectedMetragem}
+          onValorChange={setters.setSelectedValor}
+          availableRegions={availableRegions}
+          availableTipologias={availableTipologias} // Passando as tipologias
+          availableFinalidades={availableFinalidades} // Passando as finalidades
+          showSearchButton={false}
+          showFinalidadeBox={true}
+        />
           {/* </div> */}
         </div>
       </section>
-
-      {/* Regiões em Destaque */}
-      {regioesDestaque.map((regiao) => {
-        const imoveisRegiao = imoveisPorRegiao[regiao]
-          .filter(imovel => imovel.destaque)
-          .slice(0, 2); // Apenas 2 cards por região
-
-        return (
-          <section key={regiao} className="py-12 sm:py-16 bg-gray-50">
-            <div className="container mx-auto px-4">
-              <div className="text-center mb-8 sm:mb-12">
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                  {regiao}
-                </h2>
-                <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
-                {imoveisRegiao.map((imovel) => (
-                  <div
-                    key={imovel.id}
-                    className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
-                  >
-                    <div className="relative">
-                      <img
-                        src={imovel.imagem}
-                        alt={imovel.titulo}
-                        className="w-full h-72 sm:h-80 object-cover"
-                      />
-                      <div className={`absolute top-4 left-4 ${getCardTypeColor(imovel.tipo)} text-white px-3 py-1 rounded-full text-sm font-medium`}>
-                        {getCardTypeLabel(imovel.tipo)}
-                      </div>
-                    </div>
-                    
-                    <div className="p-8">
-                      <div className="flex items-center text-gray-600 mb-2">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        <span className="text-sm">{imovel.regiao}</span>
-                      </div>
-                      
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        {imovel.titulo}
-                      </h3>
-                      
-                      <p className="text-gray-600 mb-4 line-clamp-2">
-                        {imovel.descricao}
-                      </p>
-                      
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <div className="flex items-center">
-                            <BedDouble className="w-4 h-4 mr-1" />
-                            <span>{imovel.quartos} quartos</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Ruler className="w-4 h-4 mr-1" />
-                            <span>{imovel.area}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-blue-600">
-                          {imovel.preco}
-                        </span>
-                        <Button asChild className="bg-blue-600 hover:bg-blue-700">
-                          <Link to={imovel.url}>
-                            Ver Detalhes
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        );
-      })}
-
-      {/* Outras Regiões */}
-      {imoveisOutrasRegioes.length > 0 && (
-        <section className="py-12 sm:py-16 bg-white">
+      {hasActiveFilters && (
+        <section className="py-12 sm:py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-8 sm:mb-12">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                Outras Regiões
+                Resultados da Busca
               </h2>
               <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
-              {imoveisOutrasRegioes.map((imovel) => (
+            {filteredProperties.length > 0 ? (
+              <div className="max-w-6xl mx-auto">
+                {/* Container flexível com alinhamento condicional */}
                 <div
-                  key={imovel.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border"
+                  className={`
+              flex flex-wrap justify-center
+              ${
+                filteredProperties.length === 1
+                  ? "sm:justify-center"
+                  : "sm:justify-between"
+              }
+              gap-8 sm:gap-12
+            `}
                 >
-                  <div className="relative">
-                    <img
-                      src={imovel.imagem}
-                      alt={imovel.titulo}
-                      className="w-full h-72 sm:h-80 object-cover"
-                    />
-                    <div className={`absolute top-4 left-4 ${getCardTypeColor(imovel.tipo)} text-white px-3 py-1 rounded-full text-sm font-medium`}>
-                      {getCardTypeLabel(imovel.tipo)}
-                    </div>
-                  </div>
-                  
-                  <div className="p-8">
-                    <div className="flex items-center text-gray-600 mb-2">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      <span className="text-sm">{imovel.regiao}</span>
-                    </div>
-                    
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      {imovel.titulo}
-                    </h3>
-                    
-                    <p className="text-gray-600 mb-4 line-clamp-2">
-                      {imovel.descricao}
-                    </p>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <BedDouble className="w-4 h-4 mr-1" />
-                          <span>{imovel.quartos} quartos</span>
+                  {filteredProperties.map((imovel) => (
+                    <div
+                      key={imovel.id}
+                      className={`
+                  w-full
+                  ${
+                    filteredProperties.length === 1
+                      ? "sm:w-full sm:max-w-lg"
+                      : "sm:w-[calc(50%-24px)]"
+                  }
+                  bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow
+                `}
+                    >
+                      <div className="relative">
+                        <img
+                          src={imovel.imagem}
+                          alt={imovel.titulo}
+                          className="w-full h-72 sm:h-80 object-cover"
+                        />
+                        <div
+                          className={`absolute top-4 left-4 ${getCardTypeColor(
+                            imovel.tipo
+                          )} text-white px-3 py-1 rounded-full text-sm font-medium`}
+                        >
+                          {getCardTypeLabel(imovel.tipo)}
                         </div>
-                        <div className="flex items-center">
-                          <Ruler className="w-4 h-4 mr-1" />
-                          <span>{imovel.area}</span>
+                      </div>
+
+                      <div className="p-8">
+                        <div className="flex items-center text-gray-600 mb-2">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          <span className="text-sm">{imovel.regiao}</span>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          {imovel.titulo}
+                        </h3>
+
+                        <p className="text-gray-600 mb-4 line-clamp-2">
+                          {imovel.descricao}
+                        </p>
+
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <div className="flex items-center">
+                              <BedDouble className="w-4 h-4 mr-1" />
+                              <span>Até {imovel.quartos} quartos</span>
+                            </div>
+                            <div className="flex items-center">
+                              <Ruler className="w-4 h-4 mr-1" />
+                              <span>Até {imovel.area} m²</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <span className="text-2xl font-bold text-blue-600">
+                            {imovel.preco}
+                          </span>
+                          <Button
+                            asChild
+                            className="bg-blue-600 hover:bg-blue-700"
+                          >
+                            <Link to={imovel.url}>Ver Detalhes</Link>
+                          </Button>
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-blue-600">
-                        {imovel.preco}
-                      </span>
-                      <Button asChild className="bg-blue-600 hover:bg-blue-700">
-                        <Link to={imovel.url}>
-                          Ver Detalhes
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-
-            <div className="text-center mt-12">
-              <Button asChild size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
-                <Link to={obterValorFiltroFinalidade().path}>
-                {/* <Link to="/prontos"> */}
-                  Ver Todos os {obterValorFiltroFinalidade().texto}
-                </Link>
-              </Button>
-            </div>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-600 text-lg">
+                  Nenhum imóvel encontrado com os filtros selecionados.
+                </p>
+                <Button
+                  onClick={() => {
+                    // Resetar os filtros
+                    setters.setSelectedFinalidade("null");
+                    setters.setSelectedTipo("null");
+                    setters.setSelectedBairro("null");
+                    setters.setSelectedQuartos("null");
+                    setters.setSelectedMetragem("null");
+                    setters.setSelectedValor("null");
+                  }}
+                  className="mt-4 bg-blue-600 hover:bg-blue-700"
+                >
+                  Limpar Filtros
+                </Button>
+              </div>
+            )}
           </div>
         </section>
       )}
 
+      {!hasActiveFilters && (
+        <>
+          {/* Regiões em Destaque */}
+          {!loadingRegioes &&
+            regioesDestaqueNomes.map((regiaoNome) => {
+              // Verificar se a região existe no agrupamento
+              const imoveisRegiao = imoveisPorRegiao.hasOwnProperty(regiaoNome)
+                ? imoveisPorRegiao[regiaoNome].slice(0, 2)
+                : [];
+
+              if (imoveisRegiao.length === 0) return null;
+
+              return (
+                <section key={regiaoNome} className="py-12 sm:py-16 bg-gray-50">
+                  <div className="container mx-auto px-4">
+                    <div className="text-center mb-8 sm:mb-12">
+                      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                        {regiaoNome}
+                      </h2>
+                      <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
+                    </div>
+
+                    <div
+                      className={`
+          flex flex-wrap justify-center
+          ${
+            imoveisRegiao.length === 1
+              ? "sm:justify-center"
+              : "sm:justify-between"
+          }
+          gap-8 sm:gap-12 max-w-6xl mx-auto
+        `}
+                    >
+                      {imoveisRegiao.map((imovel) => (
+                        <div
+                          key={imovel.id}
+                          className={`
+                w-full
+                ${
+                  imoveisRegiao.length === 1
+                    ? "sm:w-full sm:max-w-lg"
+                    : "sm:w-[calc(50%-24px)]"
+                }
+                bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow
+              `}
+                        >
+                          <div className="relative">
+                            <img
+                              src={imovel.imagem}
+                              alt={imovel.titulo}
+                              className="w-full h-72 sm:h-80 object-cover"
+                            />
+                            <div
+                              className={`absolute top-4 left-4 ${getCardTypeColor(
+                                imovel.tipo
+                              )} text-white px-3 py-1 rounded-full text-sm font-medium`}
+                            >
+                              {getCardTypeLabel(imovel.tipo)}
+                            </div>
+                          </div>
+
+                          <div className="p-8">
+                            <div className="flex items-center text-gray-600 mb-2">
+                              <MapPin className="w-4 h-4 mr-1" />
+                              <span className="text-sm">{imovel.regiao}</span>
+                            </div>
+
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                              {imovel.titulo}
+                            </h3>
+
+                            <p className="text-gray-600 mb-4 line-clamp-2">
+                              {imovel.descricao}
+                            </p>
+
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                <div className="flex items-center">
+                                  <BedDouble className="w-4 h-4 mr-1" />
+                                  <span>Até {imovel.quartos} quartos</span>
+                                </div>
+                                <div className="flex items-center">
+                                  <Ruler className="w-4 h-4 mr-1" />
+                                  <span>Até {imovel.area} m²</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <span className="text-2xl font-bold text-blue-600">
+                                {imovel.preco}
+                              </span>
+                              <Button
+                                asChild
+                                className="bg-blue-600 hover:bg-blue-700"
+                              >
+                                <Link to={imovel.url}>Ver Detalhes</Link>
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              );
+            })}
+
+          {/* Outras Regiões */}
+          {imoveisOutrasRegioes.length > 0 && (
+            <section className="py-12 sm:py-16 bg-white">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-8 sm:mb-12">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                    Outras Regiões
+                  </h2>
+                  <div className="w-16 sm:w-24 h-1 bg-blue-600 mx-auto"></div>
+                </div>
+
+                {/* Container flexível com alinhamento condicional */}
+                <div
+                  className={`
+        flex flex-wrap justify-center
+        ${
+          imoveisOutrasRegioes.length === 1
+            ? "sm:justify-center"
+            : "sm:justify-between"
+        }
+        gap-8 sm:gap-12 max-w-6xl mx-auto
+      `}
+                >
+                  {imoveisOutrasRegioes.map((imovel) => (
+                    <div
+                      key={imovel.id}
+                      className={`
+              w-full
+              ${
+                imoveisOutrasRegioes.length === 1
+                  ? "sm:w-full sm:max-w-lg"
+                  : "sm:w-[calc(50%-24px)]"
+              }
+              bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border
+            `}
+                    >
+                      <div className="relative">
+                        <img
+                          src={imovel.imagem}
+                          alt={imovel.titulo}
+                          className="w-full h-72 sm:h-80 object-cover"
+                        />
+                        <div
+                          className={`absolute top-4 left-4 ${getCardTypeColor(
+                            imovel.tipo
+                          )} text-white px-3 py-1 rounded-full text-sm font-medium`}
+                        >
+                          {getCardTypeLabel(imovel.tipo)}
+                        </div>
+                      </div>
+
+                      <div className="p-8">
+                        <div className="flex items-center text-gray-600 mb-2">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          <span className="text-sm">{imovel.regiao}</span>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          {imovel.titulo}
+                        </h3>
+
+                        <p className="text-gray-600 mb-4 line-clamp-2">
+                          {imovel.descricao}
+                        </p>
+
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <div className="flex items-center">
+                              <BedDouble className="w-4 h-4 mr-1" />
+                              <span>{imovel.quartos} quartos</span>
+                            </div>
+                            <div className="flex items-center">
+                              <Ruler className="w-4 h-4 mr-1" />
+                              <span>{imovel.area}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <span className="text-2xl font-bold text-blue-600">
+                            {imovel.preco}
+                          </span>
+                          <Button
+                            asChild
+                            className="bg-blue-600 hover:bg-blue-700"
+                          >
+                            <Link to={imovel.url}>Ver Detalhes</Link>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="text-center mt-12">
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                  >
+                    <Link to={obterValorFiltroFinalidade().path}>
+                      {/* <Link to="/prontos"> */}
+                      Ver Todos os {obterValorFiltroFinalidade().texto}
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </section>
+          )}
+        </>
+      )}
       {/* CTA Section */}
       <section className="py-12 sm:py-16 bg-blue-600 text-white">
         <div className="container mx-auto px-4">
@@ -352,7 +567,8 @@ const NewHomePage = () => {
               Não Encontrou o Imóvel Ideal?
             </h3>
             <p className="text-lg sm:text-xl mb-8 opacity-90">
-              Entre em contato conosco e descubra outras oportunidades exclusivas no Rio de Janeiro.
+              Entre em contato conosco e descubra outras oportunidades
+              exclusivas no Rio de Janeiro.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:gap-4 justify-center">
               <Button
@@ -361,18 +577,14 @@ const NewHomePage = () => {
                 className="border-white text-blue-600 hover:bg-white hover:text-blue-600"
                 asChild
               >
-                <Link to="/contato">
-                  Entre em Contato
-                </Link>
+                <Link to="/contato">Entre em Contato</Link>
               </Button>
               <Button
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-gray-100"
                 asChild
               >
-                <Link to="/anuncie">
-                  Anuncie seu Imóvel
-                </Link>
+                <Link to="/anuncie">Anuncie seu Imóvel</Link>
               </Button>
             </div>
           </div>
