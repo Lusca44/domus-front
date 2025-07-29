@@ -331,11 +331,6 @@ export const finalidadeApi = {
   delete: (id: string): Promise<any> => apiClient.delete(`finalidade/deletar/${id}`),
 };
 
-export const imovelAnuncioApi = {
-  
-  enviarEmailAnuncio: (data: any): Promise<any> => apiClient.post('imovel-anuncio/enviar-email', data),
-};
-
 export const imagemApi = {
   
   salvarImagem: (file: any): Promise<any> => apiClient.post('imagem/salvarImagem', file),

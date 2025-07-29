@@ -4,10 +4,16 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Upload, Send, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { imovelAnuncioApi } from "@/utils/apiConfig";
+import emailjs from "@emailjs/browser";
 
 const AnunciePage = () => {
   const { toast } = useToast();
@@ -27,56 +33,74 @@ const AnunciePage = () => {
     area: "",
     valor: "",
     descricao: "",
-    observacoes: ""
+    observacoes: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validação básica
-    if (!formData.nome || !formData.telefone || !formData.email || !formData.finalidade || !formData.tipo) {
+
+    // Validação (mantida igual)
+    if (
+      !formData.nome ||
+      !formData.telefone ||
+      !formData.email ||
+      !formData.finalidade ||
+      !formData.tipo
+    ) {
       toast({
         title: "Campos obrigatórios",
-        description: "Por favor, preencha todos os campos obrigatórios marcados com *",
+        description:
+          "Por favor, preencha todos os campos obrigatórios marcados com *",
         variant: "destructive",
       });
       return;
     }
 
-    // Simular envio do formulário
-    toast({
-      title: "Formulário enviado com sucesso!",
-      description: "Entraremos em contato em breve para avaliar seu imóvel.",
-    });
+    try {
+      // Envio do email
+      await emailjs.send(
+        "service_q8wy7xo", // ID do serviço (EmailJS)
+        "template_z5g0c1q", // ID do template (EmailJS)
+        formData,
+        "YPqovslU14ZVLNH8l" // Chave pública (EmailJS)
+      );
 
-    console.log(formData);
+      toast({
+        title: "Formulário enviado com sucesso!",
+        description: "Entraremos em contato em breve para avaliar seu imóvel.",
+      });
 
-    const response = imovelAnuncioApi.enviarEmailAnuncio(formData);
-    //QUERO ENVIAR ESSE FORM DATA PRO EMAIL
-
-    // Resetar formulário
-    setFormData({
-      nome: "",
-      telefone: "",
-      email: "",
-      finalidade: "",
-      tipo: "",
-      endereco: "",
-      bairro: "",
-      cidade: "",
-      cep: "",
-      quartos: "",
-      banheiros: "",
-      vagas: "",
-      area: "",
-      valor: "",
-      descricao: "",
-      observacoes: ""
-    });
+      setFormData({
+        nome: "",
+        telefone: "",
+        email: "",
+        finalidade: "",
+        tipo: "",
+        endereco: "",
+        bairro: "",
+        cidade: "",
+        cep: "",
+        quartos: "",
+        banheiros: "",
+        vagas: "",
+        area: "",
+        valor: "",
+        descricao: "",
+        observacoes: "",
+      });
+    } catch (error) {
+      console.error("Falha no envio:", error);
+      toast({
+        title: "Erro no envio",
+        description:
+          "Ocorreu um problema ao enviar seu formulário. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
