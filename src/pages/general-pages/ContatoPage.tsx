@@ -127,8 +127,8 @@ const ContatoPage = () => {
                     <div>
                       <h3 className="font-semibold text-gray-900">Horário de Atendimento</h3>
                       <p className="text-gray-600">
-                        Segunda a Sexta: 9h às 18h<br />
-                        Sábado: 9h às 14h<br />
+                        Segunda a Sexta: 9h às 17h30<br />
+                        Sábado: Fechado<br />
                         Domingo: Fechado
                       </p>
                     </div>

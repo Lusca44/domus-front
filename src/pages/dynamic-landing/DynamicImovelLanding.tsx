@@ -256,7 +256,7 @@ export default function DynamicImovelLanding() {
       {/* Hero Section - Design atualizado com tons de azul */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Background Image */}
-        {imovel.urlFotoCard && (
+        {imovel.urlFotoCard ? (
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
@@ -264,6 +264,11 @@ export default function DynamicImovelLanding() {
             }}
           >
             {/* Overlay Gradiente */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-blue-900/70 to-blue-900/90"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-blue-900/60"></div>
+          </div>
+        ) : (
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-blue-900/70 to-blue-900/90"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-blue-900/60"></div>
           </div>
@@ -406,26 +411,26 @@ export default function DynamicImovelLanding() {
           </div>
 
           {caracteristicas.length > 0 && (
-  <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
-    {caracteristicas.map((item, index) => {
-      const IconComponent = item.icone;
-      return (
-        <div
-          key={index}
-          className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white rounded-xl p-6 border border-blue-100 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-            <IconComponent className="w-6 h-6 text-blue-600" />
-          </div>
-          <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
-            {item.titulo}
-          </h3>
-          <p className="text-gray-600">{item.valor}</p>
-        </div>
-      );
-    })}
-  </div>
-)}
+            <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
+              {caracteristicas.map((item, index) => {
+                const IconComponent = item.icone;
+                return (
+                  <div
+                    key={index}
+                    className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white rounded-xl p-6 border border-blue-100 shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                      <IconComponent className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
+                      {item.titulo}
+                    </h3>
+                    <p className="text-gray-600">{item.valor}</p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 

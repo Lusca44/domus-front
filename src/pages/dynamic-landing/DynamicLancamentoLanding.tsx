@@ -157,7 +157,7 @@ export default function DynamicLancamentoLanding() {
       {/* Hero Section - Mesmo design da LandingPixinguinha */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Background Image */}
-        {lancamento.urlFotoBackGround && (
+        {lancamento.urlFotoBackGround ? (
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
@@ -167,6 +167,11 @@ export default function DynamicLancamentoLanding() {
             }}
           >
             {/* Overlay Gradiente */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-blue-900/70 to-blue-900/90"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-blue-900/60"></div>
+          </div>
+        ) : (
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-blue-900/70 to-blue-900/90"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-blue-900/60"></div>
           </div>
@@ -256,7 +261,10 @@ export default function DynamicLancamentoLanding() {
               </p>
             </div>
 
-            <OptimizedPhotoCarousel photos={fotos} className="mb-8 md:mb-12 lg:mb-16" />
+            <OptimizedPhotoCarousel
+              photos={fotos}
+              className="mb-8 md:mb-12 lg:mb-16"
+            />
           </div>
         </section>
       )}

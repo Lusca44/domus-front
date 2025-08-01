@@ -6,6 +6,7 @@
  */
 
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import { stringify } from 'querystring';
 
 const API_CONFIG = {
   baseUrl:  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/",
@@ -340,6 +341,8 @@ export const finalidadeApi = {
 export const imagemApi = {
   
   salvarImagem: (file: any): Promise<any> => apiClient.post('imagem/salvarImagem', file),
+
+  deletarImagem: (urlImage: any): Promise<any> => apiClient.post(`imagem/deletarImagem`, urlImage),
   
   salvarMultiplasImagens: (files: File[]): Promise<string[]> => {
     const formData = new FormData();
