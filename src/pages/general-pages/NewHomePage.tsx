@@ -36,7 +36,7 @@ const NewHomePage = () => {
         console.error("Erro ao buscar tipologias:", error);
       }
     };
-    
+
     fetchTipologias();
   }, []);
 
@@ -50,7 +50,7 @@ const NewHomePage = () => {
         console.error("Erro ao buscar finalidades:", error);
       }
     };
-    
+
     fetchFinalidades();
   }, []);
 
@@ -86,7 +86,9 @@ const NewHomePage = () => {
       } else if (filters.selectedFinalidade === "lancamento") {
         return { path: "/lancamentos", texto: "lançamentos" };
       }
-    } 
+    } else {
+      return null;
+    }
   };
 
   // Agrupar por região (tipagem mais segura)
@@ -191,24 +193,24 @@ const NewHomePage = () => {
 
           {/* Barra de Busca */}
           <PropertyFilters
-          selectedFinalidade={filters.selectedFinalidade}
-          selectedTipo={filters.selectedTipo}
-          selectedBairro={filters.selectedBairro}
-          selectedQuartos={filters.selectedQuartos}
-          selectedMetragem={filters.selectedMetragem}
-          selectedValor={filters.selectedValor}
-          onFinalidadeChange={setters.setSelectedFinalidade}
-          onTipoChange={setters.setSelectedTipo}
-          onBairroChange={setters.setSelectedBairro}
-          onQuartosChange={setters.setSelectedQuartos}
-          onMetragemChange={setters.setSelectedMetragem}
-          onValorChange={setters.setSelectedValor}
-          availableRegions={availableRegions}
-          availableTipologias={availableTipologias} // Passando as tipologias
-          availableFinalidades={availableFinalidades} // Passando as finalidades
-          showSearchButton={false}
-          showFinalidadeBox={true}
-        />
+            selectedFinalidade={filters.selectedFinalidade}
+            selectedTipo={filters.selectedTipo}
+            selectedBairro={filters.selectedBairro}
+            selectedQuartos={filters.selectedQuartos}
+            selectedMetragem={filters.selectedMetragem}
+            selectedValor={filters.selectedValor}
+            onFinalidadeChange={setters.setSelectedFinalidade}
+            onTipoChange={setters.setSelectedTipo}
+            onBairroChange={setters.setSelectedBairro}
+            onQuartosChange={setters.setSelectedQuartos}
+            onMetragemChange={setters.setSelectedMetragem}
+            onValorChange={setters.setSelectedValor}
+            availableRegions={availableRegions}
+            availableTipologias={availableTipologias} // Passando as tipologias
+            availableFinalidades={availableFinalidades} // Passando as finalidades
+            showSearchButton={false}
+            showFinalidadeBox={true}
+          />
           {/* </div> */}
         </div>
       </section>
@@ -541,10 +543,14 @@ const NewHomePage = () => {
                     variant="outline"
                     className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
                   >
-                    <Link to={obterValorFiltroFinalidade().path}>
-                      {/* <Link to="/prontos"> */}
-                      Ver Todos os {obterValorFiltroFinalidade().texto}
-                    </Link>
+                    {obterValorFiltroFinalidade() ? (
+                      <Link to={obterValorFiltroFinalidade().path}>
+                        {/* <Link to="/prontos"> */}
+                        Ver Todos os {obterValorFiltroFinalidade().texto}
+                      </Link>
+                    ) : (
+                      <></>
+                    )}
                   </Button>
                 </div>
               </div>
@@ -570,14 +576,14 @@ const NewHomePage = () => {
                 className="border-white text-blue-600 hover:bg-white hover:text-blue-600"
                 asChild
               >
-                <Link to="/contato">Entre em Contato</Link>
+                <a href="/contato">Entre em Contato</a>
               </Button>
               <Button
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-gray-100"
                 asChild
               >
-                <Link to="/anuncie">Anuncie seu Imóvel</Link>
+                <a href="/anuncie">Anuncie seu Imóvel</a>
               </Button>
             </div>
           </div>

@@ -5,7 +5,7 @@ import {
   regiaoApi,
   tipologiaApi,
   finalidadeApi,
-  imagemApi
+  imagemApi,
 } from "@/utils/apiConfig";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -66,6 +66,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Imovel } from "@/cards/imoveis";
 import { updateLancamentosFromAPI } from "@/cards/lancamentos/lancamentos";
+import { resolveImageUrl } from "@/utils/imageConfig";
 
 interface Lancamento {
   id: string;
@@ -120,8 +121,11 @@ interface Finalidade {
 
 export default function LancamentosAdminPage() {
   // Adicionar estado para armazenar ID da finalidade "Lançamento"
-  const [lancamentoFinalidadeId, setLancamentoFinalidadeId] = useState<string>("");
-  const [backgroundImageFile, setBackgroundImageFile] = useState<File | null>(null);
+  const [lancamentoFinalidadeId, setLancamentoFinalidadeId] =
+    useState<string>("");
+  const [backgroundImageFile, setBackgroundImageFile] = useState<File | null>(
+    null
+  );
   const [cardImageFile, setCardImageFile] = useState<File | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -129,15 +133,50 @@ export default function LancamentosAdminPage() {
   const [regioes, setRegioes] = useState<Regiao[]>([]);
   const [tipologias, setTipologias] = useState<Tipologia[]>([]);
   const [finalidades, setFinalidades] = useState<Finalidade[]>([]);
-  const [selectedLancamento, setSelectedLancamento] = useState<Lancamento | null>(null);
+  const [selectedLancamento, setSelectedLancamento] =
+    useState<Lancamento | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  
+
+  const [removedBackgroundImage, setRemovedBackgroundImage] = useState(false);
+  const [removedCardImage, setRemovedCardImage] = useState(false);
+  const [removedGalleryImages, setRemovedGalleryImages] = useState<string[]>(
+    []
+  );
+
+  // Função para remover imagem de fundo
+  const handleRemoveBackgroundImage = () => {
+    if (!formData.urlFotoBackGround) return;
+
+    setRemovedBackgroundImage(true);
+    setFormData({ ...formData, urlFotoBackGround: "" });
+  };
+
+  // Função para remover imagem do card (apenas marca para remoção)
+  const handleRemoveCardImage = () => {
+    if (!formData.urlImagemCard) return;
+
+    setRemovedCardImage(true);
+    setFormData({ ...formData, urlImagemCard: "" });
+  };
+
+  // Função para remover imagem da galeria (apenas marca para remoção)
+  const handleRemoveGalleryImage = (url: string) => {
+    // Atualizar estado
+    const newUrls = formData.urlsFotos
+      .split(",")
+      .filter((u) => u.trim() !== url.trim())
+      .join(",");
+
+    setRemovedGalleryImages([...removedGalleryImages, url]);
+    setFormData({ ...formData, urlsFotos: newUrls });
+  };
+
   // Estado para o modal de edição
   const [editModal, setEditModal] = useState({
     isOpen: false,
     lancamento: null as Lancamento | null,
   });
-  
+
   const [formData, setFormData] = useState({
     nomeLancamento: "",
     urlFotoBackGround: "",
@@ -193,7 +232,8 @@ export default function LancamentosAdminPage() {
       } else {
         toast({
           title: "Atenção",
-          description: "Finalidade 'Lançamento' não encontrada. Por favor, crie uma finalidade com esse nome.",
+          description:
+            "Finalidade 'Lançamento' não encontrada. Por favor, crie uma finalidade com esse nome.",
           variant: "destructive",
         });
       }
@@ -462,35 +502,43 @@ export default function LancamentosAdminPage() {
   );
 
   // Função para abrir o modal de edição
-  const openEditModal = useCallback((lancamento: Lancamento) => {
-    setEditModal({
-      isOpen: true,
-      lancamento,
-    });
-    
-    // Preencher o formulário com os dados do lançamento
-    setFormData({
-      nomeLancamento: lancamento.nomeLancamento,
-      urlFotoBackGround: lancamento.urlFotoBackGround || "",
-      urlsFotos: lancamento.urlsFotos?.join(", ") || "",
-      slogan: lancamento.slogan || "",
-      regiaoId: lancamento.regiaoId || "",
-      endereco: lancamento.endereco || "",
-      sobreLancamentoTitulo: lancamento.sobreLancamento?.titulo || "",
-      sobreLancamentoTexto: lancamento.sobreLancamento?.texto || "",
-      diferenciaisLancamento: lancamento.diferenciaisLancamento?.join(", ") || "",
-      proximidadesDaLocalizacao: lancamento.proximidadesDaLocalizacao?.join(", ") || "",
-      localizacaoMapsSource: lancamento.localizacaoMapsSource || "",
-      valor: lancamento.cardLancamentoInfo?.valor || "",
-      quartosDisponiveis: lancamento.cardLancamentoInfo?.quartosDisponiveis?.join(", ") || "",
-      isCardDestaque: lancamento.cardLancamentoInfo?.isCardDestaque || false,
-      areasDisponiveis: lancamento.cardLancamentoInfo?.areasDisponiveis?.join(", ") || "",
-      finalidadeId: lancamento.cardLancamentoInfo?.finalidadeId || lancamentoFinalidadeId,
-      tipologiaId: lancamento.cardLancamentoInfo?.tipologiaId || [],
-      urlImagemCard: lancamento.cardLancamentoInfo?.urlImagemCard || "",
-      statusObra: "Lançamento",
-    });
-  }, [lancamentoFinalidadeId]);
+  const openEditModal = useCallback(
+    (lancamento: Lancamento) => {
+      setEditModal({
+        isOpen: true,
+        lancamento,
+      });
+
+      // Preencher o formulário com os dados do lançamento
+      setFormData({
+        nomeLancamento: lancamento.nomeLancamento,
+        urlFotoBackGround: lancamento.urlFotoBackGround || "",
+        urlsFotos: lancamento.urlsFotos?.join(", ") || "",
+        slogan: lancamento.slogan || "",
+        regiaoId: lancamento.regiaoId || "",
+        endereco: lancamento.endereco || "",
+        sobreLancamentoTitulo: lancamento.sobreLancamento?.titulo || "",
+        sobreLancamentoTexto: lancamento.sobreLancamento?.texto || "",
+        diferenciaisLancamento:
+          lancamento.diferenciaisLancamento?.join(", ") || "",
+        proximidadesDaLocalizacao:
+          lancamento.proximidadesDaLocalizacao?.join(", ") || "",
+        localizacaoMapsSource: lancamento.localizacaoMapsSource || "",
+        valor: lancamento.cardLancamentoInfo?.valor || "",
+        quartosDisponiveis:
+          lancamento.cardLancamentoInfo?.quartosDisponiveis?.join(", ") || "",
+        isCardDestaque: lancamento.cardLancamentoInfo?.isCardDestaque || false,
+        areasDisponiveis:
+          lancamento.cardLancamentoInfo?.areasDisponiveis?.join(", ") || "",
+        finalidadeId:
+          lancamento.cardLancamentoInfo?.finalidadeId || lancamentoFinalidadeId,
+        tipologiaId: lancamento.cardLancamentoInfo?.tipologiaId || [],
+        urlImagemCard: lancamento.cardLancamentoInfo?.urlImagemCard || "",
+        statusObra: "Lançamento",
+      });
+    },
+    [lancamentoFinalidadeId]
+  );
 
   // Função para fechar o modal de edição
   const closeEditModal = useCallback(() => {
@@ -500,98 +548,177 @@ export default function LancamentosAdminPage() {
 
   // Função para atualizar um lançamento
   const handleUpdate = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!editModal.lancamento) return;
+  async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editModal.lancamento) return;
 
-      setUploading(true);
+    setUploading(true);
 
-      try {
-        const [backgroundUrl, cardUrl, galleryUrlsResult] = await Promise.all([
-          backgroundImageFile
-            ? uploadImage(backgroundImageFile)
-            : Promise.resolve(formData.urlFotoBackGround),
-          cardImageFile
-            ? uploadImage(cardImageFile)
-            : Promise.resolve(formData.urlImagemCard),
-          galleryFiles.length > 0
-            ? uploadMultipleImages(galleryFiles)
-            : Promise.resolve(
-                formData.urlsFotos.split(",").filter((url) => url.trim())
-              ),
-        ]);
+    try {
+      // 1. Processar remoções de imagens
+      const deletePromises: Promise<any>[] = [];
 
-        // Preparar dados para envio
-        const dataToSend = {
-          nomeLancamento: formData.nomeLancamento,
-          urlFotoBackGround: backgroundUrl || formData.urlFotoBackGround || "",
-          urlsFotos: Array.isArray(galleryUrlsResult)
-            ? galleryUrlsResult
-            : galleryUrlsResult,
-          slogan: formData.slogan,
-          regiaoId: formData.regiaoId,
-          endereco: formData.endereco,
-          sobreLancamento: {
-            titulo: formData.sobreLancamentoTitulo,
-            texto: formData.sobreLancamentoTexto,
-            cardsSobreLancamento: [],
-          },
-          diferenciaisLancamento: formData.diferenciaisLancamento
-            ? formData.diferenciaisLancamento.split(",").map((d) => d.trim())
-            : [],
-          proximidadesDaLocalizacao: formData.proximidadesDaLocalizacao
-            ? formData.proximidadesDaLocalizacao.split(",").map((p) => p.trim())
-            : [],
-          localizacaoMapsSource: formData.localizacaoMapsSource,
-          cardLancamentoInfo: {
-            valor: formData.valor,
-            quartosDisponiveis: formData.quartosDisponiveis
-              ? formData.quartosDisponiveis.split(",").map((q) => q.trim())
-              : [],
-            isCardDestaque: formData.isCardDestaque,
-            areasDisponiveis: formData.areasDisponiveis
-              ? formData.areasDisponiveis.split(",").map((a) => a.trim())
-              : [],
-            finalidadeId: formData.finalidadeId,
-            tipologiaId: formData.tipologiaId,
-            urlImagemCard: cardUrl || "",
-            statusObra: formData.statusObra,
-          },
+      // Remover imagem de fundo se marcada
+      if (
+        removedBackgroundImage &&
+        editModal.lancamento.urlFotoBackGround
+      ) {
+        const urlImageDTO = {
+          urlImagem: editModal.lancamento.urlFotoBackGround,
+          itemId: editModal.lancamento.id,
+          isLancamento: true,
         };
-
-        await updateLancamento(() => 
-          lancamentoApi.update(editModal.lancamento!.id, dataToSend)
-        );
-        closeEditModal();
-        loadLancamentos();
-      } catch (error) {
-        console.error("Erro ao atualizar lançamento:", error);
-        toast({
-          title: "Erro",
-          description: "Falha ao atualizar lançamento",
-          variant: "destructive",
-        });
-      } finally {
-        setUploading(false);
-        setBackgroundImageFile(null);
-        setCardImageFile(null);
-        setGalleryFiles([]);
+        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
       }
-    },
-    [
-      editModal.lancamento,
-      backgroundImageFile,
-      cardImageFile,
-      galleryFiles,
-      formData,
-      uploadImage,
-      uploadMultipleImages,
-      updateLancamento,
-      loadLancamentos,
-      toast,
-      closeEditModal
-    ]
-  );
+
+      // Remover imagem do card se marcada
+      if (
+        removedCardImage &&
+        editModal.lancamento.cardLancamentoInfo?.urlImagemCard
+      ) {
+        const urlImageDTO = {
+          urlImagem: editModal.lancamento.cardLancamentoInfo.urlImagemCard,
+          itemId: editModal.lancamento.id,
+          isLancamento: true,
+        };
+        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
+      }
+
+      // Remover imagens da galeria marcadas
+      removedGalleryImages.forEach((url) => {
+        const urlImageDTO = {
+          urlImagem: url,
+          itemId: editModal.lancamento!.id,
+          isLancamento: true,
+        };
+        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
+      });
+
+      // Executar todas as remoções
+      await Promise.all(deletePromises);
+      
+      // 2. Fazer uploads das novas imagens
+      let backgroundUrl = formData.urlFotoBackGround;
+      let cardUrl = formData.urlImagemCard;
+      let newGalleryUrls: string[] = []; // Armazenar URLs das novas imagens
+      
+      // Uploads em paralelo
+      const uploadPromises: Promise<any>[] = [];
+      
+      // Upload da imagem de fundo
+      if (backgroundImageFile) {
+        uploadPromises.push(
+          uploadImage(backgroundImageFile).then(url => {
+            if (url) backgroundUrl = url;
+          })
+        );
+      }
+
+      if (cardImageFile) {
+        uploadPromises.push(
+          uploadImage(cardImageFile).then(url => {
+            if (url) cardUrl = url;
+          })
+        );
+      }
+
+      if (galleryFiles.length > 0) {
+        uploadPromises.push(
+          uploadMultipleImages(galleryFiles).then(urls => {
+            newGalleryUrls = urls; // Armazenar URLs das novas imagens
+          })
+        );
+      }
+
+      await Promise.all(uploadPromises);
+
+      // 3. Construir a lista final de URLs da galeria
+      // URLs existentes que não foram removidas
+      const existingUrls = editModal.lancamento.urlsFotos || [];
+      const keptUrls = existingUrls.filter(
+        url => !removedGalleryImages.includes(url)
+      );
+      
+      // Juntar com as novas URLs do upload
+      const finalGalleryUrls = [...keptUrls, ...newGalleryUrls];
+
+      // 4. Preparar dados para envio
+      const dataToSend = {
+        nomeLancamento: formData.nomeLancamento,
+        urlFotoBackGround: backgroundUrl || "",
+        urlsFotos: finalGalleryUrls,
+        slogan: formData.slogan,
+        regiaoId: formData.regiaoId,
+        endereco: formData.endereco,
+        sobreLancamento: {
+          titulo: formData.sobreLancamentoTitulo,
+          texto: formData.sobreLancamentoTexto,
+          cardsSobreLancamento: [],
+        },
+        diferenciaisLancamento: formData.diferenciaisLancamento
+          ? formData.diferenciaisLancamento.split(",").map((d) => d.trim())
+          : [],
+        proximidadesDaLocalizacao: formData.proximidadesDaLocalizacao
+          ? formData.proximidadesDaLocalizacao.split(",").map((p) => p.trim())
+          : [],
+        localizacaoMapsSource: formData.localizacaoMapsSource,
+        cardLancamentoInfo: {
+          valor: formData.valor,
+          quartosDisponiveis: formData.quartosDisponiveis
+            ? formData.quartosDisponiveis.split(",").map((q) => q.trim())
+            : [],
+          isCardDestaque: formData.isCardDestaque,
+          areasDisponiveis: formData.areasDisponiveis
+            ? formData.areasDisponiveis.split(",").map((a) => a.trim())
+            : [],
+          finalidadeId: formData.finalidadeId,
+          tipologiaId: formData.tipologiaId,
+          urlImagemCard: cardUrl || "",
+          statusObra: formData.statusObra,
+        },
+      };
+
+      await updateLancamento(() =>
+        lancamentoApi.update(editModal.lancamento!.id, dataToSend)
+      );
+      closeEditModal();
+      loadLancamentos();
+
+      // Resetar estados de remoção
+      setRemovedBackgroundImage(false);
+      setRemovedCardImage(false);
+      setRemovedGalleryImages([]);
+    } catch (error) {
+      console.error("Erro ao atualizar lançamento:", error);
+      toast({
+        title: "Erro",
+        description: "Falha ao atualizar lançamento",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+      setBackgroundImageFile(null);
+      setCardImageFile(null);
+      setGalleryFiles([]);
+    }
+  },
+  [
+    editModal.lancamento,
+    removedBackgroundImage,
+    removedCardImage,
+    removedGalleryImages,
+    backgroundImageFile,
+    cardImageFile,
+    galleryFiles,
+    formData,
+    uploadImage,
+    uploadMultipleImages,
+    updateLancamento,
+    loadLancamentos,
+    toast,
+    closeEditModal,
+  ]
+);
 
   // Otimização: Paginação para galeria de fotos
   const GALLERY_PAGE_SIZE = 6;
@@ -662,7 +789,20 @@ export default function LancamentosAdminPage() {
               <RefreshCw className="w-4 h-4 mr-2" />
               Sincronizar
             </Button>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+
+            <Dialog
+              open={isDialogOpen}
+              onOpenChange={(open) => {
+                setIsDialogOpen(open);
+                if (!open) {
+                  resetForm();
+                  setBackgroundImageFile(null);
+                  setCardImageFile(null);
+                  setGalleryFiles([]);
+                  setCurrentGalleryPage(1);
+                }
+              }}
+            >
               <DialogTrigger asChild>
                 <Button onClick={resetForm}>
                   <Plus className="w-4 h-4 mr-2" />
@@ -746,117 +886,129 @@ export default function LancamentosAdminPage() {
                     />
 
                     <div className="mt-2">
+                      {/* Seção para fotos existentes */}
+                      {formData.urlsFotos &&
+                        formData.urlsFotos
+                          .split(",")
+                          .some((url) => url.trim()) && (
+                          <div className="mt-4">
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Fotos existentes:
+                            </p>
+                            <div className="grid grid-cols-3 gap-2">
+                              {formData.urlsFotos
+                                .split(",")
+                                .map(
+                                  (url, index) =>
+                                    url.trim() && (
+                                      <img
+                                        key={index}
+                                        src={url.trim()}
+                                        alt={`Foto existente ${index}`}
+                                        className="w-full h-24 object-cover rounded"
+                                      />
+                                    )
+                                )}
+                            </div>
+                          </div>
+                        )}
+
+                      {/* Seção para novas fotos */}
                       {galleryFiles.length > 0 && (
-                        <div className="flex justify-between items-center mb-2">
-                          <p className="text-sm text-muted-foreground">
-                            {galleryFiles.length} foto(s) selecionada(s)
-                          </p>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => setGalleryFiles([])}
-                            disabled={uploading}
-                          >
-                            Limpar Todas
-                          </Button>
-                        </div>
-                      )}
-
-                      <div className="grid grid-cols-3 gap-2">
-                        {paginatedGalleryFiles.map((file, index) => {
-                          const globalIndex =
-                            (currentGalleryPage - 1) * GALLERY_PAGE_SIZE +
-                            index;
-                          return (
-                            <div key={globalIndex} className="relative">
-                              <ImagePreview
-                                file={file}
-                                className="w-full h-24 object-cover rounded"
-                              />
+                        <>
+                          <div className="flex justify-between items-center mt-4 mb-2">
+                            <p className="text-sm text-muted-foreground">
+                              {galleryFiles.length} nova(s) foto(s)
+                              selecionada(s)
+                            </p>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setGalleryFiles([]);
+                              }}
+                              disabled={uploading}
+                            >
+                              Limpar Todas
+                            </Button>
+                          </div>
+                          <div className="grid grid-cols-3 gap-2">
+                            {paginatedGalleryFiles.map((file, index) => {
+                              const globalIndex =
+                                (currentGalleryPage - 1) * GALLERY_PAGE_SIZE +
+                                index;
+                              return (
+                                <div key={globalIndex} className="relative">
+                                  <ImagePreview
+                                    file={file}
+                                    className="w-full h-24 object-cover rounded"
+                                  />
+                                  <Button
+                                    size="icon"
+                                    variant="destructive"
+                                    className="absolute top-1 right-1 w-6 h-6"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      const newFiles = [...galleryFiles];
+                                      newFiles.splice(globalIndex, 1);
+                                      setGalleryFiles(newFiles);
+                                      if (
+                                        newFiles.length <=
+                                        (currentGalleryPage - 1) *
+                                          GALLERY_PAGE_SIZE
+                                      ) {
+                                        setCurrentGalleryPage(
+                                          Math.max(1, currentGalleryPage - 1)
+                                        );
+                                      }
+                                    }}
+                                    disabled={uploading}
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {totalGalleryPages > 1 && (
+                            <div className="flex justify-center mt-4 space-x-2">
                               <Button
-                                size="icon"
-                                variant="destructive"
-                                className="absolute top-1 right-1 w-6 h-6"
-                                onClick={() => {
-                                  const newFiles = [...galleryFiles];
-                                  newFiles.splice(globalIndex, 1);
-                                  setGalleryFiles(newFiles);
-
-                                  // Ajustar a página se necessário
-                                  if (
-                                    newFiles.length <=
-                                    (currentGalleryPage - 1) * GALLERY_PAGE_SIZE
-                                  ) {
-                                    setCurrentGalleryPage(
-                                      Math.max(1, currentGalleryPage - 1)
-                                    );
-                                  }
-                                }}
-                                disabled={uploading}
+                                variant="outline"
+                                size="sm"
+                                disabled={currentGalleryPage === 1 || uploading}
+                                onClick={() =>
+                                  setCurrentGalleryPage((prev) =>
+                                    Math.max(1, prev - 1)
+                                  )
+                                }
                               >
-                                <Trash2 className="w-3 h-3" />
+                                Anterior
+                              </Button>
+                              <span className="flex items-center px-3">
+                                Página {currentGalleryPage} de{" "}
+                                {totalGalleryPages}
+                              </span>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={
+                                  currentGalleryPage === totalGalleryPages ||
+                                  uploading
+                                }
+                                onClick={() =>
+                                  setCurrentGalleryPage((prev) =>
+                                    Math.min(totalGalleryPages, prev + 1)
+                                  )
+                                }
+                              >
+                                Próxima
                               </Button>
                             </div>
-                          );
-                        })}
-                      </div>
-
-                      {totalGalleryPages > 1 && (
-                        <div className="flex justify-center mt-4 space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={currentGalleryPage === 1 || uploading}
-                            onClick={() =>
-                              setCurrentGalleryPage((prev) =>
-                                Math.max(1, prev - 1)
-                              )
-                            }
-                          >
-                            Anterior
-                          </Button>
-                          <span className="flex items-center px-3">
-                            Página {currentGalleryPage} de {totalGalleryPages}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={
-                              currentGalleryPage === totalGalleryPages ||
-                              uploading
-                            }
-                            onClick={() =>
-                              setCurrentGalleryPage((prev) =>
-                                Math.min(totalGalleryPages, prev + 1)
-                              )
-                            }
-                          >
-                            Próxima
-                          </Button>
-                        </div>
-                      )}
-
-                      {formData.urlsFotos && galleryFiles.length === 0 && (
-                        <div className="mt-2">
-                          <p className="text-sm text-muted-foreground">
-                            Fotos atuais:
-                          </p>
-                          <div className="grid grid-cols-3 gap-2">
-                            {formData.urlsFotos
-                              .split(",")
-                              .map(
-                                (url, index) =>
-                                  url.trim() && (
-                                    <img
-                                      key={index}
-                                      src={url.trim()}
-                                      alt={`Foto ${index}`}
-                                      className="w-full h-24 object-cover rounded"
-                                    />
-                                  )
-                              )}
-                          </div>
-                        </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -1043,7 +1195,7 @@ export default function LancamentosAdminPage() {
                           </SelectContent>
                         </Select>
                       </div>
-                      
+
                       {/* Campo de Finalidade (fixo) */}
                       <div className="space-y-2">
                         <Label>Finalidade</Label>
@@ -1060,24 +1212,32 @@ export default function LancamentosAdminPage() {
                           Finalidade fixa para lançamentos
                         </p>
                       </div>
-                      
+
                       {/* Campo de Tipologias (múltiplas) */}
                       <div className="space-y-2">
                         <Label>Tipologias *</Label>
                         <div className="grid grid-cols-2 gap-2">
                           {tipologias.map((tipologia) => (
-                            <div key={tipologia.id} className="flex items-center space-x-2">
+                            <div
+                              key={tipologia.id}
+                              className="flex items-center space-x-2"
+                            >
                               <input
                                 type="checkbox"
                                 id={`tipologia-${tipologia.id}`}
-                                checked={formData.tipologiaId.includes(tipologia.id)}
+                                checked={formData.tipologiaId.includes(
+                                  tipologia.id
+                                )}
                                 onChange={(e) => {
                                   const checked = e.target.checked;
                                   setFormData((prev) => {
                                     if (checked) {
                                       return {
                                         ...prev,
-                                        tipologiaId: [...prev.tipologiaId, tipologia.id],
+                                        tipologiaId: [
+                                          ...prev.tipologiaId,
+                                          tipologia.id,
+                                        ],
                                       };
                                     } else {
                                       return {
@@ -1091,7 +1251,10 @@ export default function LancamentosAdminPage() {
                                 }}
                                 className="rounded"
                               />
-                              <Label htmlFor={`tipologia-${tipologia.id}`} className="text-sm">
+                              <Label
+                                htmlFor={`tipologia-${tipologia.id}`}
+                                className="text-sm"
+                              >
                                 {tipologia.nome}
                               </Label>
                             </div>
@@ -1236,8 +1399,8 @@ export default function LancamentosAdminPage() {
                                 <ExternalLink className="w-4 h-4" />
                               </a>
                             </Button>
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               size="sm"
                               onClick={() => openEditModal(lancamento)}
                             >
@@ -1286,7 +1449,21 @@ export default function LancamentosAdminPage() {
       </div>
 
       {/* Modal de Edição */}
-      <Dialog open={editModal.isOpen} onOpenChange={closeEditModal}>
+      <Dialog
+        open={editModal.isOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            closeEditModal();
+          }
+          setBackgroundImageFile(null);
+          setCardImageFile(null);
+          setGalleryFiles([]);
+          setRemovedBackgroundImage(false);
+          setRemovedCardImage(false);
+          setRemovedGalleryImages([]);
+          setCurrentGalleryPage(1);
+        }}
+      >
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
           <DialogHeader>
             <DialogTitle>
@@ -1338,18 +1515,33 @@ export default function LancamentosAdminPage() {
               {backgroundImageFile && (
                 <ImagePreview file={backgroundImageFile} />
               )}
-              {formData.urlFotoBackGround && !backgroundImageFile && (
-                <div className="mt-2">
-                  <p className="text-sm text-muted-foreground">
-                    Imagem atual:
-                  </p>
-                  <img
-                    src={formData.urlFotoBackGround}
-                    alt="Background atual"
-                    className="w-full h-32 object-contain rounded border"
-                  />
-                </div>
-              )}
+              {formData.urlFotoBackGround &&
+                !backgroundImageFile &&
+                !removedBackgroundImage && (
+                  <div className="mt-2 relative">
+                    <p className="text-sm text-muted-foreground">
+                      Imagem atual:
+                    </p>
+                    <img
+                      src={resolveImageUrl(formData.urlFotoBackGround)}
+                      alt="Background atual"
+                      className="w-full h-32 object-contain rounded border"
+                    />
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-6 right-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleRemoveBackgroundImage();
+                      }}
+                      disabled={uploading}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" /> Remover
+                    </Button>
+                  </div>
+                )}
             </div>
 
             <div className="space-y-2">
@@ -1366,117 +1558,135 @@ export default function LancamentosAdminPage() {
               />
 
               <div className="mt-2">
+                {/* Seção para fotos existentes */}
+                {editModal.lancamento?.urlsFotos &&
+  editModal.lancamento.urlsFotos.length > 0 && (
+    <div className="mt-4">
+      <p className="text-sm text-muted-foreground mb-2">
+        Fotos existentes:
+      </p>
+      <div className="grid grid-cols-3 gap-2">
+        {editModal.lancamento.urlsFotos.map(
+          (url, index) =>
+            !removedGalleryImages.includes(url) && (
+              <div key={index} className="relative">
+                <img
+                  src={resolveImageUrl(url)}
+                  alt={`Foto existente ${index}`}
+                  className="w-full h-24 object-cover rounded"
+                />
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  className="absolute top-1 right-1 w-6 h-6"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleRemoveGalleryImage(url);
+                  }}
+                  disabled={uploading}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+            )
+        )}
+      </div>
+    </div>
+  )}
+
+                {/* Seção para novas fotos */}
                 {galleryFiles.length > 0 && (
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="text-sm text-muted-foreground">
-                      {galleryFiles.length} foto(s) selecionada(s)
-                    </p>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => setGalleryFiles([])}
-                      disabled={uploading}
-                    >
-                      Limpar Todas
-                    </Button>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-3 gap-2">
-                  {paginatedGalleryFiles.map((file, index) => {
-                    const globalIndex =
-                      (currentGalleryPage - 1) * GALLERY_PAGE_SIZE +
-                      index;
-                    return (
-                      <div key={globalIndex} className="relative">
-                        <ImagePreview
-                          file={file}
-                          className="w-full h-24 object-cover rounded"
-                        />
+                  <>
+                    <div className="flex justify-between items-center mt-4 mb-2">
+                      <p className="text-sm text-muted-foreground">
+                        {galleryFiles.length} nova(s) foto(s) selecionada(s)
+                      </p>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setGalleryFiles([]);
+                        }}
+                        disabled={uploading}
+                      >
+                        Limpar Todas
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {paginatedGalleryFiles.map((file, index) => {
+                        const globalIndex =
+                          (currentGalleryPage - 1) * GALLERY_PAGE_SIZE + index;
+                        return (
+                          <div key={globalIndex} className="relative">
+                            <ImagePreview
+                              file={file}
+                              className="w-full h-24 object-cover rounded"
+                            />
+                            <Button
+                              size="icon"
+                              variant="destructive"
+                              className="absolute top-1 right-1 w-6 h-6"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const newFiles = [...galleryFiles];
+                                newFiles.splice(globalIndex, 1);
+                                setGalleryFiles(newFiles);
+                                if (
+                                  newFiles.length <=
+                                  (currentGalleryPage - 1) * GALLERY_PAGE_SIZE
+                                ) {
+                                  setCurrentGalleryPage(
+                                    Math.max(1, currentGalleryPage - 1)
+                                  );
+                                }
+                              }}
+                              disabled={uploading}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {totalGalleryPages > 1 && (
+                      <div className="flex justify-center mt-4 space-x-2">
                         <Button
-                          size="icon"
-                          variant="destructive"
-                          className="absolute top-1 right-1 w-6 h-6"
-                          onClick={() => {
-                            const newFiles = [...galleryFiles];
-                            newFiles.splice(globalIndex, 1);
-                            setGalleryFiles(newFiles);
-
-                            // Ajustar a página se necessário
-                            if (
-                              newFiles.length <=
-                              (currentGalleryPage - 1) * GALLERY_PAGE_SIZE
-                            ) {
-                              setCurrentGalleryPage(
-                                Math.max(1, currentGalleryPage - 1)
-                              );
-                            }
-                          }}
-                          disabled={uploading}
+                          variant="outline"
+                          size="sm"
+                          disabled={currentGalleryPage === 1 || uploading}
+                          onClick={() =>
+                            setCurrentGalleryPage((prev) =>
+                              Math.max(1, prev - 1)
+                            )
+                          }
                         >
-                          <Trash2 className="w-3 h-3" />
+                          Anterior
+                        </Button>
+                        <span className="flex items-center px-3">
+                          Página {currentGalleryPage} de {totalGalleryPages}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={
+                            currentGalleryPage === totalGalleryPages ||
+                            uploading
+                          }
+                          onClick={() =>
+                            setCurrentGalleryPage((prev) =>
+                              Math.min(totalGalleryPages, prev + 1)
+                            )
+                          }
+                        >
+                          Próxima
                         </Button>
                       </div>
-                    );
-                  })}
-                </div>
-
-                {totalGalleryPages > 1 && (
-                  <div className="flex justify-center mt-4 space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={currentGalleryPage === 1 || uploading}
-                      onClick={() =>
-                        setCurrentGalleryPage((prev) =>
-                          Math.max(1, prev - 1)
-                        )
-                      }
-                    >
-                      Anterior
-                    </Button>
-                    <span className="flex items-center px-3">
-                      Página {currentGalleryPage} de {totalGalleryPages}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={
-                        currentGalleryPage === totalGalleryPages ||
-                        uploading
-                      }
-                      onClick={() =>
-                        setCurrentGalleryPage((prev) =>
-                          Math.min(totalGalleryPages, prev + 1)
-                        )
-                      }
-                    >
-                      Próxima
-                    </Button>
-                  </div>
-                )}
-
-                {formData.urlsFotos && galleryFiles.length === 0 && (
-                  <div className="mt-2">
-                    <p className="text-sm text-muted-foreground">
-                      Fotos atuais:
-                    </p>
-                    <div className="grid grid-cols-3 gap-2">
-                      {formData.urlsFotos
-                        .split(",")
-                        .map(
-                          (url, index) =>
-                            url.trim() && (
-                              <img
-                                key={index}
-                                src={url.trim()}
-                                alt={`Foto ${index}`}
-                                className="w-full h-24 object-cover rounded"
-                              />
-                            )
-                        )}
-                    </div>
-                  </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -1486,26 +1696,39 @@ export default function LancamentosAdminPage() {
               <Input
                 type="file"
                 accept="image/*"
-                onChange={(e) =>
-                  setCardImageFile(e.target.files?.[0] || null)
-                }
+                onChange={(e) => setCardImageFile(e.target.files?.[0] || null)}
                 disabled={uploading}
               />
               {cardImageFile && (
                 <ImagePreview file={cardImageFile} className="mt-2" />
               )}
-              {formData.urlImagemCard && !cardImageFile && (
-                <div className="mt-2">
-                  <p className="text-sm text-muted-foreground">
-                    Imagem atual do card:
-                  </p>
-                  <img
-                    src={formData.urlImagemCard}
-                    alt="Card atual"
-                    className="w-full h-32 object-contain rounded border"
-                  />
-                </div>
-              )}
+              {formData.urlImagemCard &&
+  !cardImageFile &&
+  !removedCardImage && (
+    <div className="mt-2 relative">
+      <p className="text-sm text-muted-foreground">
+        Imagem atual do card:
+      </p>
+      <img
+        src={resolveImageUrl(formData.urlImagemCard)}
+        alt="Card atual"
+        className="w-full h-32 object-contain rounded border"
+      />
+      <Button
+        variant="destructive"
+        size="sm"
+        className="absolute top-6 right-2"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleRemoveCardImage(); // CORREÇÃO AQUI
+        }}
+        disabled={uploading}
+      >
+        <Trash2 className="w-4 h-4 mr-1" /> Remover
+      </Button>
+    </div>
+)}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -1655,15 +1878,13 @@ export default function LancamentosAdminPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Lançamento">
-                        Lançamento
-                      </SelectItem>
+                      <SelectItem value="Lançamento">Lançamento</SelectItem>
                       <SelectItem value="Em obras">Em obras</SelectItem>
                       <SelectItem value="Pronto">Pronto</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 {/* Campo de Finalidade (fixo) */}
                 <div className="space-y-2">
                   <Label>Finalidade</Label>
@@ -1680,13 +1901,16 @@ export default function LancamentosAdminPage() {
                     Finalidade fixa para lançamentos
                   </p>
                 </div>
-                
+
                 {/* Campo de Tipologias (múltiplas) */}
                 <div className="space-y-2">
                   <Label>Tipologias *</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {tipologias.map((tipologia) => (
-                      <div key={tipologia.id} className="flex items-center space-x-2">
+                      <div
+                        key={tipologia.id}
+                        className="flex items-center space-x-2"
+                      >
                         <input
                           type="checkbox"
                           id={`edit-tipologia-${tipologia.id}`}
@@ -1697,7 +1921,10 @@ export default function LancamentosAdminPage() {
                               if (checked) {
                                 return {
                                   ...prev,
-                                  tipologiaId: [...prev.tipologiaId, tipologia.id],
+                                  tipologiaId: [
+                                    ...prev.tipologiaId,
+                                    tipologia.id,
+                                  ],
                                 };
                               } else {
                                 return {
@@ -1711,7 +1938,10 @@ export default function LancamentosAdminPage() {
                           }}
                           className="rounded"
                         />
-                        <Label htmlFor={`edit-tipologia-${tipologia.id}`} className="text-sm">
+                        <Label
+                          htmlFor={`edit-tipologia-${tipologia.id}`}
+                          className="text-sm"
+                        >
                           {tipologia.nome}
                         </Label>
                       </div>

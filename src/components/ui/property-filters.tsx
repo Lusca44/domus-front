@@ -156,7 +156,6 @@ export const PropertyFilters = ({
             </SelectTrigger>
             <SelectContent className="min-w-[200px]">
               <SelectItem value="null">Quartos</SelectItem>
-              <SelectItem value="0">Studio</SelectItem>
               <SelectItem value="1">1 Quarto</SelectItem>
               <SelectItem value="2">2 Quartos</SelectItem>
               <SelectItem value="3">3 Quartos</SelectItem>

@@ -58,31 +58,21 @@ export const usePropertyFilters = (allProperties: any[]) => {
 
   const matchesFilters = (imovel: any) => {
     if (selectedFinalidade !== "null") {
-      const finalidadeFiltro = selectedFinalidade.toLowerCase();
+    const finalidadeFiltro = selectedFinalidade.toLowerCase();
 
-      if (
-        finalidadeFiltro === "lancamento" &&
-        imovel.tipo !== "lancamento"
-      ) {
-        return false;
-      }
+    // Verifica se é um lançamento
+    const isLancamento = finalidadeFiltro === "lançamento" && 
+                         imovel.tipo === "lançamento";
 
-      if (
-        finalidadeFiltro !== "lancamento" &&
-        imovel.finalidade &&
-        imovel.finalidade.toLowerCase() !== finalidadeFiltro
-      ) {
-        return false;
-      }
+    // Verifica se a finalidade do imóvel corresponde ao filtro
+    const finalidadeMatches = imovel.finalidade && 
+                             imovel.finalidade.toLowerCase() === finalidadeFiltro;
 
-      if (finalidadeFiltro === "lancamento") {
-        if (imovel.tipo !== "lancamento") return false;
-      } else if (finalidadeFiltro === "aluguel") {
-        if (imovel.tipo !== "aluguel") return false;
-      } else if (finalidadeFiltro === "venda") {
-        if (imovel.tipo !== "imoveis-usados") return false;
-      }
+    // Se não for lançamento nem corresponder à finalidade, filtra
+    if (!isLancamento && !finalidadeMatches) {
+      return false;
     }
+  }
 
     if (selectedTipo !== "null") {
       const tipoNormalized = selectedTipo.toLowerCase();

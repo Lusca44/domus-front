@@ -146,6 +146,26 @@ export default function ImoveisAdminPage() {
     tipologiaId: [] as string[],
   });
 
+  const [removedCardImage, setRemovedCardImage] = useState(false);
+  const [removedGalleryImages, setRemovedGalleryImages] = useState<string[]>(
+    []
+  );
+
+  // Função para remover imagem do card
+  const handleRemoveCardImage = () => {
+    if (!formData.urlFotoCard) return;
+
+    setRemovedCardImage(true);
+    setFormData({ ...formData, urlFotoCard: "" });
+  };
+
+  // Função para remover imagem da galeria
+  const handleRemoveGalleryImage = (url: string) => {
+    const newUrls = formData.urlsFotos.filter((u) => u !== url);
+    setRemovedGalleryImages([...removedGalleryImages, url]);
+    setFormData({ ...formData, urlsFotos: newUrls });
+  };
+
   const { toast } = useToast();
   const { execute: fetchImoveis, loading: loadingImoveis } = useApi();
   const { execute: fetchRegioes } = useApi();
@@ -199,20 +219,20 @@ export default function ImoveisAdminPage() {
     );
   };
 
-const handleCheckboxChange = (
-  field: "finalidadeId" | "tipologiaId", // Especifica os campos válidos
-  value: string,
-  checked: boolean
-) => {
-  setFormData(prev => {
-    const currentValues = [...prev[field]];
-    if (checked) {
-      return { ...prev, [field]: [...currentValues, value] };
-    } else {
-      return { ...prev, [field]: currentValues.filter(v => v !== value) };
-    }
-  });
-};
+  const handleCheckboxChange = (
+    field: "finalidadeId" | "tipologiaId", // Especifica os campos válidos
+    value: string,
+    checked: boolean
+  ) => {
+    setFormData((prev) => {
+      const currentValues = [...prev[field]];
+      if (checked) {
+        return { ...prev, [field]: [...currentValues, value] };
+      } else {
+        return { ...prev, [field]: currentValues.filter((v) => v !== value) };
+      }
+    });
+  };
   // Upload de imagem
   const uploadImage = useCallback(
     async (file: File): Promise<string | null> => {
@@ -270,11 +290,10 @@ const handleCheckboxChange = (
    */
   const loadAuxiliaryData = useCallback(async () => {
     try {
-
       const finalidadesData = await finalidadeApi.obterTodasFinalidades();
       const regioesData = await regiaoApi.obterTodasRegioes();
       const tipologiasData = await tipologiaApi.obterTodasTipologias();
-      
+
       // const [regioesData, tipologiasData, finalidadesData] = await Promise.all([
       //   fetchTipologias(() => tipologiaApi.obterTodasTipologias()),
       //   fetchRegioes(() => regiaoApi.obterTodasRegioes()),
@@ -297,7 +316,7 @@ const handleCheckboxChange = (
     loadAuxiliaryData();
   }, [loadImoveis, loadAuxiliaryData]);
 
- const regiaoMap = useMemo(() => {
+  const regiaoMap = useMemo(() => {
     const map = new Map<string, string>();
     regioes.forEach((regiao) => map.set(regiao.id, regiao.nomeRegiao));
     return map;
@@ -305,7 +324,9 @@ const handleCheckboxChange = (
 
   const finalidadeMap = useMemo(() => {
     const mapFin = new Map<string, string>();
-    finalidades.forEach((finalidade) => mapFin.set(finalidade.id, finalidade.nome));
+    finalidades.forEach((finalidade) =>
+      mapFin.set(finalidade.id, finalidade.nome)
+    );
     return mapFin;
   }, [finalidades]);
 
@@ -313,24 +334,24 @@ const handleCheckboxChange = (
    * Filtra imóveis por finalidade
    */
   const filteredImoveis = useMemo(() => {
-  if (activeTab === "todos") return imoveis;
-  
-  return imoveis.filter((imovel) => {
-    if (!imovel.finalidadeId || imovel.finalidadeId.length === 0) return false;
-    
-    const finalidadesDoImovel = imovel.finalidadeId
-      .map(id => finalidadeMap.get(id)?.toLowerCase())
-      .filter(Boolean);
+    if (activeTab === "todos") return imoveis;
 
-    if (activeTab === "aluguel") 
-      return finalidadesDoImovel.includes("aluguel");
-    
-    if (activeTab === "venda")
-      return finalidadesDoImovel.includes("venda");
-    
-    return true;
-  });
-}, [imoveis, activeTab, finalidadeMap]);
+    return imoveis.filter((imovel) => {
+      if (!imovel.finalidadeId || imovel.finalidadeId.length === 0)
+        return false;
+
+      const finalidadesDoImovel = imovel.finalidadeId
+        .map((id) => finalidadeMap.get(id)?.toLowerCase())
+        .filter(Boolean);
+
+      if (activeTab === "aluguel")
+        return finalidadesDoImovel.includes("aluguel");
+
+      if (activeTab === "venda") return finalidadesDoImovel.includes("venda");
+
+      return true;
+    });
+  }, [imoveis, activeTab, finalidadeMap]);
 
   // Paginação para galeria de fotos
   const GALLERY_PAGE_SIZE = 6;
@@ -441,6 +462,31 @@ const handleCheckboxChange = (
     setUploading(true);
 
     try {
+      // Processar remoções de imagens antes dos uploads
+      const deletePromises: Promise<any>[] = [];
+
+      // Remover imagem do card se marcada
+      if (removedCardImage && selectedImovel.urlFotoCard) {
+        const urlImageDTO = {
+          urlImagem: selectedImovel.urlFotoCard,
+          itemId: selectedImovel.id,
+          isLancamento: false,
+        };
+        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
+      }
+
+      // Remover imagens da galeria marcadas
+      removedGalleryImages.forEach((url) => {
+        const urlImageDTO = {
+          urlImagem: url,
+          itemId: selectedImovel.id,
+          isLancamento: false,
+        };
+        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
+      });
+
+      // Executar todas as remoções
+      await Promise.all(deletePromises);
       // Upload das imagens
       const uploadPromises: Promise<any>[] = [];
       let cardUrl = formData.urlFotoCard;
@@ -468,31 +514,22 @@ const handleCheckboxChange = (
       // Preparar dados para envio
       const dataToSend = {
         titulo: formData.titulo,
-        descricaoImovel: formData.descricaoImovel,
-        endereco: formData.endereco,
-        valor: formData.valor ? parseFloat(formData.valor) : undefined,
-        areaQuadrada: formData.areaQuadrada,
-        quantidadeQuartos: formData.quantidadeQuartos,
-        quantidadeBanheiros: formData.quantidadeBanheiros,
-        quantidadeVagas: formData.quantidadeVagas,
-        valorCondominio: formData.valorCondominio
-          ? parseFloat(formData.valorCondominio)
-          : undefined,
-        valorIptu: formData.valorIptu
-          ? parseFloat(formData.valorIptu)
-          : undefined,
-        quantidadeSuites: formData.quantidadeSuites
-          ? parseInt(formData.quantidadeSuites)
-          : undefined,
         urlFotoCard: cardUrl || "",
-        urlsFotos: galleryUrls || [],
-        urlLocalizacaoMaps: formData.urlLocalizacaoMaps,
-        diferenciais: formData.diferenciais
-          ? formData.diferenciais.split(",").map((d) => d.trim())
-          : [],
-        finalidadeId: formData.finalidadeId ? [formData.finalidadeId] : [],
+        urlsFotos: galleryUrls,
+        finalidadeId: formData.finalidadeId,
+        tipologiaId: formData.tipologiaId,
         regiaoId: formData.regiaoId,
-        tipologiaId: formData.tipologiaId ? [formData.tipologiaId] : [],
+        endereco: formData.endereco,
+        quantidadeQuartos: formData.quantidadeQuartos || "",
+        quantidadeBanheiros: formData.quantidadeBanheiros || "",
+        quantidadeVagas: formData.quantidadeVagas || "",
+        quantidadeSuites: formData.quantidadeSuites || "",
+        areaQuadrada: formData.areaQuadrada || "",
+        descricaoImovel: formData.descricaoImovel,
+        valor: formData.valor || "",
+        valorCondominio: formData.valorCondominio || "",
+        valorIptu: formData.valorIptu || "",
+        urlLocalizacaoMaps: formData.urlLocalizacaoMaps || "",
       };
 
       await updateImovel(() => imovelApi.update(selectedImovel.id, dataToSend));
@@ -549,8 +586,12 @@ const handleCheckboxChange = (
       valorIptu: "",
       quantidadeSuites: "",
     });
-    setSelectedImovel(null);
-    setCurrentGalleryPage(1);
+    setCardImageFile(null);
+  setGalleryFiles([]);
+  setRemovedCardImage(false);
+  setRemovedGalleryImages([]);
+  setCurrentGalleryPage(1);
+  setSelectedImovel(null);
   };
 
   /**
@@ -578,6 +619,11 @@ const handleCheckboxChange = (
       valorIptu: imovel.valorIptu?.toString() || "",
       quantidadeSuites: imovel.quantidadeSuites?.toString() || "",
     });
+
+    setCardImageFile(null);
+    setGalleryFiles([]);
+    setRemovedCardImage(false);
+    setRemovedGalleryImages([]);
     setIsEditDialogOpen(true);
   };
 
@@ -619,79 +665,157 @@ const handleCheckboxChange = (
                 <DialogHeader>
                   <DialogTitle>Novo Imóvel</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleCreateSubmit} className="space-y-4">
-                  {/* <form onSubmit={handleSubmit} className="space-y-4"> */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="nome">Nome *</Label>
-                      <Input
-                        id="nome"
-                        value={formData.titulo}
-                        onChange={(e) =>
-                          setFormData({ ...formData, titulo: e.target.value })
-                        }
-                        placeholder="Nome do imóvel"
-                        required
-                      />
+                <form onSubmit={handleCreateSubmit} className="space-y-6">
+                  {/* Seção: Informações Básicas */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">
+                      Informações Básicas
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="nome">Nome *</Label>
+                        <Input
+                          id="nome"
+                          value={formData.titulo}
+                          onChange={(e) =>
+                            setFormData({ ...formData, titulo: e.target.value })
+                          }
+                          placeholder="Nome do imóvel"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="area">Área</Label>
+                        <Input
+                          id="area"
+                          value={formData.areaQuadrada}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              areaQuadrada: e.target.value,
+                            })
+                          }
+                          placeholder="Ex: 80m²"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="area">Área</Label>
-                      <Input
-                        id="area"
-                        value={formData.areaQuadrada}
+
+                    <div className="space-y-2 mt-4">
+                      <Label htmlFor="descricao">Descrição</Label>
+                      <Textarea
+                        id="descricao"
+                        value={formData.descricaoImovel}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            areaQuadrada: e.target.value,
+                            descricaoImovel: e.target.value,
                           })
                         }
-                        placeholder="Ex: 80m²"
+                        placeholder="Descrição detalhada do imóvel"
+                        rows={3}
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="descricao">Descrição</Label>
-                    <Textarea
-                      id="descricao"
-                      value={formData.descricaoImovel}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          descricaoImovel: e.target.value,
-                        })
-                      }
-                      placeholder="Descrição detalhada do imóvel"
-                      rows={3}
-                    />
-                  </div>
+                  {/* Seção: Detalhes do Imóvel */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">
+                      Detalhes do Imóvel
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="endereco">Endereço</Label>
+                        <Input
+                          id="endereco"
+                          value={formData.endereco}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              endereco: e.target.value,
+                            })
+                          }
+                          placeholder="Endereço completo"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="preco">Preço (R$)</Label>
+                        <Input
+                          id="preco"
+                          type="number"
+                          step="0.01"
+                          value={formData.valor}
+                          onChange={(e) =>
+                            setFormData({ ...formData, valor: e.target.value })
+                          }
+                          placeholder="0.00"
+                        />
+                      </div>
+                    </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="endereco">Endereço</Label>
-                      <Input
-                        id="endereco"
-                        value={formData.endereco}
-                        onChange={(e) =>
-                          setFormData({ ...formData, endereco: e.target.value })
-                        }
-                        placeholder="Endereço completo"
-                      />
+                    <div className="grid grid-cols-4 gap-4 mt-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="quartos">Quartos</Label>
+                        <Input
+                          id="quartos"
+                          type="number"
+                          value={formData.quantidadeQuartos}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              quantidadeQuartos: e.target.value,
+                            })
+                          }
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="banheiros">Banheiros</Label>
+                        <Input
+                          id="banheiros"
+                          type="number"
+                          value={formData.quantidadeBanheiros}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              quantidadeBanheiros: e.target.value,
+                            })
+                          }
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="vagas">Vagas</Label>
+                        <Input
+                          id="vagas"
+                          type="number"
+                          value={formData.quantidadeVagas}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              quantidadeVagas: e.target.value,
+                            })
+                          }
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="suites">Suítes</Label>
+                        <Input
+                          id="suites"
+                          type="number"
+                          value={formData.quantidadeSuites}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              quantidadeSuites: e.target.value,
+                            })
+                          }
+                          placeholder="0"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="preco">Preço (R$)</Label>
-                      <Input
-                        id="preco"
-                        type="number"
-                        step="0.01"
-                        value={formData.valor}
-                        onChange={(e) =>
-                          setFormData({ ...formData, valor: e.target.value })
-                        }
-                        placeholder="0.00"
-                      />
-                    </div>
-                    <div className="grid grid-cols-3 gap-4">
+
+                    <div className="grid grid-cols-3 gap-4 mt-4">
                       <div className="space-y-2">
                         <Label htmlFor="valorCondominio">
                           Valor Condomínio (R$)
@@ -726,124 +850,67 @@ const handleCheckboxChange = (
                           placeholder="0.00"
                         />
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Seção: Classificação */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">
+                      Classificação
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="quantidadeSuites">Suítes</Label>
-                        <Input
-                          id="quantidadeSuites"
-                          type="number"
-                          value={formData.quantidadeSuites}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              quantidadeSuites: e.target.value,
-                            })
+                        <Label htmlFor="regiaoId">Região</Label>
+                        <Select
+                          value={formData.regiaoId}
+                          onValueChange={(value) =>
+                            setFormData({ ...formData, regiaoId: value })
                           }
-                          placeholder="0"
-                        />
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione a região" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {regioes.map((regiao) => (
+                              <SelectItem key={regiao.id} value={regiao.id}>
+                                {regiao.nomeRegiao}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="quartos">Quartos</Label>
-                      <Input
-                        id="quartos"
-                        type="number"
-                        value={formData.quantidadeQuartos}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            quantidadeQuartos: e.target.value,
-                          })
-                        }
-                        placeholder="0"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="banheiros">Banheiros</Label>
-                      <Input
-                        id="banheiros"
-                        type="number"
-                        value={formData.quantidadeBanheiros}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            quantidadeBanheiros: e.target.value,
-                          })
-                        }
-                        placeholder="0"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="vagas">Vagas</Label>
-                      <Input
-                        id="vagas"
-                        type="number"
-                        value={formData.quantidadeVagas}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            quantidadeVagas: e.target.value,
-                          })
-                        }
-                        placeholder="0"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Finalidades</Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {finalidades.map((finalidade) => (
-                          <div
-                            key={finalidade.id}
-                            className="flex items-center space-x-2"
-                          >
-                            <input
-                              type="checkbox"
-                              id={`finalidade-${finalidade.id}`}
-                              checked={formData.finalidadeId.includes(
-                                finalidade.id
-                              )}
-                              onChange={(e) =>
-                                handleCheckboxChange(
-                                  "finalidadeId",
-                                  finalidade.id,
-                                  e.target.checked
-                                )
-                              }
-                              disabled={uploading}
-                            />
-                            <Label htmlFor={`finalidade-${finalidade.id}`}>
-                              {finalidade.nome}
-                            </Label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="regiaoId">Região</Label>
-                      <Select
-                        value={formData.regiaoId}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, regiaoId: value })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione a região" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {regioes.map((regiao) => (
-                            <SelectItem key={regiao.id} value={regiao.id}>
-                              {regiao.nomeRegiao}
-                            </SelectItem>
+                      <div className="space-y-2">
+                        <Label>Finalidades</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {finalidades.map((finalidade) => (
+                            <div
+                              key={finalidade.id}
+                              className="flex items-center space-x-2"
+                            >
+                              <input
+                                type="checkbox"
+                                id={`finalidade-${finalidade.id}`}
+                                checked={formData.finalidadeId.includes(
+                                  finalidade.id
+                                )}
+                                onChange={(e) =>
+                                  handleCheckboxChange(
+                                    "finalidadeId",
+                                    finalidade.id,
+                                    e.target.checked
+                                  )
+                                }
+                                disabled={uploading}
+                              />
+                              <Label htmlFor={`finalidade-${finalidade.id}`}>
+                                {finalidade.nome}
+                              </Label>
+                            </div>
                           ))}
-                        </SelectContent>
-                      </Select>
+                        </div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
+                    <div className="mt-4">
                       <Label>Tipologias</Label>
                       <div className="grid grid-cols-2 gap-2">
                         {tipologias.map((tipologia) => (
@@ -875,187 +942,208 @@ const handleCheckboxChange = (
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>Imagem Principal (Card)</Label>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        setCardImageFile(e.target.files?.[0] || null)
-                      }
-                      disabled={uploading}
-                    />
-                    {cardImageFile && (
-                      <ImagePreview file={cardImageFile} className="mt-2" />
-                    )}
-                    {formData.urlFotoCard && !cardImageFile && (
-                      <div className="mt-2">
-                        <p className="text-sm text-muted-foreground">
-                          Imagem atual:{" "}
-                        </p>
-                        <img
-                          src={formData.urlFotoCard}
-                          alt="Card atual"
-                          className="w-full h-32 object-contain rounded border"
+                  {/* Seção: Imagens */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Imagens</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Imagem Principal (Card)</Label>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) =>
+                            setCardImageFile(e.target.files?.[0] || null)
+                          }
+                          disabled={uploading}
                         />
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Fotos da Galeria</Label>
-                    <Input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={(e) => {
-                        const newFiles = Array.from(e.target.files || []);
-                        setGalleryFiles((prev) => [...prev, ...newFiles]);
-                      }}
-                      disabled={uploading}
-                    />
-
-                    <div className="mt-2">
-                      {galleryFiles.length > 0 && (
-                        <div className="flex justify-between items-center mb-2">
-                          <p className="text-sm text-muted-foreground">
-                            {galleryFiles.length} foto(s) selecionada(s)
-                          </p>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => setGalleryFiles([])}
-                            disabled={uploading}
-                          >
-                            Limpar Todas
-                          </Button>
-                        </div>
-                      )}
-
-                      <div className="grid grid-cols-3 gap-2">
-                        {paginatedGalleryFiles.map((file, index) => {
-                          const globalIndex =
-                            (currentGalleryPage - 1) * GALLERY_PAGE_SIZE +
-                            index;
-                          return (
-                            <div key={globalIndex} className="relative">
-                              <ImagePreview
-                                file={file}
-                                className="w-full h-24 object-cover rounded"
-                              />
-                              <Button
-                                size="icon"
-                                variant="destructive"
-                                className="absolute top-1 right-1 w-6 h-6"
-                                onClick={() => {
-                                  const newFiles = [...galleryFiles];
-                                  newFiles.splice(globalIndex, 1);
-                                  setGalleryFiles(newFiles);
-                                  if (
-                                    newFiles.length <=
-                                    (currentGalleryPage - 1) * GALLERY_PAGE_SIZE
-                                  ) {
-                                    setCurrentGalleryPage(
-                                      Math.max(1, currentGalleryPage - 1)
-                                    );
-                                  }
-                                }}
-                                disabled={uploading}
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {totalGalleryPages > 1 && (
-                        <div className="flex justify-center mt-4 space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={currentGalleryPage === 1 || uploading}
-                            onClick={() =>
-                              setCurrentGalleryPage((prev) =>
-                                Math.max(1, prev - 1)
-                              )
-                            }
-                          >
-                            Anterior
-                          </Button>
-                          <span className="flex items-center px-3">
-                            Página {currentGalleryPage} de {totalGalleryPages}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={
-                              currentGalleryPage === totalGalleryPages ||
-                              uploading
-                            }
-                            onClick={() =>
-                              setCurrentGalleryPage((prev) =>
-                                Math.min(totalGalleryPages, prev + 1)
-                              )
-                            }
-                          >
-                            Próxima
-                          </Button>
-                        </div>
-                      )}
-
-                      {formData.urlsFotos.length > 0 &&
-                        galleryFiles.length === 0 && (
-                          <div className="mt-2">
-                            <p className="text-sm text-muted-foreground">
-                              Fotos atuais:
-                            </p>
-                            <div className="grid grid-cols-3 gap-2">
-                              {formData.urlsFotos.map((url, index) => (
-                                <img
-                                  key={index}
-                                  src={url}
-                                  alt={`Foto ${index}`}
-                                  className="w-full h-24 object-cover rounded"
-                                />
-                              ))}
-                            </div>
-                          </div>
+                        {cardImageFile && (
+                          <ImagePreview file={cardImageFile} className="mt-2" />
                         )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Fotos da Galeria</Label>
+                        <Input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={(e) => {
+                            const newFiles = Array.from(e.target.files || []);
+                            setGalleryFiles((prev) => [...prev, ...newFiles]);
+                          }}
+                          disabled={uploading}
+                        />
+
+                        <div className="mt-2">
+                          {/* Fotos existentes */}
+                          {formData.urlsFotos.length > 0 && (
+                            <div className="mt-4">
+                              <p className="text-sm text-muted-foreground mb-2">
+                                Fotos existentes:
+                              </p>
+                              <div className="grid grid-cols-3 gap-2">
+                                {formData.urlsFotos.map((url, index) => (
+                                  <div key={index} className="relative">
+                                    <img
+                                      src={resolveImageUrl(url)}
+                                      alt={`Foto existente ${index}`}
+                                      className="w-full h-24 object-cover rounded"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Novas fotos */}
+                          {galleryFiles.length > 0 && (
+                            <>
+                              <div className="flex justify-between items-center mt-4 mb-2">
+                                <p className="text-sm text-muted-foreground">
+                                  {galleryFiles.length} nova(s) foto(s)
+                                  selecionada(s)
+                                </p>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setGalleryFiles([]);
+                                  }}
+                                  disabled={uploading}
+                                >
+                                  Limpar Todas
+                                </Button>
+                              </div>
+
+                              <div className="grid grid-cols-3 gap-2">
+                                {paginatedGalleryFiles.map((file, index) => {
+                                  const globalIndex =
+                                    (currentGalleryPage - 1) *
+                                      GALLERY_PAGE_SIZE +
+                                    index;
+                                  return (
+                                    <div key={globalIndex} className="relative">
+                                      <ImagePreview
+                                        file={file}
+                                        className="w-full h-24 object-cover rounded"
+                                      />
+                                      <Button
+                                        type="button" // Adicione isso para evitar submit acidental
+                                        size="icon"
+                                        variant="destructive"
+                                        className="absolute top-1 right-1 w-6 h-6"
+                                        onMouseDown={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                          const newFiles = [...galleryFiles];
+                                          newFiles.splice(globalIndex, 1);
+                                          setGalleryFiles(newFiles);
+                                          if (
+                                            newFiles.length <=
+                                            (currentGalleryPage - 1) *
+                                              GALLERY_PAGE_SIZE
+                                          ) {
+                                            setCurrentGalleryPage(
+                                              Math.max(
+                                                1,
+                                                currentGalleryPage - 1
+                                              )
+                                            );
+                                          }
+                                        }}
+                                        disabled={uploading}
+                                      >
+                                        <Trash2 className="w-3 h-3" />
+                                      </Button>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+
+                              {totalGalleryPages > 1 && (
+                                <div className="flex justify-center mt-4 space-x-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={
+                                      currentGalleryPage === 1 || uploading
+                                    }
+                                    onClick={() =>
+                                      setCurrentGalleryPage((prev) =>
+                                        Math.max(1, prev - 1)
+                                      )
+                                    }
+                                  >
+                                    Anterior
+                                  </Button>
+                                  <span className="flex items-center px-3">
+                                    Página {currentGalleryPage} de{" "}
+                                    {totalGalleryPages}
+                                  </span>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={
+                                      currentGalleryPage ===
+                                        totalGalleryPages || uploading
+                                    }
+                                    onClick={() =>
+                                      setCurrentGalleryPage((prev) =>
+                                        Math.min(totalGalleryPages, prev + 1)
+                                      )
+                                    }
+                                  >
+                                    Próxima
+                                  </Button>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="mapUrl">URL do Mapa</Label>
-                    <Input
-                      id="mapUrl"
-                      value={formData.urlLocalizacaoMaps}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          urlLocalizacaoMaps: e.target.value,
-                        })
-                      }
-                      placeholder="URL do Google Maps embed"
-                    />
+                  {/* Seção: Localização e Diferenciais */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">
+                      Localização e Diferenciais
+                    </h3>
+                    <div className="space-y-2">
+                      <Label htmlFor="mapUrl">URL do Mapa</Label>
+                      <Input
+                        id="mapUrl"
+                        value={formData.urlLocalizacaoMaps}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            urlLocalizacaoMaps: e.target.value,
+                          })
+                        }
+                        placeholder="URL do Google Maps embed"
+                      />
+                    </div>
+
+                    <div className="space-y-2 mt-4">
+                      <Label htmlFor="diferenciais">Diferenciais</Label>
+                      <Textarea
+                        id="diferenciais"
+                        value={formData.diferenciais}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            diferenciais: e.target.value,
+                          })
+                        }
+                        placeholder="Piscina, Academia, Salão de festas (separados por vírgula)"
+                        rows={2}
+                      />
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="diferenciais">Diferenciais</Label>
-                    <Textarea
-                      id="diferenciais"
-                      value={formData.diferenciais}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          diferenciais: e.target.value,
-                        })
-                      }
-                      placeholder="Piscina, Academia, Salão de festas (separados por vírgula)"
-                      rows={2}
-                    />
-                  </div>
-
-                  <div className="flex justify-end space-x-2 pt-6">
+                  <div className="flex justify-end space-x-2 pt-4">
                     <Button
                       type="button"
                       variant="outline"
@@ -1358,19 +1446,36 @@ const handleCheckboxChange = (
                 {cardImageFile && (
                   <ImagePreview file={cardImageFile} className="mt-2" />
                 )}
-                {formData.urlFotoCard && !cardImageFile && (
-                  <div className="mt-2">
-                    <p className="text-sm text-muted-foreground">
-                      Imagem atual:{" "}
-                    </p>
-                    <img
-                      src={formData.urlFotoCard}
-                      alt="Card atual"
-                      className="w-full h-32 object-contain rounded border"
-                    />
-                  </div>
-                )}
+                {formData.urlFotoCard &&
+                  !cardImageFile &&
+                  !removedCardImage && (
+                    <div className="mt-2 relative">
+                      <p className="text-sm text-muted-foreground">
+                        Imagem atual:
+                      </p>
+                      <img
+                        src={resolveImageUrl(formData.urlFotoCard)}
+                        alt="Card atual"
+                        className="w-full h-32 object-contain rounded border"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-6 right-2"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleRemoveCardImage();
+                        }}
+                        disabled={uploading}
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" /> Remover
+                      </Button>
+                    </div>
+                  )}
               </div>
+              {/* ... código anterior ... */}
+
               <div className="space-y-2">
                 <Label>Fotos da Galeria</Label>
                 <Input
@@ -1385,115 +1490,30 @@ const handleCheckboxChange = (
                 />
 
                 <div className="mt-2">
-                  {galleryFiles.length > 0 && (
-                    <div className="flex justify-between items-center mb-2">
-                      <p className="text-sm text-muted-foreground">
-                        {galleryFiles.length} foto(s) selecionada(s)
+                  {/* Seção para fotos existentes */}
+                  {formData.urlsFotos.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Fotos existentes:
                       </p>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => setGalleryFiles([])}
-                        disabled={uploading}
-                      >
-                        Limpar Todas
-                      </Button>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-3 gap-2">
-                    {paginatedGalleryFiles.map((file, index) => {
-                      const globalIndex =
-                        (currentGalleryPage - 1) * GALLERY_PAGE_SIZE + index;
-                      return (
-                        <div key={globalIndex} className="relative">
-                          <ImagePreview
-                            file={file}
-                            className="w-full h-24 object-cover rounded"
-                          />
-                          <Button
-                            size="icon"
-                            variant="destructive"
-                            className="absolute top-1 right-1 w-6 h-6"
-                            onClick={() => {
-                              const newFiles = [...galleryFiles];
-                              newFiles.splice(globalIndex, 1);
-                              setGalleryFiles(newFiles);
-                              if (
-                                newFiles.length <=
-                                (currentGalleryPage - 1) * GALLERY_PAGE_SIZE
-                              ) {
-                                setCurrentGalleryPage(
-                                  Math.max(1, currentGalleryPage - 1)
-                                );
-                              }
-                            }}
-                            disabled={uploading}
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {totalGalleryPages > 1 && (
-                    <div className="flex justify-center mt-4 space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={currentGalleryPage === 1 || uploading}
-                        onClick={() =>
-                          setCurrentGalleryPage((prev) => Math.max(1, prev - 1))
-                        }
-                      >
-                        Anterior
-                      </Button>
-                      <span className="flex items-center px-3">
-                        Página {currentGalleryPage} de {totalGalleryPages}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={
-                          currentGalleryPage === totalGalleryPages || uploading
-                        }
-                        onClick={() =>
-                          setCurrentGalleryPage((prev) =>
-                            Math.min(totalGalleryPages, prev + 1)
-                          )
-                        }
-                      >
-                        Próxima
-                      </Button>
-                    </div>
-                  )}
-
-                  {formData.urlsFotos.length > 0 &&
-                    galleryFiles.length === 0 && (
-                      <div className="mt-2">
-                        <p className="text-sm text-muted-foreground">
-                          Fotos atuais:
-                        </p>
-                        <div className="grid grid-cols-3 gap-2">
-                          {formData.urlsFotos.map((url, index) => (
-                            <div key={index} className="relative">
+                      <div className="grid grid-cols-3 gap-2">
+                        {formData.urlsFotos
+                          .filter((url) => !removedGalleryImages.includes(url))
+                          .map((url) => (
+                            <div key={url} className="relative">
                               <img
-                                src={url}
-                                alt={`Foto ${index}`}
+                                src={resolveImageUrl(url)}
+                                alt={`Foto existente ${url}`}
                                 className="w-full h-24 object-cover rounded"
                               />
                               <Button
                                 size="icon"
                                 variant="destructive"
                                 className="absolute top-1 right-1 w-6 h-6"
-                                onClick={() => {
-                                  const newUrls = [...formData.urlsFotos];
-                                  newUrls.splice(index, 1);
-                                  setFormData({
-                                    ...formData,
-                                    urlsFotos: newUrls,
-                                  });
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleRemoveGalleryImage(url);
                                 }}
                                 disabled={uploading}
                               >
@@ -1501,9 +1521,104 @@ const handleCheckboxChange = (
                               </Button>
                             </div>
                           ))}
-                        </div>
                       </div>
-                    )}
+                    </div>
+                  )}
+
+                  {/* Seção para novas fotos */}
+                  {galleryFiles.length > 0 && (
+                    <>
+                      <div className="flex justify-between items-center mt-4 mb-2">
+                        <p className="text-sm text-muted-foreground">
+                          {galleryFiles.length} nova(s) foto(s) selecionada(s)
+                        </p>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setGalleryFiles([]);
+                          }}
+                          disabled={uploading}
+                        >
+                          Limpar Todas
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {paginatedGalleryFiles.map((file, index) => {
+                          const globalIndex =
+                            (currentGalleryPage - 1) * GALLERY_PAGE_SIZE +
+                            index;
+                          return (
+                            <div key={globalIndex} className="relative">
+                              <ImagePreview
+                                file={file}
+                                className="w-full h-24 object-cover rounded"
+                              />
+                              <Button
+                                size="icon"
+                                variant="destructive"
+                                className="absolute top-1 right-1 w-6 h-6"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  const newFiles = [...galleryFiles];
+                                  newFiles.splice(globalIndex, 1);
+                                  setGalleryFiles(newFiles);
+                                  if (
+                                    newFiles.length <=
+                                    (currentGalleryPage - 1) * GALLERY_PAGE_SIZE
+                                  ) {
+                                    setCurrentGalleryPage(
+                                      Math.max(1, currentGalleryPage - 1)
+                                    );
+                                  }
+                                }}
+                                disabled={uploading}
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {totalGalleryPages > 1 && (
+                        <div className="flex justify-center mt-4 space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={currentGalleryPage === 1 || uploading}
+                            onClick={() =>
+                              setCurrentGalleryPage((prev) =>
+                                Math.max(1, prev - 1)
+                              )
+                            }
+                          >
+                            Anterior
+                          </Button>
+                          <span className="flex items-center px-3">
+                            Página {currentGalleryPage} de {totalGalleryPages}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={
+                              currentGalleryPage === totalGalleryPages ||
+                              uploading
+                            }
+                            onClick={() =>
+                              setCurrentGalleryPage((prev) =>
+                                Math.min(totalGalleryPages, prev + 1)
+                              )
+                            }
+                          >
+                            Próxima
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
 

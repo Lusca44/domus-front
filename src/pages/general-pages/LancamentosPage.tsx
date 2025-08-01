@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/Footer";
 import { PropertyFilters } from "@/components/ui/property-filters";
@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { Imovel } from "@/cards/imoveis";
 import { useState } from "react";
 import { useLancamentos } from "@/hooks/useLancamentos"; // Importe o hook
+import { tipologiaApi } from "@/utils/apiConfig";
 
 const LancamentosPage = () => {
   const [availableTipologias, setAvailableTipologias] = useState<string[]>([]);
@@ -17,6 +18,21 @@ const LancamentosPage = () => {
   );
 
   const { lancamentos, loading } = useLancamentos();
+
+  // Adicione este useEffect para buscar tipologias
+  useEffect(() => {
+    const fetchTipologias = async () => {
+      try {
+        const response = await tipologiaApi.obterTodasTipologias();
+        const tipologias = response.map((t: any) => t.nome);
+        setAvailableTipologias(tipologias);
+      } catch (error) {
+        console.error("Erro ao buscar tipologias:", error);
+      }
+    };
+
+    fetchTipologias();
+  }, []);
 
   // Estado para controlar quantos cards estão sendo exibidos
   const [itemsToShow, setItemsToShow] = useState(4);
