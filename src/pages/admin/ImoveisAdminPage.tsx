@@ -1125,22 +1125,6 @@ export default function ImoveisAdminPage() {
                         placeholder="URL do Google Maps embed"
                       />
                     </div>
-
-                    <div className="space-y-2 mt-4">
-                      <Label htmlFor="diferenciais">Diferenciais</Label>
-                      <Textarea
-                        id="diferenciais"
-                        value={formData.diferenciais}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            diferenciais: e.target.value,
-                          })
-                        }
-                        placeholder="Piscina, Academia, Salão de festas (separados por vírgula)"
-                        rows={2}
-                      />
-                    </div>
                   </div>
 
                   <div className="flex justify-end space-x-2 pt-4">
@@ -1634,22 +1618,6 @@ export default function ImoveisAdminPage() {
                     })
                   }
                   placeholder="URL do Google Maps embed"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="diferenciais">Diferenciais</Label>
-                <Textarea
-                  id="diferenciais"
-                  value={formData.diferenciais}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      diferenciais: e.target.value,
-                    })
-                  }
-                  placeholder="Piscina, Academia, Salão de festas (separados por vírgula)"
-                  rows={2}
                 />
               </div>
 
