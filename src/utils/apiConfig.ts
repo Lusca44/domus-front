@@ -10,7 +10,7 @@ import { stringify } from 'querystring';
 
 const API_CONFIG = {
   baseUrl:  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/",
-  timeout: 60000, // Tempo limite para requisições (10 segundos)
+  timeout: 120000, // Tempo limite para requisições (10 segundos)
 };
 
 export class ApiClient {
