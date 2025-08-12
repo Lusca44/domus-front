@@ -33,33 +33,6 @@ export const useAuth = () => {
         
         if (token && user && loginTime) {
           const userData = JSON.parse(user);
-          const loginTimestamp = parseInt(loginTime);
-          const currentTime = Date.now();
-          const sessionDuration = 60 * 60 * 1000; // 30 minutos
-          
-          // Verificar se a sessão expirou
-          if (currentTime - loginTimestamp > sessionDuration) {
-            // Sessão expirada
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            localStorage.removeItem('loginTime');
-            
-            setAuthState({
-              token: null,
-              user: null,
-              isAuthenticated: false,
-              isLoading: false,
-              isAdmin: false
-            });
-            
-            toast({
-              title: "Sessão expirada",
-              description: "Sua sessão expirou. Faça login novamente.",
-              variant: "destructive",
-            });
-            
-            return;
-          }
           
           // Verificar se o usuário é admin
           const isAdminUser = userData?.isAdmin === true;
