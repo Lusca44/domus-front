@@ -59,23 +59,6 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </div>
-
-        {/* Estatísticas Rápidas - sem Taxa de Conversão */}
-        <div className="mt-8">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
-            Estatísticas Rápidas
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded-lg shadow">
-              <div className="text-2xl font-bold text-blue-600">0</div>
-              <div className="text-sm text-gray-500">Total de Leads</div>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow">
-              <div className="text-2xl font-bold text-green-600">0</div>
-              <div className="text-sm text-gray-500">Leads Hoje</div>
-            </div>
-          </div>
-        </div>
       </div>
     </AdminLayout>
   );

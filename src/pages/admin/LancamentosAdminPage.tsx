@@ -67,6 +67,11 @@ import {
 import { Imovel } from "@/cards/imoveis";
 import { updateLancamentosFromAPI } from "@/cards/lancamentos/lancamentos";
 import { resolveImageUrl } from "@/utils/imageConfig";
+import { 
+  uploadToCloudinary, 
+  deleteFromCloudinary,
+  extractPublicId
+} from '@/utils/cloudinaryService';
 
 interface Lancamento {
   id: string;
@@ -143,7 +148,20 @@ export default function LancamentosAdminPage() {
     []
   );
 
-  // Função para remover imagem de fundo
+  const handleImageUpload = async (file: File): Promise<string> => {
+    try {
+      const url = await uploadToCloudinary(file);
+      return url;
+    } catch (error) {
+      toast({
+        title: "Erro no upload",
+        description: "Falha ao enviar imagem para o Cloudinary",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
   const handleRemoveBackgroundImage = () => {
     if (!formData.urlFotoBackGround) return;
 
@@ -151,7 +169,6 @@ export default function LancamentosAdminPage() {
     setFormData({ ...formData, urlFotoBackGround: "" });
   };
 
-  // Função para remover imagem do card (apenas marca para remoção)
   const handleRemoveCardImage = () => {
     if (!formData.urlImagemCard) return;
 
@@ -159,9 +176,7 @@ export default function LancamentosAdminPage() {
     setFormData({ ...formData, urlImagemCard: "" });
   };
 
-  // Função para remover imagem da galeria (apenas marca para remoção)
   const handleRemoveGalleryImage = (url: string) => {
-    // Atualizar estado
     const newUrls = formData.urlsFotos
       .split(",")
       .filter((u) => u.trim() !== url.trim())
@@ -243,24 +258,27 @@ export default function LancamentosAdminPage() {
   // Componente de preview de imagem otimizado
   const ImagePreview = ({
     file,
+    url,
     className,
   }: {
-    file: File;
+    file?: File;
+    url?: string;
     className?: string;
   }) => {
     const [preview, setPreview] = useState<string | null>(null);
 
     useEffect(() => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-
-      return () => {
-        // Limpeza: não é necessária para data URLs
-      };
-    }, [file]);
+      // Se tivermos um arquivo, gerar preview local
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => setPreview(reader.result as string);
+        reader.readAsDataURL(file);
+      }
+      // Se tivermos uma URL, usar diretamente
+      else if (url) {
+        setPreview(url);
+      }
+    }, [file, url]);
 
     return preview ? (
       <img
@@ -413,19 +431,37 @@ export default function LancamentosAdminPage() {
       setUploading(true);
 
       try {
-        const [backgroundUrl, cardUrl, galleryUrlsResult] = await Promise.all([
-          backgroundImageFile
-            ? uploadImage(backgroundImageFile)
-            : Promise.resolve(formData.urlFotoBackGround),
-          cardImageFile
-            ? uploadImage(cardImageFile)
-            : Promise.resolve(formData.urlImagemCard),
-          galleryFiles.length > 0
-            ? uploadMultipleImages(galleryFiles)
-            : Promise.resolve(
-                formData.urlsFotos.split(",").filter((url) => url.trim())
-              ),
-        ]);
+        // Executar uploads em paralelo
+        const uploadPromises: Promise<string | string[]>[] = [];
+
+        if (backgroundImageFile) {
+          uploadPromises.push(handleImageUpload(backgroundImageFile));
+        } else {
+          uploadPromises.push(
+            Promise.resolve(formData.urlFotoBackGround || "")
+          );
+        }
+
+        if (cardImageFile) {
+          uploadPromises.push(handleImageUpload(cardImageFile));
+        } else {
+          uploadPromises.push(Promise.resolve(formData.urlImagemCard || ""));
+        }
+
+        if (galleryFiles.length > 0) {
+          uploadPromises.push(Promise.all(galleryFiles.map(handleImageUpload)));
+        } else {
+          uploadPromises.push(
+            Promise.resolve(
+              formData.urlsFotos.split(",").filter((url) => url.trim()) || []
+            )
+          );
+        }
+
+        // Aguardar todos os uploads
+        const [backgroundUrl, cardUrl, galleryUrls] = await Promise.all(
+          uploadPromises
+        );
 
         // Verificar se o upload do background foi bem-sucedido
         if (backgroundImageFile && !backgroundUrl) {
@@ -436,9 +472,7 @@ export default function LancamentosAdminPage() {
         const dataToSend = {
           nomeLancamento: formData.nomeLancamento,
           urlFotoBackGround: backgroundUrl || formData.urlFotoBackGround || "",
-          urlsFotos: Array.isArray(galleryUrlsResult)
-            ? galleryUrlsResult
-            : galleryUrlsResult,
+          urlsFotos: galleryUrls as string[],
           slogan: formData.slogan,
           regiaoId: formData.regiaoId,
           endereco: formData.endereco,
@@ -471,9 +505,17 @@ export default function LancamentosAdminPage() {
         };
 
         await createLancamento(() => lancamentoApi.create(dataToSend));
+
+        // Limpar estado e fechar modal
         resetForm();
         setIsDialogOpen(false);
+
         loadLancamentos();
+
+        toast({
+          title: "Sucesso!",
+          description: "Lançamento criado com sucesso",
+        });
       } catch (error) {
         console.error("Erro ao criar lançamento:", error);
         toast({
@@ -548,177 +590,173 @@ export default function LancamentosAdminPage() {
 
   // Função para atualizar um lançamento
   const handleUpdate = useCallback(
-  async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editModal.lancamento) return;
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!editModal.lancamento) return;
 
-    setUploading(true);
+      setUploading(true);
 
-    try {
-      // 1. Processar remoções de imagens
-      const deletePromises: Promise<any>[] = [];
+      try {
+        // 1. Deletar imagens marcadas para remoção
+        const deletePromises = [];
 
-      // Remover imagem de fundo se marcada
-      if (
-        removedBackgroundImage &&
-        editModal.lancamento.urlFotoBackGround
-      ) {
-        const urlImageDTO = {
-          urlImagem: editModal.lancamento.urlFotoBackGround,
-          itemId: editModal.lancamento.id,
-          isLancamento: true,
+        if (removedBackgroundImage && editModal.lancamento.urlFotoBackGround) {
+          deletePromises.push(
+            deleteFromCloudinary(editModal.lancamento.urlFotoBackGround)
+          );
+        }
+
+        if (
+          removedCardImage &&
+          editModal.lancamento.cardLancamentoInfo?.urlImagemCard
+        ) {
+          deletePromises.push(
+            deleteFromCloudinary(
+              editModal.lancamento.cardLancamentoInfo.urlImagemCard
+            )
+          );
+        }
+
+        removedGalleryImages.forEach((url) => {
+          deletePromises.push(deleteFromCloudinary(url));
+        });
+
+        // Executar todas as deleções em paralelo
+        await Promise.all(deletePromises);
+
+        // 2. Fazer uploads das novas imagens
+        const uploadPromises: Promise<string>[] = [];
+        const newUrls: {
+          background?: string;
+          card?: string;
+          gallery: string[];
+        } = {
+          gallery: [],
         };
-        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
-      }
 
-      // Remover imagem do card se marcada
-      if (
-        removedCardImage &&
-        editModal.lancamento.cardLancamentoInfo?.urlImagemCard
-      ) {
-        const urlImageDTO = {
-          urlImagem: editModal.lancamento.cardLancamentoInfo.urlImagemCard,
-          itemId: editModal.lancamento.id,
-          isLancamento: true,
-        };
-        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
-      }
+        if (backgroundImageFile) {
+          uploadPromises.push(
+            handleImageUpload(backgroundImageFile).then((url) => {
+              newUrls.background = url;
+              return url;
+            })
+          );
+        }
 
-      // Remover imagens da galeria marcadas
-      removedGalleryImages.forEach((url) => {
-        const urlImageDTO = {
-          urlImagem: url,
-          itemId: editModal.lancamento!.id,
-          isLancamento: true,
-        };
-        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
-      });
+        if (cardImageFile) {
+          uploadPromises.push(
+            handleImageUpload(cardImageFile).then((url) => {
+              newUrls.card = url;
+              return url;
+            })
+          );
+        }
 
-      // Executar todas as remoções
-      await Promise.all(deletePromises);
-      
-      // 2. Fazer uploads das novas imagens
-      let backgroundUrl = formData.urlFotoBackGround;
-      let cardUrl = formData.urlImagemCard;
-      let newGalleryUrls: string[] = []; // Armazenar URLs das novas imagens
-      
-      // Uploads em paralelo
-      const uploadPromises: Promise<any>[] = [];
-      
-      // Upload da imagem de fundo
-      if (backgroundImageFile) {
-        uploadPromises.push(
-          uploadImage(backgroundImageFile).then(url => {
-            if (url) backgroundUrl = url;
-          })
+        if (galleryFiles.length > 0) {
+          uploadPromises.push(
+            Promise.all(galleryFiles.map(handleImageUpload)).then((urls) => {
+              newUrls.gallery = urls;
+              return urls.join(",");
+            })
+          );
+        }
+
+        await Promise.all(uploadPromises);
+
+        // 3. Construir a lista final de URLs
+        const backgroundUrl =
+          newUrls.background ||
+          (removedBackgroundImage ? "" : formData.urlFotoBackGround);
+
+        const cardUrl =
+          newUrls.card || (removedCardImage ? "" : formData.urlImagemCard);
+
+        // URLs da galeria: manter as não removidas + adicionar novas
+        const existingUrls = (editModal.lancamento.urlsFotos || []).filter(
+          (url) => !removedGalleryImages.includes(url)
         );
-      }
 
-      if (cardImageFile) {
-        uploadPromises.push(
-          uploadImage(cardImageFile).then(url => {
-            if (url) cardUrl = url;
-          })
-        );
-      }
+        const galleryUrls = [...existingUrls, ...newUrls.gallery];
 
-      if (galleryFiles.length > 0) {
-        uploadPromises.push(
-          uploadMultipleImages(galleryFiles).then(urls => {
-            newGalleryUrls = urls; // Armazenar URLs das novas imagens
-          })
-        );
-      }
-
-      await Promise.all(uploadPromises);
-
-      // 3. Construir a lista final de URLs da galeria
-      // URLs existentes que não foram removidas
-      const existingUrls = editModal.lancamento.urlsFotos || [];
-      const keptUrls = existingUrls.filter(
-        url => !removedGalleryImages.includes(url)
-      );
-      
-      // Juntar com as novas URLs do upload
-      const finalGalleryUrls = [...keptUrls, ...newGalleryUrls];
-
-      // 4. Preparar dados para envio
-      const dataToSend = {
-        nomeLancamento: formData.nomeLancamento,
-        urlFotoBackGround: backgroundUrl || "",
-        urlsFotos: finalGalleryUrls,
-        slogan: formData.slogan,
-        regiaoId: formData.regiaoId,
-        endereco: formData.endereco,
-        sobreLancamento: {
-          titulo: formData.sobreLancamentoTitulo,
-          texto: formData.sobreLancamentoTexto,
-          cardsSobreLancamento: [],
-        },
-        diferenciaisLancamento: formData.diferenciaisLancamento
-          ? formData.diferenciaisLancamento.split(",").map((d) => d.trim())
-          : [],
-        proximidadesDaLocalizacao: formData.proximidadesDaLocalizacao
-          ? formData.proximidadesDaLocalizacao.split(",").map((p) => p.trim())
-          : [],
-        localizacaoMapsSource: formData.localizacaoMapsSource,
-        cardLancamentoInfo: {
-          valor: formData.valor,
-          quartosDisponiveis: formData.quartosDisponiveis
-            ? formData.quartosDisponiveis.split(",").map((q) => q.trim())
+        // 4. Preparar dados para envio
+        const dataToSend = {
+          nomeLancamento: formData.nomeLancamento,
+          urlFotoBackGround: backgroundUrl || "",
+          urlsFotos: galleryUrls,
+          slogan: formData.slogan,
+          regiaoId: formData.regiaoId,
+          endereco: formData.endereco,
+          sobreLancamento: {
+            titulo: formData.sobreLancamentoTitulo,
+            texto: formData.sobreLancamentoTexto,
+            cardsSobreLancamento: [],
+          },
+          diferenciaisLancamento: formData.diferenciaisLancamento
+            ? formData.diferenciaisLancamento.split(",").map((d) => d.trim())
             : [],
-          isCardDestaque: formData.isCardDestaque,
-          areasDisponiveis: formData.areasDisponiveis
-            ? formData.areasDisponiveis.split(",").map((a) => a.trim())
+          proximidadesDaLocalizacao: formData.proximidadesDaLocalizacao
+            ? formData.proximidadesDaLocalizacao.split(",").map((p) => p.trim())
             : [],
-          finalidadeId: formData.finalidadeId,
-          tipologiaId: formData.tipologiaId,
-          urlImagemCard: cardUrl || "",
-          statusObra: formData.statusObra,
-        },
-      };
+          localizacaoMapsSource: formData.localizacaoMapsSource,
+          cardLancamentoInfo: {
+            valor: formData.valor,
+            quartosDisponiveis: formData.quartosDisponiveis
+              ? formData.quartosDisponiveis.split(",").map((q) => q.trim())
+              : [],
+            isCardDestaque: formData.isCardDestaque,
+            areasDisponiveis: formData.areasDisponiveis
+              ? formData.areasDisponiveis.split(",").map((a) => a.trim())
+              : [],
+            finalidadeId: formData.finalidadeId,
+            tipologiaId: formData.tipologiaId,
+            urlImagemCard: cardUrl || "",
+            statusObra: formData.statusObra,
+          },
+        };
 
-      await updateLancamento(() =>
-        lancamentoApi.update(editModal.lancamento!.id, dataToSend)
-      );
-      closeEditModal();
-      loadLancamentos();
+        await updateLancamento(() =>
+          lancamentoApi.update(editModal.lancamento!.id, dataToSend)
+        );
 
-      // Resetar estados de remoção
-      setRemovedBackgroundImage(false);
-      setRemovedCardImage(false);
-      setRemovedGalleryImages([]);
-    } catch (error) {
-      console.error("Erro ao atualizar lançamento:", error);
-      toast({
-        title: "Erro",
-        description: "Falha ao atualizar lançamento",
-        variant: "destructive",
-      });
-    } finally {
-      setUploading(false);
-      setBackgroundImageFile(null);
-      setCardImageFile(null);
-      setGalleryFiles([]);
-    }
-  },
-  [
-    editModal.lancamento,
-    removedBackgroundImage,
-    removedCardImage,
-    removedGalleryImages,
-    backgroundImageFile,
-    cardImageFile,
-    galleryFiles,
-    formData,
-    uploadImage,
-    uploadMultipleImages,
-    updateLancamento,
-    loadLancamentos,
-    toast,
-    closeEditModal,
-  ]
-);
+        closeEditModal();
+        loadLancamentos();
+
+        toast({
+          title: "Sucesso!",
+          description: "Lançamento atualizado com sucesso",
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar lançamento:", error);
+        toast({
+          title: "Erro",
+          description: "Falha ao atualizar lançamento",
+          variant: "destructive",
+        });
+      } finally {
+        setUploading(false);
+        setBackgroundImageFile(null);
+        setCardImageFile(null);
+        setGalleryFiles([]);
+        setRemovedBackgroundImage(false);
+        setRemovedCardImage(false);
+        setRemovedGalleryImages([]);
+      }
+    },
+    [
+      editModal.lancamento,
+      removedBackgroundImage,
+      removedCardImage,
+      removedGalleryImages,
+      backgroundImageFile,
+      cardImageFile,
+      galleryFiles,
+      formData,
+      updateLancamento,
+      loadLancamentos,
+      toast,
+      closeEditModal,
+    ]
+  );
 
   // Otimização: Paginação para galeria de fotos
   const GALLERY_PAGE_SIZE = 6;
@@ -732,9 +770,31 @@ export default function LancamentosAdminPage() {
   const totalGalleryPages = Math.ceil(galleryFiles.length / GALLERY_PAGE_SIZE);
 
   const handleDelete = useCallback(
-    async (id: string) => {
+    async (lancamento: Lancamento) => {
       try {
-        await deleteLancamento(() => lancamentoApi.delete?.(id));
+        const deletePromises = [];
+
+        if (lancamento.urlFotoBackGround) {
+          deletePromises.push(
+            deleteFromCloudinary(lancamento.urlFotoBackGround)
+          );
+        }
+
+        if (lancamento.cardLancamentoInfo?.urlImagemCard) {
+          deletePromises.push(
+            deleteFromCloudinary(lancamento.cardLancamentoInfo?.urlImagemCard)
+          );
+        }
+
+        if (Array.isArray(lancamento.urlsFotos)) {
+          lancamento.urlsFotos.forEach((urlFoto) =>
+            deletePromises.push(deleteFromCloudinary(urlFoto))
+          );
+        }
+
+        await Promise.all(deletePromises);
+
+        await deleteLancamento(() => lancamentoApi.delete?.(lancamento.id));
         loadLancamentos();
       } catch (error) {
         console.error("Erro ao excluir lançamento:", error);
@@ -859,15 +919,20 @@ export default function LancamentosAdminPage() {
                       <ImagePreview file={backgroundImageFile} />
                     )}
                     {formData.urlFotoBackGround && !backgroundImageFile && (
-                      <div className="mt-2">
+                      <div className="mt-2 relative">
                         <p className="text-sm text-muted-foreground">
                           Imagem atual:
                         </p>
-                        <img
-                          src={formData.urlFotoBackGround}
-                          alt="Background atual"
-                          className="w-full h-32 object-contain rounded border"
-                        />
+                        <ImagePreview url={formData.urlFotoBackGround} />
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-6 right-2"
+                          onClick={handleRemoveBackgroundImage}
+                          disabled={uploading}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" /> Remover
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -1428,7 +1493,7 @@ export default function LancamentosAdminPage() {
                                     Cancelar
                                   </AlertDialogCancel>
                                   <AlertDialogAction
-                                    onClick={() => handleDelete(lancamento.id)}
+                                    onClick={() => handleDelete(lancamento)}
                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                   >
                                     {loadingDelete ? "Excluindo..." : "Excluir"}
@@ -1464,7 +1529,10 @@ export default function LancamentosAdminPage() {
           setCurrentGalleryPage(1);
         }}
       >
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+        <DialogContent
+          className="max-w-4xl max-h-[90vh] overflow-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
           <DialogHeader>
             <DialogTitle>
               Editar Lançamento: {editModal.lancamento?.nomeLancamento}
@@ -1522,11 +1590,7 @@ export default function LancamentosAdminPage() {
                     <p className="text-sm text-muted-foreground">
                       Imagem atual:
                     </p>
-                    <img
-                      src={resolveImageUrl(formData.urlFotoBackGround)}
-                      alt="Background atual"
-                      className="w-full h-32 object-contain rounded border"
-                    />
+                    <ImagePreview url={formData.urlFotoBackGround} />
                     <Button
                       variant="destructive"
                       size="sm"
@@ -1559,41 +1623,39 @@ export default function LancamentosAdminPage() {
 
               <div className="mt-2">
                 {/* Seção para fotos existentes */}
-                {editModal.lancamento?.urlsFotos &&
-  editModal.lancamento.urlsFotos.length > 0 && (
-    <div className="mt-4">
-      <p className="text-sm text-muted-foreground mb-2">
-        Fotos existentes:
-      </p>
-      <div className="grid grid-cols-3 gap-2">
-        {editModal.lancamento.urlsFotos.map(
-          (url, index) =>
-            !removedGalleryImages.includes(url) && (
-              <div key={index} className="relative">
-                <img
-                  src={resolveImageUrl(url)}
-                  alt={`Foto existente ${index}`}
-                  className="w-full h-24 object-cover rounded"
-                />
-                <Button
-                  size="icon"
-                  variant="destructive"
-                  className="absolute top-1 right-1 w-6 h-6"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleRemoveGalleryImage(url);
-                  }}
-                  disabled={uploading}
-                >
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            )
-        )}
-      </div>
-    </div>
-  )}
+                {formData.urlsFotos &&
+                  formData.urlsFotos.split(",").filter((url) => url.trim())
+                    .length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Fotos existentes:
+                      </p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {formData.urlsFotos.split(",").map(
+                          (url, index) =>
+                            url.trim() &&
+                            !removedGalleryImages.includes(url.trim()) && (
+                              <div key={index} className="relative">
+                                <ImagePreview url={url.trim()} />
+                                <Button
+                                  size="icon"
+                                  variant="destructive"
+                                  className="absolute top-1 right-1 w-6 h-6"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handleRemoveGalleryImage(url.trim());
+                                  }}
+                                  disabled={uploading}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            )
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                 {/* Seção para novas fotos */}
                 {galleryFiles.length > 0 && (
@@ -1703,32 +1765,28 @@ export default function LancamentosAdminPage() {
                 <ImagePreview file={cardImageFile} className="mt-2" />
               )}
               {formData.urlImagemCard &&
-  !cardImageFile &&
-  !removedCardImage && (
-    <div className="mt-2 relative">
-      <p className="text-sm text-muted-foreground">
-        Imagem atual do card:
-      </p>
-      <img
-        src={resolveImageUrl(formData.urlImagemCard)}
-        alt="Card atual"
-        className="w-full h-32 object-contain rounded border"
-      />
-      <Button
-        variant="destructive"
-        size="sm"
-        className="absolute top-6 right-2"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          handleRemoveCardImage(); // CORREÇÃO AQUI
-        }}
-        disabled={uploading}
-      >
-        <Trash2 className="w-4 h-4 mr-1" /> Remover
-      </Button>
-    </div>
-)}
+                !cardImageFile &&
+                !removedCardImage && (
+                  <div className="mt-2 relative">
+                    <p className="text-sm text-muted-foreground">
+                      Imagem atual do card:
+                    </p>
+                    <ImagePreview url={formData.urlImagemCard} />
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-6 right-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleRemoveCardImage();
+                      }}
+                      disabled={uploading}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" /> Remover
+                    </Button>
+                  </div>
+                )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">

@@ -1,11 +1,8 @@
-export const resolveImageUrl = (url: string) =>{
+// Em utils/imageConfig.ts
+export const resolveImageUrl = (url: string) => {
+  if (url.startsWith('http')) return url;
 
-function removeUltimoDigito(str: string): string {
-  return str.slice(0, -1);
-}
+  const CLOUD_NAME = "";
 
-  const path = import.meta.env.VITE_API_BASE_URL;
-
-  return`${removeUltimoDigito(path)}${url}`;
-}
-
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${url}`;
+};

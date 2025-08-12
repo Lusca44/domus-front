@@ -5,7 +5,6 @@ import {
   regiaoApi,
   tipologiaApi,
   finalidadeApi,
-  imagemApi,
 } from "@/utils/apiConfig";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -66,11 +65,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Imovel } from "@/cards/imoveis";
-import { resolveImageUrl } from "@/utils/imageConfig";
 import {
   updateAlugueisFromAPI,
   updateImoveisUsadosFromAPI,
 } from "@/cards/imoveis/imoveis";
+import { 
+  uploadToCloudinary, 
+  deleteFromCloudinary,
+  extractPublicId
+} from '@/utils/cloudinaryService';
 
 interface ImovelAdmin {
   id: string;
@@ -151,7 +154,44 @@ export default function ImoveisAdminPage() {
     []
   );
 
-  // Função para remover imagem do card
+  // Componente de preview de imagem reutilizado
+  const ImagePreview = ({
+    file,
+    url,
+    className,
+  }: {
+    file?: File;
+    url?: string;
+    className?: string;
+  }) => {
+    const [preview, setPreview] = useState<string | null>(null);
+
+    useEffect(() => {
+      // Se tivermos um arquivo, gerar preview local
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => setPreview(reader.result as string);
+        reader.readAsDataURL(file);
+      }
+      // Se tivermos uma URL, usar diretamente
+      else if (url) {
+        setPreview(url);
+      }
+    }, [file, url]);
+
+    return preview ? (
+      <img
+        src={preview}
+        alt="Preview"
+        className={`w-full h-32 object-contain rounded border ${className}`}
+      />
+    ) : (
+      <div className="flex items-center justify-center h-32 bg-gray-100 rounded border">
+        <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+      </div>
+    );
+  };
+
   const handleRemoveCardImage = () => {
     if (!formData.urlFotoCard) return;
 
@@ -159,11 +199,24 @@ export default function ImoveisAdminPage() {
     setFormData({ ...formData, urlFotoCard: "" });
   };
 
-  // Função para remover imagem da galeria
   const handleRemoveGalleryImage = (url: string) => {
     const newUrls = formData.urlsFotos.filter((u) => u !== url);
     setRemovedGalleryImages([...removedGalleryImages, url]);
     setFormData({ ...formData, urlsFotos: newUrls });
+  };
+
+  const handleImageUpload = async (file: File): Promise<string> => {
+    try {
+      const url = await uploadToCloudinary(file);
+      return url;
+    } catch (error) {
+      toast({
+        title: "Erro no upload",
+        description: "Falha ao enviar imagem para o Cloudinary",
+        variant: "destructive",
+      });
+      throw error;
+    }
   };
 
   const { toast } = useToast();
@@ -184,43 +237,8 @@ export default function ImoveisAdminPage() {
     successMessage: "Imóvel excluído com sucesso!",
   });
 
-  // Componente de preview de imagem
-  const ImagePreview = ({
-    file,
-    className,
-  }: {
-    file: File;
-    className?: string;
-  }) => {
-    const [preview, setPreview] = useState<string | null>(null);
-
-    useEffect(() => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-
-      return () => {
-        // Limpeza
-      };
-    }, [file]);
-
-    return preview ? (
-      <img
-        src={preview}
-        alt="Preview"
-        className={`w-full h-32 object-contain rounded border ${className}`}
-      />
-    ) : (
-      <div className="flex items-center justify-center h-32 bg-gray-100 rounded border">
-        <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-      </div>
-    );
-  };
-
   const handleCheckboxChange = (
-    field: "finalidadeId" | "tipologiaId", // Especifica os campos válidos
+    field: "finalidadeId" | "tipologiaId",
     value: string,
     checked: boolean
   ) => {
@@ -233,49 +251,8 @@ export default function ImoveisAdminPage() {
       }
     });
   };
-  // Upload de imagem
-  const uploadImage = useCallback(
-    async (file: File): Promise<string | null> => {
-      const formData = new FormData();
-      formData.append("file", file);
 
-      try {
-        const imageUrl = await imagemApi.salvarImagem(formData);
-        return imageUrl;
-      } catch (error) {
-        console.error("Erro no upload da imagem:", error);
-        toast({
-          title: "Erro",
-          description: "Falha ao fazer upload da imagem",
-          variant: "destructive",
-        });
-        return null;
-      }
-    },
-    [toast]
-  );
-
-  // Upload de múltiplas imagens
-  const uploadMultipleImages = useCallback(
-    async (files: File[]): Promise<string[]> => {
-      try {
-        return await imagemApi.salvarMultiplasImagens(files);
-      } catch (error) {
-        console.error("Erro no upload de múltiplas imagens:", error);
-        toast({
-          title: "Erro",
-          description: "Falha ao fazer upload das imagens",
-          variant: "destructive",
-        });
-        return [];
-      }
-    },
-    [toast]
-  );
-
-  /**
-   * Carrega todos os imóveis do backend
-   */
+  // Carregar dados
   const loadImoveis = useCallback(async () => {
     try {
       const data = await fetchImoveis(() => imovelApi.obterTodosImoveis());
@@ -285,21 +262,13 @@ export default function ImoveisAdminPage() {
     }
   }, [fetchImoveis]);
 
-  /**
-   * Carrega dados auxiliares (regiões, tipologias e finalidades)
-   */
   const loadAuxiliaryData = useCallback(async () => {
     try {
-      const finalidadesData = await finalidadeApi.obterTodasFinalidades();
-      const regioesData = await regiaoApi.obterTodasRegioes();
-      const tipologiasData = await tipologiaApi.obterTodasTipologias();
-
-      // const [regioesData, tipologiasData, finalidadesData] = await Promise.all([
-      //   fetchTipologias(() => tipologiaApi.obterTodasTipologias()),
-      //   fetchRegioes(() => regiaoApi.obterTodasRegioes()),
-      //   fetchFinalidades(() => finalidadeApi.obterTodasFinalidades()),
-      // ]);
-
+      const [regioesData, tipologiasData, finalidadesData] = await Promise.all([
+        fetchRegioes(() => regiaoApi.obterTodasRegioes()),
+        fetchTipologias(() => tipologiaApi.obterTodasTipologias()),
+        fetchFinalidades(() => finalidadeApi.obterTodasFinalidades()),
+      ]);
       setRegioes(regioesData || []);
       setTipologias(tipologiasData || []);
       setFinalidades(finalidadesData || []);
@@ -308,9 +277,6 @@ export default function ImoveisAdminPage() {
     }
   }, [fetchRegioes, fetchTipologias, fetchFinalidades]);
 
-  /**
-   * Inicializa os dados da página
-   */
   useEffect(() => {
     loadImoveis();
     loadAuxiliaryData();
@@ -330,9 +296,6 @@ export default function ImoveisAdminPage() {
     return mapFin;
   }, [finalidades]);
 
-  /**
-   * Filtra imóveis por finalidade
-   */
   const filteredImoveis = useMemo(() => {
     if (activeTab === "todos") return imoveis;
 
@@ -364,48 +327,34 @@ export default function ImoveisAdminPage() {
 
   const totalGalleryPages = Math.ceil(galleryFiles.length / GALLERY_PAGE_SIZE);
 
-  /**
-   * Manipula o envio do formulário de criação
-   */
-  const handleCreateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUploading(true);
 
-    if (!formData.titulo.trim()) {
-      toast({
-        title: "Erro",
-        description: "Nome é obrigatório",
-        variant: "destructive",
-      });
-      return;
+const handleCreateSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setUploading(true);
+
+  try {
+    const uploadPromises: Promise<string | string[]>[] = [];
+
+    // Upload da imagem do card
+    if (cardImageFile) {
+      uploadPromises.push(handleImageUpload(cardImageFile));
+    } else {
+      uploadPromises.push(Promise.resolve(formData.urlFotoCard || ""));
     }
 
-    try {
-      // Upload das imagens
-      const uploadPromises: Promise<any>[] = [];
-      let cardUrl = formData.urlFotoCard;
-      let galleryUrls = formData.urlsFotos;
+    // Upload das imagens da galeria
+    if (galleryFiles.length > 0) {
+      uploadPromises.push(Promise.all(galleryFiles.map(handleImageUpload)));
+    } else {
+      uploadPromises.push(
+        Promise.resolve(formData.urlsFotos || [])
+      );
+    }
 
-      if (cardImageFile) {
-        uploadPromises.push(
-          uploadImage(cardImageFile).then((url) => {
-            if (url) cardUrl = url;
-          })
-        );
-      }
+    // Espera todos os uploads terminarem
+    const [cardUrl, galleryUrls] = await Promise.all(uploadPromises);
 
-      if (galleryFiles.length > 0) {
-        uploadPromises.push(
-          uploadMultipleImages(galleryFiles).then((urls) => {
-            if (urls && urls.length > 0) galleryUrls = urls;
-          })
-        );
-      }
-
-      await Promise.all(uploadPromises);
-
-      // Preparar dados para envio
-      const dataToSend = {
+const dataToSend = {
         titulo: formData.titulo,
         descricaoImovel: formData.descricaoImovel,
         endereco: formData.endereco,
@@ -424,7 +373,7 @@ export default function ImoveisAdminPage() {
           ? parseInt(formData.quantidadeSuites)
           : undefined,
         urlFotoCard: cardUrl || "",
-        urlsFotos: galleryUrls,
+        urlsFotos: galleryUrls as string[],
         urlLocalizacaoMaps: formData.urlLocalizacaoMaps,
         diferenciais: formData.diferenciais
           ? formData.diferenciais.split(",").map((d) => d.trim())
@@ -432,87 +381,85 @@ export default function ImoveisAdminPage() {
         finalidadeId: formData.finalidadeId,
         regiaoId: formData.regiaoId,
         tipologiaId: formData.tipologiaId,
-      };
+    };
 
-      await createImovel(() => imovelApi.create(dataToSend));
-      resetForm();
-      setIsCreateDialogOpen(false);
-      loadImoveis();
-    } catch (error) {
-      console.error("Erro ao criar imóvel:", error);
-      toast({
-        title: "Erro",
-        description: "Falha ao criar imóvel",
-        variant: "destructive",
-      });
-    } finally {
-      setUploading(false);
-      setCardImageFile(null);
-      setGalleryFiles([]);
+    await createImovel(() => imovelApi.create(dataToSend));
+
+    resetForm();
+    setIsCreateDialogOpen(false);
+    loadImoveis();
+
+    toast({
+      title: "Sucesso!",
+      description: "Imóvel criado com sucesso",
+    });
+  } catch (error) {
+    console.error("Erro ao criar imóvel:", error);
+    toast({
+      title: "Erro",
+      description: "Falha ao criar imóvel",
+      variant: "destructive",
+    });
+  } finally {
+    setUploading(false);
+    setCardImageFile(null);
+    setGalleryFiles([]);
+  }
+};
+
+
+const handleEditSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!selectedImovel) return;
+
+  setUploading(true);
+
+  try {
+    const deletePromises = [];
+
+    if (removedCardImage && selectedImovel.urlFotoCard) {
+      deletePromises.push(deleteFromCloudinary(selectedImovel.urlFotoCard));
     }
-  };
 
-  /**
-   * Manipula o envio do formulário de edição
-   */
-  const handleEditSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedImovel) return;
+    removedGalleryImages.forEach((url) => {
+      deletePromises.push(deleteFromCloudinary(url));
+    });
 
-    setUploading(true);
+    await Promise.all(deletePromises);
 
-    try {
-      // Processar remoções de imagens antes dos uploads
-      const deletePromises: Promise<any>[] = [];
+    const uploadPromises: Promise<string | string[]>[] = [];
+    const newUrls = { card: "", gallery: [] as string[] };
 
-      // Remover imagem do card se marcada
-      if (removedCardImage && selectedImovel.urlFotoCard) {
-        const urlImageDTO = {
-          urlImagem: selectedImovel.urlFotoCard,
-          itemId: selectedImovel.id,
-          isLancamento: false,
-        };
-        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
-      }
+    if (cardImageFile) {
+      uploadPromises.push(
+        handleImageUpload(cardImageFile).then((url) => {
+          newUrls.card = url;
+          return url;
+        })
+      );
+    }
 
-      // Remover imagens da galeria marcadas
-      removedGalleryImages.forEach((url) => {
-        const urlImageDTO = {
-          urlImagem: url,
-          itemId: selectedImovel.id,
-          isLancamento: false,
-        };
-        deletePromises.push(imagemApi.deletarImagem(urlImageDTO));
-      });
+    if (galleryFiles.length > 0) {
+      uploadPromises.push(
+        Promise.all(galleryFiles.map(handleImageUpload)).then((urls) => {
+          newUrls.gallery = urls;
+          return urls;
+        })
+      );
+    }
 
-      // Executar todas as remoções
-      await Promise.all(deletePromises);
-      // Upload das imagens
-      const uploadPromises: Promise<any>[] = [];
-      let cardUrl = formData.urlFotoCard;
-      let galleryUrls = formData.urlsFotos;
+    await Promise.all(uploadPromises);
 
-      if (cardImageFile) {
-        uploadPromises.push(
-          uploadImage(cardImageFile).then((url) => {
-            if (url) cardUrl = url;
-          })
-        );
-      }
+    const cardUrl =
+      newUrls.card || (removedCardImage ? "" : formData.urlFotoCard);
 
-      if (galleryFiles.length > 0) {
-        uploadPromises.push(
-          uploadMultipleImages(galleryFiles).then((urls) => {
-            if (urls && urls.length > 0)
-              galleryUrls = [...galleryUrls, ...urls];
-          })
-        );
-      }
+    const existingUrls = (selectedImovel.urlsFotos || []).filter(
+      (url) => !removedGalleryImages.includes(url)
+    );
+    const galleryUrls = [...existingUrls, ...newUrls.gallery];
 
-      await Promise.all(uploadPromises);
 
-      // Preparar dados para envio
-      const dataToSend = {
+    const dataToSend = {
         titulo: formData.titulo,
         urlFotoCard: cardUrl || "",
         urlsFotos: galleryUrls,
@@ -530,41 +477,74 @@ export default function ImoveisAdminPage() {
         valorCondominio: formData.valorCondominio || "",
         valorIptu: formData.valorIptu || "",
         urlLocalizacaoMaps: formData.urlLocalizacaoMaps || "",
-      };
+    };
 
-      await updateImovel(() => imovelApi.update(selectedImovel.id, dataToSend));
-      resetForm();
-      setIsEditDialogOpen(false);
-      loadImoveis();
-    } catch (error) {
-      console.error("Erro ao atualizar imóvel:", error);
-      toast({
-        title: "Erro",
-        description: "Falha ao atualizar imóvel",
-        variant: "destructive",
-      });
-    } finally {
-      setUploading(false);
-      setCardImageFile(null);
-      setGalleryFiles([]);
-    }
-  };
+    await updateImovel(() =>
+      imovelApi.update(selectedImovel.id, dataToSend)
+    );
 
-  /**
-   * Manipula a exclusão de um imóvel
-   */
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteImovel(() => imovelApi.delete?.(id));
-      loadImoveis();
-    } catch (error) {
-      console.error("Erro ao excluir imóvel:", error);
-    }
-  };
+    setIsEditDialogOpen(false);
+    loadImoveis();
 
-  /**
-   * Reseta o formulário
-   */
+    toast({
+      title: "Sucesso!",
+      description: "Imóvel atualizado com sucesso",
+    });
+  } catch (error) {
+    console.error("Erro ao atualizar imóvel:", error);
+    toast({
+      title: "Erro",
+      description: "Falha ao atualizar imóvel",
+      variant: "destructive",
+    });
+  } finally {
+    setUploading(false);
+    setCardImageFile(null);
+    setGalleryFiles([]);
+    setRemovedCardImage(false);
+    setRemovedGalleryImages([]);
+  }
+};
+
+  // Manipulador de envio para edição
+
+  const handleDelete = useCallback(
+    async (imovel: ImovelAdmin) => {
+      try {
+        const deletePromises = [];
+
+        if (imovel.urlFotoCard) {
+          deletePromises.push(deleteFromCloudinary(imovel.urlFotoCard));
+        }
+
+        if (Array.isArray(imovel.urlsFotos)) {
+          imovel.urlsFotos.forEach((urlFoto) =>
+            deletePromises.push(deleteFromCloudinary(urlFoto))
+          );
+        }
+
+        await Promise.all(deletePromises);
+
+        await deleteImovel(() => imovelApi.delete?.(imovel.id));
+        loadImoveis();
+      } catch (error) {
+        console.error("Erro ao excluir imóvel:", error);
+      }
+    },
+    [deleteImovel, loadImoveis]
+  );
+  // const handleDelete = useCallback(
+  //   async (id: string) => {
+  //     try {
+  //       await deleteImovel(() => imovelApi.delete?.(id));
+  //       loadImoveis();
+  //     } catch (error) {
+  //       console.error("Erro ao excluir imóvel:", error);
+  //     }
+  //   },
+  //   [deleteImovel, loadImoveis]
+  // );
+
   const resetForm = () => {
     setFormData({
       titulo: "",
@@ -587,16 +567,13 @@ export default function ImoveisAdminPage() {
       quantidadeSuites: "",
     });
     setCardImageFile(null);
-  setGalleryFiles([]);
-  setRemovedCardImage(false);
-  setRemovedGalleryImages([]);
-  setCurrentGalleryPage(1);
-  setSelectedImovel(null);
+    setGalleryFiles([]);
+    setRemovedCardImage(false);
+    setRemovedGalleryImages([]);
+    setCurrentGalleryPage(1);
+    setSelectedImovel(null);
   };
 
-  /**
-   * Preenche o formulário para edição
-   */
   const handleEditClick = (imovel: ImovelAdmin) => {
     setSelectedImovel(imovel);
     setFormData({
@@ -612,9 +589,9 @@ export default function ImoveisAdminPage() {
       urlsFotos: imovel.urlsFotos || [],
       urlLocalizacaoMaps: imovel.urlLocalizacaoMaps || "",
       diferenciais: imovel.diferenciais?.join(", ") || "",
-      finalidadeId: imovel.finalidadeId,
+      finalidadeId: imovel.finalidadeId || [],
       regiaoId: imovel.regiaoId || "",
-      tipologiaId: imovel.tipologiaId,
+      tipologiaId: imovel.tipologiaId || [],
       valorCondominio: imovel.valorCondominio?.toString() || "",
       valorIptu: imovel.valorIptu?.toString() || "",
       quantidadeSuites: imovel.quantidadeSuites?.toString() || "",
@@ -627,9 +604,6 @@ export default function ImoveisAdminPage() {
     setIsEditDialogOpen(true);
   };
 
-  /**
-   * Gera URL da landing page para o imóvel
-   */
   const getLandingPageUrl = (imovel: ImovelAdmin) => {
     return `/imovel/${imovel.id}`;
   };
@@ -637,7 +611,6 @@ export default function ImoveisAdminPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Cabeçalho da página */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Imóveis</h1>
@@ -653,7 +626,12 @@ export default function ImoveisAdminPage() {
             </Button>
             <Dialog
               open={isCreateDialogOpen}
-              onOpenChange={setIsCreateDialogOpen}
+              onOpenChange={(open) => {
+                setIsCreateDialogOpen(open);
+                if (!open) {
+                  resetForm();
+                }
+              }}
             >
               <DialogTrigger asChild>
                 <Button onClick={resetForm}>
@@ -666,275 +644,224 @@ export default function ImoveisAdminPage() {
                   <DialogTitle>Novo Imóvel</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleCreateSubmit} className="space-y-6">
-                  {/* Seção: Informações Básicas */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">
-                      Informações Básicas
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="nome">Nome *</Label>
-                        <Input
-                          id="nome"
-                          value={formData.titulo}
-                          onChange={(e) =>
-                            setFormData({ ...formData, titulo: e.target.value })
-                          }
-                          placeholder="Nome do imóvel"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="area">Área</Label>
-                        <Input
-                          id="area"
-                          value={formData.areaQuadrada}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              areaQuadrada: e.target.value,
-                            })
-                          }
-                          placeholder="Ex: 80m²"
-                        />
-                      </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="nome">Nome *</Label>
+                      <Input
+                        id="nome"
+                        value={formData.titulo}
+                        onChange={(e) =>
+                          setFormData({ ...formData, titulo: e.target.value })
+                        }
+                        placeholder="Nome do imóvel"
+                        required
+                      />
                     </div>
-
-                    <div className="space-y-2 mt-4">
-                      <Label htmlFor="descricao">Descrição</Label>
-                      <Textarea
-                        id="descricao"
-                        value={formData.descricaoImovel}
+                    <div className="space-y-2">
+                      <Label htmlFor="area">Área</Label>
+                      <Input
+                        id="area"
+                        value={formData.areaQuadrada}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            descricaoImovel: e.target.value,
+                            areaQuadrada: e.target.value,
                           })
                         }
-                        placeholder="Descrição detalhada do imóvel"
-                        rows={3}
+                        placeholder="Ex: 80m²"
                       />
                     </div>
                   </div>
 
-                  {/* Seção: Detalhes do Imóvel */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">
-                      Detalhes do Imóvel
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="endereco">Endereço</Label>
-                        <Input
-                          id="endereco"
-                          value={formData.endereco}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              endereco: e.target.value,
-                            })
-                          }
-                          placeholder="Endereço completo"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="preco">Preço (R$)</Label>
-                        <Input
-                          id="preco"
-                          type="number"
-                          step="0.01"
-                          value={formData.valor}
-                          onChange={(e) =>
-                            setFormData({ ...formData, valor: e.target.value })
-                          }
-                          placeholder="0.00"
-                        />
-                      </div>
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="descricao">Descrição</Label>
+                    <Textarea
+                      id="descricao"
+                      value={formData.descricaoImovel}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          descricaoImovel: e.target.value,
+                        })
+                      }
+                      placeholder="Descrição detalhada do imóvel"
+                      rows={3}
+                    />
+                  </div>
 
-                    <div className="grid grid-cols-4 gap-4 mt-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="quartos">Quartos</Label>
-                        <Input
-                          id="quartos"
-                          type="number"
-                          value={formData.quantidadeQuartos}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              quantidadeQuartos: e.target.value,
-                            })
-                          }
-                          placeholder="0"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="banheiros">Banheiros</Label>
-                        <Input
-                          id="banheiros"
-                          type="number"
-                          value={formData.quantidadeBanheiros}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              quantidadeBanheiros: e.target.value,
-                            })
-                          }
-                          placeholder="0"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="vagas">Vagas</Label>
-                        <Input
-                          id="vagas"
-                          type="number"
-                          value={formData.quantidadeVagas}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              quantidadeVagas: e.target.value,
-                            })
-                          }
-                          placeholder="0"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="suites">Suítes</Label>
-                        <Input
-                          id="suites"
-                          type="number"
-                          value={formData.quantidadeSuites}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              quantidadeSuites: e.target.value,
-                            })
-                          }
-                          placeholder="0"
-                        />
-                      </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="endereco">Endereço</Label>
+                      <Input
+                        id="endereco"
+                        value={formData.endereco}
+                        onChange={(e) =>
+                          setFormData({ ...formData, endereco: e.target.value })
+                        }
+                        placeholder="Endereço completo"
+                      />
                     </div>
-
-                    <div className="grid grid-cols-3 gap-4 mt-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="valorCondominio">
-                          Valor Condomínio (R$)
-                        </Label>
-                        <Input
-                          id="valorCondominio"
-                          type="number"
-                          step="0.01"
-                          value={formData.valorCondominio}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              valorCondominio: e.target.value,
-                            })
-                          }
-                          placeholder="0.00"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="valorIptu">Valor IPTU (R$)</Label>
-                        <Input
-                          id="valorIptu"
-                          type="number"
-                          step="0.01"
-                          value={formData.valorIptu}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              valorIptu: e.target.value,
-                            })
-                          }
-                          placeholder="0.00"
-                        />
-                      </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="preco">Preço (R$)</Label>
+                      <Input
+                        id="preco"
+                        type="number"
+                        step="0.01"
+                        value={formData.valor}
+                        onChange={(e) =>
+                          setFormData({ ...formData, valor: e.target.value })
+                        }
+                        placeholder="0.00"
+                      />
                     </div>
                   </div>
 
-                  {/* Seção: Classificação */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">
-                      Classificação
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="regiaoId">Região</Label>
-                        <Select
-                          value={formData.regiaoId}
-                          onValueChange={(value) =>
-                            setFormData({ ...formData, regiaoId: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione a região" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {regioes.map((regiao) => (
-                              <SelectItem key={regiao.id} value={regiao.id}>
-                                {regiao.nomeRegiao}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Finalidades</Label>
-                        <div className="grid grid-cols-2 gap-2">
-                          {finalidades.map((finalidade) => (
-                            <div
-                              key={finalidade.id}
-                              className="flex items-center space-x-2"
-                            >
-                              <input
-                                type="checkbox"
-                                id={`finalidade-${finalidade.id}`}
-                                checked={formData.finalidadeId.includes(
-                                  finalidade.id
-                                )}
-                                onChange={(e) =>
-                                  handleCheckboxChange(
-                                    "finalidadeId",
-                                    finalidade.id,
-                                    e.target.checked
-                                  )
-                                }
-                                disabled={uploading}
-                              />
-                              <Label htmlFor={`finalidade-${finalidade.id}`}>
-                                {finalidade.nome}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                  <div className="grid grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="quartos">Quartos</Label>
+                      <Input
+                        id="quartos"
+                        type="number"
+                        value={formData.quantidadeQuartos}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            quantidadeQuartos: e.target.value,
+                          })
+                        }
+                        placeholder="0"
+                      />
                     </div>
-                    <div className="mt-4">
-                      <Label>Tipologias</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="banheiros">Banheiros</Label>
+                      <Input
+                        id="banheiros"
+                        type="number"
+                        value={formData.quantidadeBanheiros}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            quantidadeBanheiros: e.target.value,
+                          })
+                        }
+                        placeholder="0"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="vagas">Vagas</Label>
+                      <Input
+                        id="vagas"
+                        type="number"
+                        value={formData.quantidadeVagas}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            quantidadeVagas: e.target.value,
+                          })
+                        }
+                        placeholder="0"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="suites">Suítes</Label>
+                      <Input
+                        id="suites"
+                        type="number"
+                        value={formData.quantidadeSuites}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            quantidadeSuites: e.target.value,
+                          })
+                        }
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4 mt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="valorCondominio">
+                        Valor Condomínio (R$)
+                      </Label>
+                      <Input
+                        id="valorCondominio"
+                        type="number"
+                        step="0.01"
+                        value={formData.valorCondominio}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            valorCondominio: e.target.value,
+                          })
+                        }
+                        placeholder="0.00"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="valorIptu">Valor IPTU (R$)</Label>
+                      <Input
+                        id="valorIptu"
+                        type="number"
+                        step="0.01"
+                        value={formData.valorIptu}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            valorIptu: e.target.value,
+                          })
+                        }
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="regiaoId">Região</Label>
+                      <Select
+                        value={formData.regiaoId}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, regiaoId: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a região" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {regioes.map((regiao) => (
+                            <SelectItem key={regiao.id} value={regiao.id}>
+                              {regiao.nomeRegiao}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Finalidades</Label>
                       <div className="grid grid-cols-2 gap-2">
-                        {tipologias.map((tipologia) => (
+                        {finalidades.map((finalidade) => (
                           <div
-                            key={tipologia.id}
+                            key={finalidade.id}
                             className="flex items-center space-x-2"
                           >
                             <input
                               type="checkbox"
-                              id={`tipologia-${tipologia.id}`}
-                              checked={formData.tipologiaId.includes(
-                                tipologia.id
+                              id={`finalidade-${finalidade.id}`}
+                              checked={formData.finalidadeId.includes(
+                                finalidade.id
                               )}
                               onChange={(e) =>
                                 handleCheckboxChange(
-                                  "tipologiaId",
-                                  tipologia.id,
+                                  "finalidadeId",
+                                  finalidade.id,
                                   e.target.checked
                                 )
                               }
                               disabled={uploading}
                             />
-                            <Label htmlFor={`tipologia-${tipologia.id}`}>
-                              {tipologia.nome}
+                            <Label htmlFor={`finalidade-${finalidade.id}`}>
+                              {finalidade.nome}
                             </Label>
                           </div>
                         ))}
@@ -942,189 +869,180 @@ export default function ImoveisAdminPage() {
                     </div>
                   </div>
 
-                  {/* Seção: Imagens */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">Imagens</h3>
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>Imagem Principal (Card)</Label>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) =>
-                            setCardImageFile(e.target.files?.[0] || null)
-                          }
-                          disabled={uploading}
-                        />
-                        {cardImageFile && (
-                          <ImagePreview file={cardImageFile} className="mt-2" />
-                        )}
-                      </div>
+                  <div className="mt-4">
+                    <Label>Tipologias</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {tipologias.map((tipologia) => (
+                        <div
+                          key={tipologia.id}
+                          className="flex items-center space-x-2"
+                        >
+                          <input
+                            type="checkbox"
+                            id={`tipologia-${tipologia.id}`}
+                            checked={formData.tipologiaId.includes(
+                              tipologia.id
+                            )}
+                            onChange={(e) =>
+                              handleCheckboxChange(
+                                "tipologiaId",
+                                tipologia.id,
+                                e.target.checked
+                              )
+                            }
+                            disabled={uploading}
+                          />
+                          <Label htmlFor={`tipologia-${tipologia.id}`}>
+                            {tipologia.nome}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-                      <div className="space-y-2">
-                        <Label>Fotos da Galeria</Label>
-                        <Input
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          onChange={(e) => {
-                            const newFiles = Array.from(e.target.files || []);
-                            setGalleryFiles((prev) => [...prev, ...newFiles]);
-                          }}
-                          disabled={uploading}
-                        />
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Imagem Principal (Card)</Label>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) =>
+                          setCardImageFile(e.target.files?.[0] || null)
+                        }
+                        disabled={uploading}
+                      />
+                      {cardImageFile && (
+                        <ImagePreview file={cardImageFile} className="mt-2" />
+                      )}
+                    </div>
 
-                        <div className="mt-2">
-                          {/* Fotos existentes */}
-                          {formData.urlsFotos.length > 0 && (
-                            <div className="mt-4">
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Fotos existentes:
+                    <div className="space-y-2">
+                      <Label>Fotos da Galeria</Label>
+                      <Input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => {
+                          const newFiles = Array.from(e.target.files || []);
+                          setGalleryFiles((prev) => [...prev, ...newFiles]);
+                        }}
+                        disabled={uploading}
+                      />
+
+                      <div className="mt-2">
+                        {galleryFiles.length > 0 && (
+                          <>
+                            <div className="flex justify-between items-center mt-4 mb-2">
+                              <p className="text-sm text-muted-foreground">
+                                {galleryFiles.length} nova(s) foto(s)
+                                selecionada(s)
                               </p>
-                              <div className="grid grid-cols-3 gap-2">
-                                {formData.urlsFotos.map((url, index) => (
-                                  <div key={index} className="relative">
-                                    <img
-                                      src={resolveImageUrl(url)}
-                                      alt={`Foto existente ${index}`}
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setGalleryFiles([]);
+                                }}
+                                disabled={uploading}
+                              >
+                                Limpar Todas
+                              </Button>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                              {paginatedGalleryFiles.map((file, index) => {
+                                const globalIndex =
+                                  (currentGalleryPage - 1) * GALLERY_PAGE_SIZE +
+                                  index;
+                                return (
+                                  <div key={globalIndex} className="relative">
+                                    <ImagePreview
+                                      file={file}
                                       className="w-full h-24 object-cover rounded"
                                     />
+                                    <Button
+                                      size="icon"
+                                      variant="destructive"
+                                      className="absolute top-1 right-1 w-6 h-6"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        const newFiles = [...galleryFiles];
+                                        newFiles.splice(globalIndex, 1);
+                                        setGalleryFiles(newFiles);
+                                        if (
+                                          newFiles.length <=
+                                          (currentGalleryPage - 1) *
+                                            GALLERY_PAGE_SIZE
+                                        ) {
+                                          setCurrentGalleryPage(
+                                            Math.max(1, currentGalleryPage - 1)
+                                          );
+                                        }
+                                      }}
+                                      disabled={uploading}
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                    </Button>
                                   </div>
-                                ))}
-                              </div>
+                                );
+                              })}
                             </div>
-                          )}
-
-                          {/* Novas fotos */}
-                          {galleryFiles.length > 0 && (
-                            <>
-                              <div className="flex justify-between items-center mt-4 mb-2">
-                                <p className="text-sm text-muted-foreground">
-                                  {galleryFiles.length} nova(s) foto(s)
-                                  selecionada(s)
-                                </p>
+                            {totalGalleryPages > 1 && (
+                              <div className="flex justify-center mt-4 space-x-2">
                                 <Button
-                                  variant="destructive"
+                                  variant="outline"
                                   size="sm"
-                                  onMouseDown={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    setGalleryFiles([]);
-                                  }}
-                                  disabled={uploading}
+                                  disabled={
+                                    currentGalleryPage === 1 || uploading
+                                  }
+                                  onClick={() =>
+                                    setCurrentGalleryPage((prev) =>
+                                      Math.max(1, prev - 1)
+                                    )
+                                  }
                                 >
-                                  Limpar Todas
+                                  Anterior
+                                </Button>
+                                <span className="flex items-center px-3">
+                                  Página {currentGalleryPage} de{" "}
+                                  {totalGalleryPages}
+                                </span>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  disabled={
+                                    currentGalleryPage === totalGalleryPages ||
+                                    uploading
+                                  }
+                                  onClick={() =>
+                                    setCurrentGalleryPage((prev) =>
+                                      Math.min(totalGalleryPages, prev + 1)
+                                    )
+                                  }
+                                >
+                                  Próxima
                                 </Button>
                               </div>
-
-                              <div className="grid grid-cols-3 gap-2">
-                                {paginatedGalleryFiles.map((file, index) => {
-                                  const globalIndex =
-                                    (currentGalleryPage - 1) *
-                                      GALLERY_PAGE_SIZE +
-                                    index;
-                                  return (
-                                    <div key={globalIndex} className="relative">
-                                      <ImagePreview
-                                        file={file}
-                                        className="w-full h-24 object-cover rounded"
-                                      />
-                                      <Button
-                                        type="button" // Adicione isso para evitar submit acidental
-                                        size="icon"
-                                        variant="destructive"
-                                        className="absolute top-1 right-1 w-6 h-6"
-                                        onMouseDown={(e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                          const newFiles = [...galleryFiles];
-                                          newFiles.splice(globalIndex, 1);
-                                          setGalleryFiles(newFiles);
-                                          if (
-                                            newFiles.length <=
-                                            (currentGalleryPage - 1) *
-                                              GALLERY_PAGE_SIZE
-                                          ) {
-                                            setCurrentGalleryPage(
-                                              Math.max(
-                                                1,
-                                                currentGalleryPage - 1
-                                              )
-                                            );
-                                          }
-                                        }}
-                                        disabled={uploading}
-                                      >
-                                        <Trash2 className="w-3 h-3" />
-                                      </Button>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-
-                              {totalGalleryPages > 1 && (
-                                <div className="flex justify-center mt-4 space-x-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    disabled={
-                                      currentGalleryPage === 1 || uploading
-                                    }
-                                    onClick={() =>
-                                      setCurrentGalleryPage((prev) =>
-                                        Math.max(1, prev - 1)
-                                      )
-                                    }
-                                  >
-                                    Anterior
-                                  </Button>
-                                  <span className="flex items-center px-3">
-                                    Página {currentGalleryPage} de{" "}
-                                    {totalGalleryPages}
-                                  </span>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    disabled={
-                                      currentGalleryPage ===
-                                        totalGalleryPages || uploading
-                                    }
-                                    onClick={() =>
-                                      setCurrentGalleryPage((prev) =>
-                                        Math.min(totalGalleryPages, prev + 1)
-                                      )
-                                    }
-                                  >
-                                    Próxima
-                                  </Button>
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </div>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  {/* Seção: Localização e Diferenciais */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">
-                      Localização e Diferenciais
-                    </h3>
-                    <div className="space-y-2">
-                      <Label htmlFor="mapUrl">URL do Mapa</Label>
-                      <Input
-                        id="mapUrl"
-                        value={formData.urlLocalizacaoMaps}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            urlLocalizacaoMaps: e.target.value,
-                          })
-                        }
-                        placeholder="URL do Google Maps embed"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="mapUrl">URL do Mapa</Label>
+                    <Input
+                      id="mapUrl"
+                      value={formData.urlLocalizacaoMaps}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          urlLocalizacaoMaps: e.target.value,
+                        })
+                      }
+                      placeholder="URL do Google Maps embed"
+                    />
                   </div>
 
                   <div className="flex justify-end space-x-2 pt-4">
@@ -1158,8 +1076,15 @@ export default function ImoveisAdminPage() {
           </div>
         </div>
 
-        {/* Modal de Edição */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <Dialog
+          open={isEditDialogOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setIsEditDialogOpen(false);
+              resetForm();
+            }
+          }}
+        >
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
             <DialogHeader>
               <DialogTitle>Editar Imóvel</DialogTitle>
@@ -1235,57 +1160,6 @@ export default function ImoveisAdminPage() {
                     placeholder="0.00"
                   />
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="valorCondominio">
-                      Valor Condomínio (R$)
-                    </Label>
-                    <Input
-                      id="valorCondominio"
-                      type="number"
-                      step="0.01"
-                      value={formData.valorCondominio}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          valorCondominio: e.target.value,
-                        })
-                      }
-                      placeholder="0.00"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="valorIptu">Valor IPTU (R$)</Label>
-                    <Input
-                      id="valorIptu"
-                      type="number"
-                      step="0.01"
-                      value={formData.valorIptu}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          valorIptu: e.target.value,
-                        })
-                      }
-                      placeholder="0.00"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="quantidadeSuites">Suítes</Label>
-                    <Input
-                      id="quantidadeSuites"
-                      type="number"
-                      value={formData.quantidadeSuites}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          quantidadeSuites: e.target.value,
-                        })
-                      }
-                      placeholder="0"
-                    />
-                  </div>
-                </div>
               </div>
 
               <div className="grid grid-cols-4 gap-4">
@@ -1335,6 +1209,79 @@ export default function ImoveisAdminPage() {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="suites">Suítes</Label>
+                  <Input
+                    id="suites"
+                    type="number"
+                    value={formData.quantidadeSuites}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        quantidadeSuites: e.target.value,
+                      })
+                    }
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="valorCondominio">Valor Condomínio (R$)</Label>
+                  <Input
+                    id="valorCondominio"
+                    type="number"
+                    step="0.01"
+                    value={formData.valorCondominio}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        valorCondominio: e.target.value,
+                      })
+                    }
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="valorIptu">Valor IPTU (R$)</Label>
+                  <Input
+                    id="valorIptu"
+                    type="number"
+                    step="0.01"
+                    value={formData.valorIptu}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        valorIptu: e.target.value,
+                      })
+                    }
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="regiaoId">Região</Label>
+                  <Select
+                    value={formData.regiaoId}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, regiaoId: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a região" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {regioes.map((regiao) => (
+                        <SelectItem key={regiao.id} value={regiao.id}>
+                          {regiao.nomeRegiao}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
                   <Label>Finalidades</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {finalidades.map((finalidade) => (
@@ -1366,54 +1313,32 @@ export default function ImoveisAdminPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="regiaoId">Região</Label>
-                  <Select
-                    value={formData.regiaoId}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, regiaoId: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione a região" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {regioes.map((regiao) => (
-                        <SelectItem key={regiao.id} value={regiao.id}>
-                          {regiao.nomeRegiao}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Tipologias</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {tipologias.map((tipologia) => (
-                      <div
-                        key={tipologia.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <input
-                          type="checkbox"
-                          id={`tipologia-${tipologia.id}`}
-                          checked={formData.tipologiaId.includes(tipologia.id)}
-                          onChange={(e) =>
-                            handleCheckboxChange(
-                              "tipologiaId",
-                              tipologia.id,
-                              e.target.checked
-                            )
-                          }
-                          disabled={uploading}
-                        />
-                        <Label htmlFor={`tipologia-${tipologia.id}`}>
-                          {tipologia.nome}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
+              <div className="mt-4">
+                <Label>Tipologias</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {tipologias.map((tipologia) => (
+                    <div
+                      key={tipologia.id}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
+                        type="checkbox"
+                        id={`tipologia-${tipologia.id}`}
+                        checked={formData.tipologiaId.includes(tipologia.id)}
+                        onChange={(e) =>
+                          handleCheckboxChange(
+                            "tipologiaId",
+                            tipologia.id,
+                            e.target.checked
+                          )
+                        }
+                        disabled={uploading}
+                      />
+                      <Label htmlFor={`tipologia-${tipologia.id}`}>
+                        {tipologia.nome}
+                      </Label>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -1437,20 +1362,12 @@ export default function ImoveisAdminPage() {
                       <p className="text-sm text-muted-foreground">
                         Imagem atual:
                       </p>
-                      <img
-                        src={resolveImageUrl(formData.urlFotoCard)}
-                        alt="Card atual"
-                        className="w-full h-32 object-contain rounded border"
-                      />
+                      <ImagePreview url={formData.urlFotoCard} />
                       <Button
                         variant="destructive"
                         size="sm"
                         className="absolute top-6 right-2"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleRemoveCardImage();
-                        }}
+                        onClick={handleRemoveCardImage}
                         disabled={uploading}
                       >
                         <Trash2 className="w-4 h-4 mr-1" /> Remover
@@ -1458,7 +1375,6 @@ export default function ImoveisAdminPage() {
                     </div>
                   )}
               </div>
-              {/* ... código anterior ... */}
 
               <div className="space-y-2">
                 <Label>Fotos da Galeria</Label>
@@ -1474,8 +1390,9 @@ export default function ImoveisAdminPage() {
                 />
 
                 <div className="mt-2">
-                  {/* Seção para fotos existentes */}
-                  {formData.urlsFotos.length > 0 && (
+                  {formData.urlsFotos.filter(
+                    (url) => !removedGalleryImages.includes(url)
+                  ).length > 0 && (
                     <div className="mt-4">
                       <p className="text-sm text-muted-foreground mb-2">
                         Fotos existentes:
@@ -1485,20 +1402,12 @@ export default function ImoveisAdminPage() {
                           .filter((url) => !removedGalleryImages.includes(url))
                           .map((url) => (
                             <div key={url} className="relative">
-                              <img
-                                src={resolveImageUrl(url)}
-                                alt={`Foto existente ${url}`}
-                                className="w-full h-24 object-cover rounded"
-                              />
+                              <ImagePreview url={url} />
                               <Button
                                 size="icon"
                                 variant="destructive"
                                 className="absolute top-1 right-1 w-6 h-6"
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  handleRemoveGalleryImage(url);
-                                }}
+                                onClick={() => handleRemoveGalleryImage(url)}
                                 disabled={uploading}
                               >
                                 <Trash2 className="w-3 h-3" />
@@ -1509,7 +1418,6 @@ export default function ImoveisAdminPage() {
                     </div>
                   )}
 
-                  {/* Seção para novas fotos */}
                   {galleryFiles.length > 0 && (
                     <>
                       <div className="flex justify-between items-center mt-4 mb-2">
@@ -1519,11 +1427,7 @@ export default function ImoveisAdminPage() {
                         <Button
                           variant="destructive"
                           size="sm"
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setGalleryFiles([]);
-                          }}
+                          onClick={() => setGalleryFiles([])}
                           disabled={uploading}
                         >
                           Limpar Todas
@@ -1544,9 +1448,7 @@ export default function ImoveisAdminPage() {
                                 size="icon"
                                 variant="destructive"
                                 className="absolute top-1 right-1 w-6 h-6"
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
+                                onClick={() => {
                                   const newFiles = [...galleryFiles];
                                   newFiles.splice(globalIndex, 1);
                                   setGalleryFiles(newFiles);
@@ -1650,7 +1552,6 @@ export default function ImoveisAdminPage() {
           </DialogContent>
         </Dialog>
 
-        {/* Abas para filtrar por finalidade */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
             <TabsTrigger value="todos">Todos</TabsTrigger>
@@ -1659,7 +1560,6 @@ export default function ImoveisAdminPage() {
           </TabsList>
 
           <TabsContent value={activeTab} className="space-y-4">
-            {/* Lista de imóveis */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1756,7 +1656,7 @@ export default function ImoveisAdminPage() {
                                       Cancelar
                                     </AlertDialogCancel>
                                     <AlertDialogAction
-                                      onClick={() => handleDelete(imovel.id)}
+                                      onClick={() => handleDelete(imovel)}
                                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                     >
                                       {loadingDelete
