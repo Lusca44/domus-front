@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as CryptoJS from 'crypto-js';
 
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_VITE_CLOUDINARY_UPLOAD_PRESET;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 const API_KEY = import.meta.env.VITE_CLOUDINARY_API_KEY; 
 const API_SECRET = import.meta.env.VITE_CLOUDINARY_API_SECRET;
 const FOLDER = import.meta.env.VITE_CLOUDINARY_FOLDER;
